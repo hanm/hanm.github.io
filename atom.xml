@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://lianghan.org/"/>
-  <updated>2016-08-01T05:03:58.000Z</updated>
+  <updated>2016-08-02T00:26:10.000Z</updated>
   <id>http://lianghan.org/</id>
   
   <author>
@@ -20,9 +20,18 @@
     <link href="http://lianghan.org/2016/07/31/2016-7-31-KiloManX/"/>
     <id>http://lianghan.org/2016/07/31/2016-7-31-KiloManX/</id>
     <published>2016-08-01T04:57:31.000Z</published>
-    <updated>2016-08-01T05:03:58.000Z</updated>
+    <updated>2016-08-02T00:26:10.000Z</updated>
     
     <content type="html"><![CDATA[<p><a href="https://community.topcoder.com/stat?c=problem_statement&amp;pm=2288&amp;rd=4725" target="_blank" rel="external">Problem Statement</a></p>
+<p>This is another very interesting problem that can be solved using graph search. The problem itself looks<br>like an optimization problem and should be solvable using ‘traditional’ dynamic programming technique (which<br>is true), but with some observations we can turn this into a graph search problem:</p>
+<ul>
+<li>The problem can be reduced to a search problem.</li>
+<li>The search space is the set of states where each state is a combination of ‘boss defeated so far’ and ‘shots used’.</li>
+<li>For each boss, the state of ‘defeated’ equals to the presence of its weapon.</li>
+<li>The state transfer function looks like: given the set of boss defeated and the shots taken, what would be the set of bosses<br>that we could defeat next and the corresponding shots we would use to defeat those boss?</li>
+<li>So we represent each state as a node in a graph and the state transfer function as edges between graph nodes.</li>
+<li>The problem now is reduced to find shortest path between two nodes: the start node where no boss is defeated and the end<br>node where all bosses have been defeated.</li>
+</ul>
 <figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> GNode &#123;</div><div class="line">    <span class="keyword">int</span> weapon;</div><div class="line">    <span class="keyword">int</span> shot;</div><div class="line">    GNode() : weapon(<span class="number">0</span>), shot(<span class="number">0</span>) &#123;&#125;</div><div class="line">&#125; node;</div><div class="line"></div><div class="line"><span class="keyword">class</span> Compare &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">operator</span><span class="params">()</span> <span class="params">(<span class="keyword">const</span> GNode &amp;n1, <span class="keyword">const</span> GNode &amp;n2)</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> n1.shot &gt; n2.shot;</div><div class="line">    &#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="keyword">class</span> KiloManX &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    <span class="function"><span class="keyword">int</span> <span class="title">leastShots</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; damageChart, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; bossHealth)</span> </span>&#123;</div><div class="line">        <span class="keyword">int</span> N = (<span class="keyword">int</span>)damageChart.size();</div><div class="line">        <span class="keyword">const</span> <span class="keyword">int</span> CAP = <span class="number">1</span> &lt;&lt; N;</div><div class="line">        <span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt; visited(CAP, <span class="literal">false</span>);</div><div class="line">        GNode node;</div><div class="line">        priority_queue&lt;GNode, <span class="built_in">vector</span>&lt;GNode&gt;, Compare&gt; pq;</div><div class="line">        pq.push(node);</div><div class="line"></div><div class="line">        <span class="keyword">int</span> ret = INT_MAX;</div><div class="line">        <span class="keyword">while</span> (!pq.empty()) &#123;</div><div class="line">            <span class="keyword">auto</span> node = pq.top();</div><div class="line">            pq.pop();</div><div class="line"></div><div class="line">            <span class="keyword">if</span> (visited[node.weapon])</div><div class="line">                <span class="keyword">continue</span>;</div><div class="line">            visited[node.weapon] = <span class="literal">true</span>;</div><div class="line"></div><div class="line">            <span class="keyword">if</span> (node.weapon == CAP - <span class="number">1</span>) &#123;</div><div class="line">                ret = min(ret, node.shot);</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</div><div class="line">                <span class="keyword">if</span> ((node.weapon &gt;&gt; i) &amp; <span class="number">1</span>)</div><div class="line">                    <span class="keyword">continue</span>;</div><div class="line">                <span class="keyword">int</span> best = bossHealth[i];</div><div class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; N; ++j) &#123;</div><div class="line">                    <span class="keyword">if</span> (i == j) <span class="keyword">continue</span>;</div><div class="line">                    <span class="keyword">if</span> (((node.weapon &gt;&gt; j) &amp; <span class="number">1</span>) &amp;&amp; damageChart[j][i] != <span class="string">'0'</span>) &#123;</div><div class="line">                        <span class="keyword">int</span> damage = damageChart[j][i] - <span class="string">'0'</span>;</div><div class="line">                        <span class="keyword">int</span> shot = bossHealth[i] / damage;</div><div class="line">                        <span class="keyword">if</span> (bossHealth[i] % damage)</div><div class="line">                            ++shot;</div><div class="line">                        best = min(best, shot);</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">                GNode newNode;</div><div class="line">                newNode.shot = best + node.shot;</div><div class="line">                newNode.weapon = (node.weapon | (<span class="number">1</span> &lt;&lt; i));</div><div class="line">                pq.push(newNode);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> ret;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div></pre></td></tr></table></figure>]]></content>
     
     <summary type="html">
@@ -38,11 +47,11 @@
     
       <category term="TopCoder" scheme="http://lianghan.org/tags/TopCoder/"/>
     
-      <category term="Dijkstra" scheme="http://lianghan.org/tags/Dijkstra/"/>
+      <category term="BFS" scheme="http://lianghan.org/tags/BFS/"/>
     
       <category term="Graph" scheme="http://lianghan.org/tags/Graph/"/>
     
-      <category term="BFS" scheme="http://lianghan.org/tags/BFS/"/>
+      <category term="Dijkstra" scheme="http://lianghan.org/tags/Dijkstra/"/>
     
   </entry>
   
@@ -71,11 +80,11 @@
     
       <category term="TopCoder" scheme="http://lianghan.org/tags/TopCoder/"/>
     
-      <category term="Graph" scheme="http://lianghan.org/tags/Graph/"/>
-    
       <category term="BFS" scheme="http://lianghan.org/tags/BFS/"/>
     
       <category term="DFS" scheme="http://lianghan.org/tags/DFS/"/>
+    
+      <category term="Graph" scheme="http://lianghan.org/tags/Graph/"/>
     
       <category term="Flood Fill" scheme="http://lianghan.org/tags/Flood-Fill/"/>
     
