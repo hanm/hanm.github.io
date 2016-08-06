@@ -74,6 +74,49 @@ ga('send', 'pageview');
       <div class="outer">
         <section id="main">
   
+    <article id="post-2016-08-06-USACO-YourRideIsHere" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/08/06/2016-08-06-USACO-YourRideIsHere/" class="article-date">
+  <time datetime="2016-08-06T17:19:31.000Z" itemprop="datePublished">2016-08-06</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/USACO/">USACO</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/08/06/2016-08-06-USACO-YourRideIsHere/">USACO 1.1 Your Ride Is Here</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Section 1.1 Your Ride Is Here</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; parseString(<span class="built_in">string</span> input) &#123;</div><div class="line">  <span class="function"><span class="built_in">istringstream</span> <span class="title">iss</span><span class="params">(input)</span></span>;</div><div class="line">  <span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; tokens&#123;istream_iterator&lt;<span class="built_in">string</span>&gt;&#123;iss&#125;,</div><div class="line">    istream_iterator&lt;<span class="built_in">string</span>&gt;&#123;&#125;&#125;;</div><div class="line">  <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; ret;</div><div class="line">  <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;str : tokens) &#123;</div><div class="line">    ret.emplace_back(stoi(str));</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">return</span> ret;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="keyword">class</span> grafixMask &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    <span class="built_in">vector</span> &lt;<span class="keyword">int</span>&gt; sortedAreas(<span class="built_in">vector</span> &lt;<span class="built_in">string</span>&gt; rectangles) &#123;</div><div class="line">      <span class="keyword">const</span> <span class="keyword">int</span> ROWS = <span class="number">400</span>, COLS = <span class="number">600</span>;</div><div class="line">      <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt;&gt; bitmap(ROWS, <span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt;(COLS, <span class="literal">false</span>));</div><div class="line">      <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; ret;</div><div class="line">      <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;rec : rectangles) &#123;</div><div class="line">        <span class="keyword">auto</span> vec = parseString(rec);</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = vec[<span class="number">0</span>]; i &lt;= vec[<span class="number">2</span>]; ++i) &#123;</div><div class="line">          <span class="keyword">for</span> (<span class="keyword">int</span> j = vec[<span class="number">1</span>]; j &lt;= vec[<span class="number">3</span>]; ++j) &#123;</div><div class="line">            bitmap[i][j] = <span class="literal">true</span>;</div><div class="line">          &#125;</div><div class="line">        &#125;</div><div class="line">      &#125;</div><div class="line"></div><div class="line">      <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; ROWS; ++i) &#123;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; COLS; ++j) &#123;</div><div class="line">          <span class="keyword">if</span> (bitmap[i][j]) <span class="keyword">continue</span>;</div><div class="line">          <span class="keyword">int</span> area = <span class="number">0</span>;</div><div class="line">          <span class="built_in">stack</span>&lt;pair&lt;<span class="keyword">int</span>,<span class="keyword">int</span>&gt;&gt; <span class="built_in">stack</span>;</div><div class="line">          <span class="built_in">stack</span>.push(make_pair(i, j));</div><div class="line"></div><div class="line">          <span class="keyword">while</span> (!<span class="built_in">stack</span>.empty()) &#123;</div><div class="line">            <span class="keyword">auto</span> pos = <span class="built_in">stack</span>.top();</div><div class="line">            <span class="built_in">stack</span>.pop();</div><div class="line">            <span class="keyword">int</span> x = pos.first, y = pos.second;</div><div class="line">            <span class="keyword">if</span> (bitmap[x][y]) <span class="keyword">continue</span>;</div><div class="line">            bitmap[x][y] = <span class="literal">true</span>;</div><div class="line">            ++area;</div><div class="line"></div><div class="line">            <span class="keyword">int</span> dirx[] = &#123;<span class="number">1</span>, <span class="number">-1</span>, <span class="number">0</span>, <span class="number">0</span>&#125;;</div><div class="line">            <span class="keyword">int</span> diry[] = &#123;<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">-1</span>&#125;;</div><div class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; <span class="number">4</span>; ++k) &#123;</div><div class="line">              <span class="keyword">int</span> xx = x + dirx[k], yy = y + diry[k];</div><div class="line">              <span class="keyword">if</span> (xx &gt;= <span class="number">0</span> &amp;&amp; xx &lt; <span class="number">400</span> &amp;&amp; yy &gt;= <span class="number">0</span> &amp;&amp; yy &lt; <span class="number">600</span> &amp;&amp; !bitmap[xx][yy]) &#123;</div><div class="line">                <span class="built_in">stack</span>.push(make_pair(xx, yy));</div><div class="line">              &#125;</div><div class="line">            &#125;</div><div class="line">          &#125;</div><div class="line">          ret.push_back(area);</div><div class="line">        &#125;</div><div class="line">      &#125;</div><div class="line">      sort(ret.begin(), ret.end());</div><div class="line">      <span class="keyword">return</span> ret;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2016/08/06/2016-08-06-USACO-YourRideIsHere/" data-id="cirjg999w0007enxgzl00h0yj" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-2016-08-03-DijKstra" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/08/03/2016-08-03-DijKstra/" class="article-date">
@@ -108,7 +151,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/03/2016-08-03-DijKstra/" data-id="cirismmdi000kw3xgomnyvget" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/08/03/2016-08-03-DijKstra/" data-id="cirjg999o0000enxgax4bm1u2" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DijKstra/">DijKstra</a></li></ul>
@@ -160,7 +203,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/07/31/2016-7-31-KiloManX/" data-id="cirismmdm000pw3xgsb6a6nxl" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/07/31/2016-7-31-KiloManX/" data-id="cirjg99a7000tenxgh49an1mo" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/BFS/">BFS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dijkstra/">Dijkstra</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Graph/">Graph</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TopCoder/">TopCoder</a></li></ul>
@@ -205,7 +248,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/07/23/2016-7-23-GrafixMask/" data-id="cirismmd30009w3xgk7dtlpxu" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/07/23/2016-7-23-GrafixMask/" data-id="cirjg99a3000ienxgalo3prio" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/BFS/">BFS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DFS/">DFS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Flood-Fill/">Flood Fill</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Graph/">Graph</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TopCoder/">TopCoder</a></li></ul>
@@ -248,7 +291,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/07/20/2016-7-20-PathFinding/" data-id="cirismmcu0000w3xgn36eami5" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/07/20/2016-7-20-PathFinding/" data-id="cirjg999y000benxg39dpy7uk" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/BFS/">BFS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TopCoder/">TopCoder</a></li></ul>
@@ -269,7 +312,7 @@ ga('send', 'pageview');
   <div class="widget-wrap">
     <h3 class="widget-title">Categories</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Algorithm/">Algorithm</a></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Algorithm/">Algorithm</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/USACO/">USACO</a></li></ul>
     </div>
   </div>
 
@@ -309,6 +352,10 @@ ga('send', 'pageview');
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2016/08/06/2016-08-06-USACO-YourRideIsHere/">USACO 1.1 Your Ride Is Here</a>
+          </li>
         
           <li>
             <a href="/2016/08/03/2016-08-03-DijKstra/">A C++ implementation of DijKstra Algorithm</a>
