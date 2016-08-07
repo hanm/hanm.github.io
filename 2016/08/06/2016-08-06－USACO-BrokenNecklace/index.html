@@ -3,21 +3,21 @@
 <head>
   <meta charset="utf-8">
   
-  <title>USACO 1.1 - Your Ride Is Here | Quantum Field</title>
+  <title>USACO 1.1 Broken Necklace | Quantum Field</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="The easiest problem in USACO training.
-#include &amp;lt;iostream&amp;gt;#include &amp;lt;fstream&amp;gt;#include &amp;lt;string&amp;gt;using namespace std;int main() &amp;#123;  ofstream fout(&quot;ride.out&quot;);  ifstream fin(&quot;ride.in&quot;">
+  <meta name="description" content="Brutal force O(N^2) solution.
+#include&amp;lt;iostream&amp;gt;#include&amp;lt;fstream&amp;gt;#include&amp;lt;string&amp;gt;using namespace std;int main ()&amp;#123;  string str;  int n, i, l, r, mx = 0;  ifstream fin (&quot;beads.in&quot;">
 <meta property="og:type" content="article">
-<meta property="og:title" content="USACO 1.1 - Your Ride Is Here">
-<meta property="og:url" content="http://lianghan.org/2016/08/06/2016-08-06-USACO-YourRideIsHere/index.html">
+<meta property="og:title" content="USACO 1.1 Broken Necklace">
+<meta property="og:url" content="http://lianghan.org/2016/08/06/2016-08-06－USACO-BrokenNecklace/index.html">
 <meta property="og:site_name" content="Quantum Field">
-<meta property="og:description" content="The easiest problem in USACO training.
-#include &amp;lt;iostream&amp;gt;#include &amp;lt;fstream&amp;gt;#include &amp;lt;string&amp;gt;using namespace std;int main() &amp;#123;  ofstream fout(&quot;ride.out&quot;);  ifstream fin(&quot;ride.in&quot;">
-<meta property="og:updated_time" content="2016-08-07T00:16:02.000Z">
+<meta property="og:description" content="Brutal force O(N^2) solution.
+#include&amp;lt;iostream&amp;gt;#include&amp;lt;fstream&amp;gt;#include&amp;lt;string&amp;gt;using namespace std;int main ()&amp;#123;  string str;  int n, i, l, r, mx = 0;  ifstream fin (&quot;beads.in&quot;">
+<meta property="og:updated_time" content="2016-08-07T01:28:39.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="USACO 1.1 - Your Ride Is Here">
-<meta name="twitter:description" content="The easiest problem in USACO training.
-#include &amp;lt;iostream&amp;gt;#include &amp;lt;fstream&amp;gt;#include &amp;lt;string&amp;gt;using namespace std;int main() &amp;#123;  ofstream fout(&quot;ride.out&quot;);  ifstream fin(&quot;ride.in&quot;">
+<meta name="twitter:title" content="USACO 1.1 Broken Necklace">
+<meta name="twitter:description" content="Brutal force O(N^2) solution.
+#include&amp;lt;iostream&amp;gt;#include&amp;lt;fstream&amp;gt;#include&amp;lt;string&amp;gt;using namespace std;int main ()&amp;#123;  string str;  int n, i, l, r, mx = 0;  ifstream fin (&quot;beads.in&quot;">
   
     <link rel="alternate" href="/atom.xml" title="Quantum Field" type="application/atom+xml">
   
@@ -79,10 +79,10 @@ ga('send', 'pageview');
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="post-2016-08-06-USACO-YourRideIsHere" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-2016-08-06－USACO-BrokenNecklace" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2016/08/06/2016-08-06-USACO-YourRideIsHere/" class="article-date">
-  <time datetime="2016-08-06T17:19:31.000Z" itemprop="datePublished">2016-08-06</time>
+    <a href="/2016/08/06/2016-08-06－USACO-BrokenNecklace/" class="article-date">
+  <time datetime="2016-08-07T01:25:31.000Z" itemprop="datePublished">2016-08-06</time>
 </a>
     
   <div class="article-category">
@@ -97,7 +97,7 @@ ga('send', 'pageview');
         
   
     <h1 class="article-title" itemprop="name">
-      USACO 1.1 - Your Ride Is Here
+      USACO 1.1 Broken Necklace
     </h1>
   
 
@@ -105,12 +105,12 @@ ga('send', 'pageview');
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>The easiest problem in USACO training.</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"ride.out"</span>)</span></span>;</div><div class="line">  <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"ride.in"</span>)</span></span>;</div><div class="line"></div><div class="line">  <span class="built_in">string</span> comet, group;</div><div class="line">  getline(fin, comet);</div><div class="line">  getline(fin, group);</div><div class="line"></div><div class="line">  <span class="keyword">long</span> <span class="keyword">long</span> valComet = <span class="number">1</span>;</div><div class="line">  <span class="keyword">long</span> <span class="keyword">long</span> valGroup = <span class="number">1</span>;</div><div class="line"></div><div class="line">  <span class="keyword">for</span> (<span class="keyword">char</span> &amp;c : comet)</div><div class="line">    valComet *= (c - <span class="string">'A'</span> + <span class="number">1</span>);</div><div class="line">  valComet %= <span class="number">47</span>;</div><div class="line"></div><div class="line">  <span class="keyword">for</span> (<span class="keyword">char</span> &amp;c : group)</div><div class="line">    valGroup *= (c - <span class="string">'A'</span> + <span class="number">1</span>);</div><div class="line">  valGroup %= <span class="number">47</span>;</div><div class="line"></div><div class="line">  <span class="keyword">if</span> (valComet == valGroup)</div><div class="line">    fout &lt;&lt; <span class="string">"GO"</span> &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">  <span class="keyword">else</span></div><div class="line">    fout &lt;&lt; <span class="string">"STAY"</span> &lt;&lt; <span class="built_in">endl</span>;</div><div class="line"></div><div class="line">  <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div><div class="line"></div></pre></td></tr></table></figure>
+        <p>Brutal force O(N^2) solution.</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;fstream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;string&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span> <span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">  <span class="built_in">string</span> str;</div><div class="line">  <span class="keyword">int</span> n, i, l, r, mx = <span class="number">0</span>;</div><div class="line">  <span class="function">ifstream <span class="title">fin</span> <span class="params">(<span class="string">"beads.in"</span>)</span></span>;</div><div class="line">  <span class="function">ofstream <span class="title">fout</span> <span class="params">(<span class="string">"beads.out"</span>)</span></span>;</div><div class="line">  fin &gt;&gt; n;</div><div class="line">  fin &gt;&gt; str;</div><div class="line">  str += str;</div><div class="line">  <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; n; i++) &#123;</div><div class="line">    l = r = <span class="number">1</span>;</div><div class="line">    <span class="keyword">int</span> k = i + <span class="number">1</span>;</div><div class="line">    <span class="keyword">char</span> flag;</div><div class="line">    <span class="keyword">while</span>(l &lt; n) &#123;</div><div class="line">      <span class="keyword">int</span> j = i;</div><div class="line">      <span class="keyword">while</span>(str[j] == <span class="string">'w'</span>)</div><div class="line">        j++;</div><div class="line">      flag = str[j];</div><div class="line">      <span class="keyword">if</span> (str[k] == flag || str[k] == <span class="string">'w'</span>)</div><div class="line">        k++, l++;</div><div class="line">      <span class="keyword">else</span> <span class="keyword">break</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    k = i + n - <span class="number">2</span>;</div><div class="line">    <span class="keyword">while</span>(r &lt; n) &#123;</div><div class="line">      <span class="keyword">int</span> j = i;</div><div class="line">      <span class="keyword">while</span>(str[j] == <span class="string">'w'</span>)</div><div class="line">        j--;</div><div class="line">      <span class="keyword">if</span> (str[k] == str[i + n - <span class="number">1</span>] || str[k] == <span class="string">'w'</span>)</div><div class="line">        k--, r++;</div><div class="line">      <span class="keyword">else</span> <span class="keyword">break</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (l + r &gt; mx) mx = l + r;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="keyword">if</span> (mx &gt; n) mx = n;</div><div class="line">  fout &lt;&lt; mx &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">  <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/06/2016-08-06-USACO-YourRideIsHere/" data-id="cirjxjnho000hldxgn7pho40t" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/08/06/2016-08-06－USACO-BrokenNecklace/" data-id="cirjxjnhg000bldxgki8hvk3b" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li></ul>
@@ -121,19 +121,10 @@ ga('send', 'pageview');
     
 <nav id="article-nav">
   
-    <a href="/2016/08/06/2016-08-06-USACO-Greedy-Gift-Givers/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          USACO 1.1 Greedy Gift Givers
-        
-      </div>
-    </a>
   
-  
-    <a href="/2016/08/03/2016-08-03-DijKstra/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2016/08/06/2016-08-06-USACO-Friday/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">A C++ implementation of DijKstra Algorithm</div>
+      <div class="article-nav-title">USACO 1.1 Friday</div>
     </a>
   
 </nav>
