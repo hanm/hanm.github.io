@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://lianghan.org/"/>
-  <updated>2016-08-09T04:33:06.000Z</updated>
+  <updated>2016-08-09T04:55:09.000Z</updated>
   <id>http://lianghan.org/</id>
   
   <author>
@@ -16,11 +16,37 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>USACO 1.1. Milking Cows</title>
+    <title>USACO 1.2 Transformation</title>
+    <link href="http://lianghan.org/2016/08/08/%202016-08-08-Transformation/"/>
+    <id>http://lianghan.org/2016/08/08/ 2016-08-08-Transformation/</id>
+    <published>2016-08-09T04:53:31.000Z</published>
+    <updated>2016-08-09T04:55:09.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>Brutal force search.</p>
+<figure class="highlight"><table><tr><td class="code"><pre><div class="line">#include &lt;iostream&gt;</div><div class="line">#include &lt;fstream&gt;</div><div class="line">#include &lt;string&gt;</div><div class="line">#include &lt;vector&gt;</div><div class="line">#include &lt;algorithm&gt;</div><div class="line"></div><div class="line">using namespace std;</div><div class="line"></div><div class="line">typedef vector&lt;vector&lt;char&gt; &gt; MATRIX;</div><div class="line"></div><div class="line">void rotateMatrix90(MATRIX &amp;matrix) &#123;</div><div class="line">  auto size = matrix.size();</div><div class="line">  for (int i = 0; i &lt; size; ++i) &#123;</div><div class="line">    for (int j = i + 1; j &lt; size; ++j) &#123;</div><div class="line">      swap(matrix[i][j], matrix[j][i]);</div><div class="line">    &#125;</div><div class="line">    reverse(matrix[i].begin(), matrix[i].end());</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">void rotateMatrix180(MATRIX &amp;matrix) &#123;</div><div class="line">  rotateMatrix90(matrix);</div><div class="line">  rotateMatrix90(matrix);</div><div class="line">&#125;</div><div class="line"></div><div class="line">void rotateMatrix270(MATRIX &amp;matrix) &#123;</div><div class="line">  rotateMatrix90(matrix);</div><div class="line">  rotateMatrix180(matrix);</div><div class="line">&#125;</div><div class="line"></div><div class="line">void reflectMatrixHorizontal(MATRIX &amp;matrix) &#123;</div><div class="line">  int size = static_cast&lt;int&gt;(matrix.size());</div><div class="line">  for (int i = 0, j = size - 1; i &lt; j; ++i, --j) &#123;</div><div class="line">    for (int k = 0; k &lt; size; ++k)</div><div class="line">      swap(matrix[k][i], matrix[k][j]);</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">void initializeMatrix(MATRIX &amp;matrix, ifstream &amp;fin) &#123;</div><div class="line">  auto demension = matrix.size();</div><div class="line">  for (int i = 0; i &lt; demension; ++i) &#123;</div><div class="line">    for (int j = 0; j &lt; demension; ++j) &#123;</div><div class="line">      fin &gt;&gt; matrix[i][j];</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">int main () &#123;</div><div class="line">  string str;</div><div class="line">  ifstream fin ("transform.in");</div><div class="line">  ofstream fout ("transform.out");</div><div class="line"></div><div class="line">  int demension;</div><div class="line">  fin &gt;&gt; demension;</div><div class="line">  MATRIX matrix(demension, vector&lt;char&gt;(demension, ' '));</div><div class="line">  initializeMatrix(matrix, fin);</div><div class="line"></div><div class="line">  MATRIX baseline(demension, vector&lt;char&gt;(demension, ' '));</div><div class="line">  initializeMatrix(baseline, fin);</div><div class="line"></div><div class="line">  MATRIX old = matrix;</div><div class="line"></div><div class="line">  rotateMatrix90(matrix);</div><div class="line">  if (baseline == matrix) &#123;</div><div class="line">    fout &lt;&lt; 1 &lt;&lt; std::endl;</div><div class="line">    return 0;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  matrix = old;</div><div class="line">  rotateMatrix180(matrix);</div><div class="line">  if (baseline == matrix) &#123;</div><div class="line">    fout &lt;&lt; 2 &lt;&lt; std::endl;</div><div class="line">    return 0;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  matrix = old;</div><div class="line">  rotateMatrix270(matrix);</div><div class="line">  if (baseline == matrix) &#123;</div><div class="line">    fout &lt;&lt; 3 &lt;&lt; std::endl;</div><div class="line">    return 0;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  matrix = old;</div><div class="line">  reflectMatrixHorizontal(matrix);</div><div class="line">  if (baseline == matrix) &#123;</div><div class="line">    fout &lt;&lt; 4 &lt;&lt; std::endl;</div><div class="line">    return 0;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  MATRIX reflected = matrix;</div><div class="line">  rotateMatrix90(matrix);</div><div class="line">  if (matrix == baseline) &#123;</div><div class="line">    fout &lt;&lt; 5 &lt;&lt; std::endl;</div><div class="line">    return 0;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  matrix = reflected;</div><div class="line">  rotateMatrix180(matrix);</div><div class="line">  if (matrix == baseline) &#123;</div><div class="line">    fout &lt;&lt; 5 &lt;&lt; std::endl;</div><div class="line">    return 0;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  matrix = reflected;</div><div class="line">  rotateMatrix270(matrix);</div><div class="line">  if (matrix == baseline) &#123;</div><div class="line">    fout &lt;&lt; 5 &lt;&lt; std::endl;</div><div class="line">    return 0;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  matrix = old;</div><div class="line">  if (matrix == baseline) &#123;</div><div class="line">    fout &lt;&lt; 6 &lt;&lt; std::endl;</div><div class="line">    return 0;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  fout &lt;&lt; 7 &lt;&lt; std::endl;</div><div class="line">  return 0;</div><div class="line">&#125;</div><div class="line"></div></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Brutal force search.&lt;/p&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;#include &amp;lt;iostream&amp;gt;&lt;/div&gt;&lt;div
+    
+    </summary>
+    
+      <category term="USACO" scheme="http://lianghan.org/categories/USACO/"/>
+    
+    
+      <category term="Algorithm" scheme="http://lianghan.org/tags/Algorithm/"/>
+    
+      <category term="Search" scheme="http://lianghan.org/tags/Search/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>USACO 1.2 Milking Cows</title>
     <link href="http://lianghan.org/2016/08/08/2016-08-08-MilkingCows/"/>
     <id>http://lianghan.org/2016/08/08/2016-08-08-MilkingCows/</id>
     <published>2016-08-09T04:31:31.000Z</published>
-    <updated>2016-08-09T04:33:06.000Z</updated>
+    <updated>2016-08-09T04:55:09.000Z</updated>
     
     <content type="html"><![CDATA[<p>Simple brutal force search with intervals.</p>
 <figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="keyword">struct</span> Interval &#123;</div><div class="line">  <span class="keyword">int</span> start, end;</div><div class="line">  Interval(<span class="keyword">int</span> start, <span class="keyword">int</span> end) : start(start), end(end) &#123;&#125;</div><div class="line">  <span class="keyword">bool</span> <span class="keyword">operator</span> &lt; (<span class="keyword">const</span> Interval&amp; interval) <span class="keyword">const</span> &#123;</div><div class="line">    <span class="keyword">return</span> start &lt; interval.start;</div><div class="line">  &#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span> <span class="params">()</span> </span>&#123;</div><div class="line">  <span class="built_in">string</span> str;</div><div class="line">  <span class="function">ifstream <span class="title">fin</span> <span class="params">(<span class="string">"milk2.in"</span>)</span></span>;</div><div class="line">  <span class="function">ofstream <span class="title">fout</span> <span class="params">(<span class="string">"milk2.out"</span>)</span></span>;</div><div class="line"></div><div class="line">  <span class="built_in">vector</span>&lt;Interval&gt; intervals;</div><div class="line"></div><div class="line">  <span class="keyword">int</span> farmers;</div><div class="line">  fin &gt;&gt; farmers;</div><div class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; farmers; ++i) &#123;</div><div class="line">    <span class="keyword">int</span> start, end;</div><div class="line">    fin &gt;&gt; start &gt;&gt; end;</div><div class="line">    intervals.emplace_back(Interval(start, end));</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="built_in">std</span>::sort(intervals.begin(), intervals.end());</div><div class="line"></div><div class="line">  <span class="keyword">int</span> maxOverlap = <span class="number">0</span>, maxGap = <span class="number">0</span>;</div><div class="line">  Interval it = intervals[<span class="number">0</span>];</div><div class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; intervals.size(); ++i) &#123;</div><div class="line">    <span class="keyword">if</span> (intervals[i].start &gt; it.end) &#123;</div><div class="line">      <span class="comment">// none overlap</span></div><div class="line">      maxOverlap = <span class="built_in">std</span>::max(maxOverlap, it.end - it.start);</div><div class="line">      maxGap = <span class="built_in">std</span>::max(maxGap, intervals[i].start - it.end);</div><div class="line">      it = intervals[i];</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">      it.end = <span class="built_in">std</span>::max(it.end, intervals[i].end);</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  maxOverlap = <span class="built_in">std</span>::max(maxOverlap, it.end - it.start);</div><div class="line"></div><div class="line">  fout &lt;&lt; maxOverlap &lt;&lt; <span class="string">" "</span> &lt;&lt; maxGap &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line"></div><div class="line">  <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div><div class="line"></div></pre></td></tr></table></figure>]]></content>
@@ -36,6 +62,8 @@
     
     
       <category term="Algorithm" scheme="http://lianghan.org/tags/Algorithm/"/>
+    
+      <category term="Search" scheme="http://lianghan.org/tags/Search/"/>
     
   </entry>
   
@@ -197,9 +225,9 @@
     
       <category term="BFS" scheme="http://lianghan.org/tags/BFS/"/>
     
-      <category term="Dijkstra" scheme="http://lianghan.org/tags/Dijkstra/"/>
-    
       <category term="Graph" scheme="http://lianghan.org/tags/Graph/"/>
+    
+      <category term="Dijkstra" scheme="http://lianghan.org/tags/Dijkstra/"/>
     
   </entry>
   
@@ -230,9 +258,9 @@
     
       <category term="BFS" scheme="http://lianghan.org/tags/BFS/"/>
     
-      <category term="Graph" scheme="http://lianghan.org/tags/Graph/"/>
-    
       <category term="DFS" scheme="http://lianghan.org/tags/DFS/"/>
+    
+      <category term="Graph" scheme="http://lianghan.org/tags/Graph/"/>
     
       <category term="Flood Fill" scheme="http://lianghan.org/tags/Flood-Fill/"/>
     
