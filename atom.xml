@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://lianghan.org/"/>
-  <updated>2016-08-10T05:18:38.000Z</updated>
+  <updated>2016-08-10T05:24:40.000Z</updated>
   <id>http://lianghan.org/</id>
   
   <author>
@@ -14,6 +14,32 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>USACO 1.2 Palindrome Square</title>
+    <link href="http://lianghan.org/2016/08/09/2016-08-09-PalindromeSquare/"/>
+    <id>http://lianghan.org/2016/08/09/2016-08-09-PalindromeSquare/</id>
+    <published>2016-08-10T05:22:31.000Z</published>
+    <updated>2016-08-10T05:24:40.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>This problem is very straightforward to solve, just pay attention to implementation details.</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">isPalindrome</span><span class="params">(<span class="built_in">string</span> str)</span> </span>&#123;</div><div class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>, j = str.size() - <span class="number">1</span>; i &lt; j; ++i, --j) &#123;</div><div class="line">    <span class="keyword">if</span> (str[i] != str[j]) <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="keyword">return</span> <span class="literal">true</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="built_in">string</span> <span class="title">getNumber</span><span class="params">(<span class="keyword">int</span> number, <span class="keyword">int</span> BASE, <span class="keyword">const</span> <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;table)</span> </span>&#123;</div><div class="line">  <span class="built_in">string</span> str;</div><div class="line">  <span class="keyword">int</span> base = BASE;</div><div class="line">  <span class="keyword">while</span> (number) &#123;</div><div class="line">    <span class="keyword">int</span> digit = number % base;</div><div class="line">    <span class="keyword">int</span> factor = base / BASE;</div><div class="line">    digit /= factor;</div><div class="line">    str.push_back(table[digit]);</div><div class="line">    number -= digit * factor;</div><div class="line">    base *= BASE;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  reverse(str.begin(), str.end());</div><div class="line">  <span class="keyword">return</span> str;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line"></div><div class="line">  <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; table = &#123; <span class="string">'0'</span> , <span class="string">'1'</span> , <span class="string">'2'</span> , <span class="string">'3'</span> , <span class="string">'4'</span> , <span class="string">'5'</span> , <span class="string">'6'</span> , <span class="string">'7'</span> , <span class="string">'8'</span> , <span class="string">'9'</span> ,</div><div class="line">    <span class="string">'A'</span> , <span class="string">'B'</span> , <span class="string">'C'</span> , <span class="string">'D'</span> , <span class="string">'E'</span> , <span class="string">'F'</span> , <span class="string">'G'</span> , <span class="string">'H'</span> , <span class="string">'I'</span> , <span class="string">'J'</span> &#125; ;</div><div class="line"></div><div class="line">  <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"palsquare.in"</span>)</span></span>;</div><div class="line">  <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"palsquare.out"</span>)</span></span>;</div><div class="line"></div><div class="line">  <span class="keyword">int</span> BASE;</div><div class="line">  fin &gt;&gt; BASE;</div><div class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= <span class="number">300</span>; ++i) &#123;</div><div class="line">    <span class="built_in">string</span> num = getNumber(i * i, BASE, table);</div><div class="line">    <span class="keyword">if</span> (isPalindrome(num)) &#123;</div><div class="line">      fout &lt;&lt; getNumber(i, BASE, table) &lt;&lt; <span class="string">" "</span>;</div><div class="line">      fout &lt;&lt; num &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;This problem is very straightforward to solve, just pay attention to implementation details.&lt;/p&gt;
+&lt;figure class=&quot;highlight cpp&quot;&gt;&lt;table&gt;&lt;tr
+    
+    </summary>
+    
+      <category term="USACO" scheme="http://lianghan.org/categories/USACO/"/>
+    
+    
+      <category term="Algorithm" scheme="http://lianghan.org/tags/Algorithm/"/>
+    
+      <category term="Search" scheme="http://lianghan.org/tags/Search/"/>
+    
+  </entry>
   
   <entry>
     <title>USACO 1.2 Name That Number</title>
