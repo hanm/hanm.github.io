@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://lianghan.org/"/>
-  <updated>2016-08-17T22:03:02.000Z</updated>
+  <updated>2016-08-19T05:02:46.000Z</updated>
   <id>http://lianghan.org/</id>
   
   <author>
@@ -14,6 +14,34 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>USACO 1.4 Arithmetic Progression</title>
+    <link href="http://lianghan.org/2016/08/18/2016-08-18-USACO-ArithmeticProgression/"/>
+    <id>http://lianghan.org/2016/08/18/2016-08-18-USACO-ArithmeticProgression/</id>
+    <published>2016-08-19T05:01:31.000Z</published>
+    <updated>2016-08-19T05:02:46.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>Brutal force, pretty ugly code. Need optimize.</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iterator&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cctype&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"ariprog.in"</span>)</span></span>;</div><div class="line">  <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"ariprog.out"</span>)</span></span>;</div><div class="line">  <span class="keyword">int</span> <span class="keyword">const</span> SIZE = <span class="number">250</span>;</div><div class="line">  <span class="keyword">int</span> N, M;</div><div class="line">  fin &gt;&gt; N &gt;&gt; M;</div><div class="line"></div><div class="line">  <span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt; <span class="built_in">set</span>(SIZE * SIZE * <span class="number">2</span> + <span class="number">1</span>, <span class="literal">false</span>);</div><div class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= M; ++i) &#123;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt;= M; ++j) &#123;</div><div class="line">      <span class="built_in">set</span>[i * i + j * j] = <span class="literal">true</span>;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="built_in">vector</span>&lt;pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt;&gt; result;</div><div class="line">  <span class="keyword">auto</span> limit = M * M * <span class="number">2</span>;</div><div class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; limit; ++i) &#123;</div><div class="line">    <span class="keyword">bool</span> found = <span class="literal">true</span>;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">1</span>; j &lt; limit - i; ++j) &#123;</div><div class="line">      <span class="keyword">if</span> (j * (N - <span class="number">1</span>) + i &gt; limit) &#123;</div><div class="line">        found = <span class="literal">false</span>;</div><div class="line">        <span class="keyword">break</span>;</div><div class="line">      &#125;</div><div class="line"></div><div class="line">      <span class="keyword">for</span> (<span class="keyword">int</span> k = N - <span class="number">1</span>; k &gt;= <span class="number">0</span>; --k) &#123;</div><div class="line">        <span class="keyword">auto</span> val = i + k * j;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (val &gt; limit) &#123;</div><div class="line">          found = <span class="literal">false</span>;</div><div class="line">          <span class="keyword">break</span>;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (!<span class="built_in">set</span>[val]) &#123;</div><div class="line">          found = <span class="literal">false</span>;</div><div class="line">          <span class="keyword">break</span>;</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">          found = <span class="literal">true</span>;</div><div class="line">        &#125;</div><div class="line">      &#125;</div><div class="line">      <span class="keyword">if</span> (found) &#123;</div><div class="line">        result.emplace_back(<span class="built_in">std</span>::make_pair(i, j));</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  sort(result.begin(), result.end(), [] (<span class="keyword">const</span> pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; &amp;lhs,</div><div class="line">                                         <span class="keyword">const</span> pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; &amp;rhs) &#123;</div><div class="line">    <span class="keyword">return</span> lhs.second != rhs.second ? lhs.second &lt; rhs.second : lhs.first &lt; rhs.first;</div><div class="line">  &#125;);</div><div class="line"></div><div class="line">  <span class="keyword">for</span> (<span class="keyword">auto</span> item : result) &#123;</div><div class="line">    fout &lt;&lt; item.first &lt;&lt; <span class="string">" "</span> &lt;&lt; item.second &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="keyword">if</span> (!result.size())</div><div class="line">    fout &lt;&lt; <span class="string">"NONE"</span> &lt;&lt; <span class="built_in">endl</span>;</div><div class="line"></div><div class="line">  <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Brutal force, pretty ugly code. Need optimize.&lt;/p&gt;
+&lt;figure class=&quot;highlight cpp&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;&lt;span
+    
+    </summary>
+    
+      <category term="USACO" scheme="http://lianghan.org/categories/USACO/"/>
+    
+    
+      <category term="Algorithm" scheme="http://lianghan.org/tags/Algorithm/"/>
+    
+      <category term="Brutal Force" scheme="http://lianghan.org/tags/Brutal-Force/"/>
+    
+      <category term="Numbers" scheme="http://lianghan.org/tags/Numbers/"/>
+    
+  </entry>
   
   <entry>
     <title>USACO 1.3 Ski Course Design</title>
@@ -406,11 +434,11 @@
     
       <category term="TopCoder" scheme="http://lianghan.org/tags/TopCoder/"/>
     
-      <category term="Dijkstra" scheme="http://lianghan.org/tags/Dijkstra/"/>
+      <category term="BFS" scheme="http://lianghan.org/tags/BFS/"/>
     
       <category term="Graph" scheme="http://lianghan.org/tags/Graph/"/>
     
-      <category term="BFS" scheme="http://lianghan.org/tags/BFS/"/>
+      <category term="Dijkstra" scheme="http://lianghan.org/tags/Dijkstra/"/>
     
   </entry>
   
@@ -439,11 +467,11 @@
     
       <category term="TopCoder" scheme="http://lianghan.org/tags/TopCoder/"/>
     
-      <category term="Graph" scheme="http://lianghan.org/tags/Graph/"/>
-    
       <category term="BFS" scheme="http://lianghan.org/tags/BFS/"/>
     
       <category term="DFS" scheme="http://lianghan.org/tags/DFS/"/>
+    
+      <category term="Graph" scheme="http://lianghan.org/tags/Graph/"/>
     
       <category term="Flood Fill" scheme="http://lianghan.org/tags/Flood-Fill/"/>
     
