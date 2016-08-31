@@ -74,6 +74,49 @@ ga('send', 'pageview');
       <div class="outer">
         <section id="main">
   
+    <article id="post-2016-08-20-USACO-SuperPrimeRib" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/08/20/2016-08-20-USACO-SuperPrimeRib/" class="article-date">
+  <time datetime="2016-08-21T00:04:31.000Z" itemprop="datePublished">2016-08-20</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/USACO/">USACO</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/08/20/2016-08-20-USACO-SuperPrimeRib/">USACO 1.5 SuperPrime Rib</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>A straight forward combination generation problem that can be solved using DFS / Backtrack technique.</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;climits&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">isPrime</span><span class="params">(<span class="keyword">int</span> number)</span> </span>&#123;</div><div class="line">  <span class="keyword">if</span> (number == <span class="number">3</span> || number == <span class="number">5</span>) <span class="keyword">return</span> <span class="literal">true</span>;</div><div class="line"></div><div class="line">  <span class="keyword">if</span> (number % <span class="number">3</span> == <span class="number">0</span> || number % <span class="number">5</span> == <span class="number">0</span>) <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line"></div><div class="line">  <span class="keyword">int</span> m = <span class="built_in">sqrt</span>(number);</div><div class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt;= m; ++i) &#123;</div><div class="line">    <span class="keyword">if</span> (number % i == <span class="number">0</span>) <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="keyword">return</span> <span class="literal">true</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> index, <span class="keyword">int</span> N, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;prev, ofstream &amp;fout)</span> </span>&#123;</div><div class="line">  <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; candidate;</div><div class="line">  <span class="keyword">if</span> (N == <span class="number">1</span>) &#123;</div><div class="line">    candidate = &#123;<span class="number">2</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">7</span>&#125;;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;item : candidate)</div><div class="line">      fout &lt;&lt; item &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">    <span class="keyword">return</span>;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="keyword">if</span> (index == N) &#123;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;item : prev)</div><div class="line">        fout &lt;&lt; item &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">    <span class="keyword">return</span>;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  candidate = &#123;<span class="number">1</span>, <span class="number">3</span>, <span class="number">7</span>, <span class="number">9</span>&#125;;</div><div class="line">  <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; tmp;</div><div class="line">  <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;item : prev) &#123;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;number : candidate) &#123;</div><div class="line">      <span class="keyword">auto</span> i = item * <span class="number">10</span> + number;</div><div class="line">      <span class="keyword">if</span> (isPrime(i))</div><div class="line">        tmp.push_back(i);</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="keyword">if</span> (tmp.size())</div><div class="line">    dfs(index + <span class="number">1</span>, N, tmp, fout);</div><div class="line"></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"sprime.in"</span>)</span></span>;</div><div class="line">  <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"sprime.out"</span>)</span></span>;</div><div class="line"></div><div class="line">  <span class="keyword">int</span> N;</div><div class="line">  fin &gt;&gt; N;</div><div class="line"></div><div class="line">  <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; prev = &#123;<span class="number">2</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">7</span>&#125;;</div><div class="line">  dfs(<span class="number">1</span>, N, prev, fout);</div><div class="line">  <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div><div class="line"></div></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2016/08/20/2016-08-20-USACO-SuperPrimeRib/" data-id="cisj9l5an002bw1xgk2ofur8z" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Backtrack/">Backtrack</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-2016-08-20-USACO-NumberTriangles" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/08/20/2016-08-20-USACO-NumberTriangles/" class="article-date">
@@ -105,7 +148,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/20/2016-08-20-USACO-NumberTriangles/" data-id="cise3lf1d001hnfxgk83hdlem" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/08/20/2016-08-20-USACO-NumberTriangles/" data-id="cisj9l5ai001zw1xgrg4w4asd" class="article-share-link">Share</a>
       
       
     </footer>
@@ -146,53 +189,10 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/20/2016-08-20-USACO-Mother's Milk/" data-id="cise3lf160019nfxg9bw9i8ss" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/08/20/2016-08-20-USACO-Mother's Milk/" data-id="cisj9l5ac001rw1xgzbye7sgz" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/BFS/">BFS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DFS/">DFS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Search/">Search</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-2016-08-18-USACO-ArithmeticProgression" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/08/18/2016-08-18-USACO-ArithmeticProgression/" class="article-date">
-  <time datetime="2016-08-19T05:01:31.000Z" itemprop="datePublished">2016-08-18</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/USACO/">USACO</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/08/18/2016-08-18-USACO-ArithmeticProgression/">USACO 1.4 Arithmetic Progression</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Brutal force, pretty ugly code. Need optimize.</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iterator&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cctype&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"ariprog.in"</span>)</span></span>;</div><div class="line">  <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"ariprog.out"</span>)</span></span>;</div><div class="line">  <span class="keyword">int</span> <span class="keyword">const</span> SIZE = <span class="number">250</span>;</div><div class="line">  <span class="keyword">int</span> N, M;</div><div class="line">  fin &gt;&gt; N &gt;&gt; M;</div><div class="line"></div><div class="line">  <span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt; <span class="built_in">set</span>(SIZE * SIZE * <span class="number">2</span> + <span class="number">1</span>, <span class="literal">false</span>);</div><div class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= M; ++i) &#123;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt;= M; ++j) &#123;</div><div class="line">      <span class="built_in">set</span>[i * i + j * j] = <span class="literal">true</span>;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="built_in">vector</span>&lt;pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt;&gt; result;</div><div class="line">  <span class="keyword">auto</span> limit = M * M * <span class="number">2</span>;</div><div class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; limit; ++i) &#123;</div><div class="line">    <span class="keyword">bool</span> found = <span class="literal">true</span>;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">1</span>; j &lt; limit - i; ++j) &#123;</div><div class="line">      <span class="keyword">if</span> (j * (N - <span class="number">1</span>) + i &gt; limit) &#123;</div><div class="line">        found = <span class="literal">false</span>;</div><div class="line">        <span class="keyword">break</span>;</div><div class="line">      &#125;</div><div class="line"></div><div class="line">      <span class="keyword">for</span> (<span class="keyword">int</span> k = N - <span class="number">1</span>; k &gt;= <span class="number">0</span>; --k) &#123;</div><div class="line">        <span class="keyword">auto</span> val = i + k * j;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (val &gt; limit) &#123;</div><div class="line">          found = <span class="literal">false</span>;</div><div class="line">          <span class="keyword">break</span>;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (!<span class="built_in">set</span>[val]) &#123;</div><div class="line">          found = <span class="literal">false</span>;</div><div class="line">          <span class="keyword">break</span>;</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">          found = <span class="literal">true</span>;</div><div class="line">        &#125;</div><div class="line">      &#125;</div><div class="line">      <span class="keyword">if</span> (found) &#123;</div><div class="line">        result.emplace_back(<span class="built_in">std</span>::make_pair(i, j));</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  sort(result.begin(), result.end(), [] (<span class="keyword">const</span> pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; &amp;lhs,</div><div class="line">                                         <span class="keyword">const</span> pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; &amp;rhs) &#123;</div><div class="line">    <span class="keyword">return</span> lhs.second != rhs.second ? lhs.second &lt; rhs.second : lhs.first &lt; rhs.first;</div><div class="line">  &#125;);</div><div class="line"></div><div class="line">  <span class="keyword">for</span> (<span class="keyword">auto</span> item : result) &#123;</div><div class="line">    fout &lt;&lt; item.first &lt;&lt; <span class="string">" "</span> &lt;&lt; item.second &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="keyword">if</span> (!result.size())</div><div class="line">    fout &lt;&lt; <span class="string">"NONE"</span> &lt;&lt; <span class="built_in">endl</span>;</div><div class="line"></div><div class="line">  <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/18/2016-08-18-USACO-ArithmeticProgression/" data-id="cise3lf1q0025nfxg7cgrkb8t" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Brutal-Force/">Brutal Force</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Numbers/">Numbers</a></li></ul>
 
     </footer>
   </div>
@@ -256,6 +256,10 @@ ga('send', 'pageview');
       <ul>
         
           <li>
+            <a href="/2016/08/31/2016-08-31-USACO-SortThreeValuedSequence/">USACO 2.1 Sort Three Valued Sequence</a>
+          </li>
+        
+          <li>
             <a href="/2016/08/30/2016-08-30-USACO-OrderedFraction/">USACO 2.1 Ordered Fraction</a>
           </li>
         
@@ -269,10 +273,6 @@ ga('send', 'pageview');
         
           <li>
             <a href="/2016/08/20/2016-08-20-USACO-NumberTriangles/">USACO 1.5 Number Triangles</a>
-          </li>
-        
-          <li>
-            <a href="/2016/08/20/2016-08-20-USACO-Mother's Milk/">USACO 1.4 Mother&#39;s Milk</a>
           </li>
         
       </ul>
