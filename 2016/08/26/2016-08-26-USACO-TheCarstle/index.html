@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>USACO 2.1 The Carstle | Quantum Field</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="This problem is a typical graph / grid search problem and the solution is also obvious (flood fill is your best friend.). The challenge is to properly transform the problem into right data structure.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="USACO 2.1 The Carstle">
+<meta property="og:url" content="http://lianghan.org/2016/08/26/2016-08-26-USACO-TheCarstle/index.html">
+<meta property="og:site_name" content="Quantum Field">
+<meta property="og:description" content="This problem is a typical graph / grid search problem and the solution is also obvious (flood fill is your best friend.). The challenge is to properly transform the problem into right data structure.">
+<meta property="og:updated_time" content="2016-08-28T04:10:16.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="USACO 2.1 The Carstle">
+<meta name="twitter:description" content="This problem is a typical graph / grid search problem and the solution is also obvious (flood fill is your best friend.). The challenge is to properly transform the problem into right data structure.">
+  
+    <link rel="alternate" href="/atom.xml" title="Quantum Field" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-82074845-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Quantum Field</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://lianghan.org"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-2016-08-26-USACO-TheCarstle" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/08/26/2016-08-26-USACO-TheCarstle/" class="article-date">
+  <time datetime="2016-08-26T23:20:31.000Z" itemprop="datePublished">2016-08-26</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/USACO/">USACO</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      USACO 2.1 The Carstle
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>This problem is a typical graph / grid search problem and the solution is also obvious (flood fill is your best friend.). The challenge is to properly transform the problem into right data structure.</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="keyword">const</span> <span class="keyword">int</span> maxn = <span class="number">55</span>;</div><div class="line"></div><div class="line"><span class="keyword">char</span> dir;</div><div class="line"><span class="keyword">bool</span> visited[maxn][maxn] = &#123;<span class="literal">false</span>&#125;;</div><div class="line"><span class="keyword">int</span>  dx[] = &#123;<span class="number">1</span>, <span class="number">0</span>, <span class="number">-1</span>, <span class="number">0</span>&#125;;</div><div class="line"><span class="keyword">int</span>  dy[] = &#123;<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">-1</span>&#125;;</div><div class="line"><span class="keyword">int</span>  N, M, t, row, col, color = <span class="number">1</span>, rSize = <span class="number">-1</span>, maxSize = <span class="number">-1</span>;</div><div class="line"></div><div class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;  roomSize(maxn * maxn, <span class="number">0</span>);</div><div class="line"><span class="comment">// last dimension - Index 0/1/2/3 walls 4 color.</span></div><div class="line"><span class="keyword">int</span> castle[maxn][maxn][<span class="number">5</span>] = &#123;<span class="number">0</span>&#125;;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">floodFill</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</div><div class="line">  visited[x][y] = <span class="literal">true</span>;</div><div class="line">  ++roomSize[color];</div><div class="line">  castle[x][y][<span class="number">4</span>] = color;</div><div class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span>; ++i) &#123;</div><div class="line">    <span class="keyword">int</span> nx = x + dx[i];</div><div class="line">    <span class="keyword">int</span> ny = y + dy[i];</div><div class="line">    <span class="keyword">if</span> (nx &lt; <span class="number">0</span> || ny &lt; <span class="number">0</span> || nx &gt;= N || ny &gt;= M) <span class="keyword">continue</span>;</div><div class="line">    <span class="keyword">if</span> (visited[nx][ny] || castle[x][y][i]) <span class="keyword">continue</span>;</div><div class="line"></div><div class="line">    floodFill(nx, ny);</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">merge</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</div><div class="line">  <span class="keyword">int</span> sum;</div><div class="line">  <span class="keyword">if</span> (x &gt;= <span class="number">1</span> &amp;&amp; castle[x - <span class="number">1</span>][y][<span class="number">4</span>] != castle[x][y][<span class="number">4</span>]) &#123;</div><div class="line">    sum = roomSize[castle[x - <span class="number">1</span>][y][<span class="number">4</span>]] + roomSize[castle[x][y][<span class="number">4</span>]];</div><div class="line">    <span class="keyword">if</span> (sum &gt; maxSize) &#123;</div><div class="line">      maxSize = sum;</div><div class="line">      row = x, col = y, dir = <span class="string">'N'</span>;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="keyword">if</span> (y &lt; M - <span class="number">1</span> &amp;&amp; castle[x][y + <span class="number">1</span>][<span class="number">4</span>] != castle[x][y][<span class="number">4</span>]) &#123;</div><div class="line">    sum = roomSize[castle[x][y + <span class="number">1</span>][<span class="number">4</span>]] + roomSize[castle[x][y][<span class="number">4</span>]];</div><div class="line">    <span class="keyword">if</span> (sum &gt; maxSize) &#123;</div><div class="line">      maxSize = sum;</div><div class="line">      row = x, col = y, dir = <span class="string">'E'</span>;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"castle.in"</span>)</span></span>;</div><div class="line">  <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"castle.out"</span>)</span></span>;</div><div class="line"></div><div class="line">  fin &gt;&gt; M &gt;&gt; N;</div><div class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; M; ++j) &#123;</div><div class="line">      fin &gt;&gt; t;</div><div class="line">      <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">3</span>; k &gt;= <span class="number">0</span>; --k) &#123;</div><div class="line">        castle[i][j][k] = t%<span class="number">2</span>;</div><div class="line">        t &gt;&gt;= <span class="number">1</span>;</div><div class="line">      &#125;</div><div class="line">      castle[i][j][<span class="number">4</span>] = <span class="number">0</span>;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; M; ++j) &#123;</div><div class="line">      <span class="keyword">if</span> (!visited[i][j]) &#123;</div><div class="line">        floodFill(i, j);</div><div class="line">        ++color;</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  rSize = *max_element(roomSize.begin(), roomSize.end());</div><div class="line"></div><div class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; M; ++i) &#123;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = N - <span class="number">1</span>; j &gt;= <span class="number">0</span>; --j)</div><div class="line">      merge(j, i);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  fout &lt;&lt; color - <span class="number">1</span> &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">  fout &lt;&lt; rSize &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">  fout &lt;&lt; maxSize &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">  fout &lt;&lt; row + <span class="number">1</span> &lt;&lt; <span class="string">" "</span> &lt;&lt; col + <span class="number">1</span> &lt;&lt; <span class="string">" "</span> &lt;&lt; dir &lt;&lt; <span class="built_in">endl</span>;</div><div class="line"></div><div class="line">  <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2016/08/26/2016-08-26-USACO-TheCarstle/" data-id="cise3lf1m001vnfxgncexuzo1" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/FloodFill/">FloodFill</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2016/08/30/2016-08-30-USACO-OrderedFraction/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          USACO 2.1 Ordered Fraction
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/08/20/2016-08-20-USACO-SuperPrimeRib/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">USACO 1.5 SuperPrime Rib</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Algorithm-Dynamic-Programming/">Algorithm, Dynamic Programming</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/TopCoder/">TopCoder</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/USACO/">USACO</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BFS/">BFS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Backtrack/">Backtrack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Base-Conversion/">Base Conversion</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Brutal-Force/">Brutal Force</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Combination/">Combination</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DFS/">DFS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DijKstra/">DijKstra</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dijkstra/">Dijkstra</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flood-Fill/">Flood Fill</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FloodFill/">FloodFill</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Graph/">Graph</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Graph-Theory/">Graph Theory</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Numbers/">Numbers</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Search/">Search</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TopCoder/">TopCoder</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Algorithm/" style="font-size: 20px;">Algorithm</a> <a href="/tags/BFS/" style="font-size: 16px;">BFS</a> <a href="/tags/Backtrack/" style="font-size: 10px;">Backtrack</a> <a href="/tags/Base-Conversion/" style="font-size: 10px;">Base Conversion</a> <a href="/tags/Brutal-Force/" style="font-size: 14px;">Brutal Force</a> <a href="/tags/Combination/" style="font-size: 10px;">Combination</a> <a href="/tags/DFS/" style="font-size: 12px;">DFS</a> <a href="/tags/DijKstra/" style="font-size: 10px;">DijKstra</a> <a href="/tags/Dijkstra/" style="font-size: 10px;">Dijkstra</a> <a href="/tags/Flood-Fill/" style="font-size: 10px;">Flood Fill</a> <a href="/tags/FloodFill/" style="font-size: 10px;">FloodFill</a> <a href="/tags/Graph/" style="font-size: 12px;">Graph</a> <a href="/tags/Graph-Theory/" style="font-size: 10px;">Graph Theory</a> <a href="/tags/Numbers/" style="font-size: 10px;">Numbers</a> <a href="/tags/Search/" style="font-size: 18px;">Search</a> <a href="/tags/TopCoder/" style="font-size: 14px;">TopCoder</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">August 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2016/08/30/2016-08-30-USACO-OrderedFraction/">USACO 2.1 Ordered Fraction</a>
+          </li>
+        
+          <li>
+            <a href="/2016/08/26/2016-08-26-USACO-TheCarstle/">USACO 2.1 The Carstle</a>
+          </li>
+        
+          <li>
+            <a href="/2016/08/20/2016-08-20-USACO-SuperPrimeRib/">USACO 1.5 SuperPrime Rib</a>
+          </li>
+        
+          <li>
+            <a href="/2016/08/20/2016-08-20-USACO-NumberTriangles/">USACO 1.5 Number Triangles</a>
+          </li>
+        
+          <li>
+            <a href="/2016/08/20/2016-08-20-USACO-Mother's Milk/">USACO 1.4 Mother&#39;s Milk</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2016 hanm<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
