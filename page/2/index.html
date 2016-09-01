@@ -74,6 +74,49 @@ ga('send', 'pageview');
       <div class="outer">
         <section id="main">
   
+    <article id="post-2016-08-26-USACO-TheCarstle" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/08/26/2016-08-26-USACO-TheCarstle/" class="article-date">
+  <time datetime="2016-08-26T23:20:31.000Z" itemprop="datePublished">2016-08-26</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/USACO/">USACO</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/08/26/2016-08-26-USACO-TheCarstle/">USACO 2.1 The Carstle</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>This problem is a typical graph / grid search problem and the solution is also obvious (flood fill is your best friend.). The challenge is to properly transform the problem into right data structure.</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="keyword">const</span> <span class="keyword">int</span> maxn = <span class="number">55</span>;</div><div class="line"></div><div class="line"><span class="keyword">char</span> dir;</div><div class="line"><span class="keyword">bool</span> visited[maxn][maxn] = &#123;<span class="literal">false</span>&#125;;</div><div class="line"><span class="keyword">int</span>  dx[] = &#123;<span class="number">1</span>, <span class="number">0</span>, <span class="number">-1</span>, <span class="number">0</span>&#125;;</div><div class="line"><span class="keyword">int</span>  dy[] = &#123;<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">-1</span>&#125;;</div><div class="line"><span class="keyword">int</span>  N, M, t, row, col, color = <span class="number">1</span>, rSize = <span class="number">-1</span>, maxSize = <span class="number">-1</span>;</div><div class="line"></div><div class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;  roomSize(maxn * maxn, <span class="number">0</span>);</div><div class="line"><span class="comment">// last dimension - Index 0/1/2/3 walls 4 color.</span></div><div class="line"><span class="keyword">int</span> castle[maxn][maxn][<span class="number">5</span>] = &#123;<span class="number">0</span>&#125;;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">floodFill</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</div><div class="line">  visited[x][y] = <span class="literal">true</span>;</div><div class="line">  ++roomSize[color];</div><div class="line">  castle[x][y][<span class="number">4</span>] = color;</div><div class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span>; ++i) &#123;</div><div class="line">    <span class="keyword">int</span> nx = x + dx[i];</div><div class="line">    <span class="keyword">int</span> ny = y + dy[i];</div><div class="line">    <span class="keyword">if</span> (nx &lt; <span class="number">0</span> || ny &lt; <span class="number">0</span> || nx &gt;= N || ny &gt;= M) <span class="keyword">continue</span>;</div><div class="line">    <span class="keyword">if</span> (visited[nx][ny] || castle[x][y][i]) <span class="keyword">continue</span>;</div><div class="line"></div><div class="line">    floodFill(nx, ny);</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">merge</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</div><div class="line">  <span class="keyword">int</span> sum;</div><div class="line">  <span class="keyword">if</span> (x &gt;= <span class="number">1</span> &amp;&amp; castle[x - <span class="number">1</span>][y][<span class="number">4</span>] != castle[x][y][<span class="number">4</span>]) &#123;</div><div class="line">    sum = roomSize[castle[x - <span class="number">1</span>][y][<span class="number">4</span>]] + roomSize[castle[x][y][<span class="number">4</span>]];</div><div class="line">    <span class="keyword">if</span> (sum &gt; maxSize) &#123;</div><div class="line">      maxSize = sum;</div><div class="line">      row = x, col = y, dir = <span class="string">'N'</span>;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="keyword">if</span> (y &lt; M - <span class="number">1</span> &amp;&amp; castle[x][y + <span class="number">1</span>][<span class="number">4</span>] != castle[x][y][<span class="number">4</span>]) &#123;</div><div class="line">    sum = roomSize[castle[x][y + <span class="number">1</span>][<span class="number">4</span>]] + roomSize[castle[x][y][<span class="number">4</span>]];</div><div class="line">    <span class="keyword">if</span> (sum &gt; maxSize) &#123;</div><div class="line">      maxSize = sum;</div><div class="line">      row = x, col = y, dir = <span class="string">'E'</span>;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"castle.in"</span>)</span></span>;</div><div class="line">  <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"castle.out"</span>)</span></span>;</div><div class="line"></div><div class="line">  fin &gt;&gt; M &gt;&gt; N;</div><div class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; M; ++j) &#123;</div><div class="line">      fin &gt;&gt; t;</div><div class="line">      <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">3</span>; k &gt;= <span class="number">0</span>; --k) &#123;</div><div class="line">        castle[i][j][k] = t%<span class="number">2</span>;</div><div class="line">        t &gt;&gt;= <span class="number">1</span>;</div><div class="line">      &#125;</div><div class="line">      castle[i][j][<span class="number">4</span>] = <span class="number">0</span>;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; M; ++j) &#123;</div><div class="line">      <span class="keyword">if</span> (!visited[i][j]) &#123;</div><div class="line">        floodFill(i, j);</div><div class="line">        ++color;</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  rSize = *max_element(roomSize.begin(), roomSize.end());</div><div class="line"></div><div class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; M; ++i) &#123;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = N - <span class="number">1</span>; j &gt;= <span class="number">0</span>; --j)</div><div class="line">      merge(j, i);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  fout &lt;&lt; color - <span class="number">1</span> &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">  fout &lt;&lt; rSize &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">  fout &lt;&lt; maxSize &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">  fout &lt;&lt; row + <span class="number">1</span> &lt;&lt; <span class="string">" "</span> &lt;&lt; col + <span class="number">1</span> &lt;&lt; <span class="string">" "</span> &lt;&lt; dir &lt;&lt; <span class="built_in">endl</span>;</div><div class="line"></div><div class="line">  <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2016/08/26/2016-08-26-USACO-TheCarstle/" data-id="cisjnaz5o002fc4xgps9jm6lg" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/FloodFill/">FloodFill</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-2016-08-20-USACO-SuperPrimeRib" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/08/20/2016-08-20-USACO-SuperPrimeRib/" class="article-date">
@@ -105,7 +148,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/20/2016-08-20-USACO-SuperPrimeRib/" data-id="cisj9l5an002bw1xgk2ofur8z" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/08/20/2016-08-20-USACO-SuperPrimeRib/" data-id="cisjnaz5j0026c4xg0z7j3670" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Backtrack/">Backtrack</a></li></ul>
@@ -148,52 +191,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/20/2016-08-20-USACO-NumberTriangles/" data-id="cisj9l5ai001zw1xgrg4w4asd" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/08/20/2016-08-20-USACO-NumberTriangles/" data-id="cisjnaz5f001zc4xgy0n1jlix" class="article-share-link">Share</a>
       
       
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-2016-08-20-USACO-Mother&#39;s Milk" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/08/20/2016-08-20-USACO-Mother's Milk/" class="article-date">
-  <time datetime="2016-08-20T21:39:31.000Z" itemprop="datePublished">2016-08-20</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/USACO/">USACO</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/08/20/2016-08-20-USACO-Mother's Milk/">USACO 1.4 Mother&#39;s Milk</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>This is a search problem and the search space is the set of states of the bucket which can be encoded as a three dimensional array. The idea is to do an exhaustive search on all valid states by starting from the initial state, and this algorithm will at some point converge and reach a fixed point where all states are visited. Use the three dimensional array to store the state might be a little bit waste considering the state can be abstracted by the values in bucket B and C, so the state encoding can be optimized.</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stack&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="keyword">int</span> capacity[<span class="number">3</span>] = &#123;<span class="number">0</span>&#125;;</div><div class="line"><span class="keyword">struct</span> State &#123;</div><div class="line">  <span class="keyword">int</span> water[<span class="number">3</span>] = &#123;<span class="number">0</span>&#125;;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="function">State <span class="title">pour</span><span class="params">(State state, <span class="keyword">int</span> from, <span class="keyword">int</span> to)</span> </span>&#123;</div><div class="line">  State next = state;</div><div class="line">  <span class="keyword">int</span> water = min(state.water[from], capacity[to] - state.water[to]);</div><div class="line">  next.water[from] -= water;</div><div class="line">  next.water[to] += water;</div><div class="line">  <span class="keyword">return</span> next;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">satisfy</span><span class="params">(State &amp;state)</span> </span>&#123;</div><div class="line">  <span class="keyword">if</span> (state.water[<span class="number">0</span>] == <span class="number">0</span>) <span class="keyword">return</span> <span class="literal">true</span>;</div><div class="line">  <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"milk3.in"</span>)</span></span>;</div><div class="line">  <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"milk3.out"</span>)</span></span>;</div><div class="line"></div><div class="line">  fin &gt;&gt; capacity[<span class="number">0</span>] &gt;&gt; capacity[<span class="number">1</span>] &gt;&gt; capacity[<span class="number">2</span>];</div><div class="line"></div><div class="line">  State state;</div><div class="line">  state.water[<span class="number">0</span>] = <span class="number">0</span>; state.water[<span class="number">1</span>] = <span class="number">0</span>; state.water[<span class="number">2</span>] = capacity[<span class="number">2</span>];</div><div class="line"></div><div class="line">  <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt;&gt;&gt; visited(capacity[<span class="number">0</span>] + <span class="number">1</span>,</div><div class="line">                                       <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt;&gt;(capacity[<span class="number">1</span>] + <span class="number">1</span>,</div><div class="line">                                                            <span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt;(capacity[<span class="number">2</span>] + <span class="number">1</span>, <span class="literal">false</span>)));</div><div class="line">  <span class="keyword">for</span> (<span class="keyword">auto</span> i = <span class="number">0</span>; i &lt;= capacity[<span class="number">0</span>]; ++i)</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> j = <span class="number">0</span>; j &lt;= capacity[<span class="number">1</span>]; ++j)</div><div class="line">      <span class="keyword">for</span> (<span class="keyword">auto</span> k = <span class="number">0</span>; k &lt;= capacity[<span class="number">2</span>]; ++k)</div><div class="line">        visited[i][j][k] = <span class="literal">false</span>;</div><div class="line"></div><div class="line">  <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; result;</div><div class="line"></div><div class="line">  <span class="built_in">stack</span>&lt;State&gt; <span class="built_in">stack</span>;</div><div class="line">  <span class="built_in">stack</span>.emplace(state);</div><div class="line">  visited[state.water[<span class="number">0</span>]][state.water[<span class="number">1</span>]][state.water[<span class="number">2</span>]] = <span class="literal">true</span>;</div><div class="line">  <span class="keyword">if</span> (satisfy(state))</div><div class="line">    result.push_back(state.water[<span class="number">2</span>]);</div><div class="line"></div><div class="line">  <span class="keyword">while</span> (!<span class="built_in">stack</span>.empty()) &#123;</div><div class="line">    <span class="keyword">auto</span> s = <span class="built_in">stack</span>.top();</div><div class="line">    <span class="built_in">stack</span>.pop();</div><div class="line"></div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">3</span>; ++i) &#123;</div><div class="line">      <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; <span class="number">3</span>; ++j) &#123;</div><div class="line">        <span class="keyword">if</span> (i == j) <span class="keyword">continue</span>;</div><div class="line"></div><div class="line">        State next = pour(s, i, j);</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (visited[next.water[<span class="number">0</span>]][next.water[<span class="number">1</span>]][next.water[<span class="number">2</span>]]) &#123;</div><div class="line">          <span class="keyword">continue</span>;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (satisfy(next))</div><div class="line">          result.push_back(next.water[<span class="number">2</span>]);</div><div class="line">        <span class="built_in">stack</span>.emplace(next);</div><div class="line">        visited[next.water[<span class="number">0</span>]][next.water[<span class="number">1</span>]][next.water[<span class="number">2</span>]] = <span class="literal">true</span>;</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  sort(result.begin(), result.end());</div><div class="line"></div><div class="line">  <span class="keyword">for</span> (<span class="keyword">auto</span> i  = <span class="number">0</span>; i &lt; result.size() - <span class="number">1</span>; ++i)</div><div class="line">    fout &lt;&lt; result[i] &lt;&lt; <span class="string">" "</span>;</div><div class="line">  fout &lt;&lt; result[result.size() - <span class="number">1</span>] &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line"></div><div class="line">  <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div><div class="line"></div></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/20/2016-08-20-USACO-Mother's Milk/" data-id="cisj9l5ac001rw1xgzbye7sgz" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/BFS/">BFS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DFS/">DFS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Search/">Search</a></li></ul>
-
     </footer>
   </div>
   
@@ -204,7 +204,7 @@ ga('send', 'pageview');
 
 
   <nav id="page-nav">
-    <a class="extend prev" rel="prev" href="/">&laquo; __('prev')</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/3/">__('next') &raquo;</a>
+    <a class="extend prev" rel="prev" href="/">&laquo; __('prev')</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/3/">__('next') &raquo;</a>
   </nav>
 </section>
         
@@ -234,7 +234,7 @@ ga('send', 'pageview');
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Algorithm/" style="font-size: 20px;">Algorithm</a> <a href="/tags/BFS/" style="font-size: 16px;">BFS</a> <a href="/tags/Backtrack/" style="font-size: 10px;">Backtrack</a> <a href="/tags/Base-Conversion/" style="font-size: 10px;">Base Conversion</a> <a href="/tags/Brutal-Force/" style="font-size: 14px;">Brutal Force</a> <a href="/tags/Combination/" style="font-size: 10px;">Combination</a> <a href="/tags/DFS/" style="font-size: 12px;">DFS</a> <a href="/tags/DijKstra/" style="font-size: 10px;">DijKstra</a> <a href="/tags/Dijkstra/" style="font-size: 10px;">Dijkstra</a> <a href="/tags/Flood-Fill/" style="font-size: 10px;">Flood Fill</a> <a href="/tags/FloodFill/" style="font-size: 10px;">FloodFill</a> <a href="/tags/Graph/" style="font-size: 12px;">Graph</a> <a href="/tags/Graph-Theory/" style="font-size: 10px;">Graph Theory</a> <a href="/tags/Numbers/" style="font-size: 10px;">Numbers</a> <a href="/tags/Search/" style="font-size: 18px;">Search</a> <a href="/tags/TopCoder/" style="font-size: 14px;">TopCoder</a>
+      <a href="/tags/Algorithm/" style="font-size: 20px;">Algorithm</a> <a href="/tags/BFS/" style="font-size: 16px;">BFS</a> <a href="/tags/Backtrack/" style="font-size: 10px;">Backtrack</a> <a href="/tags/Base-Conversion/" style="font-size: 10px;">Base Conversion</a> <a href="/tags/Brutal-Force/" style="font-size: 16px;">Brutal Force</a> <a href="/tags/Combination/" style="font-size: 10px;">Combination</a> <a href="/tags/DFS/" style="font-size: 12px;">DFS</a> <a href="/tags/DijKstra/" style="font-size: 10px;">DijKstra</a> <a href="/tags/Dijkstra/" style="font-size: 10px;">Dijkstra</a> <a href="/tags/Flood-Fill/" style="font-size: 10px;">Flood Fill</a> <a href="/tags/FloodFill/" style="font-size: 10px;">FloodFill</a> <a href="/tags/Graph/" style="font-size: 12px;">Graph</a> <a href="/tags/Graph-Theory/" style="font-size: 10px;">Graph Theory</a> <a href="/tags/Numbers/" style="font-size: 10px;">Numbers</a> <a href="/tags/Search/" style="font-size: 18px;">Search</a> <a href="/tags/TopCoder/" style="font-size: 14px;">TopCoder</a>
     </div>
   </div>
 
@@ -256,6 +256,10 @@ ga('send', 'pageview');
       <ul>
         
           <li>
+            <a href="/2016/08/31/2016-08-31-USACO-HealthyHolsteins/">USACO 2.1 Healthy Holsteins</a>
+          </li>
+        
+          <li>
             <a href="/2016/08/31/2016-08-31-USACO-SortThreeValuedSequence/">USACO 2.1 Sort Three Valued Sequence</a>
           </li>
         
@@ -269,10 +273,6 @@ ga('send', 'pageview');
         
           <li>
             <a href="/2016/08/20/2016-08-20-USACO-SuperPrimeRib/">USACO 1.5 SuperPrime Rib</a>
-          </li>
-        
-          <li>
-            <a href="/2016/08/20/2016-08-20-USACO-NumberTriangles/">USACO 1.5 Number Triangles</a>
           </li>
         
       </ul>
