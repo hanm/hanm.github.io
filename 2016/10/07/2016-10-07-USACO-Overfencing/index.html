@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>USACO 2.4 Overfencing | Quantum Field</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="The basic idea is for each starting position, find the shortest path from the starting position to one of the exists. Then, among all these shortest paths, find the longest one.The shortest path probl">
+<meta property="og:type" content="article">
+<meta property="og:title" content="USACO 2.4 Overfencing">
+<meta property="og:url" content="http://lianghan.org/2016/10/07/2016-10-07-USACO-Overfencing/index.html">
+<meta property="og:site_name" content="Quantum Field">
+<meta property="og:description" content="The basic idea is for each starting position, find the shortest path from the starting position to one of the exists. Then, among all these shortest paths, find the longest one.The shortest path probl">
+<meta property="og:updated_time" content="2016-10-07T22:07:06.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="USACO 2.4 Overfencing">
+<meta name="twitter:description" content="The basic idea is for each starting position, find the shortest path from the starting position to one of the exists. Then, among all these shortest paths, find the longest one.The shortest path probl">
+  
+    <link rel="alternate" href="/atom.xml" title="Quantum Field" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-82074845-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Quantum Field</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="Flux RSS"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Rechercher"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://lianghan.org"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-2016-10-07-USACO-Overfencing" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/10/07/2016-10-07-USACO-Overfencing/" class="article-date">
+  <time datetime="2016-10-07T21:59:31.000Z" itemprop="datePublished">2016-10-07</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/USACO/">USACO</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      USACO 2.4 Overfencing
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>The basic idea is for each starting position, find the shortest path from the starting position to one of the exists. Then, among all these shortest paths, find the longest one.<br>The shortest path problem typically can be solved using either BFS, or, by superimposing the grid into some sort of graph and then applying graph shortest path algorithms (Dijkstra or<br> Floyd-Warshall). Here I am using simple BFS which is easier to implement with hands tied.</p>
+<p>Two catches for this problem:</p>
+<ul>
+<li>Be careful with parse of input. For example ifstream in C++ by default will skip white space charaters, this is obviously what we don’t want here because white space char is legitimate input char. Hopefully the behavior is tunable through std::noskipws.</li>
+<li>The number of steps need to be encoded in each state.</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;utility&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;queue&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="keyword">int</span> W, H;</div><div class="line"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt;&gt; grid;</div><div class="line"></div><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> state &#123;</div><div class="line">    <span class="keyword">int</span> x; <span class="keyword">int</span> y; <span class="keyword">int</span> s;</div><div class="line">    state(<span class="keyword">int</span> x, <span class="keyword">int</span> y, <span class="keyword">int</span> s) : x(x), y(y), s(s) &#123;&#125;</div><div class="line">&#125; tState;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">ongrid</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (x &lt; <span class="number">0</span> || x &gt;= <span class="number">2</span> * H + <span class="number">1</span> || y &lt; <span class="number">0</span> || y &gt;= <span class="number">2</span> * W + <span class="number">1</span>) &#123;</div><div class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</div><div class="line">&#125;</div><div class="line"><span class="comment">// All possible start positions.</span></div><div class="line"><span class="built_in">vector</span>&lt;tState&gt; pos;</div><div class="line"><span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"maze1.in"</span>)</span></span>;</div><div class="line"><span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"maze1.out"</span>)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">parseGrid</span><span class="params">()</span> </span>&#123;</div><div class="line">    fin &gt;&gt; W &gt;&gt; H;</div><div class="line">    </div><div class="line">    grid = <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt;&gt;(<span class="number">2</span> * H + <span class="number">1</span>, <span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt;(<span class="number">2</span> * W + <span class="number">1</span>));</div><div class="line"></div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">2</span> * H + <span class="number">1</span>; ++i) &#123;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; <span class="number">2</span> * W + <span class="number">1</span>; ++j) &#123;</div><div class="line">            <span class="keyword">char</span> c;</div><div class="line">            fin &gt;&gt; <span class="built_in">std</span>::noskipws &gt;&gt; c;</div><div class="line">            <span class="keyword">if</span> (c == <span class="string">'\n'</span>) &#123;</div><div class="line">                fin &gt;&gt; <span class="built_in">std</span>::noskipws &gt;&gt; c;</div><div class="line">            &#125;</div><div class="line">            grid[i][j] = c;</div><div class="line">            <span class="built_in">cout</span> &lt;&lt; c;</div><div class="line">            <span class="keyword">if</span> (c == <span class="string">' '</span> &amp;&amp; i % <span class="number">2</span> &amp;&amp; j % <span class="number">2</span>) &#123;</div><div class="line">                pos.emplace_back(tState(i, j, <span class="number">0</span>));</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">    parseGrid();</div><div class="line">    <span class="keyword">int</span> res = <span class="number">-1</span>;</div><div class="line">    <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt;&gt; visited(<span class="number">2</span> * H + <span class="number">1</span>, <span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt;(<span class="number">2</span> * W + <span class="number">1</span>, <span class="literal">false</span>));</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;position : pos) &#123;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">2</span> * H + <span class="number">1</span>; ++i) &#123;</div><div class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; <span class="number">2</span> *W + <span class="number">1</span>; ++j) &#123;</div><div class="line">                visited[i][j] = <span class="literal">false</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        <span class="keyword">int</span> step = <span class="number">0</span>;</div><div class="line">        <span class="built_in">queue</span>&lt;tState&gt; q;</div><div class="line">        q.push(position);</div><div class="line"></div><div class="line">        <span class="keyword">bool</span> find = <span class="literal">false</span>;</div><div class="line">        <span class="keyword">while</span> (!q.empty() &amp;&amp; !find) &#123;</div><div class="line">            <span class="keyword">auto</span> p = q.front();</div><div class="line">            q.pop();</div><div class="line">            <span class="keyword">if</span> (visited[p.x][p.y])</div><div class="line">                <span class="keyword">continue</span>;</div><div class="line">            <span class="keyword">int</span> dx[] = &#123;<span class="number">1</span>, <span class="number">-1</span>, <span class="number">0</span>, <span class="number">0</span>&#125;;</div><div class="line">            <span class="keyword">int</span> dy[] = &#123;<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">-1</span>&#125;;</div><div class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span>; ++i) &#123;</div><div class="line">                <span class="keyword">int</span> x = p.x, y = p.y;</div><div class="line">                <span class="keyword">int</span> xx = x + dx[i], yy = y + dy[i];</div><div class="line">                <span class="keyword">if</span> (!ongrid(xx, yy))</div><div class="line">                    <span class="keyword">continue</span>;</div><div class="line">                <span class="keyword">if</span> (grid[xx][yy] == <span class="string">'|'</span> || grid[xx][yy] == <span class="string">'-'</span>) <span class="keyword">continue</span>;</div><div class="line">                xx = xx + dx[i]; yy = yy + dy[i];</div><div class="line">                <span class="function">tState <span class="title">next</span><span class="params">(xx, yy, p.s + <span class="number">1</span>)</span></span>;</div><div class="line">                <span class="keyword">if</span> (!ongrid(xx, yy)) &#123;</div><div class="line">                    step = next.s;</div><div class="line">                    find = <span class="literal">true</span>;</div><div class="line">                    <span class="keyword">break</span>;</div><div class="line">                &#125;</div><div class="line">                <span class="keyword">if</span> (!visited[next.x][next.y]) &#123;</div><div class="line">                    q.push(next);</div><div class="line">                &#125;</div><div class="line">                visited[p.x][p.y] = <span class="literal">true</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        res = <span class="built_in">std</span>::max(res, step);</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    fout &lt;&lt; res&lt;&lt; <span class="built_in">endl</span>;</div><div class="line">    <span class="built_in">cout</span> &lt;&lt; res &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2016/10/07/2016-10-07-USACO-Overfencing/" data-id="ciu0bolvk0030u1vtmbo0orel" class="article-share-link">Partager</a>
+      
+        <a href="http://lianghan.org/2016/10/07/2016-10-07-USACO-Overfencing/#disqus_thread" class="article-comment-link">Commentaires</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/BFS/">BFS</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2016/10/09/2016-10-09-USACO-Cowtours/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Récent</strong>
+      <div class="article-nav-title">
+        
+          USACO 2.4 Cow Tours
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/10/06/2016-10-06-USACO-TheTamWorthTwo/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Ancien</strong>
+      <div class="article-nav-title">USACO 2.4 The Tamworth Two</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<section id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Catégories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/TopCoder/">TopCoder</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/USACO/">USACO</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Mot-clés</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BFS/">BFS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Backtrack/">Backtrack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Base-Conversion/">Base Conversion</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bit-Manipulation/">Bit Manipulation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Brutal-Force/">Brutal Force</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Combination/">Combination</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DFS/">DFS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dijkstra/">Dijkstra</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dynamic-Programming/">Dynamic Programming</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flood-Fill/">Flood Fill</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Floyd/">Floyd</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Graph/">Graph</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Number-Theory/">Number Theory</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Search/">Search</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shortest-Path/">Shortest Path</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Simluation/">Simluation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Simulation/">Simulation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TopCoder/">TopCoder</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Nuage de mot-clés</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Algorithm/" style="font-size: 20px;">Algorithm</a> <a href="/tags/BFS/" style="font-size: 15.71px;">BFS</a> <a href="/tags/Backtrack/" style="font-size: 10px;">Backtrack</a> <a href="/tags/Base-Conversion/" style="font-size: 10px;">Base Conversion</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10px;">Bit Manipulation</a> <a href="/tags/Brutal-Force/" style="font-size: 17.14px;">Brutal Force</a> <a href="/tags/Combination/" style="font-size: 10px;">Combination</a> <a href="/tags/DFS/" style="font-size: 14.29px;">DFS</a> <a href="/tags/Dijkstra/" style="font-size: 11.43px;">Dijkstra</a> <a href="/tags/Dynamic-Programming/" style="font-size: 15.71px;">Dynamic Programming</a> <a href="/tags/Flood-Fill/" style="font-size: 11.43px;">Flood Fill</a> <a href="/tags/Floyd/" style="font-size: 10px;">Floyd</a> <a href="/tags/Graph/" style="font-size: 14.29px;">Graph</a> <a href="/tags/Number-Theory/" style="font-size: 11.43px;">Number Theory</a> <a href="/tags/Search/" style="font-size: 18.57px;">Search</a> <a href="/tags/Shortest-Path/" style="font-size: 10px;">Shortest Path</a> <a href="/tags/Simluation/" style="font-size: 10px;">Simluation</a> <a href="/tags/Simulation/" style="font-size: 10px;">Simulation</a> <a href="/tags/TopCoder/" style="font-size: 12.86px;">TopCoder</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">August 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Articles récents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2016/10/09/2016-10-09-USACO-Cowtours/">USACO 2.4 Cow Tours</a>
+          </li>
+        
+          <li>
+            <a href="/2016/10/07/2016-10-07-USACO-Overfencing/">USACO 2.4 Overfencing</a>
+          </li>
+        
+          <li>
+            <a href="/2016/10/06/2016-10-06-USACO-TheTamWorthTwo/">USACO 2.4 The Tamworth Two</a>
+          </li>
+        
+          <li>
+            <a href="/2016/10/05/2016-10-05-USACO-ControllingCompanies/">USACO 2.3 Controlling Companies</a>
+          </li>
+        
+          <li>
+            <a href="/2016/09/26/2016-09-26-USACO-MoneySystem/">USACO 2.3 Money System</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2016 hanm<br>
+      Propulsé by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+<script>
+  var disqus_shortname = 'quantumfield';
+  
+  var disqus_url = 'http://lianghan.org/2016/10/07/2016-10-07-USACO-Overfencing/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
