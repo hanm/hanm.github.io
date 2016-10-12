@@ -3,21 +3,18 @@
 <head>
   <meta charset="utf-8">
   
-  <title>USACO 2.1 Healthy Holsteins | Quantum Field</title>
+  <title>USACO 2.4 Bessie Come Home | Quantum Field</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Brutal force approach using bit set to speed up search.
-#include &amp;lt;iostream&amp;gt;#include &amp;lt;fstream&amp;gt;#include &amp;lt;bitset&amp;gt;using namespace std;int V, vit[26], G, feedType[16][26], vc;bitset&amp;lt;16">
+  <meta name="description" content="Pretty straightforward solution with Floyd all pair shortest path algorithm: we simply compute every path and pick up the shortestone between a cow and the barn. One catch is to prepare all the input">
 <meta property="og:type" content="article">
-<meta property="og:title" content="USACO 2.1 Healthy Holsteins">
-<meta property="og:url" content="http://lianghan.org/2016/08/31/2016-08-31-USACO-HealthyHolsteins/index.html">
+<meta property="og:title" content="USACO 2.4 Bessie Come Home">
+<meta property="og:url" content="http://lianghan.org/2016/10/11/2016-10-11-USACO-BessieComeHome/index.html">
 <meta property="og:site_name" content="Quantum Field">
-<meta property="og:description" content="Brutal force approach using bit set to speed up search.
-#include &amp;lt;iostream&amp;gt;#include &amp;lt;fstream&amp;gt;#include &amp;lt;bitset&amp;gt;using namespace std;int V, vit[26], G, feedType[16][26], vc;bitset&amp;lt;16">
-<meta property="og:updated_time" content="2016-09-01T01:20:42.000Z">
+<meta property="og:description" content="Pretty straightforward solution with Floyd all pair shortest path algorithm: we simply compute every path and pick up the shortestone between a cow and the barn. One catch is to prepare all the input">
+<meta property="og:updated_time" content="2016-10-12T03:55:25.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="USACO 2.1 Healthy Holsteins">
-<meta name="twitter:description" content="Brutal force approach using bit set to speed up search.
-#include &amp;lt;iostream&amp;gt;#include &amp;lt;fstream&amp;gt;#include &amp;lt;bitset&amp;gt;using namespace std;int V, vit[26], G, feedType[16][26], vc;bitset&amp;lt;16">
+<meta name="twitter:title" content="USACO 2.4 Bessie Come Home">
+<meta name="twitter:description" content="Pretty straightforward solution with Floyd all pair shortest path algorithm: we simply compute every path and pick up the shortestone between a cow and the barn. One catch is to prepare all the input">
   
     <link rel="alternate" href="/atom.xml" title="Quantum Field" type="application/atom+xml">
   
@@ -79,10 +76,10 @@ ga('send', 'pageview');
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="post-2016-08-31-USACO-HealthyHolsteins" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-2016-10-11-USACO-BessieComeHome" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2016/08/31/2016-08-31-USACO-HealthyHolsteins/" class="article-date">
-  <time datetime="2016-09-01T01:17:31.000Z" itemprop="datePublished">2016-08-31</time>
+    <a href="/2016/10/11/2016-10-11-USACO-BessieComeHome/" class="article-date">
+  <time datetime="2016-10-12T00:00:31.000Z" itemprop="datePublished">2016-10-11</time>
 </a>
     
   <div class="article-category">
@@ -97,7 +94,7 @@ ga('send', 'pageview');
         
   
     <h1 class="article-title" itemprop="name">
-      USACO 2.1 Healthy Holsteins
+      USACO 2.4 Bessie Come Home
     </h1>
   
 
@@ -105,17 +102,17 @@ ga('send', 'pageview');
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Brutal force approach using bit set to speed up search.</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;bitset&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="keyword">int</span> V, vit[<span class="number">26</span>], G, feedType[<span class="number">16</span>][<span class="number">26</span>], vc;</div><div class="line"><span class="built_in">bitset</span>&lt;16&gt; minbit(<span class="number">0</span>);</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"holstein.in"</span>)</span></span>;</div><div class="line">  <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"holstein.out"</span>)</span></span>;</div><div class="line"></div><div class="line">  vc = <span class="number">16</span>;</div><div class="line">	fin &gt;&gt; V;</div><div class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; V; ++i)</div><div class="line">		fin &gt;&gt; vit[i];</div><div class="line"></div><div class="line">  fin &gt;&gt; G;</div><div class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; G; ++i)</div><div class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span> ; j &lt; V; ++j)</div><div class="line">      fin &gt;&gt; feedType[i][j];</div><div class="line"></div><div class="line">  <span class="keyword">auto</span> limit = <span class="number">1</span> &lt;&lt; G;</div><div class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; limit; ++i) &#123;</div><div class="line">    <span class="keyword">int</span> v[<span class="number">26</span>] = &#123;<span class="number">0</span>&#125;;</div><div class="line">		<span class="built_in">bitset</span>&lt;16&gt; bit(i);</div><div class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> b = <span class="number">0</span>; b != G; ++b) &#123;</div><div class="line">      <span class="keyword">if</span>(bit[b]) &#123;</div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>; j != V; ++j)</div><div class="line">          v[j] += feedType[b][j];</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">		<span class="keyword">bool</span> satisfy = <span class="literal">true</span>;</div><div class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; V; ++j) &#123;</div><div class="line">      <span class="keyword">if</span>(v[j] &lt; vit[j]) &#123;</div><div class="line">        satisfy = <span class="literal">false</span>;</div><div class="line">        <span class="keyword">break</span>;</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">		<span class="keyword">if</span>(satisfy &amp;&amp; <span class="keyword">int</span>(bit.count()) &lt; vc &amp;&amp; bit.to_ulong() &gt; minbit.to_ulong()) &#123;</div><div class="line">			vc = <span class="keyword">static_cast</span>&lt;<span class="keyword">int</span>&gt;(bit.count());</div><div class="line">			minbit = bit;</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	fout &lt;&lt; vc;</div><div class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; G; ++i) &#123;</div><div class="line">    <span class="keyword">if</span>(minbit[i])</div><div class="line">      fout &lt;&lt; <span class="string">" "</span> &lt;&lt; i + <span class="number">1</span>;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">	fout &lt;&lt; <span class="built_in">endl</span>;</div><div class="line"></div><div class="line">  <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+        <p>Pretty straightforward solution with Floyd all pair shortest path algorithm: we simply compute every path and pick up the shortest<br>one between a cow and the barn. One catch is to prepare all the input data. In particular, there is test data where for same pair of<br>pastures, say A and B, distance between AB and BA is different. So need a check to select the smaller one, if distance AB and BA is<br>different. This is very annoying, though it sounds legitimate test data, and maybe intentionally crafted in such a way.</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;utility&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cmath&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;climits&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iomanip&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="keyword">int</span> N;</div><div class="line"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; dist(<span class="number">52</span>, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(<span class="number">52</span>, INT_MAX));</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">char2index</span><span class="params">(<span class="keyword">char</span> c)</span> </span>&#123;</div><div class="line">  <span class="keyword">if</span> (c &gt;= <span class="string">'a'</span>) &#123;</div><div class="line">    <span class="keyword">return</span> c - <span class="string">'a'</span> + <span class="number">26</span>;</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">return</span> c - <span class="string">'A'</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"comehome.in"</span>)</span></span>;</div><div class="line">  <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"comehome.out"</span>)</span></span>;</div><div class="line">  </div><div class="line">  fin &gt;&gt; N;</div><div class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</div><div class="line">    <span class="keyword">char</span> c1, c2; <span class="keyword">int</span> d;</div><div class="line">    fin &gt;&gt; c1 &gt;&gt; c2 &gt;&gt; d;</div><div class="line">    <span class="keyword">int</span> m = char2index(c1), n = char2index(c2);</div><div class="line">    <span class="keyword">if</span> (d &lt; dist[m][n]) &#123;</div><div class="line">        <span class="comment">// Need this check because sometimes dist[m][n]</span></div><div class="line">        <span class="comment">// read from input does not equal to dist[n][m]!!</span></div><div class="line">        dist[m][n] = d; dist[n][m] = d;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">  </div><div class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; <span class="number">52</span>; ++k) &#123;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">52</span>; ++i) &#123;</div><div class="line">      <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; <span class="number">52</span>; ++j) &#123;</div><div class="line">        <span class="keyword">if</span> (dist[i][k] + dist[k][j] &lt; dist[i][j] &amp;&amp;</div><div class="line">            dist[i][k] != INT_MAX &amp;&amp;</div><div class="line">            dist[k][j] != INT_MAX) &#123;</div><div class="line">          dist[i][j] = dist[i][k] + dist[k][j];</div><div class="line">        &#125;</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">  </div><div class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">52</span>; ++i) &#123;</div><div class="line">    dist[i][i] = INT_MAX;</div><div class="line">  &#125;</div><div class="line">  </div><div class="line">  <span class="keyword">int</span> ret = INT_MAX; <span class="keyword">int</span> index = <span class="number">0</span>;</div><div class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">26</span>; ++i) &#123;</div><div class="line">    <span class="keyword">if</span> (dist[i][<span class="number">25</span>] == INT_MAX)</div><div class="line">        <span class="keyword">continue</span>;</div><div class="line">    <span class="keyword">if</span> (ret &gt; dist[i][<span class="number">25</span>]) &#123;</div><div class="line">        ret = dist[i][<span class="number">25</span>];</div><div class="line">        index = i;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">  </div><div class="line">  <span class="built_in">cout</span> &lt;&lt; (<span class="keyword">char</span>)(<span class="string">'A'</span> + index) &lt;&lt; <span class="string">" "</span> &lt;&lt; ret &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">  fout &lt;&lt; (<span class="keyword">char</span>)(<span class="string">'A'</span> + index) &lt;&lt; <span class="string">" "</span> &lt;&lt; ret &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">&#125;</div><div class="line"></div></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/31/2016-08-31-USACO-HealthyHolsteins/" data-id="ciu6dy8o3002i1nxg5cvkh2id" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/10/11/2016-10-11-USACO-BessieComeHome/" data-id="ciu6dy8p200461nxg0cv5lhl6" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2016/08/31/2016-08-31-USACO-HealthyHolsteins/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2016/10/11/2016-10-11-USACO-BessieComeHome/#disqus_thread" class="article-comment-link">Comments</a>
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Brutal-Force/">Brutal Force</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Flyod/">Flyod</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Shortest-Path/">Shortest Path</a></li></ul>
 
     </footer>
   </div>
@@ -123,19 +120,10 @@ ga('send', 'pageview');
     
 <nav id="article-nav">
   
-    <a href="/2016/09/02/2016-09-02-USACO-HammingCode/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          USACO 2.1 Hamming Codes
-        
-      </div>
-    </a>
   
-  
-    <a href="/2016/08/31/2016-08-31-USACO-SortThreeValuedSequence/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2016/10/09/2016-10-09-USACO-Cowtours/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">USACO 2.1 Sort Three Valued Sequence</div>
+      <div class="article-nav-title">USACO 2.4 Cow Tours</div>
     </a>
   
 </nav>
@@ -247,7 +235,7 @@ ga('send', 'pageview');
 <script>
   var disqus_shortname = 'quantumfield';
   
-  var disqus_url = 'http://lianghan.org/2016/08/31/2016-08-31-USACO-HealthyHolsteins/';
+  var disqus_url = 'http://lianghan.org/2016/10/11/2016-10-11-USACO-BessieComeHome/';
   
   (function(){
     var dsq = document.createElement('script');

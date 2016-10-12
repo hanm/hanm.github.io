@@ -61,9 +61,9 @@ ga('send', 'pageview');
       </nav>
       <nav id="sub-nav">
         
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="Flux RSS"></a>
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
         
-        <a id="nav-search-btn" class="nav-icon" title="Rechercher"></a>
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
       </nav>
       <div id="search-form-wrap">
         <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://lianghan.org"></form>
@@ -73,6 +73,51 @@ ga('send', 'pageview');
 </header>
       <div class="outer">
         <section id="main">
+  
+    <article id="post-2016-08-20-USACO-NumberTriangles" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/08/20/2016-08-20-USACO-NumberTriangles/" class="article-date">
+  <time datetime="2016-08-20T23:20:31.000Z" itemprop="datePublished">2016-08-20</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/USACO/">USACO</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/08/20/2016-08-20-USACO-NumberTriangles/">USACO 1.5 Number Triangles</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Simple DP problem.</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">getTriangle</span><span class="params">(ifstream &amp;fin, <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; &amp;triangle)</span> </span>&#123;</div><div class="line">  <span class="keyword">int</span> total;</div><div class="line">  fin &gt;&gt; total;</div><div class="line"></div><div class="line">  <span class="keyword">int</span> prev = <span class="number">1</span>;</div><div class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; total; ++i) &#123;</div><div class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; current;</div><div class="line">    <span class="keyword">int</span> cur = prev;</div><div class="line">    <span class="keyword">while</span> (cur--) &#123;</div><div class="line">      <span class="keyword">int</span> item;</div><div class="line">      fin &gt;&gt; item;</div><div class="line">      current.emplace_back(item);</div><div class="line">    &#125;</div><div class="line">    triangle.push_back(current);</div><div class="line">    ++prev;</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">findMaxPath</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; &amp;triangle)</span> </span>&#123;</div><div class="line">  <span class="keyword">auto</span> rows = (<span class="keyword">int</span>)triangle.size();</div><div class="line">  <span class="keyword">if</span> (!rows) <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">  <span class="keyword">if</span> (rows == <span class="number">1</span>) <span class="keyword">return</span> triangle[<span class="number">0</span>][<span class="number">0</span>];</div><div class="line"></div><div class="line">  <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; table(triangle[rows - <span class="number">1</span>]);</div><div class="line"></div><div class="line">  <span class="keyword">for</span>(<span class="keyword">int</span> i = rows - <span class="number">2</span>; i &gt;= <span class="number">0</span>; --i)</div><div class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; triangle[i].size(); ++j)</div><div class="line">      table[j] = <span class="built_in">std</span>::max(table[j+<span class="number">1</span>], table[j]) + triangle[i][j];</div><div class="line"></div><div class="line">  <span class="keyword">return</span> table[<span class="number">0</span>];</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"numtri.in"</span>)</span></span>;</div><div class="line">  <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"numtri.out"</span>)</span></span>;</div><div class="line"></div><div class="line">  <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; triangle;</div><div class="line">  getTriangle(fin, triangle);</div><div class="line"></div><div class="line">  fout &lt;&lt; findMaxPath(triangle) &lt;&lt; <span class="built_in">endl</span>;</div><div class="line"></div><div class="line">  <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2016/08/20/2016-08-20-USACO-NumberTriangles/" data-id="ciu6dy8nq001z1nxg1dis73gz" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2016/08/20/2016-08-20-USACO-NumberTriangles/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dynamic-Programming/">Dynamic Programming</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
   
     <article id="post-2016-08-20-USACO-Mother&#39;s Milk" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
@@ -105,9 +150,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/20/2016-08-20-USACO-Mother's Milk/" data-id="ciu0boluf0016u1vtxh6lkru0" class="article-share-link">Partager</a>
+      <a data-url="http://lianghan.org/2016/08/20/2016-08-20-USACO-Mother's Milk/" data-id="ciu6dy8nl001r1nxgatgrskub" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2016/08/20/2016-08-20-USACO-Mother's Milk/#disqus_thread" class="article-comment-link">Commentaires</a>
+        <a href="http://lianghan.org/2016/08/20/2016-08-20-USACO-Mother's Milk/#disqus_thread" class="article-comment-link">Comments</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/BFS/">BFS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DFS/">DFS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Search/">Search</a></li></ul>
@@ -150,9 +195,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/18/2016-08-18-USACO-ArithmeticProgression/" data-id="ciu0bolud0013u1vtflsdj5li" class="article-share-link">Partager</a>
+      <a data-url="http://lianghan.org/2016/08/18/2016-08-18-USACO-ArithmeticProgression/" data-id="ciu6dy8nc001k1nxgw91rpcwi" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2016/08/18/2016-08-18-USACO-ArithmeticProgression/#disqus_thread" class="article-comment-link">Commentaires</a>
+        <a href="http://lianghan.org/2016/08/18/2016-08-18-USACO-ArithmeticProgression/#disqus_thread" class="article-comment-link">Comments</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Brutal-Force/">Brutal Force</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Number-Theory/">Number Theory</a></li></ul>
@@ -195,9 +240,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/17/2016-8-17-USACO-SkiCourseDesign/" data-id="ciu0bolvr003eu1vtch25ec0s" class="article-share-link">Partager</a>
+      <a data-url="http://lianghan.org/2016/08/17/2016-8-17-USACO-SkiCourseDesign/" data-id="ciu6dy8pq004w1nxgasrmjwxv" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2016/08/17/2016-8-17-USACO-SkiCourseDesign/#disqus_thread" class="article-comment-link">Commentaires</a>
+        <a href="http://lianghan.org/2016/08/17/2016-8-17-USACO-SkiCourseDesign/#disqus_thread" class="article-comment-link">Comments</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Brutal-Force/">Brutal Force</a></li></ul>
@@ -244,9 +289,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/17/2016-08-17-USACO-WormHoles/" data-id="ciu0bolub000zu1vtifji8kgi" class="article-share-link">Partager</a>
+      <a data-url="http://lianghan.org/2016/08/17/2016-08-17-USACO-WormHoles/" data-id="ciu6dy8n8001e1nxg2q77csq2" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2016/08/17/2016-08-17-USACO-WormHoles/#disqus_thread" class="article-comment-link">Commentaires</a>
+        <a href="http://lianghan.org/2016/08/17/2016-08-17-USACO-WormHoles/#disqus_thread" class="article-comment-link">Comments</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Graph/">Graph</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Search/">Search</a></li></ul>
@@ -289,9 +334,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/13/2016-08-13-USACO-CombinationLock/" data-id="ciu0bolu9000wu1vtl7tg8i9v" class="article-share-link">Partager</a>
+      <a data-url="http://lianghan.org/2016/08/13/2016-08-13-USACO-CombinationLock/" data-id="ciu6dy8n500191nxgqd9jfscx" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2016/08/13/2016-08-13-USACO-CombinationLock/#disqus_thread" class="article-comment-link">Commentaires</a>
+        <a href="http://lianghan.org/2016/08/13/2016-08-13-USACO-CombinationLock/#disqus_thread" class="article-comment-link">Comments</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Combination/">Combination</a></li></ul>
@@ -334,9 +379,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/11/2016-08-11-USACO-DualPalindrome/" data-id="ciu0bolu6000su1vtoafsc9oz" class="article-share-link">Partager</a>
+      <a data-url="http://lianghan.org/2016/08/11/2016-08-11-USACO-DualPalindrome/" data-id="ciu6dy8n200141nxgs1nvu13k" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2016/08/11/2016-08-11-USACO-DualPalindrome/#disqus_thread" class="article-comment-link">Commentaires</a>
+        <a href="http://lianghan.org/2016/08/11/2016-08-11-USACO-DualPalindrome/#disqus_thread" class="article-comment-link">Comments</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Base-Conversion/">Base Conversion</a></li></ul>
@@ -379,9 +424,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/10/2016-08-09-TopCoderSRM696/" data-id="ciu0bolu3000pu1vtj4i0jsdv" class="article-share-link">Partager</a>
+      <a data-url="http://lianghan.org/2016/08/10/2016-08-09-TopCoderSRM696/" data-id="ciu6dy8n000111nxghnpd1tn1" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2016/08/10/2016-08-09-TopCoderSRM696/#disqus_thread" class="article-comment-link">Commentaires</a>
+        <a href="http://lianghan.org/2016/08/10/2016-08-09-TopCoderSRM696/#disqus_thread" class="article-comment-link">Comments</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li></ul>
@@ -424,9 +469,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/09/2016-08-09-PalindromeSquare/" data-id="ciu0bolu2000lu1vtvd9pbnwo" class="article-share-link">Partager</a>
+      <a data-url="http://lianghan.org/2016/08/09/2016-08-09-PalindromeSquare/" data-id="ciu6dy8my000x1nxgpj5f52gv" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2016/08/09/2016-08-09-PalindromeSquare/#disqus_thread" class="article-comment-link">Commentaires</a>
+        <a href="http://lianghan.org/2016/08/09/2016-08-09-PalindromeSquare/#disqus_thread" class="article-comment-link">Comments</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Search/">Search</a></li></ul>
@@ -469,54 +514,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/08/2016-08-08-NameThatNumber/" data-id="ciu0bolu1000iu1vt3oawru2j" class="article-share-link">Partager</a>
+      <a data-url="http://lianghan.org/2016/08/08/2016-08-08-NameThatNumber/" data-id="ciu6dy8mw000t1nxgoemt8fah" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2016/08/08/2016-08-08-NameThatNumber/#disqus_thread" class="article-comment-link">Commentaires</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Search/">Search</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post- 2016-08-08-Transformation" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/08/08/ 2016-08-08-Transformation/" class="article-date">
-  <time datetime="2016-08-09T04:53:31.000Z" itemprop="datePublished">2016-08-08</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/USACO/">USACO</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/08/08/ 2016-08-08-Transformation/">USACO 1.2 Transformation</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Brutal force search… and a Hexo bug that prevent syntax being highlighted!</p>
-<figure class="highlight"><table><tr><td class="code"><pre><div class="line">#include &lt;iostream&gt;</div><div class="line">#include &lt;fstream&gt;</div><div class="line">#include &lt;string&gt;</div><div class="line">#include &lt;vector&gt;</div><div class="line">#include &lt;algorithm&gt;</div><div class="line"></div><div class="line">using namespace std;</div><div class="line"></div><div class="line">typedef vector&lt;vector&lt;char&gt; &gt; MATRIX;</div><div class="line"></div><div class="line">void rotateMatrix90(MATRIX &amp;matrix) &#123;</div><div class="line">  auto size = matrix.size();</div><div class="line">  for (int i = 0; i &lt; size; ++i) &#123;</div><div class="line">    for (int j = i + 1; j &lt; size; ++j) &#123;</div><div class="line">      swap(matrix[i][j], matrix[j][i]);</div><div class="line">    &#125;</div><div class="line">    reverse(matrix[i].begin(), matrix[i].end());</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">void rotateMatrix180(MATRIX &amp;matrix) &#123;</div><div class="line">  rotateMatrix90(matrix);</div><div class="line">  rotateMatrix90(matrix);</div><div class="line">&#125;</div><div class="line"></div><div class="line">void rotateMatrix270(MATRIX &amp;matrix) &#123;</div><div class="line">  rotateMatrix90(matrix);</div><div class="line">  rotateMatrix180(matrix);</div><div class="line">&#125;</div><div class="line"></div><div class="line">void reflectMatrixHorizontal(MATRIX &amp;matrix) &#123;</div><div class="line">  int size = static_cast&lt;int&gt;(matrix.size());</div><div class="line">  for (int i = 0, j = size - 1; i &lt; j; ++i, --j) &#123;</div><div class="line">    for (int k = 0; k &lt; size; ++k)</div><div class="line">      swap(matrix[k][i], matrix[k][j]);</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">void initializeMatrix(MATRIX &amp;matrix, ifstream &amp;fin) &#123;</div><div class="line">  auto demension = matrix.size();</div><div class="line">  for (int i = 0; i &lt; demension; ++i) &#123;</div><div class="line">    for (int j = 0; j &lt; demension; ++j) &#123;</div><div class="line">      fin &gt;&gt; matrix[i][j];</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">int main () &#123;</div><div class="line">  string str;</div><div class="line">  ifstream fin ("transform.in");</div><div class="line">  ofstream fout ("transform.out");</div><div class="line"></div><div class="line">  int demension;</div><div class="line">  fin &gt;&gt; demension;</div><div class="line">  MATRIX matrix(demension, vector&lt;char&gt;(demension, ' '));</div><div class="line">  initializeMatrix(matrix, fin);</div><div class="line"></div><div class="line">  MATRIX baseline(demension, vector&lt;char&gt;(demension, ' '));</div><div class="line">  initializeMatrix(baseline, fin);</div><div class="line"></div><div class="line">  MATRIX old = matrix;</div><div class="line"></div><div class="line">  rotateMatrix90(matrix);</div><div class="line">  if (baseline == matrix) &#123;</div><div class="line">    fout &lt;&lt; 1 &lt;&lt; std::endl;</div><div class="line">    return 0;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  matrix = old;</div><div class="line">  rotateMatrix180(matrix);</div><div class="line">  if (baseline == matrix) &#123;</div><div class="line">    fout &lt;&lt; 2 &lt;&lt; std::endl;</div><div class="line">    return 0;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  matrix = old;</div><div class="line">  rotateMatrix270(matrix);</div><div class="line">  if (baseline == matrix) &#123;</div><div class="line">    fout &lt;&lt; 3 &lt;&lt; std::endl;</div><div class="line">    return 0;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  matrix = old;</div><div class="line">  reflectMatrixHorizontal(matrix);</div><div class="line">  if (baseline == matrix) &#123;</div><div class="line">    fout &lt;&lt; 4 &lt;&lt; std::endl;</div><div class="line">    return 0;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  MATRIX reflected = matrix;</div><div class="line">  rotateMatrix90(matrix);</div><div class="line">  if (matrix == baseline) &#123;</div><div class="line">    fout &lt;&lt; 5 &lt;&lt; std::endl;</div><div class="line">    return 0;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  matrix = reflected;</div><div class="line">  rotateMatrix180(matrix);</div><div class="line">  if (matrix == baseline) &#123;</div><div class="line">    fout &lt;&lt; 5 &lt;&lt; std::endl;</div><div class="line">    return 0;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  matrix = reflected;</div><div class="line">  rotateMatrix270(matrix);</div><div class="line">  if (matrix == baseline) &#123;</div><div class="line">    fout &lt;&lt; 5 &lt;&lt; std::endl;</div><div class="line">    return 0;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  matrix = old;</div><div class="line">  if (matrix == baseline) &#123;</div><div class="line">    fout &lt;&lt; 6 &lt;&lt; std::endl;</div><div class="line">    return 0;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  fout &lt;&lt; 7 &lt;&lt; std::endl;</div><div class="line">  return 0;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/08/ 2016-08-08-Transformation/" data-id="ciu0bolt80000u1vtoi47wras" class="article-share-link">Partager</a>
-      
-        <a href="http://lianghan.org/2016/08/08/ 2016-08-08-Transformation/#disqus_thread" class="article-comment-link">Commentaires</a>
+        <a href="http://lianghan.org/2016/08/08/2016-08-08-NameThatNumber/#disqus_thread" class="article-comment-link">Comments</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Search/">Search</a></li></ul>
@@ -539,7 +539,7 @@ ga('send', 'pageview');
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Catégories</h3>
+    <h3 class="widget-title">Categories</h3>
     <div class="widget">
       <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/TopCoder/">TopCoder</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/USACO/">USACO</a></li></ul>
     </div>
@@ -549,9 +549,9 @@ ga('send', 'pageview');
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Mot-clés</h3>
+    <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BFS/">BFS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Backtrack/">Backtrack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Base-Conversion/">Base Conversion</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bit-Manipulation/">Bit Manipulation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Brutal-Force/">Brutal Force</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Combination/">Combination</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DFS/">DFS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dijkstra/">Dijkstra</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dynamic-Programming/">Dynamic Programming</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flood-Fill/">Flood Fill</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Floyd/">Floyd</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Graph/">Graph</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Number-Theory/">Number Theory</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Search/">Search</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shortest-Path/">Shortest Path</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Simluation/">Simluation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Simulation/">Simulation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TopCoder/">TopCoder</a></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BFS/">BFS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Backtrack/">Backtrack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Base-Conversion/">Base Conversion</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bit-Manipulation/">Bit Manipulation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Brutal-Force/">Brutal Force</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Combination/">Combination</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DFS/">DFS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dijkstra/">Dijkstra</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dynamic-Programming/">Dynamic Programming</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flood-Fill/">Flood Fill</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Floyd/">Floyd</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flyod/">Flyod</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Graph/">Graph</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Number-Theory/">Number Theory</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Search/">Search</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shortest-Path/">Shortest Path</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Simluation/">Simluation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Simulation/">Simulation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TopCoder/">TopCoder</a></li></ul>
     </div>
   </div>
 
@@ -559,9 +559,9 @@ ga('send', 'pageview');
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Nuage de mot-clés</h3>
+    <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Algorithm/" style="font-size: 20px;">Algorithm</a> <a href="/tags/BFS/" style="font-size: 15.71px;">BFS</a> <a href="/tags/Backtrack/" style="font-size: 10px;">Backtrack</a> <a href="/tags/Base-Conversion/" style="font-size: 10px;">Base Conversion</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10px;">Bit Manipulation</a> <a href="/tags/Brutal-Force/" style="font-size: 17.14px;">Brutal Force</a> <a href="/tags/Combination/" style="font-size: 10px;">Combination</a> <a href="/tags/DFS/" style="font-size: 14.29px;">DFS</a> <a href="/tags/Dijkstra/" style="font-size: 11.43px;">Dijkstra</a> <a href="/tags/Dynamic-Programming/" style="font-size: 15.71px;">Dynamic Programming</a> <a href="/tags/Flood-Fill/" style="font-size: 11.43px;">Flood Fill</a> <a href="/tags/Floyd/" style="font-size: 10px;">Floyd</a> <a href="/tags/Graph/" style="font-size: 14.29px;">Graph</a> <a href="/tags/Number-Theory/" style="font-size: 11.43px;">Number Theory</a> <a href="/tags/Search/" style="font-size: 18.57px;">Search</a> <a href="/tags/Shortest-Path/" style="font-size: 10px;">Shortest Path</a> <a href="/tags/Simluation/" style="font-size: 10px;">Simluation</a> <a href="/tags/Simulation/" style="font-size: 10px;">Simulation</a> <a href="/tags/TopCoder/" style="font-size: 12.86px;">TopCoder</a>
+      <a href="/tags/Algorithm/" style="font-size: 20px;">Algorithm</a> <a href="/tags/BFS/" style="font-size: 15.71px;">BFS</a> <a href="/tags/Backtrack/" style="font-size: 10px;">Backtrack</a> <a href="/tags/Base-Conversion/" style="font-size: 10px;">Base Conversion</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10px;">Bit Manipulation</a> <a href="/tags/Brutal-Force/" style="font-size: 17.14px;">Brutal Force</a> <a href="/tags/Combination/" style="font-size: 10px;">Combination</a> <a href="/tags/DFS/" style="font-size: 14.29px;">DFS</a> <a href="/tags/Dijkstra/" style="font-size: 11.43px;">Dijkstra</a> <a href="/tags/Dynamic-Programming/" style="font-size: 15.71px;">Dynamic Programming</a> <a href="/tags/Flood-Fill/" style="font-size: 11.43px;">Flood Fill</a> <a href="/tags/Floyd/" style="font-size: 10px;">Floyd</a> <a href="/tags/Flyod/" style="font-size: 10px;">Flyod</a> <a href="/tags/Graph/" style="font-size: 14.29px;">Graph</a> <a href="/tags/Number-Theory/" style="font-size: 11.43px;">Number Theory</a> <a href="/tags/Search/" style="font-size: 18.57px;">Search</a> <a href="/tags/Shortest-Path/" style="font-size: 11.43px;">Shortest Path</a> <a href="/tags/Simluation/" style="font-size: 10px;">Simluation</a> <a href="/tags/Simulation/" style="font-size: 10px;">Simulation</a> <a href="/tags/TopCoder/" style="font-size: 12.86px;">TopCoder</a>
     </div>
   </div>
 
@@ -578,9 +578,13 @@ ga('send', 'pageview');
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Articles récents</h3>
+    <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2016/10/11/2016-10-11-USACO-BessieComeHome/">USACO 2.4 Bessie Come Home</a>
+          </li>
         
           <li>
             <a href="/2016/10/09/2016-10-09-USACO-Cowtours/">USACO 2.4 Cow Tours</a>
@@ -598,10 +602,6 @@ ga('send', 'pageview');
             <a href="/2016/10/05/2016-10-05-USACO-ControllingCompanies/">USACO 2.3 Controlling Companies</a>
           </li>
         
-          <li>
-            <a href="/2016/09/26/2016-09-26-USACO-MoneySystem/">USACO 2.3 Money System</a>
-          </li>
-        
       </ul>
     </div>
   </div>
@@ -615,7 +615,7 @@ ga('send', 'pageview');
   <div class="outer">
     <div id="footer-info" class="inner">
       &copy; 2016 hanm<br>
-      Propulsé by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
     </div>
   </div>
 </footer>

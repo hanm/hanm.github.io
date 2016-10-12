@@ -61,9 +61,9 @@ ga('send', 'pageview');
       </nav>
       <nav id="sub-nav">
         
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="Flux RSS"></a>
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
         
-        <a id="nav-search-btn" class="nav-icon" title="Rechercher"></a>
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
       </nav>
       <div id="search-form-wrap">
         <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://lianghan.org"></form>
@@ -73,6 +73,53 @@ ga('send', 'pageview');
 </header>
       <div class="outer">
         <section id="main">
+  
+    <article id="post-2016-09-17-TopCoder-SRM698" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/09/17/2016-09-17-TopCoder-SRM698/" class="article-date">
+  <time datetime="2016-09-17T21:50:31.000Z" itemprop="datePublished">2016-09-17</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/TopCoder/">TopCoder</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/09/17/2016-09-17-TopCoder-SRM698/">TopCoder SRM 698</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>DIV2 500</p>
+<p><a href="https://community.topcoder.com/stat?c=problem_statement&amp;pm=14390" target="_blank" rel="external">Problem Statement</a></p>
+<p>Brutal force with LCS: this problem is easy if we can identify and transform the core matching algorithm it requires to LCS. Here two implementations of LCS are provided, one is through recursion the other is through explicitly maintaining a lookup table. For some reasons, the recursion solution time out on one system test.</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="comment">// This will get TLE on one system test..</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">lcs</span><span class="params">(<span class="keyword">const</span> <span class="built_in">string</span> &amp;s1, <span class="keyword">const</span> <span class="built_in">string</span> &amp;s2, <span class="keyword">int</span> m, <span class="keyword">int</span> n)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (m == <span class="number">0</span> || n == <span class="number">0</span>) <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">    <span class="keyword">if</span> ((s1[m - <span class="number">1</span>] == s2[n - <span class="number">1</span>]) &amp;&amp; (m &gt; <span class="number">0</span> &amp;&amp; n &gt; <span class="number">0</span>))</div><div class="line">        <span class="keyword">return</span> <span class="number">1</span> + lcs(s1, s2, m - <span class="number">1</span>, n - <span class="number">1</span>);</div><div class="line">    <span class="keyword">else</span></div><div class="line">        <span class="keyword">return</span> max(lcs(s1, s2, m, n - <span class="number">1</span>), lcs(s1, s2, m - <span class="number">1</span>, n));</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">lcs2</span><span class="params">(<span class="keyword">const</span> <span class="built_in">string</span> &amp;s1, <span class="keyword">const</span> <span class="built_in">string</span> &amp;s2, <span class="keyword">int</span> m, <span class="keyword">int</span> n)</span> </span>&#123;</div><div class="line">    <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; dp(m + <span class="number">1</span>, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(n + <span class="number">1</span>));</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= m; ++i)&#123;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt;= n; ++j) &#123;</div><div class="line">            <span class="keyword">if</span> (i == <span class="number">0</span> || j == <span class="number">0</span>)</div><div class="line">                dp[i][j] = <span class="number">0</span>;</div><div class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (s1[i - <span class="number">1</span>] == s2[j - <span class="number">1</span>])</div><div class="line">                dp[i][j] = dp[i - <span class="number">1</span>][j - <span class="number">1</span>] + <span class="number">1</span>;</div><div class="line">            <span class="keyword">else</span></div><div class="line">                dp[i][j] = <span class="built_in">std</span>::max(dp[i - <span class="number">1</span>][j], dp[i][j - <span class="number">1</span>]);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> dp[m][n];</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">class</span> RepeatStringEasy &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    <span class="function"><span class="keyword">int</span> <span class="title">maximalLength</span><span class="params">(<span class="built_in">string</span> s)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (s.empty()) <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">        <span class="keyword">int</span> ret = <span class="number">0</span>;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; s.size(); ++i) &#123;</div><div class="line">            <span class="built_in">string</span> s1 = <span class="string">""</span>, s2 = <span class="string">""</span>;</div><div class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> m = <span class="number">0</span>; m &lt;= i; ++m) s1 += s[m];</div><div class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> n = i + <span class="number">1</span>; n &lt; s.size(); ++n) s2 += s[n];</div><div class="line">            ret = <span class="built_in">std</span>::max(ret, <span class="number">2</span> * lcs2(s1, s2, (<span class="keyword">int</span>)s1.size(), (<span class="keyword">int</span>)s2.size()));</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> ret;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2016/09/17/2016-09-17-TopCoder-SRM698/" data-id="ciu6dy8oj00351nxg3alulb60" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2016/09/17/2016-09-17-TopCoder-SRM698/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
   
     <article id="post-2016-09-09-USACO-Runaround Numbers" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
@@ -105,9 +152,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/09/09/2016-09-09-USACO-Runaround Numbers/" data-id="ciu0bolv30025u1vt5enu544k" class="article-share-link">Partager</a>
+      <a data-url="http://lianghan.org/2016/09/09/2016-09-09-USACO-Runaround Numbers/" data-id="ciu6dy8og00311nxgv0zc796a" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2016/09/09/2016-09-09-USACO-Runaround Numbers/#disqus_thread" class="article-comment-link">Commentaires</a>
+        <a href="http://lianghan.org/2016/09/09/2016-09-09-USACO-Runaround Numbers/#disqus_thread" class="article-comment-link">Comments</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Brutal-Force/">Brutal Force</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Number-Theory/">Number Theory</a></li></ul>
@@ -153,9 +200,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/09/08/2016-09-08-USACO-SubsetSum/" data-id="ciu0bolv10021u1vtqfu9wqud" class="article-share-link">Partager</a>
+      <a data-url="http://lianghan.org/2016/09/08/2016-09-08-USACO-SubsetSum/" data-id="ciu6dy8od002y1nxgkegmfneh" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2016/09/08/2016-09-08-USACO-SubsetSum/#disqus_thread" class="article-comment-link">Commentaires</a>
+        <a href="http://lianghan.org/2016/09/08/2016-09-08-USACO-SubsetSum/#disqus_thread" class="article-comment-link">Comments</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dynamic-Programming/">Dynamic Programming</a></li></ul>
@@ -198,9 +245,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/09/07/2016-09-07-PrefaceNumbering/" data-id="ciu0boluy001yu1vthosd2f72" class="article-share-link">Partager</a>
+      <a data-url="http://lianghan.org/2016/09/07/2016-09-07-PrefaceNumbering/" data-id="ciu6dy8oa002u1nxgu76ksiik" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2016/09/07/2016-09-07-PrefaceNumbering/#disqus_thread" class="article-comment-link">Commentaires</a>
+        <a href="http://lianghan.org/2016/09/07/2016-09-07-PrefaceNumbering/#disqus_thread" class="article-comment-link">Comments</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Brutal-Force/">Brutal Force</a></li></ul>
@@ -242,9 +289,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/09/02/2016-09-02-USACO-HammingCode/" data-id="ciu0boluu001uu1vth9edq0ct" class="article-share-link">Partager</a>
+      <a data-url="http://lianghan.org/2016/09/02/2016-09-02-USACO-HammingCode/" data-id="ciu6dy8o7002p1nxgf2t04o8i" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2016/09/02/2016-09-02-USACO-HammingCode/#disqus_thread" class="article-comment-link">Commentaires</a>
+        <a href="http://lianghan.org/2016/09/02/2016-09-02-USACO-HammingCode/#disqus_thread" class="article-comment-link">Comments</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Bit-Manipulation/">Bit Manipulation</a></li></ul>
@@ -287,9 +334,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/31/2016-08-31-USACO-HealthyHolsteins/" data-id="ciu0bolus001ru1vtgd0dj6u8" class="article-share-link">Partager</a>
+      <a data-url="http://lianghan.org/2016/08/31/2016-08-31-USACO-HealthyHolsteins/" data-id="ciu6dy8o3002i1nxg5cvkh2id" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2016/08/31/2016-08-31-USACO-HealthyHolsteins/#disqus_thread" class="article-comment-link">Commentaires</a>
+        <a href="http://lianghan.org/2016/08/31/2016-08-31-USACO-HealthyHolsteins/#disqus_thread" class="article-comment-link">Comments</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Brutal-Force/">Brutal Force</a></li></ul>
@@ -331,9 +378,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/31/2016-08-31-USACO-SortThreeValuedSequence/" data-id="ciu0boluo001nu1vtcln7xg5j" class="article-share-link">Partager</a>
+      <a data-url="http://lianghan.org/2016/08/31/2016-08-31-USACO-SortThreeValuedSequence/" data-id="ciu6dy8o5002m1nxgtc12cz4h" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2016/08/31/2016-08-31-USACO-SortThreeValuedSequence/#disqus_thread" class="article-comment-link">Commentaires</a>
+        <a href="http://lianghan.org/2016/08/31/2016-08-31-USACO-SortThreeValuedSequence/#disqus_thread" class="article-comment-link">Comments</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li></ul>
@@ -376,9 +423,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/30/2016-08-30-USACO-OrderedFraction/" data-id="ciu0bolun001ku1vtoywgi42s" class="article-share-link">Partager</a>
+      <a data-url="http://lianghan.org/2016/08/30/2016-08-30-USACO-OrderedFraction/" data-id="ciu6dy8nz002e1nxgl3gwvxkn" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2016/08/30/2016-08-30-USACO-OrderedFraction/#disqus_thread" class="article-comment-link">Commentaires</a>
+        <a href="http://lianghan.org/2016/08/30/2016-08-30-USACO-OrderedFraction/#disqus_thread" class="article-comment-link">Comments</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Brutal-Force/">Brutal Force</a></li></ul>
@@ -421,9 +468,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/26/2016-08-26-USACO-TheCarstle/" data-id="ciu0bolum001hu1vtxljw7xlb" class="article-share-link">Partager</a>
+      <a data-url="http://lianghan.org/2016/08/26/2016-08-26-USACO-TheCarstle/" data-id="ciu6dy8nw00291nxgldzdog4d" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2016/08/26/2016-08-26-USACO-TheCarstle/#disqus_thread" class="article-comment-link">Commentaires</a>
+        <a href="http://lianghan.org/2016/08/26/2016-08-26-USACO-TheCarstle/#disqus_thread" class="article-comment-link">Comments</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Flood-Fill/">Flood Fill</a></li></ul>
@@ -466,57 +513,12 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/20/2016-08-20-USACO-SuperPrimeRib/" data-id="ciu0boluj001du1vta395m3to" class="article-share-link">Partager</a>
+      <a data-url="http://lianghan.org/2016/08/20/2016-08-20-USACO-SuperPrimeRib/" data-id="ciu6dy8nt00241nxgcrwk7jqr" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2016/08/20/2016-08-20-USACO-SuperPrimeRib/#disqus_thread" class="article-comment-link">Commentaires</a>
+        <a href="http://lianghan.org/2016/08/20/2016-08-20-USACO-SuperPrimeRib/#disqus_thread" class="article-comment-link">Comments</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Backtrack/">Backtrack</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-2016-08-20-USACO-NumberTriangles" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/08/20/2016-08-20-USACO-NumberTriangles/" class="article-date">
-  <time datetime="2016-08-20T23:20:31.000Z" itemprop="datePublished">2016-08-20</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/USACO/">USACO</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/08/20/2016-08-20-USACO-NumberTriangles/">USACO 1.5 Number Triangles</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Simple DP problem.</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">getTriangle</span><span class="params">(ifstream &amp;fin, <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; &amp;triangle)</span> </span>&#123;</div><div class="line">  <span class="keyword">int</span> total;</div><div class="line">  fin &gt;&gt; total;</div><div class="line"></div><div class="line">  <span class="keyword">int</span> prev = <span class="number">1</span>;</div><div class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; total; ++i) &#123;</div><div class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; current;</div><div class="line">    <span class="keyword">int</span> cur = prev;</div><div class="line">    <span class="keyword">while</span> (cur--) &#123;</div><div class="line">      <span class="keyword">int</span> item;</div><div class="line">      fin &gt;&gt; item;</div><div class="line">      current.emplace_back(item);</div><div class="line">    &#125;</div><div class="line">    triangle.push_back(current);</div><div class="line">    ++prev;</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">findMaxPath</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; &amp;triangle)</span> </span>&#123;</div><div class="line">  <span class="keyword">auto</span> rows = (<span class="keyword">int</span>)triangle.size();</div><div class="line">  <span class="keyword">if</span> (!rows) <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">  <span class="keyword">if</span> (rows == <span class="number">1</span>) <span class="keyword">return</span> triangle[<span class="number">0</span>][<span class="number">0</span>];</div><div class="line"></div><div class="line">  <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; table(triangle[rows - <span class="number">1</span>]);</div><div class="line"></div><div class="line">  <span class="keyword">for</span>(<span class="keyword">int</span> i = rows - <span class="number">2</span>; i &gt;= <span class="number">0</span>; --i)</div><div class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; triangle[i].size(); ++j)</div><div class="line">      table[j] = <span class="built_in">std</span>::max(table[j+<span class="number">1</span>], table[j]) + triangle[i][j];</div><div class="line"></div><div class="line">  <span class="keyword">return</span> table[<span class="number">0</span>];</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"numtri.in"</span>)</span></span>;</div><div class="line">  <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"numtri.out"</span>)</span></span>;</div><div class="line"></div><div class="line">  <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; triangle;</div><div class="line">  getTriangle(fin, triangle);</div><div class="line"></div><div class="line">  fout &lt;&lt; findMaxPath(triangle) &lt;&lt; <span class="built_in">endl</span>;</div><div class="line"></div><div class="line">  <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/20/2016-08-20-USACO-NumberTriangles/" data-id="ciu0bolui001au1vtdi4lzg7x" class="article-share-link">Partager</a>
-      
-        <a href="http://lianghan.org/2016/08/20/2016-08-20-USACO-NumberTriangles/#disqus_thread" class="article-comment-link">Commentaires</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dynamic-Programming/">Dynamic Programming</a></li></ul>
 
     </footer>
   </div>
@@ -536,7 +538,7 @@ ga('send', 'pageview');
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Catégories</h3>
+    <h3 class="widget-title">Categories</h3>
     <div class="widget">
       <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/TopCoder/">TopCoder</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/USACO/">USACO</a></li></ul>
     </div>
@@ -546,9 +548,9 @@ ga('send', 'pageview');
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Mot-clés</h3>
+    <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BFS/">BFS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Backtrack/">Backtrack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Base-Conversion/">Base Conversion</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bit-Manipulation/">Bit Manipulation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Brutal-Force/">Brutal Force</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Combination/">Combination</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DFS/">DFS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dijkstra/">Dijkstra</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dynamic-Programming/">Dynamic Programming</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flood-Fill/">Flood Fill</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Floyd/">Floyd</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Graph/">Graph</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Number-Theory/">Number Theory</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Search/">Search</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shortest-Path/">Shortest Path</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Simluation/">Simluation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Simulation/">Simulation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TopCoder/">TopCoder</a></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BFS/">BFS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Backtrack/">Backtrack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Base-Conversion/">Base Conversion</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bit-Manipulation/">Bit Manipulation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Brutal-Force/">Brutal Force</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Combination/">Combination</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DFS/">DFS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dijkstra/">Dijkstra</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dynamic-Programming/">Dynamic Programming</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flood-Fill/">Flood Fill</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Floyd/">Floyd</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flyod/">Flyod</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Graph/">Graph</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Number-Theory/">Number Theory</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Search/">Search</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shortest-Path/">Shortest Path</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Simluation/">Simluation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Simulation/">Simulation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TopCoder/">TopCoder</a></li></ul>
     </div>
   </div>
 
@@ -556,9 +558,9 @@ ga('send', 'pageview');
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Nuage de mot-clés</h3>
+    <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Algorithm/" style="font-size: 20px;">Algorithm</a> <a href="/tags/BFS/" style="font-size: 15.71px;">BFS</a> <a href="/tags/Backtrack/" style="font-size: 10px;">Backtrack</a> <a href="/tags/Base-Conversion/" style="font-size: 10px;">Base Conversion</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10px;">Bit Manipulation</a> <a href="/tags/Brutal-Force/" style="font-size: 17.14px;">Brutal Force</a> <a href="/tags/Combination/" style="font-size: 10px;">Combination</a> <a href="/tags/DFS/" style="font-size: 14.29px;">DFS</a> <a href="/tags/Dijkstra/" style="font-size: 11.43px;">Dijkstra</a> <a href="/tags/Dynamic-Programming/" style="font-size: 15.71px;">Dynamic Programming</a> <a href="/tags/Flood-Fill/" style="font-size: 11.43px;">Flood Fill</a> <a href="/tags/Floyd/" style="font-size: 10px;">Floyd</a> <a href="/tags/Graph/" style="font-size: 14.29px;">Graph</a> <a href="/tags/Number-Theory/" style="font-size: 11.43px;">Number Theory</a> <a href="/tags/Search/" style="font-size: 18.57px;">Search</a> <a href="/tags/Shortest-Path/" style="font-size: 10px;">Shortest Path</a> <a href="/tags/Simluation/" style="font-size: 10px;">Simluation</a> <a href="/tags/Simulation/" style="font-size: 10px;">Simulation</a> <a href="/tags/TopCoder/" style="font-size: 12.86px;">TopCoder</a>
+      <a href="/tags/Algorithm/" style="font-size: 20px;">Algorithm</a> <a href="/tags/BFS/" style="font-size: 15.71px;">BFS</a> <a href="/tags/Backtrack/" style="font-size: 10px;">Backtrack</a> <a href="/tags/Base-Conversion/" style="font-size: 10px;">Base Conversion</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10px;">Bit Manipulation</a> <a href="/tags/Brutal-Force/" style="font-size: 17.14px;">Brutal Force</a> <a href="/tags/Combination/" style="font-size: 10px;">Combination</a> <a href="/tags/DFS/" style="font-size: 14.29px;">DFS</a> <a href="/tags/Dijkstra/" style="font-size: 11.43px;">Dijkstra</a> <a href="/tags/Dynamic-Programming/" style="font-size: 15.71px;">Dynamic Programming</a> <a href="/tags/Flood-Fill/" style="font-size: 11.43px;">Flood Fill</a> <a href="/tags/Floyd/" style="font-size: 10px;">Floyd</a> <a href="/tags/Flyod/" style="font-size: 10px;">Flyod</a> <a href="/tags/Graph/" style="font-size: 14.29px;">Graph</a> <a href="/tags/Number-Theory/" style="font-size: 11.43px;">Number Theory</a> <a href="/tags/Search/" style="font-size: 18.57px;">Search</a> <a href="/tags/Shortest-Path/" style="font-size: 11.43px;">Shortest Path</a> <a href="/tags/Simluation/" style="font-size: 10px;">Simluation</a> <a href="/tags/Simulation/" style="font-size: 10px;">Simulation</a> <a href="/tags/TopCoder/" style="font-size: 12.86px;">TopCoder</a>
     </div>
   </div>
 
@@ -575,9 +577,13 @@ ga('send', 'pageview');
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Articles récents</h3>
+    <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2016/10/11/2016-10-11-USACO-BessieComeHome/">USACO 2.4 Bessie Come Home</a>
+          </li>
         
           <li>
             <a href="/2016/10/09/2016-10-09-USACO-Cowtours/">USACO 2.4 Cow Tours</a>
@@ -595,10 +601,6 @@ ga('send', 'pageview');
             <a href="/2016/10/05/2016-10-05-USACO-ControllingCompanies/">USACO 2.3 Controlling Companies</a>
           </li>
         
-          <li>
-            <a href="/2016/09/26/2016-09-26-USACO-MoneySystem/">USACO 2.3 Money System</a>
-          </li>
-        
       </ul>
     </div>
   </div>
@@ -612,7 +614,7 @@ ga('send', 'pageview');
   <div class="outer">
     <div id="footer-info" class="inner">
       &copy; 2016 hanm<br>
-      Propulsé by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
     </div>
   </div>
 </footer>

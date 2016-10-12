@@ -61,9 +61,9 @@ ga('send', 'pageview');
       </nav>
       <nav id="sub-nav">
         
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="Flux RSS"></a>
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
         
-        <a id="nav-search-btn" class="nav-icon" title="Rechercher"></a>
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
       </nav>
       <div id="search-form-wrap">
         <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://lianghan.org"></form>
@@ -73,6 +73,51 @@ ga('send', 'pageview');
 </header>
       <div class="outer">
         <section id="main">
+  
+    <article id="post-2016-10-11-USACO-BessieComeHome" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/10/11/2016-10-11-USACO-BessieComeHome/" class="article-date">
+  <time datetime="2016-10-12T00:00:31.000Z" itemprop="datePublished">2016-10-11</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/USACO/">USACO</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/10/11/2016-10-11-USACO-BessieComeHome/">USACO 2.4 Bessie Come Home</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Pretty straightforward solution with Floyd all pair shortest path algorithm: we simply compute every path and pick up the shortest<br>one between a cow and the barn. One catch is to prepare all the input data. In particular, there is test data where for same pair of<br>pastures, say A and B, distance between AB and BA is different. So need a check to select the smaller one, if distance AB and BA is<br>different. This is very annoying, though it sounds legitimate test data, and maybe intentionally crafted in such a way.</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;utility&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cmath&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;climits&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iomanip&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="keyword">int</span> N;</div><div class="line"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; dist(<span class="number">52</span>, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(<span class="number">52</span>, INT_MAX));</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">char2index</span><span class="params">(<span class="keyword">char</span> c)</span> </span>&#123;</div><div class="line">  <span class="keyword">if</span> (c &gt;= <span class="string">'a'</span>) &#123;</div><div class="line">    <span class="keyword">return</span> c - <span class="string">'a'</span> + <span class="number">26</span>;</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">return</span> c - <span class="string">'A'</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"comehome.in"</span>)</span></span>;</div><div class="line">  <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"comehome.out"</span>)</span></span>;</div><div class="line">  </div><div class="line">  fin &gt;&gt; N;</div><div class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</div><div class="line">    <span class="keyword">char</span> c1, c2; <span class="keyword">int</span> d;</div><div class="line">    fin &gt;&gt; c1 &gt;&gt; c2 &gt;&gt; d;</div><div class="line">    <span class="keyword">int</span> m = char2index(c1), n = char2index(c2);</div><div class="line">    <span class="keyword">if</span> (d &lt; dist[m][n]) &#123;</div><div class="line">        <span class="comment">// Need this check because sometimes dist[m][n]</span></div><div class="line">        <span class="comment">// read from input does not equal to dist[n][m]!!</span></div><div class="line">        dist[m][n] = d; dist[n][m] = d;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">  </div><div class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; <span class="number">52</span>; ++k) &#123;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">52</span>; ++i) &#123;</div><div class="line">      <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; <span class="number">52</span>; ++j) &#123;</div><div class="line">        <span class="keyword">if</span> (dist[i][k] + dist[k][j] &lt; dist[i][j] &amp;&amp;</div><div class="line">            dist[i][k] != INT_MAX &amp;&amp;</div><div class="line">            dist[k][j] != INT_MAX) &#123;</div><div class="line">          dist[i][j] = dist[i][k] + dist[k][j];</div><div class="line">        &#125;</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">  </div><div class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">52</span>; ++i) &#123;</div><div class="line">    dist[i][i] = INT_MAX;</div><div class="line">  &#125;</div><div class="line">  </div><div class="line">  <span class="keyword">int</span> ret = INT_MAX; <span class="keyword">int</span> index = <span class="number">0</span>;</div><div class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">26</span>; ++i) &#123;</div><div class="line">    <span class="keyword">if</span> (dist[i][<span class="number">25</span>] == INT_MAX)</div><div class="line">        <span class="keyword">continue</span>;</div><div class="line">    <span class="keyword">if</span> (ret &gt; dist[i][<span class="number">25</span>]) &#123;</div><div class="line">        ret = dist[i][<span class="number">25</span>];</div><div class="line">        index = i;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">  </div><div class="line">  <span class="built_in">cout</span> &lt;&lt; (<span class="keyword">char</span>)(<span class="string">'A'</span> + index) &lt;&lt; <span class="string">" "</span> &lt;&lt; ret &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">  fout &lt;&lt; (<span class="keyword">char</span>)(<span class="string">'A'</span> + index) &lt;&lt; <span class="string">" "</span> &lt;&lt; ret &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">&#125;</div><div class="line"></div></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2016/10/11/2016-10-11-USACO-BessieComeHome/" data-id="ciu6dy8p200461nxg0cv5lhl6" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2016/10/11/2016-10-11-USACO-BessieComeHome/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Flyod/">Flyod</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Shortest-Path/">Shortest Path</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
   
     <article id="post-2016-10-09-USACO-Cowtours" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
@@ -100,13 +145,21 @@ ga('send', 'pageview');
     
     <div class="article-entry" itemprop="articleBody">
       
-        <figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;utility&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cmath&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;limits&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iomanip&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> DOUBLE_MAX std::numeric_limits<span class="meta-string">&lt;double&gt;</span>::max()</span></div><div class="line"></div><div class="line"><span class="keyword">int</span> N;</div><div class="line"></div><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> Point &#123;</div><div class="line">  <span class="keyword">int</span> x; <span class="keyword">int</span> y;</div><div class="line">&#125; tPoint;</div><div class="line"></div><div class="line"><span class="built_in">vector</span>&lt;tPoint&gt; points;</div><div class="line"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">double</span>&gt;&gt; dist;</div><div class="line"><span class="built_in">vector</span>&lt;<span class="keyword">double</span>&gt; dmax;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">double</span> <span class="title">distance</span><span class="params">(<span class="keyword">int</span> x1, <span class="keyword">int</span> y1, <span class="keyword">int</span> x2, <span class="keyword">int</span> y2)</span> </span>&#123;</div><div class="line">  <span class="keyword">return</span> <span class="built_in">sqrt</span>((<span class="keyword">double</span>)<span class="built_in">pow</span>(x1 - x2, <span class="number">2</span>) + (<span class="keyword">double</span>)<span class="built_in">pow</span>(y1 - y2, <span class="number">2</span>));</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"cowtour.in"</span>)</span></span>;</div><div class="line">  <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"cowtour.out"</span>)</span></span>;</div><div class="line"></div><div class="line">  fin &gt;&gt; N;</div><div class="line">  points = <span class="built_in">vector</span>&lt;tPoint&gt;(N, tPoint());</div><div class="line">  dist = <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">double</span>&gt;&gt;(N, <span class="built_in">vector</span>&lt;<span class="keyword">double</span>&gt;(N, <span class="number">0</span>));</div><div class="line">  dmax = <span class="built_in">vector</span>&lt;<span class="keyword">double</span>&gt;(N, <span class="number">0</span>);</div><div class="line"></div><div class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</div><div class="line">    fin &gt;&gt; points[i].x;</div><div class="line">    fin &gt;&gt; points[i].y;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; N; ++j) &#123;</div><div class="line">      <span class="keyword">char</span> c;</div><div class="line">      fin &gt;&gt; c;</div><div class="line">      <span class="keyword">if</span> (c == <span class="string">'0'</span>) &#123;</div><div class="line">        dist[i][j] = DOUBLE_MAX;</div><div class="line">      &#125; <span class="keyword">else</span> &#123;</div><div class="line">        dist[i][j] = distance(points[i].x, points[i].y, points[j].x, points[j].y);</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment">// Flyod all pair shortest path.</span></div><div class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; N; ++k) &#123;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</div><div class="line">      <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; N; ++j) &#123;</div><div class="line">        <span class="keyword">if</span> ((dist[i][k] + dist[k][j] &lt; dist[i][j]) &amp;&amp;</div><div class="line">             dist[i][k] != DOUBLE_MAX &amp;&amp;</div><div class="line">             dist[k][j] != DOUBLE_MAX) &#123;</div><div class="line">          dist[i][j] = dist[i][k] + dist[k][j];</div><div class="line">        &#125;</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i)&#123;</div><div class="line">    dist[i][i] = DOUBLE_MAX;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="keyword">double</span> max_distance = <span class="number">0</span>;</div><div class="line">  <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i)&#123;</div><div class="line">    <span class="keyword">double</span> cmax = <span class="number">0</span>;</div><div class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; N; ++j)&#123;</div><div class="line">      <span class="keyword">if</span> (dist[i][j] == DOUBLE_MAX)</div><div class="line">        <span class="keyword">continue</span>;</div><div class="line">      cmax = <span class="built_in">std</span>::max(cmax, dist[i][j]);</div><div class="line">    &#125;</div><div class="line">    dmax[i] = cmax;</div><div class="line">    max_distance = <span class="built_in">std</span>::max(max_distance, cmax);</div><div class="line">  &#125;</div><div class="line"></div><div class="line"></div><div class="line">  <span class="keyword">double</span> ret = DOUBLE_MAX;</div><div class="line">  <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N - <span class="number">1</span>; ++i)&#123;</div><div class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> j = i + <span class="number">1</span>; j &lt; N; ++j)&#123;</div><div class="line">      <span class="keyword">if</span> (i != j &amp;&amp; dist[i][j] == DOUBLE_MAX) &#123;</div><div class="line">        <span class="keyword">double</span> d = distance(points[i].x, points[i].y,</div><div class="line">                            points[j].x, points[j].y);</div><div class="line">        ret = <span class="built_in">std</span>::min(ret, d + dmax[i] + dmax[j]);</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  fout &lt;&lt; setiosflags(ios::fixed) &lt;&lt; setprecision(<span class="number">6</span>)</div><div class="line">    &lt;&lt; (max_distance &gt; ret ? max_distance : ret) &lt;&lt; <span class="built_in">endl</span>;</div><div class="line"></div><div class="line">  <span class="built_in">cout</span> &lt;&lt; setiosflags(ios::fixed) &lt;&lt; setprecision(<span class="number">6</span>)</div><div class="line">  &lt;&lt; (max_distance &gt; ret ? max_distance : ret) &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">  <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+        <p>This problem asks about the longest paths among the shortest paths. The basic idea is to use a brutal force search against<br>all pair shortest paths. There are two cases for the shortest paths:</p>
+<ul>
+<li>The shortest path is one of those that’s connecting two pastures that’s already connected. These paths are already available in original graph.</li>
+<li>The shortest path does not exist in original graph. Between two disconnected pastures, say pasture A and pasture B, we can have them connected by<br>having a path go between A and B. Now before we connect A and B, there must exist pasture C and D, such that distance AC is the maximized possible<br>distance between A and all other pastures A already connected in original graph, and similarly distance BD is maximized possible distance between B<br>and all other pastures B already connected in original graph. The new possible longest path of all shortest path between pairs is now distance(AC) +<br>distance(BD) + distance (AB). </li>
+<li>Combining two cases, we can do a brutal force search and find the maximum path.</li>
+<li>For all pastures that have already connected, use Floyd all pair shortest paths to calculate the path values. </li>
+<li>There is no need to explicitly calculate the strongly connected component that connected pastures form, because we would iterate through pair of<br>pastures, rather than through pair of strongly connected components formed by pastures. And we can tell if two pastures needs to be checked because we<br>will only check those that have initial distance value of infinite (meaning not connected initially.).</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;utility&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cmath&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;limits&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iomanip&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> DOUBLE_MAX std::numeric_limits<span class="meta-string">&lt;double&gt;</span>::max()</span></div><div class="line"></div><div class="line"><span class="keyword">int</span> N;</div><div class="line"></div><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> Point &#123;</div><div class="line">  <span class="keyword">int</span> x; <span class="keyword">int</span> y;</div><div class="line">&#125; tPoint;</div><div class="line"></div><div class="line"><span class="built_in">vector</span>&lt;tPoint&gt; points;</div><div class="line"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">double</span>&gt;&gt; dist;</div><div class="line"><span class="built_in">vector</span>&lt;<span class="keyword">double</span>&gt; dmax;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">double</span> <span class="title">distance</span><span class="params">(<span class="keyword">int</span> x1, <span class="keyword">int</span> y1, <span class="keyword">int</span> x2, <span class="keyword">int</span> y2)</span> </span>&#123;</div><div class="line">  <span class="keyword">return</span> <span class="built_in">sqrt</span>((<span class="keyword">double</span>)<span class="built_in">pow</span>(x1 - x2, <span class="number">2</span>) + (<span class="keyword">double</span>)<span class="built_in">pow</span>(y1 - y2, <span class="number">2</span>));</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"cowtour.in"</span>)</span></span>;</div><div class="line">  <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"cowtour.out"</span>)</span></span>;</div><div class="line"></div><div class="line">  fin &gt;&gt; N;</div><div class="line">  points = <span class="built_in">vector</span>&lt;tPoint&gt;(N, tPoint());</div><div class="line">  dist = <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">double</span>&gt;&gt;(N, <span class="built_in">vector</span>&lt;<span class="keyword">double</span>&gt;(N, <span class="number">0</span>));</div><div class="line">  dmax = <span class="built_in">vector</span>&lt;<span class="keyword">double</span>&gt;(N, <span class="number">0</span>);</div><div class="line"></div><div class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</div><div class="line">    fin &gt;&gt; points[i].x;</div><div class="line">    fin &gt;&gt; points[i].y;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; N; ++j) &#123;</div><div class="line">      <span class="keyword">char</span> c;</div><div class="line">      fin &gt;&gt; c;</div><div class="line">      <span class="keyword">if</span> (c == <span class="string">'0'</span>) &#123;</div><div class="line">        dist[i][j] = DOUBLE_MAX;</div><div class="line">      &#125; <span class="keyword">else</span> &#123;</div><div class="line">        dist[i][j] = distance(points[i].x, points[i].y, points[j].x, points[j].y);</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment">// Flyod all pair shortest path.</span></div><div class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; N; ++k) &#123;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</div><div class="line">      <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; N; ++j) &#123;</div><div class="line">        <span class="keyword">if</span> ((dist[i][k] + dist[k][j] &lt; dist[i][j]) &amp;&amp;</div><div class="line">             dist[i][k] != DOUBLE_MAX &amp;&amp;</div><div class="line">             dist[k][j] != DOUBLE_MAX) &#123;</div><div class="line">          dist[i][j] = dist[i][k] + dist[k][j];</div><div class="line">        &#125;</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i)&#123;</div><div class="line">    dist[i][i] = DOUBLE_MAX;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="keyword">double</span> max_distance = <span class="number">0</span>;</div><div class="line">  <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i)&#123;</div><div class="line">    <span class="keyword">double</span> cmax = <span class="number">0</span>;</div><div class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; N; ++j)&#123;</div><div class="line">      <span class="keyword">if</span> (dist[i][j] == DOUBLE_MAX)</div><div class="line">        <span class="keyword">continue</span>;</div><div class="line">      cmax = <span class="built_in">std</span>::max(cmax, dist[i][j]);</div><div class="line">    &#125;</div><div class="line">    dmax[i] = cmax;</div><div class="line">    max_distance = <span class="built_in">std</span>::max(max_distance, cmax);</div><div class="line">  &#125;</div><div class="line"></div><div class="line"></div><div class="line">  <span class="keyword">double</span> ret = DOUBLE_MAX;</div><div class="line">  <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N - <span class="number">1</span>; ++i)&#123;</div><div class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> j = i + <span class="number">1</span>; j &lt; N; ++j)&#123;</div><div class="line">      <span class="keyword">if</span> (i != j &amp;&amp; dist[i][j] == DOUBLE_MAX) &#123;</div><div class="line">        <span class="keyword">double</span> d = distance(points[i].x, points[i].y,</div><div class="line">                            points[j].x, points[j].y);</div><div class="line">        ret = <span class="built_in">std</span>::min(ret, d + dmax[i] + dmax[j]);</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  fout &lt;&lt; setiosflags(ios::fixed) &lt;&lt; setprecision(<span class="number">6</span>)</div><div class="line">    &lt;&lt; (max_distance &gt; ret ? max_distance : ret) &lt;&lt; <span class="built_in">endl</span>;</div><div class="line"></div><div class="line">  <span class="built_in">cout</span> &lt;&lt; setiosflags(ios::fixed) &lt;&lt; setprecision(<span class="number">6</span>)</div><div class="line">  &lt;&lt; (max_distance &gt; ret ? max_distance : ret) &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">  <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/10/09/2016-10-09-USACO-Cowtours/" data-id="ciu3lx2lg0000uoxgvkjw4qd9" class="article-share-link">Partager</a>
+      <a data-url="http://lianghan.org/2016/10/09/2016-10-09-USACO-Cowtours/" data-id="ciu6dy8p0003z1nxg76lfhpup" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2016/10/09/2016-10-09-USACO-Cowtours/#disqus_thread" class="article-comment-link">Commentaires</a>
+        <a href="http://lianghan.org/2016/10/09/2016-10-09-USACO-Cowtours/#disqus_thread" class="article-comment-link">Comments</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Floyd/">Floyd</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Graph/">Graph</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Shortest-Path/">Shortest Path</a></li></ul>
@@ -154,9 +207,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/10/07/2016-10-07-USACO-Overfencing/" data-id="ciu0bolvk0030u1vtmbo0orel" class="article-share-link">Partager</a>
+      <a data-url="http://lianghan.org/2016/10/07/2016-10-07-USACO-Overfencing/" data-id="ciu6dy8oy003w1nxgam4e0gpx" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2016/10/07/2016-10-07-USACO-Overfencing/#disqus_thread" class="article-comment-link">Commentaires</a>
+        <a href="http://lianghan.org/2016/10/07/2016-10-07-USACO-Overfencing/#disqus_thread" class="article-comment-link">Comments</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/BFS/">BFS</a></li></ul>
@@ -199,9 +252,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/10/06/2016-10-06-USACO-TheTamWorthTwo/" data-id="ciu0bolvj002wu1vt5480relm" class="article-share-link">Partager</a>
+      <a data-url="http://lianghan.org/2016/10/06/2016-10-06-USACO-TheTamWorthTwo/" data-id="ciu6dy8ou003o1nxg5vp44bzh" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2016/10/06/2016-10-06-USACO-TheTamWorthTwo/#disqus_thread" class="article-comment-link">Commentaires</a>
+        <a href="http://lianghan.org/2016/10/06/2016-10-06-USACO-TheTamWorthTwo/#disqus_thread" class="article-comment-link">Comments</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Search/">Search</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Simluation/">Simluation</a></li></ul>
@@ -244,9 +297,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/10/05/2016-10-05-USACO-ControllingCompanies/" data-id="ciu0bolvf002tu1vtpo0w8g7n" class="article-share-link">Partager</a>
+      <a data-url="http://lianghan.org/2016/10/05/2016-10-05-USACO-ControllingCompanies/" data-id="ciu6dy8ox003t1nxgsq13jret" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2016/10/05/2016-10-05-USACO-ControllingCompanies/#disqus_thread" class="article-comment-link">Commentaires</a>
+        <a href="http://lianghan.org/2016/10/05/2016-10-05-USACO-ControllingCompanies/#disqus_thread" class="article-comment-link">Comments</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DFS/">DFS</a></li></ul>
@@ -289,9 +342,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/09/26/2016-09-26-USACO-MoneySystem/" data-id="ciu0bolvc002mu1vt04arpbao" class="article-share-link">Partager</a>
+      <a data-url="http://lianghan.org/2016/09/26/2016-09-26-USACO-MoneySystem/" data-id="ciu6dy8oq003i1nxgy3livddf" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2016/09/26/2016-09-26-USACO-MoneySystem/#disqus_thread" class="article-comment-link">Commentaires</a>
+        <a href="http://lianghan.org/2016/09/26/2016-09-26-USACO-MoneySystem/#disqus_thread" class="article-comment-link">Comments</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dynamic-Programming/">Dynamic Programming</a></li></ul>
@@ -334,9 +387,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/09/25/2016-09-25-USACO-ZeroSum/" data-id="ciu0bolvd002pu1vttuxmm8x4" class="article-share-link">Partager</a>
+      <a data-url="http://lianghan.org/2016/09/25/2016-09-25-USACO-ZeroSum/" data-id="ciu6dy8or003l1nxgvd6p5z7a" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2016/09/25/2016-09-25-USACO-ZeroSum/#disqus_thread" class="article-comment-link">Commentaires</a>
+        <a href="http://lianghan.org/2016/09/25/2016-09-25-USACO-ZeroSum/#disqus_thread" class="article-comment-link">Comments</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DFS/">DFS</a></li></ul>
@@ -378,9 +431,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/09/24/2016-09-24-USACO-CowPedigrees/" data-id="ciu0bolvb002iu1vtxr2lyvb5" class="article-share-link">Partager</a>
+      <a data-url="http://lianghan.org/2016/09/24/2016-09-24-USACO-CowPedigrees/" data-id="ciu6dy8oo003f1nxg498cugdf" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2016/09/24/2016-09-24-USACO-CowPedigrees/#disqus_thread" class="article-comment-link">Commentaires</a>
+        <a href="http://lianghan.org/2016/09/24/2016-09-24-USACO-CowPedigrees/#disqus_thread" class="article-comment-link">Comments</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dynamic-Programming/">Dynamic Programming</a></li></ul>
@@ -434,9 +487,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/09/22/2016-09-22-USACO-LongestPrefix/" data-id="ciu0bolva002fu1vtajr44poz" class="article-share-link">Partager</a>
+      <a data-url="http://lianghan.org/2016/09/22/2016-09-22-USACO-LongestPrefix/" data-id="ciu6dy8on003c1nxgsh9in5c2" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2016/09/22/2016-09-22-USACO-LongestPrefix/#disqus_thread" class="article-comment-link">Commentaires</a>
+        <a href="http://lianghan.org/2016/09/22/2016-09-22-USACO-LongestPrefix/#disqus_thread" class="article-comment-link">Comments</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dynamic-Programming/">Dynamic Programming</a></li></ul>
@@ -484,59 +537,12 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/09/20/2016-09-20-USACO-PartyLamps/" data-id="ciu0bolv6002cu1vtf9tv61sp" class="article-share-link">Partager</a>
+      <a data-url="http://lianghan.org/2016/09/20/2016-09-20-USACO-PartyLamps/" data-id="ciu6dy8ok00381nxg3hc5sak5" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2016/09/20/2016-09-20-USACO-PartyLamps/#disqus_thread" class="article-comment-link">Commentaires</a>
+        <a href="http://lianghan.org/2016/09/20/2016-09-20-USACO-PartyLamps/#disqus_thread" class="article-comment-link">Comments</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Simulation/">Simulation</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-2016-09-17-TopCoder-SRM698" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/09/17/2016-09-17-TopCoder-SRM698/" class="article-date">
-  <time datetime="2016-09-17T21:50:31.000Z" itemprop="datePublished">2016-09-17</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/TopCoder/">TopCoder</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/09/17/2016-09-17-TopCoder-SRM698/">TopCoder SRM 698</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>DIV2 500</p>
-<p><a href="https://community.topcoder.com/stat?c=problem_statement&amp;pm=14390" target="_blank" rel="external">Problem Statement</a></p>
-<p>Brutal force with LCS: this problem is easy if we can identify and transform the core matching algorithm it requires to LCS. Here two implementations of LCS are provided, one is through recursion the other is through explicitly maintaining a lookup table. For some reasons, the recursion solution time out on one system test.</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="comment">// This will get TLE on one system test..</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">lcs</span><span class="params">(<span class="keyword">const</span> <span class="built_in">string</span> &amp;s1, <span class="keyword">const</span> <span class="built_in">string</span> &amp;s2, <span class="keyword">int</span> m, <span class="keyword">int</span> n)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (m == <span class="number">0</span> || n == <span class="number">0</span>) <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">    <span class="keyword">if</span> ((s1[m - <span class="number">1</span>] == s2[n - <span class="number">1</span>]) &amp;&amp; (m &gt; <span class="number">0</span> &amp;&amp; n &gt; <span class="number">0</span>))</div><div class="line">        <span class="keyword">return</span> <span class="number">1</span> + lcs(s1, s2, m - <span class="number">1</span>, n - <span class="number">1</span>);</div><div class="line">    <span class="keyword">else</span></div><div class="line">        <span class="keyword">return</span> max(lcs(s1, s2, m, n - <span class="number">1</span>), lcs(s1, s2, m - <span class="number">1</span>, n));</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">lcs2</span><span class="params">(<span class="keyword">const</span> <span class="built_in">string</span> &amp;s1, <span class="keyword">const</span> <span class="built_in">string</span> &amp;s2, <span class="keyword">int</span> m, <span class="keyword">int</span> n)</span> </span>&#123;</div><div class="line">    <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; dp(m + <span class="number">1</span>, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(n + <span class="number">1</span>));</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= m; ++i)&#123;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt;= n; ++j) &#123;</div><div class="line">            <span class="keyword">if</span> (i == <span class="number">0</span> || j == <span class="number">0</span>)</div><div class="line">                dp[i][j] = <span class="number">0</span>;</div><div class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (s1[i - <span class="number">1</span>] == s2[j - <span class="number">1</span>])</div><div class="line">                dp[i][j] = dp[i - <span class="number">1</span>][j - <span class="number">1</span>] + <span class="number">1</span>;</div><div class="line">            <span class="keyword">else</span></div><div class="line">                dp[i][j] = <span class="built_in">std</span>::max(dp[i - <span class="number">1</span>][j], dp[i][j - <span class="number">1</span>]);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> dp[m][n];</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">class</span> RepeatStringEasy &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    <span class="function"><span class="keyword">int</span> <span class="title">maximalLength</span><span class="params">(<span class="built_in">string</span> s)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (s.empty()) <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">        <span class="keyword">int</span> ret = <span class="number">0</span>;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; s.size(); ++i) &#123;</div><div class="line">            <span class="built_in">string</span> s1 = <span class="string">""</span>, s2 = <span class="string">""</span>;</div><div class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> m = <span class="number">0</span>; m &lt;= i; ++m) s1 += s[m];</div><div class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> n = i + <span class="number">1</span>; n &lt; s.size(); ++n) s2 += s[n];</div><div class="line">            ret = <span class="built_in">std</span>::max(ret, <span class="number">2</span> * lcs2(s1, s2, (<span class="keyword">int</span>)s1.size(), (<span class="keyword">int</span>)s2.size()));</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> ret;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/09/17/2016-09-17-TopCoder-SRM698/" data-id="ciu0bolv40028u1vtxxazo3oq" class="article-share-link">Partager</a>
-      
-        <a href="http://lianghan.org/2016/09/17/2016-09-17-TopCoder-SRM698/#disqus_thread" class="article-comment-link">Commentaires</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li></ul>
 
     </footer>
   </div>
@@ -556,7 +562,7 @@ ga('send', 'pageview');
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Catégories</h3>
+    <h3 class="widget-title">Categories</h3>
     <div class="widget">
       <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/TopCoder/">TopCoder</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/USACO/">USACO</a></li></ul>
     </div>
@@ -566,9 +572,9 @@ ga('send', 'pageview');
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Mot-clés</h3>
+    <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BFS/">BFS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Backtrack/">Backtrack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Base-Conversion/">Base Conversion</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bit-Manipulation/">Bit Manipulation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Brutal-Force/">Brutal Force</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Combination/">Combination</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DFS/">DFS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dijkstra/">Dijkstra</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dynamic-Programming/">Dynamic Programming</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flood-Fill/">Flood Fill</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Floyd/">Floyd</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Graph/">Graph</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Number-Theory/">Number Theory</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Search/">Search</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shortest-Path/">Shortest Path</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Simluation/">Simluation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Simulation/">Simulation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TopCoder/">TopCoder</a></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BFS/">BFS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Backtrack/">Backtrack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Base-Conversion/">Base Conversion</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bit-Manipulation/">Bit Manipulation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Brutal-Force/">Brutal Force</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Combination/">Combination</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DFS/">DFS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dijkstra/">Dijkstra</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dynamic-Programming/">Dynamic Programming</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flood-Fill/">Flood Fill</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Floyd/">Floyd</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flyod/">Flyod</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Graph/">Graph</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Number-Theory/">Number Theory</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Search/">Search</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shortest-Path/">Shortest Path</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Simluation/">Simluation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Simulation/">Simulation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TopCoder/">TopCoder</a></li></ul>
     </div>
   </div>
 
@@ -576,9 +582,9 @@ ga('send', 'pageview');
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Nuage de mot-clés</h3>
+    <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Algorithm/" style="font-size: 20px;">Algorithm</a> <a href="/tags/BFS/" style="font-size: 15.71px;">BFS</a> <a href="/tags/Backtrack/" style="font-size: 10px;">Backtrack</a> <a href="/tags/Base-Conversion/" style="font-size: 10px;">Base Conversion</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10px;">Bit Manipulation</a> <a href="/tags/Brutal-Force/" style="font-size: 17.14px;">Brutal Force</a> <a href="/tags/Combination/" style="font-size: 10px;">Combination</a> <a href="/tags/DFS/" style="font-size: 14.29px;">DFS</a> <a href="/tags/Dijkstra/" style="font-size: 11.43px;">Dijkstra</a> <a href="/tags/Dynamic-Programming/" style="font-size: 15.71px;">Dynamic Programming</a> <a href="/tags/Flood-Fill/" style="font-size: 11.43px;">Flood Fill</a> <a href="/tags/Floyd/" style="font-size: 10px;">Floyd</a> <a href="/tags/Graph/" style="font-size: 14.29px;">Graph</a> <a href="/tags/Number-Theory/" style="font-size: 11.43px;">Number Theory</a> <a href="/tags/Search/" style="font-size: 18.57px;">Search</a> <a href="/tags/Shortest-Path/" style="font-size: 10px;">Shortest Path</a> <a href="/tags/Simluation/" style="font-size: 10px;">Simluation</a> <a href="/tags/Simulation/" style="font-size: 10px;">Simulation</a> <a href="/tags/TopCoder/" style="font-size: 12.86px;">TopCoder</a>
+      <a href="/tags/Algorithm/" style="font-size: 20px;">Algorithm</a> <a href="/tags/BFS/" style="font-size: 15.71px;">BFS</a> <a href="/tags/Backtrack/" style="font-size: 10px;">Backtrack</a> <a href="/tags/Base-Conversion/" style="font-size: 10px;">Base Conversion</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10px;">Bit Manipulation</a> <a href="/tags/Brutal-Force/" style="font-size: 17.14px;">Brutal Force</a> <a href="/tags/Combination/" style="font-size: 10px;">Combination</a> <a href="/tags/DFS/" style="font-size: 14.29px;">DFS</a> <a href="/tags/Dijkstra/" style="font-size: 11.43px;">Dijkstra</a> <a href="/tags/Dynamic-Programming/" style="font-size: 15.71px;">Dynamic Programming</a> <a href="/tags/Flood-Fill/" style="font-size: 11.43px;">Flood Fill</a> <a href="/tags/Floyd/" style="font-size: 10px;">Floyd</a> <a href="/tags/Flyod/" style="font-size: 10px;">Flyod</a> <a href="/tags/Graph/" style="font-size: 14.29px;">Graph</a> <a href="/tags/Number-Theory/" style="font-size: 11.43px;">Number Theory</a> <a href="/tags/Search/" style="font-size: 18.57px;">Search</a> <a href="/tags/Shortest-Path/" style="font-size: 11.43px;">Shortest Path</a> <a href="/tags/Simluation/" style="font-size: 10px;">Simluation</a> <a href="/tags/Simulation/" style="font-size: 10px;">Simulation</a> <a href="/tags/TopCoder/" style="font-size: 12.86px;">TopCoder</a>
     </div>
   </div>
 
@@ -595,9 +601,13 @@ ga('send', 'pageview');
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Articles récents</h3>
+    <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2016/10/11/2016-10-11-USACO-BessieComeHome/">USACO 2.4 Bessie Come Home</a>
+          </li>
         
           <li>
             <a href="/2016/10/09/2016-10-09-USACO-Cowtours/">USACO 2.4 Cow Tours</a>
@@ -615,10 +625,6 @@ ga('send', 'pageview');
             <a href="/2016/10/05/2016-10-05-USACO-ControllingCompanies/">USACO 2.3 Controlling Companies</a>
           </li>
         
-          <li>
-            <a href="/2016/09/26/2016-09-26-USACO-MoneySystem/">USACO 2.3 Money System</a>
-          </li>
-        
       </ul>
     </div>
   </div>
@@ -632,7 +638,7 @@ ga('send', 'pageview');
   <div class="outer">
     <div id="footer-info" class="inner">
       &copy; 2016 hanm<br>
-      Propulsé by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
     </div>
   </div>
 </footer>
