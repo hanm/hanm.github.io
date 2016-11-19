@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>USACO 3.2 Magic Squares | Quantum Field</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Typical solution for ‘minimum’ or ‘maximum’ problems:
+
+Greedy
+Dynamic Programming
+BFS
+
+For this problem, it is not obvious about overlapping sub-problems so BFS is an obvious solution.The tricky parts">
+<meta property="og:type" content="article">
+<meta property="og:title" content="USACO 3.2 Magic Squares">
+<meta property="og:url" content="http://lianghan.org/2016/11/19/2016-11-19-USACO-MagicSquares/index.html">
+<meta property="og:site_name" content="Quantum Field">
+<meta property="og:description" content="Typical solution for ‘minimum’ or ‘maximum’ problems:
+
+Greedy
+Dynamic Programming
+BFS
+
+For this problem, it is not obvious about overlapping sub-problems so BFS is an obvious solution.The tricky parts">
+<meta property="og:updated_time" content="2016-11-19T23:17:12.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="USACO 3.2 Magic Squares">
+<meta name="twitter:description" content="Typical solution for ‘minimum’ or ‘maximum’ problems:
+
+Greedy
+Dynamic Programming
+BFS
+
+For this problem, it is not obvious about overlapping sub-problems so BFS is an obvious solution.The tricky parts">
+  
+    <link rel="alternate" href="/atom.xml" title="Quantum Field" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-82074845-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Quantum Field</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://lianghan.org"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-2016-11-19-USACO-MagicSquares" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/11/19/2016-11-19-USACO-MagicSquares/" class="article-date">
+  <time datetime="2016-11-19T23:10:31.000Z" itemprop="datePublished">2016-11-19</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/USACO/">USACO</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      USACO 3.2 Magic Squares
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Typical solution for ‘minimum’ or ‘maximum’ problems:</p>
+<ul>
+<li>Greedy</li>
+<li>Dynamic Programming</li>
+<li>BFS</li>
+</ul>
+<p>For this problem, it is not obvious about overlapping sub-problems so BFS is an obvious solution.<br>The tricky parts are:</p>
+<ul>
+<li>How to encode the transforms (the A, B, and C).</li>
+<li>How to test if a state has been explored.</li>
+<li>How to perform backtracking once we have hit desired states.</li>
+</ul>
+<p>I think this problem is very good on testing implementation skills, as the algorithm itself is not very complicated.</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;numeric&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;utility&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cmath&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;map&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unordered_map&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;climits&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sstream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;queue&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; tx = &#123;</div><div class="line">    &#123;<span class="number">8</span>,<span class="number">7</span>,<span class="number">6</span>,<span class="number">5</span>,<span class="number">4</span>,<span class="number">3</span>,<span class="number">2</span>,<span class="number">1</span>&#125;, <span class="comment">// A</span></div><div class="line">    &#123;<span class="number">4</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>,<span class="number">5</span>&#125;, <span class="comment">// B</span></div><div class="line">    &#123;<span class="number">1</span>,<span class="number">7</span>,<span class="number">2</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">3</span>,<span class="number">6</span>,<span class="number">8</span>&#125;, <span class="comment">// C</span></div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="keyword">struct</span> state &#123;</div><div class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; val;</div><div class="line">    state() &#123;</div><div class="line">        val = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(<span class="number">8</span>, <span class="number">0</span>);</div><div class="line">        <span class="built_in">std</span>::iota(val.begin(), val.end(), <span class="number">1</span>);</div><div class="line">    &#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="built_in">queue</span>&lt;state&gt; q;</div><div class="line"><span class="keyword">const</span> <span class="keyword">int</span> MAX_STATES = <span class="number">40500</span>;</div><div class="line"><span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt; visited(MAX_STATES, <span class="literal">false</span>);</div><div class="line"><span class="comment">// Stores state_hash:(previous state hash : transform index)</span></div><div class="line"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; trace(MAX_STATES, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(<span class="number">2</span>, <span class="number">-1</span>));</div><div class="line"><span class="comment">// Stores state_hash:transform index</span></div><div class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; transforms(MAX_STATES, <span class="number">0</span>);</div><div class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; factorial = &#123;<span class="number">1</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">6</span>, <span class="number">24</span>, <span class="number">120</span>, <span class="number">720</span>, <span class="number">5040</span>&#125;;</div><div class="line"><span class="comment">// Expected state (read from input.).</span></div><div class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; target(<span class="number">8</span>, <span class="number">0</span>);</div><div class="line"></div><div class="line"><span class="keyword">int</span> steps;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">hashing</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; state)</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> sum = <span class="number">1</span>, t = <span class="number">0</span>;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">7</span>; ++i) &#123;</div><div class="line">        t = <span class="number">0</span>;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = i + <span class="number">1</span>; j &lt; <span class="number">8</span>; ++j) &#123;</div><div class="line">            <span class="keyword">if</span>(state[j] &lt; state[i]) ++t;</div><div class="line">        &#125;</div><div class="line">        sum += t * factorial[<span class="number">7</span> - i];</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> sum;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">bfs</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> hash = <span class="number">0</span>;</div><div class="line">    trace[<span class="number">1</span>][<span class="number">1</span>] = <span class="number">0</span>;</div><div class="line">    visited[<span class="number">1</span>] = <span class="literal">true</span>;</div><div class="line">    q.emplace(state());</div><div class="line"></div><div class="line">    <span class="keyword">while</span>(!q.empty()) &#123;</div><div class="line">        <span class="keyword">auto</span> cur = q.front();q.pop();</div><div class="line">        hash = hashing(cur.val);</div><div class="line">        <span class="keyword">if</span>(cur.val == target)</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">3</span>; ++i) &#123;</div><div class="line">            state next;</div><div class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; <span class="number">8</span>; ++j) &#123;</div><div class="line">                next.val[j] = cur.val[tx[i][j] - <span class="number">1</span>];</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">int</span> next_state_hash = hashing(next.val);</div><div class="line">            <span class="keyword">if</span> (visited[next_state_hash]) <span class="keyword">continue</span>;</div><div class="line">            q.push(next);</div><div class="line">            visited[next_state_hash] = <span class="literal">true</span>;</div><div class="line">            trace[next_state_hash][<span class="number">0</span>] = hash;</div><div class="line">            trace[next_state_hash][<span class="number">1</span>] = i;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">while</span> (trace[hash][<span class="number">0</span>] != <span class="number">-1</span>) &#123;</div><div class="line">        transforms[steps]= trace[hash][<span class="number">1</span>];</div><div class="line">        hash = trace[hash][<span class="number">0</span>];</div><div class="line">        ++steps;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">output</span><span class="params">(ofstream &amp;fout)</span> </span>&#123;</div><div class="line">    <span class="built_in">cout</span> &lt;&lt; steps &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">    fout &lt;&lt; steps &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = steps - <span class="number">1</span>; i &gt;= <span class="number">0</span>; --i) &#123;</div><div class="line">        <span class="keyword">char</span> c = transforms[i] + <span class="string">'A'</span>;</div><div class="line">        <span class="built_in">cout</span> &lt;&lt; c; fout &lt;&lt; c;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    fout &lt;&lt; <span class="built_in">endl</span>; <span class="built_in">cout</span> &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"msquare.in"</span>)</span></span>;</div><div class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"msquare.out"</span>)</span></span>;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">8</span>; ++i) &#123;</div><div class="line">        fin &gt;&gt; target[i];</div><div class="line">    &#125;</div><div class="line">    bfs();</div><div class="line">    output(fout);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2016/11/19/2016-11-19-USACO-MagicSquares/" data-id="civpu4aw6005nimxgvwery7gu" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2016/11/19/2016-11-19-USACO-MagicSquares/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/BFS/">BFS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Search/">Search</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2016/11/08/2016-11-08-USACO-FeedRatios/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">USACO 3.2 Feed Ratios</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<section id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/TopCoder/">TopCoder</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/USACO/">USACO</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BFS/">BFS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Backtrack/">Backtrack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Base-Conversion/">Base Conversion</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bit-Manipulation/">Bit Manipulation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Brutal-Force/">Brutal Force</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Combination/">Combination</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Counting/">Counting</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DFS/">DFS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dijkstra/">Dijkstra</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dynamic-Programming/">Dynamic Programming</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flood-Fill/">Flood Fill</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Floyd/">Floyd</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gauss-Elimination/">Gauss Elimination</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Graph/">Graph</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hashing/">Hashing</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Knapsack/">Knapsack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Minimum-Spanning-Tree/">Minimum Spanning Tree</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Number-Theory/">Number Theory</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Prim/">Prim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Rolling-Array/">Rolling Array</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Search/">Search</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shortest-Path/">Shortest Path</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Simulation/">Simulation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/String-Manipulation/">String Manipulation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TopCoder/">TopCoder</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Algorithm/" style="font-size: 20px;">Algorithm</a> <a href="/tags/BFS/" style="font-size: 15.56px;">BFS</a> <a href="/tags/Backtrack/" style="font-size: 10px;">Backtrack</a> <a href="/tags/Base-Conversion/" style="font-size: 10px;">Base Conversion</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10px;">Bit Manipulation</a> <a href="/tags/Brutal-Force/" style="font-size: 16.67px;">Brutal Force</a> <a href="/tags/Combination/" style="font-size: 11.11px;">Combination</a> <a href="/tags/Counting/" style="font-size: 10px;">Counting</a> <a href="/tags/DFS/" style="font-size: 13.33px;">DFS</a> <a href="/tags/Dijkstra/" style="font-size: 11.11px;">Dijkstra</a> <a href="/tags/Dynamic-Programming/" style="font-size: 17.78px;">Dynamic Programming</a> <a href="/tags/Flood-Fill/" style="font-size: 11.11px;">Flood Fill</a> <a href="/tags/Floyd/" style="font-size: 11.11px;">Floyd</a> <a href="/tags/Gauss-Elimination/" style="font-size: 10px;">Gauss Elimination</a> <a href="/tags/Graph/" style="font-size: 14.44px;">Graph</a> <a href="/tags/Hashing/" style="font-size: 10px;">Hashing</a> <a href="/tags/Knapsack/" style="font-size: 10px;">Knapsack</a> <a href="/tags/Minimum-Spanning-Tree/" style="font-size: 10px;">Minimum Spanning Tree</a> <a href="/tags/Number-Theory/" style="font-size: 13.33px;">Number Theory</a> <a href="/tags/Prim/" style="font-size: 10px;">Prim</a> <a href="/tags/Rolling-Array/" style="font-size: 10px;">Rolling Array</a> <a href="/tags/Search/" style="font-size: 18.89px;">Search</a> <a href="/tags/Shortest-Path/" style="font-size: 11.11px;">Shortest Path</a> <a href="/tags/Simulation/" style="font-size: 12.22px;">Simulation</a> <a href="/tags/String-Manipulation/" style="font-size: 10px;">String Manipulation</a> <a href="/tags/TopCoder/" style="font-size: 12.22px;">TopCoder</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">August 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2016/11/19/2016-11-19-USACO-MagicSquares/">USACO 3.2 Magic Squares</a>
+          </li>
+        
+          <li>
+            <a href="/2016/11/08/2016-11-08-USACO-FeedRatios/">USACO 3.2 Feed Ratios</a>
+          </li>
+        
+          <li>
+            <a href="/2016/11/06/2016-11-06-USACO-SpinningWheels/">USACO 3.2 Spinning Wheels</a>
+          </li>
+        
+          <li>
+            <a href="/2016/11/01/2016-11-01-USACO-StringsOrbits.h/">USACO 3.2 Stringsorbits</a>
+          </li>
+        
+          <li>
+            <a href="/2016/10/27/2016-10-27-Factorials/">USACO 3.2 Factorials</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2016 hanm<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+<script>
+  var disqus_shortname = 'quantumfield';
+  
+  var disqus_url = 'http://lianghan.org/2016/11/19/2016-11-19-USACO-MagicSquares/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
