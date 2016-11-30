@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
   
   <title>Quantum Field</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -33,13 +33,13 @@ ga('create', 'UA-82074845-1', 'auto');
 ga('send', 'pageview');
 
 </script>
-<!-- End Google Analytics -->
+<!-- End Google Analytics --><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 
 
 </head>
 
 <body>
-  <div id="container">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div id="container">
     <div id="wrap">
       <header id="header">
   <div id="banner"></div>
@@ -63,9 +63,9 @@ ga('send', 'pageview');
       </nav>
       <nav id="sub-nav">
         
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="Flux RSS"></a>
         
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+        <a id="nav-search-btn" class="nav-icon" title="Rechercher"></a>
       </nav>
       <div id="search-form-wrap">
         <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://lianghan.org"></form>
@@ -75,6 +75,144 @@ ga('send', 'pageview');
 </header>
       <div class="outer">
         <section id="main">
+  
+    <article id="post-2016-08-06-USACO-Greedy-Gift-Givers" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/08/06/2016-08-06-USACO-Greedy-Gift-Givers/" class="article-date">
+  <time datetime="2016-08-06T22:04:31.000Z" itemprop="datePublished">2016-08-06</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/USACO/">USACO</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/08/06/2016-08-06-USACO-Greedy-Gift-Givers/">USACO 1.1 Greedy Gift Givers</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>The algorithm is simple but it is a pain in the ass to parse input and extract names.</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unordered_map&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="keyword">struct</span> Person &#123;</div><div class="line">  <span class="keyword">int</span> size;</div><div class="line">  <span class="built_in">vector</span>&lt;Person*&gt; toList;</div><div class="line">  <span class="keyword">int</span> money;</div><div class="line">  <span class="keyword">int</span> left;</div><div class="line">  <span class="keyword">int</span> sum;</div><div class="line">  <span class="built_in">string</span> name;</div><div class="line"></div><div class="line">  Person(<span class="built_in">string</span> name) : size(<span class="number">0</span>), money(<span class="number">0</span>), left(<span class="number">0</span>), name(name) &#123;&#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="function">ofstream <span class="title">fout</span> <span class="params">(<span class="string">"gift1.out"</span>)</span></span>;</div><div class="line">  <span class="function">ifstream <span class="title">fin</span> <span class="params">(<span class="string">"gift1.in"</span>)</span></span>;</div><div class="line"></div><div class="line">  <span class="built_in">string</span> input;</div><div class="line">  getline(fin, input);</div><div class="line">  <span class="keyword">int</span> total = stoi(input);</div><div class="line"></div><div class="line">  <span class="comment">// Each line contains the name of a group member</span></div><div class="line">  <span class="built_in">unordered_map</span>&lt;<span class="built_in">string</span>, Person*&gt; hashmap;</div><div class="line">  <span class="built_in">vector</span>&lt;Person*&gt; personList;</div><div class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; total; ++i) &#123;</div><div class="line">    <span class="built_in">string</span> name;</div><div class="line">    getline(fin, name);</div><div class="line">    <span class="keyword">auto</span> person = <span class="keyword">new</span> Person(name);</div><div class="line">    hashmap[name] = person;</div><div class="line">    personList.push_back(person);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment">/*</span></div><div class="line">   The first line in the group tells the person's name who will be giving gifts.</div><div class="line">   The second line in the group contains two numbers: The initial amount of money (in the range 0..2000) to be divided up into gifts by the giver and then the number of people to whom the giver will give gifts, NGi (0 ≤ NGi ≤ NP-1).</div><div class="line">   If NGi is nonzero, each of the next NGi lines lists the the name of a recipient of a gift.</div><div class="line">   */</div><div class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; total; ++i) &#123;</div><div class="line">    <span class="built_in">string</span> name;</div><div class="line">    getline(fin, name);</div><div class="line">    <span class="keyword">auto</span> person = hashmap[name];</div><div class="line"></div><div class="line">    fin &gt;&gt; person-&gt;money &gt;&gt; person-&gt;size;</div><div class="line">    <span class="built_in">string</span> newline;</div><div class="line">    getline(fin, newline);</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (!person-&gt;size)</div><div class="line">      person-&gt;left = person-&gt;money;</div><div class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (person-&gt;size == <span class="number">1</span>)</div><div class="line">      person-&gt;left = <span class="number">0</span>;</div><div class="line">    <span class="keyword">else</span></div><div class="line">      person-&gt;left = person-&gt;money % person-&gt;size;</div><div class="line"></div><div class="line">    person-&gt;sum = person-&gt;left;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (person-&gt;size) &#123;</div><div class="line">      <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; person-&gt;size; ++j) &#123;</div><div class="line">        <span class="built_in">string</span> toName;</div><div class="line">        getline(fin, toName);</div><div class="line">        person-&gt;toList.push_back(hashmap[toName]);</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;item : hashmap) &#123;</div><div class="line">    <span class="keyword">if</span> (!item.second-&gt;size) <span class="keyword">continue</span>;</div><div class="line">    <span class="keyword">int</span> money = (item.second-&gt;money - item.second-&gt;left) / item.second-&gt;size;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;toPerson : item.second-&gt;toList) &#123;</div><div class="line">      toPerson-&gt;sum += money;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;person : personList) &#123;</div><div class="line">    fout &lt;&lt; person-&gt;name &lt;&lt; <span class="string">" "</span> &lt;&lt; person-&gt;sum - person-&gt;money &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2016/08/06/2016-08-06-USACO-Greedy-Gift-Givers/" data-id="ciw5j7xaw0006sexgxlvc1ylo" class="article-share-link">Partager</a>
+      
+        <a href="http://lianghan.org/2016/08/06/2016-08-06-USACO-Greedy-Gift-Givers/#disqus_thread" class="article-comment-link">Commentaires</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-2016-08-06-USACO-YourRideIsHere" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/08/06/2016-08-06-USACO-YourRideIsHere/" class="article-date">
+  <time datetime="2016-08-06T17:19:31.000Z" itemprop="datePublished">2016-08-06</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/USACO/">USACO</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/08/06/2016-08-06-USACO-YourRideIsHere/">USACO 1.1 - Your Ride Is Here</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>The easiest problem in USACO training.</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"ride.out"</span>)</span></span>;</div><div class="line">  <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"ride.in"</span>)</span></span>;</div><div class="line"></div><div class="line">  <span class="built_in">string</span> comet, group;</div><div class="line">  getline(fin, comet);</div><div class="line">  getline(fin, group);</div><div class="line"></div><div class="line">  <span class="keyword">long</span> <span class="keyword">long</span> valComet = <span class="number">1</span>;</div><div class="line">  <span class="keyword">long</span> <span class="keyword">long</span> valGroup = <span class="number">1</span>;</div><div class="line"></div><div class="line">  <span class="keyword">for</span> (<span class="keyword">char</span> &amp;c : comet)</div><div class="line">    valComet *= (c - <span class="string">'A'</span> + <span class="number">1</span>);</div><div class="line">  valComet %= <span class="number">47</span>;</div><div class="line"></div><div class="line">  <span class="keyword">for</span> (<span class="keyword">char</span> &amp;c : group)</div><div class="line">    valGroup *= (c - <span class="string">'A'</span> + <span class="number">1</span>);</div><div class="line">  valGroup %= <span class="number">47</span>;</div><div class="line"></div><div class="line">  <span class="keyword">if</span> (valComet == valGroup)</div><div class="line">    fout &lt;&lt; <span class="string">"GO"</span> &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">  <span class="keyword">else</span></div><div class="line">    fout &lt;&lt; <span class="string">"STAY"</span> &lt;&lt; <span class="built_in">endl</span>;</div><div class="line"></div><div class="line">  <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div><div class="line"></div></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2016/08/06/2016-08-06-USACO-YourRideIsHere/" data-id="ciw5j7xb40007sexgesjl0yzs" class="article-share-link">Partager</a>
+      
+        <a href="http://lianghan.org/2016/08/06/2016-08-06-USACO-YourRideIsHere/#disqus_thread" class="article-comment-link">Commentaires</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-2016-08-03-DijKstra" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/08/03/2016-08-03-DijKstra/" class="article-date">
+  <time datetime="2016-08-04T04:40:31.000Z" itemprop="datePublished">2016-08-03</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/TopCoder/">TopCoder</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/08/03/2016-08-03-DijKstra/">A C++ implementation of DijKstra Algorithm</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>DijKstra is a very useful algorithm used in graph search for finding single source shortest path. Devils are in details, here is a caninocal implementation of the algorithm in C++.</p>
+<p>Like many graph problems, figure out the data structure and the representation of the graph is critical to the implementation of algorithm. Here we use graph’s object-pointer representation which naturally encodes both node relationships and edge weights.</p>
+<p>To be able to reconstruct the shortest path we need to keep a vector that stores the ‘previous’ relationship for each vertice while we are figuring out the shortest path.</p>
+<p><img src="https://upload.wikimedia.org/wikipedia/commons/5/57/Dijkstra_Animation.gif" alt="Dijkstra_Animation"></p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="comment">// [to node index, edge weight] pair.</span></div><div class="line"><span class="keyword">typedef</span> <span class="built_in">std</span>::pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; edge;</div><div class="line"><span class="comment">// [node index, distance to source] pair.</span></div><div class="line"><span class="keyword">typedef</span> <span class="built_in">std</span>::pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; element;</div><div class="line"><span class="keyword">class</span> compare &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">  <span class="function"><span class="keyword">bool</span> <span class="title">operator</span><span class="params">()</span><span class="params">(<span class="keyword">const</span> element&amp;a, <span class="keyword">const</span> element &amp;b)</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> a.second &gt; b.second;</div><div class="line">  &#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">dijkstra</span><span class="params">(<span class="keyword">const</span> <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;edge&gt;&gt; &amp;graph, <span class="keyword">int</span> source, <span class="keyword">int</span> target,</span></span></div><div class="line">             <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;path) &#123;</div><div class="line">  <span class="keyword">int</span> size = (<span class="keyword">int</span>)graph.size();</div><div class="line">  <span class="keyword">if</span> (!size) <span class="keyword">return</span> <span class="number">-1</span>;</div><div class="line">  <span class="keyword">if</span> (source &lt; <span class="number">0</span> || source &gt;= size || target &lt; <span class="number">0</span> || target &gt;= size)</div><div class="line">    <span class="keyword">return</span> <span class="number">-1</span>;</div><div class="line">  <span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt; visited(size, <span class="literal">false</span>);</div><div class="line">  <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; distance(size, INT_MAX);</div><div class="line">  <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; prev(size, <span class="number">-1</span>);</div><div class="line">  path = prev;</div><div class="line">  distance[source] = <span class="number">0</span>;</div><div class="line"></div><div class="line">  priority_queue&lt;element, <span class="built_in">vector</span>&lt;element&gt;, compare&gt; pq;</div><div class="line">  pq.emplace(make_pair(source, <span class="number">0</span>));</div><div class="line"></div><div class="line">  <span class="keyword">while</span> (!pq.empty()) &#123;</div><div class="line">    <span class="keyword">int</span> v = pq.top().first;</div><div class="line">    pq.pop();</div><div class="line">    <span class="keyword">if</span> (v == target) <span class="keyword">return</span> distance[v];</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (visited[v]) <span class="keyword">continue</span>;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;edge : graph[v]) &#123;</div><div class="line">      <span class="keyword">int</span> u = edge.first; <span class="comment">// vertice u that connects to v.</span></div><div class="line">      <span class="keyword">int</span> w = edge.second; <span class="comment">// weight of edge that connects u and v.</span></div><div class="line">      <span class="keyword">if</span> (visited[u]) <span class="keyword">continue</span>;</div><div class="line">      <span class="keyword">if</span> (distance[v] + w &lt; distance[u]) &#123;</div><div class="line">        distance[u] = distance[v] + w;</div><div class="line">        pq.emplace(make_pair(u, distance[u]));</div><div class="line">        path[u] = v;</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">    visited[v] = <span class="literal">true</span>;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="keyword">return</span> <span class="number">-1</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[])</span> </span>&#123;</div><div class="line">  <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;edge&gt;&gt; graph(<span class="number">7</span>, <span class="built_in">vector</span>&lt;edge&gt;());</div><div class="line">  graph[<span class="number">1</span>].push_back(make_pair(<span class="number">3</span>, <span class="number">9</span>));</div><div class="line">  graph[<span class="number">1</span>].push_back(make_pair(<span class="number">2</span>, <span class="number">7</span>));</div><div class="line">  graph[<span class="number">1</span>].push_back(make_pair(<span class="number">6</span>, <span class="number">14</span>));</div><div class="line">  graph[<span class="number">2</span>].push_back(make_pair(<span class="number">1</span>, <span class="number">7</span>));</div><div class="line">  graph[<span class="number">2</span>].push_back(make_pair(<span class="number">3</span>, <span class="number">10</span>));</div><div class="line">  graph[<span class="number">2</span>].push_back(make_pair(<span class="number">4</span>, <span class="number">15</span>));</div><div class="line">  graph[<span class="number">3</span>].push_back(make_pair(<span class="number">1</span>, <span class="number">9</span>));</div><div class="line">  graph[<span class="number">3</span>].push_back(make_pair(<span class="number">6</span>, <span class="number">2</span>));</div><div class="line">  graph[<span class="number">3</span>].push_back(make_pair(<span class="number">4</span>, <span class="number">11</span>));</div><div class="line">  graph[<span class="number">4</span>].push_back(make_pair(<span class="number">2</span>, <span class="number">15</span>));</div><div class="line">  graph[<span class="number">4</span>].push_back(make_pair(<span class="number">3</span>, <span class="number">11</span>));</div><div class="line">  graph[<span class="number">4</span>].push_back(make_pair(<span class="number">5</span>, <span class="number">6</span>));</div><div class="line">  graph[<span class="number">5</span>].push_back(make_pair(<span class="number">6</span>, <span class="number">9</span>));</div><div class="line">  graph[<span class="number">5</span>].push_back(make_pair(<span class="number">4</span>, <span class="number">6</span>));</div><div class="line">  graph[<span class="number">6</span>].push_back(make_pair(<span class="number">1</span>, <span class="number">14</span>));</div><div class="line">  graph[<span class="number">6</span>].push_back(make_pair(<span class="number">3</span>, <span class="number">2</span>));</div><div class="line">  graph[<span class="number">6</span>].push_back(make_pair(<span class="number">5</span>, <span class="number">9</span>));</div><div class="line"></div><div class="line">  <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; pre;</div><div class="line">  <span class="keyword">int</span> shortestPath = dijkstra(graph, <span class="number">1</span>, <span class="number">5</span>, pre);</div><div class="line">  <span class="built_in">cout</span> &lt;&lt; <span class="string">"Shortest path from 1 to 5 has length of "</span> &lt;&lt; shortestPath &lt;&lt; <span class="built_in">endl</span>;</div><div class="line"></div><div class="line">  <span class="comment">// Construct shortest path.</span></div><div class="line">  <span class="keyword">int</span> u = <span class="number">5</span>;</div><div class="line">  <span class="built_in">stack</span>&lt;<span class="keyword">int</span>&gt; path;</div><div class="line">  <span class="keyword">while</span> (pre[u] != <span class="number">-1</span>) &#123;</div><div class="line">    path.push(u);</div><div class="line">    u = pre[u];</div><div class="line">  &#125;</div><div class="line">  path.push(u);</div><div class="line"></div><div class="line">  <span class="keyword">while</span> (!path.empty()) &#123;</div><div class="line">    <span class="built_in">cout</span> &lt;&lt; path.top() &lt;&lt; <span class="string">" "</span>;</div><div class="line">    path.pop();</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2016/08/03/2016-08-03-DijKstra/" data-id="ciw5j7xab0002sexg1lqdghew" class="article-share-link">Partager</a>
+      
+        <a href="http://lianghan.org/2016/08/03/2016-08-03-DijKstra/#disqus_thread" class="article-comment-link">Commentaires</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dijkstra/">Dijkstra</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
   
     <article id="post-2016-7-31-KiloManX" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
@@ -116,9 +254,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/07/31/2016-7-31-KiloManX/" data-id="civvqerf9006464xgsh897m26" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/07/31/2016-7-31-KiloManX/" data-id="ciw5j7xex0052sexglnj8q4e3" class="article-share-link">Partager</a>
       
-        <a href="http://lianghan.org/2016/07/31/2016-7-31-KiloManX/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2016/07/31/2016-7-31-KiloManX/#disqus_thread" class="article-comment-link">Commentaires</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/BFS/">BFS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dijkstra/">Dijkstra</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Graph/">Graph</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TopCoder/">TopCoder</a></li></ul>
@@ -163,9 +301,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/07/23/2016-7-23-GrafixMask/" data-id="civvqerfe006f64xgkp133nca" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/07/23/2016-7-23-GrafixMask/" data-id="ciw5j7xeu004vsexg8tp2de96" class="article-share-link">Partager</a>
       
-        <a href="http://lianghan.org/2016/07/23/2016-7-23-GrafixMask/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2016/07/23/2016-7-23-GrafixMask/#disqus_thread" class="article-comment-link">Commentaires</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/BFS/">BFS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DFS/">DFS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Flood-Fill/">Flood Fill</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Graph/">Graph</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TopCoder/">TopCoder</a></li></ul>
@@ -208,9 +346,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/07/20/2016-7-20-PathFinding/" data-id="civvqerf5005t64xg312l9ftp" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/07/20/2016-7-20-PathFinding/" data-id="ciw5j7xeq004rsexgbr9inpbe" class="article-share-link">Partager</a>
       
-        <a href="http://lianghan.org/2016/07/20/2016-7-20-PathFinding/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2016/07/20/2016-7-20-PathFinding/#disqus_thread" class="article-comment-link">Commentaires</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/BFS/">BFS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TopCoder/">TopCoder</a></li></ul>
@@ -233,7 +371,7 @@ ga('send', 'pageview');
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Categories</h3>
+    <h3 class="widget-title">Catégories</h3>
     <div class="widget">
       <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/TopCoder/">TopCoder</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/USACO/">USACO</a></li></ul>
     </div>
@@ -243,9 +381,9 @@ ga('send', 'pageview');
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Tags</h3>
+    <h3 class="widget-title">Mot-clés</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BFS/">BFS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Backtrack/">Backtrack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Base-Conversion/">Base Conversion</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bit-Manipulation/">Bit Manipulation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Brutal-Force/">Brutal Force</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Combination/">Combination</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Counting/">Counting</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DFS/">DFS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dijkstra/">Dijkstra</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dynamic-Programming/">Dynamic Programming</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flood-Fill/">Flood Fill</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Floyd/">Floyd</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gauss-Elimination/">Gauss Elimination</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Graph/">Graph</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hashing/">Hashing</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Knapsack/">Knapsack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Minimum-Spanning-Tree/">Minimum Spanning Tree</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Number-Theory/">Number Theory</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Prim/">Prim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Rolling-Array/">Rolling Array</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Search/">Search</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shortest-Path/">Shortest Path</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Simulation/">Simulation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/String-Manipulation/">String Manipulation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TopCoder/">TopCoder</a></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BFS/">BFS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Backtrack/">Backtrack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Base-Conversion/">Base Conversion</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bit-Manipulation/">Bit Manipulation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Brutal-Force/">Brutal Force</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Combination/">Combination</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Counting/">Counting</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DFS/">DFS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dijkstra/">Dijkstra</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dynamic-Programming/">Dynamic Programming</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Euler-Path/">Euler Path</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flood-Fill/">Flood Fill</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Floyd/">Floyd</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gauss-Elimination/">Gauss Elimination</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Graph/">Graph</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hashing/">Hashing</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Knapsack/">Knapsack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Minimum-Spanning-Tree/">Minimum Spanning Tree</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Number-Theory/">Number Theory</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Prim/">Prim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Rolling-Array/">Rolling Array</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Search/">Search</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shortest-Path/">Shortest Path</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Simulation/">Simulation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/String-Manipulation/">String Manipulation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TopCoder/">TopCoder</a></li></ul>
     </div>
   </div>
 
@@ -253,9 +391,9 @@ ga('send', 'pageview');
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Tag Cloud</h3>
+    <h3 class="widget-title">Nuage de mot-clés</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Algorithm/" style="font-size: 20px;">Algorithm</a> <a href="/tags/BFS/" style="font-size: 15px;">BFS</a> <a href="/tags/Backtrack/" style="font-size: 10px;">Backtrack</a> <a href="/tags/Base-Conversion/" style="font-size: 10px;">Base Conversion</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10px;">Bit Manipulation</a> <a href="/tags/Brutal-Force/" style="font-size: 16.25px;">Brutal Force</a> <a href="/tags/Combination/" style="font-size: 11.25px;">Combination</a> <a href="/tags/Counting/" style="font-size: 10px;">Counting</a> <a href="/tags/DFS/" style="font-size: 13.75px;">DFS</a> <a href="/tags/Dijkstra/" style="font-size: 12.5px;">Dijkstra</a> <a href="/tags/Dynamic-Programming/" style="font-size: 17.5px;">Dynamic Programming</a> <a href="/tags/Flood-Fill/" style="font-size: 11.25px;">Flood Fill</a> <a href="/tags/Floyd/" style="font-size: 11.25px;">Floyd</a> <a href="/tags/Gauss-Elimination/" style="font-size: 10px;">Gauss Elimination</a> <a href="/tags/Graph/" style="font-size: 15px;">Graph</a> <a href="/tags/Hashing/" style="font-size: 10px;">Hashing</a> <a href="/tags/Knapsack/" style="font-size: 10px;">Knapsack</a> <a href="/tags/Minimum-Spanning-Tree/" style="font-size: 10px;">Minimum Spanning Tree</a> <a href="/tags/Number-Theory/" style="font-size: 13.75px;">Number Theory</a> <a href="/tags/Prim/" style="font-size: 10px;">Prim</a> <a href="/tags/Rolling-Array/" style="font-size: 10px;">Rolling Array</a> <a href="/tags/Search/" style="font-size: 18.75px;">Search</a> <a href="/tags/Shortest-Path/" style="font-size: 12.5px;">Shortest Path</a> <a href="/tags/Simulation/" style="font-size: 12.5px;">Simulation</a> <a href="/tags/String-Manipulation/" style="font-size: 10px;">String Manipulation</a> <a href="/tags/TopCoder/" style="font-size: 12.5px;">TopCoder</a>
+      <a href="/tags/Algorithm/" style="font-size: 20px;">Algorithm</a> <a href="/tags/BFS/" style="font-size: 15.56px;">BFS</a> <a href="/tags/Backtrack/" style="font-size: 10px;">Backtrack</a> <a href="/tags/Base-Conversion/" style="font-size: 10px;">Base Conversion</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10px;">Bit Manipulation</a> <a href="/tags/Brutal-Force/" style="font-size: 16.67px;">Brutal Force</a> <a href="/tags/Combination/" style="font-size: 11.11px;">Combination</a> <a href="/tags/Counting/" style="font-size: 10px;">Counting</a> <a href="/tags/DFS/" style="font-size: 14.44px;">DFS</a> <a href="/tags/Dijkstra/" style="font-size: 12.22px;">Dijkstra</a> <a href="/tags/Dynamic-Programming/" style="font-size: 18.89px;">Dynamic Programming</a> <a href="/tags/Euler-Path/" style="font-size: 10px;">Euler Path</a> <a href="/tags/Flood-Fill/" style="font-size: 11.11px;">Flood Fill</a> <a href="/tags/Floyd/" style="font-size: 11.11px;">Floyd</a> <a href="/tags/Gauss-Elimination/" style="font-size: 10px;">Gauss Elimination</a> <a href="/tags/Graph/" style="font-size: 17.78px;">Graph</a> <a href="/tags/Hashing/" style="font-size: 10px;">Hashing</a> <a href="/tags/Knapsack/" style="font-size: 10px;">Knapsack</a> <a href="/tags/Minimum-Spanning-Tree/" style="font-size: 10px;">Minimum Spanning Tree</a> <a href="/tags/Number-Theory/" style="font-size: 13.33px;">Number Theory</a> <a href="/tags/Prim/" style="font-size: 10px;">Prim</a> <a href="/tags/Rolling-Array/" style="font-size: 10px;">Rolling Array</a> <a href="/tags/Search/" style="font-size: 18.89px;">Search</a> <a href="/tags/Shortest-Path/" style="font-size: 12.22px;">Shortest Path</a> <a href="/tags/Simulation/" style="font-size: 12.22px;">Simulation</a> <a href="/tags/String-Manipulation/" style="font-size: 10px;">String Manipulation</a> <a href="/tags/TopCoder/" style="font-size: 12.22px;">TopCoder</a>
     </div>
   </div>
 
@@ -272,9 +410,21 @@ ga('send', 'pageview');
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
+    <h3 class="widget-title">Articles récents</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2016/11/29/2016-11-29-USACO-AGame/">USACO 3.3 A Game</a>
+          </li>
+        
+          <li>
+            <a href="/2016/11/28/2016-11-28-USACO-ShoppingOffers/">USACO 3.3 Shopping Offers</a>
+          </li>
+        
+          <li>
+            <a href="/2016/11/25/2016-11-25-USACO-RidingTheFence/">UASCO 3.3 Riding The Fence</a>
+          </li>
         
           <li>
             <a href="/2016/11/23/2016-11-23-USACO-SweetButter/">USACO 3.2 Sweet Butter</a>
@@ -282,18 +432,6 @@ ga('send', 'pageview');
         
           <li>
             <a href="/2016/11/19/2016-11-19-USACO-MagicSquares/">USACO 3.2 Magic Squares</a>
-          </li>
-        
-          <li>
-            <a href="/2016/11/08/2016-11-08-USACO-FeedRatios/">USACO 3.2 Feed Ratios</a>
-          </li>
-        
-          <li>
-            <a href="/2016/11/06/2016-11-06-USACO-SpinningWheels/">USACO 3.2 Spinning Wheels</a>
-          </li>
-        
-          <li>
-            <a href="/2016/11/01/2016-11-01-USACO-StringsOrbits.h/">USACO 3.2 Stringsorbits</a>
           </li>
         
       </ul>
@@ -309,7 +447,7 @@ ga('send', 'pageview');
   <div class="outer">
     <div id="footer-info" class="inner">
       &copy; 2016 hanm<br>
-      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      Propulsé by <a href="http://hexo.io/" target="_blank">Hexo</a>
     </div>
   </div>
 </footer>
@@ -346,6 +484,6 @@ ga('send', 'pageview');
 
 <script src="/js/script.js"></script>
 
-  </div>
+  </div><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </body>
 </html>
