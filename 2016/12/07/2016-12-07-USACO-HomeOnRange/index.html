@@ -3,21 +3,18 @@
 <head>
   <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
   
-  <title>USACO 1.1 - Your Ride Is Here | Quantum Field</title>
+  <title>USACO 3.3 Home On The Range | Quantum Field</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="The easiest problem in USACO training.
-#include &amp;lt;iostream&amp;gt;#include &amp;lt;fstream&amp;gt;#include &amp;lt;string&amp;gt;using namespace std;int main() &amp;#123;  ofstream fout(&quot;ride.out&quot;);  ifstream fin(&quot;ride.in&quot;">
+  <meta name="description" content="Another relatively straightforward DP problem: the basic idea is to calculate the maximum possible squares (land segment that cows can graze on) that each land can expand to, if the given land is cons">
 <meta property="og:type" content="article">
-<meta property="og:title" content="USACO 1.1 - Your Ride Is Here">
-<meta property="og:url" content="http://lianghan.org/2016/08/06/2016-08-06-USACO-YourRideIsHere/index.html">
+<meta property="og:title" content="USACO 3.3 Home On The Range">
+<meta property="og:url" content="http://lianghan.org/2016/12/07/2016-12-07-USACO-HomeOnRange/index.html">
 <meta property="og:site_name" content="Quantum Field">
-<meta property="og:description" content="The easiest problem in USACO training.
-#include &amp;lt;iostream&amp;gt;#include &amp;lt;fstream&amp;gt;#include &amp;lt;string&amp;gt;using namespace std;int main() &amp;#123;  ofstream fout(&quot;ride.out&quot;);  ifstream fin(&quot;ride.in&quot;">
-<meta property="og:updated_time" content="2016-08-07T00:16:02.000Z">
+<meta property="og:description" content="Another relatively straightforward DP problem: the basic idea is to calculate the maximum possible squares (land segment that cows can graze on) that each land can expand to, if the given land is cons">
+<meta property="og:updated_time" content="2016-12-07T18:52:09.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="USACO 1.1 - Your Ride Is Here">
-<meta name="twitter:description" content="The easiest problem in USACO training.
-#include &amp;lt;iostream&amp;gt;#include &amp;lt;fstream&amp;gt;#include &amp;lt;string&amp;gt;using namespace std;int main() &amp;#123;  ofstream fout(&quot;ride.out&quot;);  ifstream fin(&quot;ride.in&quot;">
+<meta name="twitter:title" content="USACO 3.3 Home On The Range">
+<meta name="twitter:description" content="Another relatively straightforward DP problem: the basic idea is to calculate the maximum possible squares (land segment that cows can graze on) that each land can expand to, if the given land is cons">
   
     <link rel="alternate" href="/atom.xml" title="Quantum Field" type="application/atom+xml">
   
@@ -81,10 +78,10 @@ ga('send', 'pageview');
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="post-2016-08-06-USACO-YourRideIsHere" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-2016-12-07-USACO-HomeOnRange" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2016/08/06/2016-08-06-USACO-YourRideIsHere/" class="article-date">
-  <time datetime="2016-08-06T17:19:31.000Z" itemprop="datePublished">2016-08-06</time>
+    <a href="/2016/12/07/2016-12-07-USACO-HomeOnRange/" class="article-date">
+  <time datetime="2016-12-07T18:44:31.000Z" itemprop="datePublished">2016-12-07</time>
 </a>
     
   <div class="article-category">
@@ -99,7 +96,7 @@ ga('send', 'pageview');
         
   
     <h1 class="article-title" itemprop="name">
-      USACO 1.1 - Your Ride Is Here
+      USACO 3.3 Home On The Range
     </h1>
   
 
@@ -107,17 +104,17 @@ ga('send', 'pageview');
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>The easiest problem in USACO training.</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"ride.out"</span>)</span></span>;</div><div class="line">  <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"ride.in"</span>)</span></span>;</div><div class="line"></div><div class="line">  <span class="built_in">string</span> comet, group;</div><div class="line">  getline(fin, comet);</div><div class="line">  getline(fin, group);</div><div class="line"></div><div class="line">  <span class="keyword">long</span> <span class="keyword">long</span> valComet = <span class="number">1</span>;</div><div class="line">  <span class="keyword">long</span> <span class="keyword">long</span> valGroup = <span class="number">1</span>;</div><div class="line"></div><div class="line">  <span class="keyword">for</span> (<span class="keyword">char</span> &amp;c : comet)</div><div class="line">    valComet *= (c - <span class="string">'A'</span> + <span class="number">1</span>);</div><div class="line">  valComet %= <span class="number">47</span>;</div><div class="line"></div><div class="line">  <span class="keyword">for</span> (<span class="keyword">char</span> &amp;c : group)</div><div class="line">    valGroup *= (c - <span class="string">'A'</span> + <span class="number">1</span>);</div><div class="line">  valGroup %= <span class="number">47</span>;</div><div class="line"></div><div class="line">  <span class="keyword">if</span> (valComet == valGroup)</div><div class="line">    fout &lt;&lt; <span class="string">"GO"</span> &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">  <span class="keyword">else</span></div><div class="line">    fout &lt;&lt; <span class="string">"STAY"</span> &lt;&lt; <span class="built_in">endl</span>;</div><div class="line"></div><div class="line">  <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div><div class="line"></div></pre></td></tr></table></figure>
+        <p>Another relatively straightforward DP problem: the basic idea is to calculate the maximum possible squares (land segment that cows can graze on) that each land can expand to, if the given land is considered as the top-left most corner of the square land segment to be expanded. We calculate this information for each land, starting from the right-down most land (which is just itself), then iteratively repeat the calculation until we reach the top-left most corner. During the computation we can also calculate the final answer incrementally.</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="keyword">int</span> N;</div><div class="line"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; dp;</div><div class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; ret;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"range.in"</span>)</span></span>;</div><div class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"range.out"</span>)</span></span>;</div><div class="line"></div><div class="line">    fin &gt;&gt; N;</div><div class="line">    dp = <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt;(N, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N, <span class="number">0</span>));</div><div class="line">    ret = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N + <span class="number">1</span>, <span class="number">0</span>);</div><div class="line"></div><div class="line">    <span class="keyword">char</span> c;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; N; ++j) &#123;</div><div class="line">            fin &gt;&gt; c;</div><div class="line">            dp[i][j] = c - <span class="string">'0'</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = N - <span class="number">2</span>; i &gt;= <span class="number">0</span>; --i) &#123;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = N - <span class="number">2</span>; j &gt;= <span class="number">0</span>; --j) &#123;</div><div class="line">            <span class="keyword">if</span> (!dp[i][j]) <span class="keyword">continue</span>;</div><div class="line">            dp[i][j] = <span class="built_in">std</span>::min(<span class="built_in">std</span>::min(dp[i][j + <span class="number">1</span>], dp[i + <span class="number">1</span>][j]),</div><div class="line">                                dp[i + <span class="number">1</span>][j + <span class="number">1</span>]) + <span class="number">1</span>;</div><div class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">2</span>; k &lt;= dp[i][j]; ++k) &#123;</div><div class="line">                ret[k]++;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt; N + <span class="number">1</span>; ++i) &#123;</div><div class="line">        <span class="keyword">if</span> (!ret[i]) <span class="keyword">continue</span>;</div><div class="line">        <span class="built_in">cout</span> &lt;&lt; i &lt;&lt; <span class="string">" "</span> &lt;&lt; ret[i] &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">        fout &lt;&lt; i &lt;&lt; <span class="string">" "</span> &lt;&lt; ret[i] &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/06/2016-08-06-USACO-YourRideIsHere/" data-id="ciwfakr170007inxga1vnv2xs" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/12/07/2016-12-07-USACO-HomeOnRange/" data-id="ciwfakr4k004vinxgx3ufyxua" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2016/08/06/2016-08-06-USACO-YourRideIsHere/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2016/12/07/2016-12-07-USACO-HomeOnRange/#disqus_thread" class="article-comment-link">Comments</a>
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dynamic-Programming/">Dynamic Programming</a></li></ul>
 
     </footer>
   </div>
@@ -125,19 +122,10 @@ ga('send', 'pageview');
     
 <nav id="article-nav">
   
-    <a href="/2016/08/06/2016-08-06-USACO-Greedy-Gift-Givers/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          USACO 1.1 Greedy Gift Givers
-        
-      </div>
-    </a>
   
-  
-    <a href="/2016/08/03/2016-08-03-DijKstra/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2016/11/29/2016-11-29-USACO-AGame/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">A C++ implementation of DijKstra Algorithm</div>
+      <div class="article-nav-title">USACO 3.3 A Game</div>
     </a>
   
 </nav>
@@ -251,7 +239,7 @@ ga('send', 'pageview');
 <script>
   var disqus_shortname = 'quantumfield';
   
-  var disqus_url = 'http://lianghan.org/2016/08/06/2016-08-06-USACO-YourRideIsHere/';
+  var disqus_url = 'http://lianghan.org/2016/12/07/2016-12-07-USACO-HomeOnRange/';
   
   (function(){
     var dsq = document.createElement('script');
