@@ -63,9 +63,9 @@ ga('send', 'pageview');
       </nav>
       <nav id="sub-nav">
         
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="Flux RSS"></a>
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
         
-        <a id="nav-search-btn" class="nav-icon" title="Rechercher"></a>
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
       </nav>
       <div id="search-form-wrap">
         <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://lianghan.org"></form>
@@ -102,14 +102,15 @@ ga('send', 'pageview');
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>The problem is to find smallest loops in a DAG. The idea is simple: each loop must have a start vertex and an end vertex. Since no loop connects to itself as the problem stated, the start and end vertex must be different. Also, the smallest perimeter of such a loop is the shortest path between the start vertex and end vertex, plus the length of the edge between two vertices. So to find the loop with smallest perimeter, we can iterate through each edge, calculate the shortest distance between two vertices that connect the edge (without considering the edge itself, of course, otherwise the shortest distance between two vertices would be the edge itself.), then add length of the edge. Do this for all possible edge and we get the result. The shortest distance between two vertices can be calculated using <a href="http://lianghan.org/2016/08/03/2016-08-03-DijKstra/">Dijkstra algorithm I posted earlier</a>.<br>The pain point here is to properly transfer the source data to the graph representation. Here the transformation is done through state encoding (each vertex can be uniquely identified by the edge id it connects to). The overall code is a little bit bloated due to this.</p>
+        <p>The problem is to find smallest loops in a DAG. The idea is simple: each loop must have a start vertex and an end vertex. Since no loop connects to itself as the problem stated, the start and end vertex must be different. Also, the smallest perimeter of such a loop is the shortest path between the start vertex and end vertex, plus the length of the edge between two vertices. So to find the loop with smallest perimeter, we can iterate through each edge, calculate the shortest distance between two vertices that connect the edge (without considering the edge itself, of course, otherwise the shortest distance between two vertices would be the edge itself.), then add length of the edge. Do this for all possible edge and we get the result. The shortest distance between two vertices can be calculated using <a href="http://lianghan.org/2016/08/03/2016-08-03-DijKstra/">Dijkstra algorithm I posted earlier</a>.</p>
+<p>The pain point here is to properly transfer the source data to the graph representation. Here the transformation is done through state encoding (each vertex can be uniquely identified by the edge id it connects to). The overall code is a little bit bloated due to this.</p>
 <figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;queue&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;map&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;set&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;climits&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="comment">// [to node index, edge weight] pair.</span></div><div class="line"><span class="keyword">typedef</span> <span class="built_in">std</span>::pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; edge;</div><div class="line"><span class="comment">// [node index, distance to source] pair.</span></div><div class="line"><span class="keyword">typedef</span> <span class="built_in">std</span>::pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; element;</div><div class="line"></div><div class="line"><span class="built_in">map</span>&lt;<span class="built_in">set</span>&lt;<span class="keyword">int</span>&gt;, <span class="keyword">int</span>&gt; vxts;</div><div class="line"><span class="keyword">int</span> vxtCnt = <span class="number">0</span>;</div><div class="line"><span class="built_in">set</span>&lt;<span class="keyword">int</span>&gt; vs;</div><div class="line"><span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"fence6.in"</span>)</span></span>;</div><div class="line"><span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"fence6.out"</span>)</span></span>;</div><div class="line"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;edge&gt;&gt; graph;</div><div class="line"></div><div class="line"><span class="keyword">int</span> N, s, Ls, N1s, N2s;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">getVertexId</span><span class="params">(<span class="keyword">int</span> Ns)</span> </span>&#123;</div><div class="line">    vs.clear(); vs.insert(s);</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; Ns; ++j) &#123;</div><div class="line">        <span class="keyword">int</span> sn; fin &gt;&gt; sn;</div><div class="line">        vs.insert(sn);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">auto</span> iter = vxts.find(vs);</div><div class="line">    <span class="keyword">if</span> (iter == vxts.end()) &#123;</div><div class="line">        vxts[vs] = vxtCnt++;</div><div class="line">        <span class="keyword">return</span> vxts[vs];</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="keyword">return</span> iter-&gt;second;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">genGraph</span><span class="params">()</span> </span>&#123;</div><div class="line">    fin &gt;&gt; N;</div><div class="line">    <span class="built_in">map</span>&lt;<span class="keyword">int</span>, <span class="built_in">vector</span>&lt;edge&gt;&gt; g;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</div><div class="line">        fin &gt;&gt; s &gt;&gt; Ls &gt;&gt; N1s &gt;&gt; N2s;</div><div class="line">        <span class="keyword">int</span> vtx1 = getVertexId(N1s);</div><div class="line">        <span class="keyword">int</span> vtx2 = getVertexId(N2s);</div><div class="line">        g[vtx1].emplace_back(make_pair(vtx2, Ls));</div><div class="line">        g[vtx2].emplace_back(make_pair(vtx1, Ls));</div><div class="line">    &#125;</div><div class="line">    graph = <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;edge&gt;&gt;(vxtCnt, <span class="built_in">vector</span>&lt;edge&gt;());</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; vxtCnt; ++i) &#123;</div><div class="line">        graph[i] = g[i];</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">class</span> compare &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">operator</span><span class="params">()</span><span class="params">(<span class="keyword">const</span> element&amp;a, <span class="keyword">const</span> element &amp;b)</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> a.second &gt; b.second;</div><div class="line">    &#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">dijkstra</span><span class="params">(<span class="keyword">const</span> <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;edge&gt;&gt; &amp;graph, <span class="keyword">int</span> source, <span class="keyword">int</span> target)</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> size = (<span class="keyword">int</span>)graph.size();</div><div class="line">    <span class="keyword">if</span> (!size) <span class="keyword">return</span> <span class="number">-1</span>;</div><div class="line">    <span class="keyword">if</span> (source &lt; <span class="number">0</span> || source &gt;= size || target &lt; <span class="number">0</span> || target &gt;= size)</div><div class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</div><div class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt; visited(size, <span class="literal">false</span>);</div><div class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; distance(size, INT_MAX);</div><div class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; prev(size, <span class="number">-1</span>);</div><div class="line">    distance[source] = <span class="number">0</span>;</div><div class="line">    priority_queue&lt;element, <span class="built_in">vector</span>&lt;element&gt;, compare&gt; pq;</div><div class="line">    pq.emplace(make_pair(source, <span class="number">0</span>));</div><div class="line">    <span class="keyword">while</span> (!pq.empty()) &#123;</div><div class="line">        <span class="keyword">int</span> v = pq.top().first;</div><div class="line">        pq.pop();</div><div class="line">        <span class="keyword">if</span> (v == target) <span class="keyword">return</span> distance[v];</div><div class="line">        <span class="keyword">if</span> (visited[v]) <span class="keyword">continue</span>;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;edge : graph[v]) &#123;</div><div class="line">            <span class="keyword">int</span> u = edge.first; <span class="comment">// vertice u that connects to v.</span></div><div class="line">            <span class="keyword">int</span> w = edge.second; <span class="comment">// weight of edge that connects u and v.</span></div><div class="line">            <span class="keyword">if</span> (visited[u]) <span class="keyword">continue</span>;</div><div class="line">            <span class="keyword">if</span> (distance[v] &lt; distance[u] - w) &#123;</div><div class="line">                distance[u] = distance[v] + w;</div><div class="line">                pq.emplace(make_pair(u, distance[u]));</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        visited[v] = <span class="literal">true</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="number">-1</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">    genGraph();</div><div class="line">    <span class="keyword">int</span> ans = INT_MAX;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; vxtCnt; ++i) &#123;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;e1 : graph[i]) &#123;</div><div class="line">            <span class="keyword">int</span> w = e1.second;</div><div class="line">            <span class="keyword">int</span> to = e1.first;</div><div class="line">            edge *e2;</div><div class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; graph[to].size(); ++j) &#123;</div><div class="line">                <span class="keyword">if</span> (graph[to][j].first == i) &#123;</div><div class="line">                    e2 = &amp;graph[to][j];</div><div class="line">                    <span class="keyword">break</span>;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">            e1.second = INT_MAX;</div><div class="line">            e2-&gt;second = INT_MAX;</div><div class="line">            <span class="keyword">int</span> p = dijkstra(graph, i, to);</div><div class="line">            <span class="keyword">if</span> (p != <span class="number">-1</span> &amp;&amp; p + w &lt; ans) &#123;</div><div class="line">                ans = p + w;</div><div class="line">            &#125;</div><div class="line">            e1.second = w;</div><div class="line">            e2-&gt;second = INT_MAX;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="built_in">cout</span> &lt;&lt; ans &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">    fout &lt;&lt; ans &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">&#125;</div><div class="line"></div></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/12/27/2016-12-27-USACO-FenceLoops/" data-id="cix83qdl8005ebxxgf5p0428p" class="article-share-link">Partager</a>
+      <a data-url="http://lianghan.org/2016/12/27/2016-12-27-USACO-FenceLoops/" data-id="cix83rhma0055ckxg2p8v1gux" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2016/12/27/2016-12-27-USACO-FenceLoops/#disqus_thread" class="article-comment-link">Commentaires</a>
+        <a href="http://lianghan.org/2016/12/27/2016-12-27-USACO-FenceLoops/#disqus_thread" class="article-comment-link">Comments</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dijkstra/">Dijkstra</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Graph-Theory/">Graph Theory</a></li></ul>
@@ -151,9 +152,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/12/23/2016-12-23-USACO-BeefMcNuggets/" data-id="cix83qdl6005abxxgjz7sos92" class="article-share-link">Partager</a>
+      <a data-url="http://lianghan.org/2016/12/23/2016-12-23-USACO-BeefMcNuggets/" data-id="cix83rhmd005cckxgj8pj9a4k" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2016/12/23/2016-12-23-USACO-BeefMcNuggets/#disqus_thread" class="article-comment-link">Commentaires</a>
+        <a href="http://lianghan.org/2016/12/23/2016-12-23-USACO-BeefMcNuggets/#disqus_thread" class="article-comment-link">Comments</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dynamic-Programming/">Dynamic Programming</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Number-Theory/">Number Theory</a></li></ul>
@@ -196,9 +197,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/12/16/2016-12-16-USACO-RaucousRockers/" data-id="cix83qdl30053bxxgekwuze32" class="article-share-link">Partager</a>
+      <a data-url="http://lianghan.org/2016/12/16/2016-12-16-USACO-RaucousRockers/" data-id="cix83rhmb0058ckxgyjowp7ft" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2016/12/16/2016-12-16-USACO-RaucousRockers/#disqus_thread" class="article-comment-link">Commentaires</a>
+        <a href="http://lianghan.org/2016/12/16/2016-12-16-USACO-RaucousRockers/#disqus_thread" class="article-comment-link">Comments</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Brutal-Force/">Brutal Force</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dynamic-Programming/">Dynamic Programming</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Search/">Search</a></li></ul>
@@ -241,9 +242,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/12/14/2016-12-14-USACO-ElectricFence/" data-id="cix83qdl50057bxxg0bb6rdgu" class="article-share-link">Partager</a>
+      <a data-url="http://lianghan.org/2016/12/14/2016-12-14-USACO-ElectricFence/" data-id="cix83rhm80051ckxgqewgyq46" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2016/12/14/2016-12-14-USACO-ElectricFence/#disqus_thread" class="article-comment-link">Commentaires</a>
+        <a href="http://lianghan.org/2016/12/14/2016-12-14-USACO-ElectricFence/#disqus_thread" class="article-comment-link">Comments</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Computation-Geometry/">Computation Geometry</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Math/">Math</a></li></ul>
@@ -285,9 +286,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/12/14/2016-12-13-TopCoder-SRM-703-GCDGraph/" data-id="cix83qdl10050bxxg9hrnsd8u" class="article-share-link">Partager</a>
+      <a data-url="http://lianghan.org/2016/12/14/2016-12-13-TopCoder-SRM-703-GCDGraph/" data-id="cix83rhm3004uckxgr3k28lxp" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2016/12/14/2016-12-13-TopCoder-SRM-703-GCDGraph/#disqus_thread" class="article-comment-link">Commentaires</a>
+        <a href="http://lianghan.org/2016/12/14/2016-12-13-TopCoder-SRM-703-GCDGraph/#disqus_thread" class="article-comment-link">Comments</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/UnionFind/">UnionFind</a></li></ul>
@@ -330,9 +331,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/12/12/2016-12-12-USACO-AmericanHeritage/" data-id="cix83qdl0004wbxxgwmnlio4m" class="article-share-link">Partager</a>
+      <a data-url="http://lianghan.org/2016/12/12/2016-12-12-USACO-AmericanHeritage/" data-id="cix83rhm7004yckxgms4ovdcj" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2016/12/12/2016-12-12-USACO-AmericanHeritage/#disqus_thread" class="article-comment-link">Commentaires</a>
+        <a href="http://lianghan.org/2016/12/12/2016-12-12-USACO-AmericanHeritage/#disqus_thread" class="article-comment-link">Comments</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DFS/">DFS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Tree/">Tree</a></li></ul>
@@ -381,9 +382,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/12/09/2016-12-09-USACO-Camelot/" data-id="cix83qdkw004pbxxgimba6tf1" class="article-share-link">Partager</a>
+      <a data-url="http://lianghan.org/2016/12/09/2016-12-09-USACO-Camelot/" data-id="cix83rhm2004rckxgb3niah79" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2016/12/09/2016-12-09-USACO-Camelot/#disqus_thread" class="article-comment-link">Commentaires</a>
+        <a href="http://lianghan.org/2016/12/09/2016-12-09-USACO-Camelot/#disqus_thread" class="article-comment-link">Comments</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/BFS/">BFS</a></li></ul>
@@ -426,9 +427,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/12/07/2016-12-07-USACO-HomeOnRange/" data-id="cix83qdkr004ibxxgdaatshui" class="article-share-link">Partager</a>
+      <a data-url="http://lianghan.org/2016/12/07/2016-12-07-USACO-HomeOnRange/" data-id="cix83rhlz004nckxgxuyu1rvg" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2016/12/07/2016-12-07-USACO-HomeOnRange/#disqus_thread" class="article-comment-link">Commentaires</a>
+        <a href="http://lianghan.org/2016/12/07/2016-12-07-USACO-HomeOnRange/#disqus_thread" class="article-comment-link">Comments</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dynamic-Programming/">Dynamic Programming</a></li></ul>
@@ -474,9 +475,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/11/29/2016-11-29-USACO-AGame/" data-id="cix83qdky004tbxxgpizbfu78" class="article-share-link">Partager</a>
+      <a data-url="http://lianghan.org/2016/11/29/2016-11-29-USACO-AGame/" data-id="cix83rhlw004kckxg8w5o3j9s" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2016/11/29/2016-11-29-USACO-AGame/#disqus_thread" class="article-comment-link">Commentaires</a>
+        <a href="http://lianghan.org/2016/11/29/2016-11-29-USACO-AGame/#disqus_thread" class="article-comment-link">Comments</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dynamic-Programming/">Dynamic Programming</a></li></ul>
@@ -518,9 +519,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/11/28/2016-11-28-USACO-ShoppingOffers/" data-id="cix83qdkn004bbxxg3stoq6y7" class="article-share-link">Partager</a>
+      <a data-url="http://lianghan.org/2016/11/28/2016-11-28-USACO-ShoppingOffers/" data-id="cix83rhlu004gckxg9fd4lq4p" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2016/11/28/2016-11-28-USACO-ShoppingOffers/#disqus_thread" class="article-comment-link">Commentaires</a>
+        <a href="http://lianghan.org/2016/11/28/2016-11-28-USACO-ShoppingOffers/#disqus_thread" class="article-comment-link">Comments</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dynamic-Programming/">Dynamic Programming</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Graph/">Graph</a></li></ul>
@@ -543,7 +544,7 @@ ga('send', 'pageview');
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Catégories</h3>
+    <h3 class="widget-title">Categories</h3>
     <div class="widget">
       <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/TopCoder/">TopCoder</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/USACO/">USACO</a></li></ul>
     </div>
@@ -553,7 +554,7 @@ ga('send', 'pageview');
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Mot-clés</h3>
+    <h3 class="widget-title">Tags</h3>
     <div class="widget">
       <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BFS/">BFS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Backtrack/">Backtrack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Base-Conversion/">Base Conversion</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bit-Manipulation/">Bit Manipulation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Brutal-Force/">Brutal Force</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Combination/">Combination</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Computation-Geometry/">Computation Geometry</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Counting/">Counting</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DFS/">DFS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dijkstra/">Dijkstra</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dynamic-Programming/">Dynamic Programming</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Euler-Path/">Euler Path</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flood-Fill/">Flood Fill</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Floyd/">Floyd</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gauss-Elimination/">Gauss Elimination</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Graph/">Graph</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Graph-Theory/">Graph Theory</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hashing/">Hashing</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Knapsack/">Knapsack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Math/">Math</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Minimum-Spanning-Tree/">Minimum Spanning Tree</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Number-Theory/">Number Theory</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Prim/">Prim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Rolling-Array/">Rolling Array</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Search/">Search</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shortest-Path/">Shortest Path</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Simulation/">Simulation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/String-Manipulation/">String Manipulation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TopCoder/">TopCoder</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tree/">Tree</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/UnionFind/">UnionFind</a></li></ul>
     </div>
@@ -563,7 +564,7 @@ ga('send', 'pageview');
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Nuage de mot-clés</h3>
+    <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
       <a href="/tags/Algorithm/" style="font-size: 20px;">Algorithm</a> <a href="/tags/BFS/" style="font-size: 16px;">BFS</a> <a href="/tags/Backtrack/" style="font-size: 10px;">Backtrack</a> <a href="/tags/Base-Conversion/" style="font-size: 10px;">Base Conversion</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10px;">Bit Manipulation</a> <a href="/tags/Brutal-Force/" style="font-size: 17px;">Brutal Force</a> <a href="/tags/Combination/" style="font-size: 11px;">Combination</a> <a href="/tags/Computation-Geometry/" style="font-size: 10px;">Computation Geometry</a> <a href="/tags/Counting/" style="font-size: 10px;">Counting</a> <a href="/tags/DFS/" style="font-size: 15px;">DFS</a> <a href="/tags/Dijkstra/" style="font-size: 13px;">Dijkstra</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19px;">Dynamic Programming</a> <a href="/tags/Euler-Path/" style="font-size: 10px;">Euler Path</a> <a href="/tags/Flood-Fill/" style="font-size: 11px;">Flood Fill</a> <a href="/tags/Floyd/" style="font-size: 11px;">Floyd</a> <a href="/tags/Gauss-Elimination/" style="font-size: 10px;">Gauss Elimination</a> <a href="/tags/Graph/" style="font-size: 17px;">Graph</a> <a href="/tags/Graph-Theory/" style="font-size: 10px;">Graph Theory</a> <a href="/tags/Hashing/" style="font-size: 10px;">Hashing</a> <a href="/tags/Knapsack/" style="font-size: 10px;">Knapsack</a> <a href="/tags/Math/" style="font-size: 10px;">Math</a> <a href="/tags/Minimum-Spanning-Tree/" style="font-size: 10px;">Minimum Spanning Tree</a> <a href="/tags/Number-Theory/" style="font-size: 14px;">Number Theory</a> <a href="/tags/Prim/" style="font-size: 10px;">Prim</a> <a href="/tags/Rolling-Array/" style="font-size: 10px;">Rolling Array</a> <a href="/tags/Search/" style="font-size: 18px;">Search</a> <a href="/tags/Shortest-Path/" style="font-size: 12px;">Shortest Path</a> <a href="/tags/Simulation/" style="font-size: 12px;">Simulation</a> <a href="/tags/String-Manipulation/" style="font-size: 10px;">String Manipulation</a> <a href="/tags/TopCoder/" style="font-size: 12px;">TopCoder</a> <a href="/tags/Tree/" style="font-size: 10px;">Tree</a> <a href="/tags/UnionFind/" style="font-size: 10px;">UnionFind</a>
     </div>
@@ -582,7 +583,7 @@ ga('send', 'pageview');
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Articles récents</h3>
+    <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
         
@@ -623,7 +624,7 @@ ga('send', 'pageview');
   <div class="outer">
     <div id="footer-info" class="inner">
       &copy; 2016 hanm<br>
-      Propulsé by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
     </div>
   </div>
 </footer>
