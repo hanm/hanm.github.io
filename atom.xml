@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://lianghan.org/"/>
-  <updated>2017-01-05T05:42:06.000Z</updated>
+  <updated>2017-01-09T06:27:24.000Z</updated>
   <id>http://lianghan.org/</id>
   
   <author>
@@ -14,6 +14,28 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>USACO 4.2 Job Processing</title>
+    <link href="http://lianghan.org/2017/01/08/2016-01-08-USACO-JobProcessing/"/>
+    <id>http://lianghan.org/2017/01/08/2016-01-08-USACO-JobProcessing/</id>
+    <published>2017-01-09T06:26:31.000Z</published>
+    <updated>2017-01-09T06:27:24.000Z</updated>
+    
+    <content type="html"><![CDATA[<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;climits&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="keyword">int</span> N, M1, M2;</div><div class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; va, vb, cost, ta, tb;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">compute</span><span class="params">(<span class="keyword">const</span> <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;vec, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;table)</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> size = (<span class="keyword">int</span>)vec.size();</div><div class="line">    cost = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(size, <span class="number">0</span>);</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</div><div class="line">        <span class="keyword">int</span> min = INT_MAX, index;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; size; ++j) &#123;</div><div class="line">            <span class="keyword">int</span> delay = cost[j] + vec[j];</div><div class="line">            <span class="keyword">if</span> (min &lt;= delay) <span class="keyword">continue</span>;</div><div class="line">            min = delay; index = j;</div><div class="line">        &#125;</div><div class="line">        cost[index] = min;</div><div class="line">        table[i] = min;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"job.in"</span>)</span></span>;</div><div class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"job.out"</span>)</span></span>;</div><div class="line">    <span class="keyword">int</span> ansA, ansB = INT_MIN;</div><div class="line">    fin &gt;&gt; N &gt;&gt; M1 &gt;&gt; M2;</div><div class="line">    va = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(M1, <span class="number">0</span>), vb = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(M2, <span class="number">0</span>);</div><div class="line">    ta = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N, <span class="number">0</span>), tb = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N, <span class="number">0</span>);</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; M1; ++i) fin &gt;&gt; va[i];</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; M2; ++i) fin &gt;&gt; vb[i];</div><div class="line">    compute(va, ta); compute(vb, tb);</div><div class="line">    sort(ta.begin(), ta.end());</div><div class="line">    sort(tb.begin(), tb.end(), [] (<span class="keyword">int</span> a, <span class="keyword">int</span> b) &#123; <span class="keyword">return</span> a &gt; b; &#125;);</div><div class="line">    ansA = ta[N - <span class="number">1</span>];</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</div><div class="line">        ansB = <span class="built_in">std</span>::max(ta[i] + tb[i], ansB);</div><div class="line">    &#125;</div><div class="line">    fout &lt;&lt; ansA &lt;&lt; <span class="string">" "</span> &lt;&lt; ansB &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">    <span class="built_in">cout</span> &lt;&lt; ansA &lt;&lt; <span class="string">" "</span> &lt;&lt; ansB &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      &lt;figure class=&quot;highlight cpp&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;#&lt;span class=&quot;meta-keyword&quot;&gt;include&lt;/spa
+    
+    </summary>
+    
+      <category term="USACO" scheme="http://lianghan.org/categories/USACO/"/>
+    
+    
+      <category term="Greedy" scheme="http://lianghan.org/tags/Greedy/"/>
+    
+  </entry>
   
   <entry>
     <title>USACO 4.2 The Pefect Stall</title>
@@ -524,29 +546,6 @@
     
     
       <category term="Number Theory" scheme="http://lianghan.org/tags/Number-Theory/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>USACO 3.1 Stamps</title>
-    <link href="http://lianghan.org/2016/10/25/2016-10-25-USACO-Stamps/"/>
-    <id>http://lianghan.org/2016/10/25/2016-10-25-USACO-Stamps/</id>
-    <published>2016-10-25T21:17:31.000Z</published>
-    <updated>2016-10-28T04:13:50.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>Dynamic programming problem. Let dp[i] denotes the minimum number of stamps required to construct a value of i. Then the state transfer function is dp[i] = min(dp[i - val[j]) + 1 for all j between 1 and N, where i &gt;= val[j].<br><figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;utility&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cmath&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;map&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unordered_map&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;climits&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sstream&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="keyword">int</span> K, N;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"stamps.in"</span>)</span></span>;</div><div class="line">  <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"stamps.out"</span>)</span></span>;</div><div class="line">  fin &gt;&gt; K &gt;&gt; N;</div><div class="line">  <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; val(N, <span class="number">0</span>);</div><div class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</div><div class="line">    fin &gt;&gt; val[i];</div><div class="line">  &#125;</div><div class="line">  <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; dp(<span class="number">2000001</span>, INT_MAX);</div><div class="line">  dp[<span class="number">0</span>] = <span class="number">0</span>;</div><div class="line">  <span class="keyword">int</span> i = <span class="number">0</span>;</div><div class="line">  <span class="keyword">while</span> (dp[i] &lt;= K) &#123;</div><div class="line">    ++i;</div><div class="line">    <span class="keyword">int</span> cur = INT_MAX;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; N; ++j) &#123;</div><div class="line">      <span class="keyword">if</span> (val[j] &gt; i) <span class="keyword">continue</span>;</div><div class="line">      cur = <span class="built_in">std</span>::min(cur, dp[i - val[j]]);</div><div class="line">    &#125;</div><div class="line">    dp[i] = cur + <span class="number">1</span>;</div><div class="line">  &#125;</div><div class="line">  </div><div class="line">  fout &lt;&lt; i - <span class="number">1</span> &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">  <span class="built_in">cout</span> &lt;&lt; i - <span class="number">1</span> &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">&#125;</div><div class="line"></div></pre></td></tr></table></figure></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;Dynamic programming problem. Let dp[i] denotes the minimum number of stamps required to construct a value of i. Then the state transfer f
-    
-    </summary>
-    
-      <category term="USACO" scheme="http://lianghan.org/categories/USACO/"/>
-    
-    
-      <category term="Dynamic Programming" scheme="http://lianghan.org/tags/Dynamic-Programming/"/>
     
   </entry>
   

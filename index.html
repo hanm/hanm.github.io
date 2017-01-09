@@ -76,6 +76,50 @@ ga('send', 'pageview');
       <div class="outer">
         <section id="main">
   
+    <article id="post-2016-01-08-USACO-JobProcessing" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/01/08/2016-01-08-USACO-JobProcessing/" class="article-date">
+  <time datetime="2017-01-09T06:26:31.000Z" itemprop="datePublished">2017-01-08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/USACO/">USACO</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/01/08/2016-01-08-USACO-JobProcessing/">USACO 4.2 Job Processing</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;climits&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="keyword">int</span> N, M1, M2;</div><div class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; va, vb, cost, ta, tb;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">compute</span><span class="params">(<span class="keyword">const</span> <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;vec, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;table)</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> size = (<span class="keyword">int</span>)vec.size();</div><div class="line">    cost = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(size, <span class="number">0</span>);</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</div><div class="line">        <span class="keyword">int</span> min = INT_MAX, index;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; size; ++j) &#123;</div><div class="line">            <span class="keyword">int</span> delay = cost[j] + vec[j];</div><div class="line">            <span class="keyword">if</span> (min &lt;= delay) <span class="keyword">continue</span>;</div><div class="line">            min = delay; index = j;</div><div class="line">        &#125;</div><div class="line">        cost[index] = min;</div><div class="line">        table[i] = min;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"job.in"</span>)</span></span>;</div><div class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"job.out"</span>)</span></span>;</div><div class="line">    <span class="keyword">int</span> ansA, ansB = INT_MIN;</div><div class="line">    fin &gt;&gt; N &gt;&gt; M1 &gt;&gt; M2;</div><div class="line">    va = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(M1, <span class="number">0</span>), vb = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(M2, <span class="number">0</span>);</div><div class="line">    ta = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N, <span class="number">0</span>), tb = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N, <span class="number">0</span>);</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; M1; ++i) fin &gt;&gt; va[i];</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; M2; ++i) fin &gt;&gt; vb[i];</div><div class="line">    compute(va, ta); compute(vb, tb);</div><div class="line">    sort(ta.begin(), ta.end());</div><div class="line">    sort(tb.begin(), tb.end(), [] (<span class="keyword">int</span> a, <span class="keyword">int</span> b) &#123; <span class="keyword">return</span> a &gt; b; &#125;);</div><div class="line">    ansA = ta[N - <span class="number">1</span>];</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</div><div class="line">        ansB = <span class="built_in">std</span>::max(ta[i] + tb[i], ansB);</div><div class="line">    &#125;</div><div class="line">    fout &lt;&lt; ansA &lt;&lt; <span class="string">" "</span> &lt;&lt; ansB &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">    <span class="built_in">cout</span> &lt;&lt; ansA &lt;&lt; <span class="string">" "</span> &lt;&lt; ansB &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2017/01/08/2016-01-08-USACO-JobProcessing/" data-id="cixpphytu00051xxgl0ieez4u" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2017/01/08/2016-01-08-USACO-JobProcessing/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Greedy/">Greedy</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-2017-01-04-USACO-ThePerfectStall" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/01/04/2017-01-04-USACO-ThePerfectStall/" class="article-date">
@@ -107,7 +151,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/01/04/2017-01-04-USACO-ThePerfectStall/" data-id="cixjy4b5g0062spxg7262h3qr" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2017/01/04/2017-01-04-USACO-ThePerfectStall/" data-id="cixpphyxv00641xxgqcjarrrw" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2017/01/04/2017-01-04-USACO-ThePerfectStall/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -152,7 +196,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/01/04/2017-01-04-USACO-DrainageDitches.h/" data-id="cixjy4b5e005zspxg1e3uvosv" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2017/01/04/2017-01-04-USACO-DrainageDitches.h/" data-id="cixpphyxt00601xxggh5z7yum" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2017/01/04/2017-01-04-USACO-DrainageDitches.h/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -198,7 +242,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/12/27/2016-12-27-USACO-FenceLoops/" data-id="cixjy4b57005lspxg6y6ivbio" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/12/27/2016-12-27-USACO-FenceLoops/" data-id="cixpphyxg005f1xxg3w6bovzf" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2016/12/27/2016-12-27-USACO-FenceLoops/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -242,7 +286,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/12/23/2016-12-23-USACO-BeefMcNuggets/" data-id="cixjy4b54005espxg8c4pzy2h" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/12/23/2016-12-23-USACO-BeefMcNuggets/" data-id="cixpphyxi005j1xxgvwrvvy96" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2016/12/23/2016-12-23-USACO-BeefMcNuggets/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -287,7 +331,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/12/16/2016-12-16-USACO-RaucousRockers/" data-id="cixjy4b53005bspxgkfy5w8hu" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/12/16/2016-12-16-USACO-RaucousRockers/" data-id="cixpphyxf005c1xxgbdk1vxt8" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2016/12/16/2016-12-16-USACO-RaucousRockers/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -332,7 +376,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/12/14/2016-12-14-USACO-ElectricFence/" data-id="cixjy4b510057spxgh4uqkulg" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/12/14/2016-12-14-USACO-ElectricFence/" data-id="cixpphyxb00581xxggvm19skd" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2016/12/14/2016-12-14-USACO-ElectricFence/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -376,7 +420,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/12/14/2016-12-13-TopCoder-SRM-703-GCDGraph/" data-id="cixjy4b500054spxg9li8mb6j" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/12/14/2016-12-13-TopCoder-SRM-703-GCDGraph/" data-id="cixpphyx800511xxg3r4rku3f" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2016/12/14/2016-12-13-TopCoder-SRM-703-GCDGraph/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -421,7 +465,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/12/12/2016-12-12-USACO-AmericanHeritage/" data-id="cixjy4b4x004xspxg0wd8t2ac" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/12/12/2016-12-12-USACO-AmericanHeritage/" data-id="cixpphyxa00551xxgltk76s51" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2016/12/12/2016-12-12-USACO-AmericanHeritage/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -472,57 +516,12 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/12/09/2016-12-09-USACO-Camelot/" data-id="cixjy4b4z0050spxg1o6hvh53" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/12/09/2016-12-09-USACO-Camelot/" data-id="cixpphyx7004y1xxgb3z9lxvc" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2016/12/09/2016-12-09-USACO-Camelot/#disqus_thread" class="article-comment-link">Comments</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/BFS/">BFS</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-2016-12-07-USACO-HomeOnRange" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/12/07/2016-12-07-USACO-HomeOnRange/" class="article-date">
-  <time datetime="2016-12-07T18:44:31.000Z" itemprop="datePublished">2016-12-07</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/USACO/">USACO</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/12/07/2016-12-07-USACO-HomeOnRange/">USACO 3.3 Home On The Range</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Another relatively straightforward DP problem: the basic idea is to calculate the maximum possible squares (land segment that cows can graze on) that each land can expand to, if the given land is considered as the top-left most corner of the square land segment to be expanded. We calculate this information for each land, starting from the right-down most land (which is just itself), then iteratively repeat the calculation until we reach the top-left most corner. During the computation we can also calculate the final answer incrementally.</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="keyword">int</span> N;</div><div class="line"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; dp;</div><div class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; ret;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"range.in"</span>)</span></span>;</div><div class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"range.out"</span>)</span></span>;</div><div class="line"></div><div class="line">    fin &gt;&gt; N;</div><div class="line">    dp = <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt;(N, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N, <span class="number">0</span>));</div><div class="line">    ret = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N + <span class="number">1</span>, <span class="number">0</span>);</div><div class="line"></div><div class="line">    <span class="keyword">char</span> c;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; N; ++j) &#123;</div><div class="line">            fin &gt;&gt; c;</div><div class="line">            dp[i][j] = c - <span class="string">'0'</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = N - <span class="number">2</span>; i &gt;= <span class="number">0</span>; --i) &#123;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = N - <span class="number">2</span>; j &gt;= <span class="number">0</span>; --j) &#123;</div><div class="line">            <span class="keyword">if</span> (!dp[i][j]) <span class="keyword">continue</span>;</div><div class="line">            dp[i][j] = <span class="built_in">std</span>::min(<span class="built_in">std</span>::min(dp[i][j + <span class="number">1</span>], dp[i + <span class="number">1</span>][j]),</div><div class="line">                                dp[i + <span class="number">1</span>][j + <span class="number">1</span>]) + <span class="number">1</span>;</div><div class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">2</span>; k &lt;= dp[i][j]; ++k) &#123;</div><div class="line">                ret[k]++;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt; N + <span class="number">1</span>; ++i) &#123;</div><div class="line">        <span class="keyword">if</span> (!ret[i]) <span class="keyword">continue</span>;</div><div class="line">        <span class="built_in">cout</span> &lt;&lt; i &lt;&lt; <span class="string">" "</span> &lt;&lt; ret[i] &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">        fout &lt;&lt; i &lt;&lt; <span class="string">" "</span> &lt;&lt; ret[i] &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/12/07/2016-12-07-USACO-HomeOnRange/" data-id="cixjy4b4w004tspxgjl0pg2h1" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2016/12/07/2016-12-07-USACO-HomeOnRange/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dynamic-Programming/">Dynamic Programming</a></li></ul>
 
     </footer>
   </div>
@@ -554,7 +553,7 @@ ga('send', 'pageview');
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BFS/">BFS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Backtrack/">Backtrack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Base-Conversion/">Base Conversion</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bipartite-Match/">Bipartite Match</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bit-Manipulation/">Bit Manipulation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Brutal-Force/">Brutal Force</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Combination/">Combination</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Computation-Geometry/">Computation Geometry</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Counting/">Counting</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DFS/">DFS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dijkstra/">Dijkstra</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dynamic-Programming/">Dynamic Programming</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Euler-Path/">Euler Path</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flood-Fill/">Flood Fill</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Floyd/">Floyd</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ford-Fulkerson/">Ford-Fulkerson</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gauss-Elimination/">Gauss Elimination</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Graph/">Graph</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Graph-Theory/">Graph Theory</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hashing/">Hashing</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hungarian-Algorithm/">Hungarian Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Knapsack/">Knapsack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Math/">Math</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Minimum-Spanning-Tree/">Minimum Spanning Tree</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Number-Theory/">Number Theory</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Prim/">Prim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Rolling-Array/">Rolling Array</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Search/">Search</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shortest-Path/">Shortest Path</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Simulation/">Simulation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/String-Manipulation/">String Manipulation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TopCoder/">TopCoder</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tree/">Tree</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/UnionFind/">UnionFind</a></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BFS/">BFS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Backtrack/">Backtrack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Base-Conversion/">Base Conversion</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bipartite-Match/">Bipartite Match</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bit-Manipulation/">Bit Manipulation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Brutal-Force/">Brutal Force</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Combination/">Combination</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Computation-Geometry/">Computation Geometry</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Counting/">Counting</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DFS/">DFS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dijkstra/">Dijkstra</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dynamic-Programming/">Dynamic Programming</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Euler-Path/">Euler Path</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flood-Fill/">Flood Fill</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Floyd/">Floyd</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ford-Fulkerson/">Ford-Fulkerson</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gauss-Elimination/">Gauss Elimination</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Graph/">Graph</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Graph-Theory/">Graph Theory</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Greedy/">Greedy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hashing/">Hashing</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hungarian-Algorithm/">Hungarian Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Knapsack/">Knapsack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Math/">Math</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Minimum-Spanning-Tree/">Minimum Spanning Tree</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Number-Theory/">Number Theory</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Prim/">Prim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Rolling-Array/">Rolling Array</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Search/">Search</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shortest-Path/">Shortest Path</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Simulation/">Simulation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/String-Manipulation/">String Manipulation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TopCoder/">TopCoder</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tree/">Tree</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/UnionFind/">UnionFind</a></li></ul>
     </div>
   </div>
 
@@ -564,7 +563,7 @@ ga('send', 'pageview');
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Algorithm/" style="font-size: 20px;">Algorithm</a> <a href="/tags/BFS/" style="font-size: 16px;">BFS</a> <a href="/tags/Backtrack/" style="font-size: 10px;">Backtrack</a> <a href="/tags/Base-Conversion/" style="font-size: 10px;">Base Conversion</a> <a href="/tags/Bipartite-Match/" style="font-size: 10px;">Bipartite Match</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10px;">Bit Manipulation</a> <a href="/tags/Brutal-Force/" style="font-size: 17px;">Brutal Force</a> <a href="/tags/Combination/" style="font-size: 11px;">Combination</a> <a href="/tags/Computation-Geometry/" style="font-size: 10px;">Computation Geometry</a> <a href="/tags/Counting/" style="font-size: 10px;">Counting</a> <a href="/tags/DFS/" style="font-size: 15px;">DFS</a> <a href="/tags/Dijkstra/" style="font-size: 13px;">Dijkstra</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19px;">Dynamic Programming</a> <a href="/tags/Euler-Path/" style="font-size: 10px;">Euler Path</a> <a href="/tags/Flood-Fill/" style="font-size: 11px;">Flood Fill</a> <a href="/tags/Floyd/" style="font-size: 11px;">Floyd</a> <a href="/tags/Ford-Fulkerson/" style="font-size: 10px;">Ford-Fulkerson</a> <a href="/tags/Gauss-Elimination/" style="font-size: 10px;">Gauss Elimination</a> <a href="/tags/Graph/" style="font-size: 17px;">Graph</a> <a href="/tags/Graph-Theory/" style="font-size: 12px;">Graph Theory</a> <a href="/tags/Hashing/" style="font-size: 10px;">Hashing</a> <a href="/tags/Hungarian-Algorithm/" style="font-size: 10px;">Hungarian Algorithm</a> <a href="/tags/Knapsack/" style="font-size: 10px;">Knapsack</a> <a href="/tags/Math/" style="font-size: 10px;">Math</a> <a href="/tags/Minimum-Spanning-Tree/" style="font-size: 10px;">Minimum Spanning Tree</a> <a href="/tags/Number-Theory/" style="font-size: 14px;">Number Theory</a> <a href="/tags/Prim/" style="font-size: 10px;">Prim</a> <a href="/tags/Rolling-Array/" style="font-size: 10px;">Rolling Array</a> <a href="/tags/Search/" style="font-size: 18px;">Search</a> <a href="/tags/Shortest-Path/" style="font-size: 12px;">Shortest Path</a> <a href="/tags/Simulation/" style="font-size: 12px;">Simulation</a> <a href="/tags/String-Manipulation/" style="font-size: 10px;">String Manipulation</a> <a href="/tags/TopCoder/" style="font-size: 12px;">TopCoder</a> <a href="/tags/Tree/" style="font-size: 10px;">Tree</a> <a href="/tags/UnionFind/" style="font-size: 10px;">UnionFind</a>
+      <a href="/tags/Algorithm/" style="font-size: 20px;">Algorithm</a> <a href="/tags/BFS/" style="font-size: 16px;">BFS</a> <a href="/tags/Backtrack/" style="font-size: 10px;">Backtrack</a> <a href="/tags/Base-Conversion/" style="font-size: 10px;">Base Conversion</a> <a href="/tags/Bipartite-Match/" style="font-size: 10px;">Bipartite Match</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10px;">Bit Manipulation</a> <a href="/tags/Brutal-Force/" style="font-size: 17px;">Brutal Force</a> <a href="/tags/Combination/" style="font-size: 11px;">Combination</a> <a href="/tags/Computation-Geometry/" style="font-size: 10px;">Computation Geometry</a> <a href="/tags/Counting/" style="font-size: 10px;">Counting</a> <a href="/tags/DFS/" style="font-size: 15px;">DFS</a> <a href="/tags/Dijkstra/" style="font-size: 13px;">Dijkstra</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19px;">Dynamic Programming</a> <a href="/tags/Euler-Path/" style="font-size: 10px;">Euler Path</a> <a href="/tags/Flood-Fill/" style="font-size: 11px;">Flood Fill</a> <a href="/tags/Floyd/" style="font-size: 11px;">Floyd</a> <a href="/tags/Ford-Fulkerson/" style="font-size: 10px;">Ford-Fulkerson</a> <a href="/tags/Gauss-Elimination/" style="font-size: 10px;">Gauss Elimination</a> <a href="/tags/Graph/" style="font-size: 17px;">Graph</a> <a href="/tags/Graph-Theory/" style="font-size: 12px;">Graph Theory</a> <a href="/tags/Greedy/" style="font-size: 10px;">Greedy</a> <a href="/tags/Hashing/" style="font-size: 10px;">Hashing</a> <a href="/tags/Hungarian-Algorithm/" style="font-size: 10px;">Hungarian Algorithm</a> <a href="/tags/Knapsack/" style="font-size: 10px;">Knapsack</a> <a href="/tags/Math/" style="font-size: 10px;">Math</a> <a href="/tags/Minimum-Spanning-Tree/" style="font-size: 10px;">Minimum Spanning Tree</a> <a href="/tags/Number-Theory/" style="font-size: 14px;">Number Theory</a> <a href="/tags/Prim/" style="font-size: 10px;">Prim</a> <a href="/tags/Rolling-Array/" style="font-size: 10px;">Rolling Array</a> <a href="/tags/Search/" style="font-size: 18px;">Search</a> <a href="/tags/Shortest-Path/" style="font-size: 12px;">Shortest Path</a> <a href="/tags/Simulation/" style="font-size: 12px;">Simulation</a> <a href="/tags/String-Manipulation/" style="font-size: 10px;">String Manipulation</a> <a href="/tags/TopCoder/" style="font-size: 12px;">TopCoder</a> <a href="/tags/Tree/" style="font-size: 10px;">Tree</a> <a href="/tags/UnionFind/" style="font-size: 10px;">UnionFind</a>
     </div>
   </div>
 
@@ -586,6 +585,10 @@ ga('send', 'pageview');
       <ul>
         
           <li>
+            <a href="/2017/01/08/2016-01-08-USACO-JobProcessing/">USACO 4.2 Job Processing</a>
+          </li>
+        
+          <li>
             <a href="/2017/01/04/2017-01-04-USACO-ThePerfectStall/">USACO 4.2 The Pefect Stall</a>
           </li>
         
@@ -599,10 +602,6 @@ ga('send', 'pageview');
         
           <li>
             <a href="/2016/12/23/2016-12-23-USACO-BeefMcNuggets/">USACO 4.1 Beef McNuggests</a>
-          </li>
-        
-          <li>
-            <a href="/2016/12/16/2016-12-16-USACO-RaucousRockers/">USACO 3.4 Raucous Rockers</a>
           </li>
         
       </ul>

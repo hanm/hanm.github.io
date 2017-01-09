@@ -3,21 +3,18 @@
 <head>
   <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
   
-  <title>USACO 2.3 Zero Sum | Quantum Field</title>
+  <title>USACO 4.2 Job Processing | Quantum Field</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Brutal force DFS search.
-#include &amp;lt;algorithm&amp;gt;#include &amp;lt;vector&amp;gt;#include &amp;lt;iostream&amp;gt;#include &amp;lt;fstream&amp;gt;using namespace std;int N;vector&amp;lt;char&amp;gt; ops = &amp;#123;&apos;+&apos;, &apos;-&apos;, &apos; &apos;&amp;#125;;">
+  <meta name="description" content="#include &amp;lt;vector&amp;gt;#include &amp;lt;iostream&amp;gt;#include &amp;lt;fstream&amp;gt;#include &amp;lt;algorithm&amp;gt;#include &amp;lt;climits&amp;gt;using namespace std;int N, M1, M2;vector&amp;lt;int&amp;gt; va, vb, cost, ta, tb;void">
 <meta property="og:type" content="article">
-<meta property="og:title" content="USACO 2.3 Zero Sum">
-<meta property="og:url" content="http://lianghan.org/2016/09/25/2016-09-25-USACO-ZeroSum/index.html">
+<meta property="og:title" content="USACO 4.2 Job Processing">
+<meta property="og:url" content="http://lianghan.org/2017/01/08/2016-01-08-USACO-JobProcessing/index.html">
 <meta property="og:site_name" content="Quantum Field">
-<meta property="og:description" content="Brutal force DFS search.
-#include &amp;lt;algorithm&amp;gt;#include &amp;lt;vector&amp;gt;#include &amp;lt;iostream&amp;gt;#include &amp;lt;fstream&amp;gt;using namespace std;int N;vector&amp;lt;char&amp;gt; ops = &amp;#123;&apos;+&apos;, &apos;-&apos;, &apos; &apos;&amp;#125;;">
-<meta property="og:updated_time" content="2016-10-08T20:36:50.000Z">
+<meta property="og:description" content="#include &amp;lt;vector&amp;gt;#include &amp;lt;iostream&amp;gt;#include &amp;lt;fstream&amp;gt;#include &amp;lt;algorithm&amp;gt;#include &amp;lt;climits&amp;gt;using namespace std;int N, M1, M2;vector&amp;lt;int&amp;gt; va, vb, cost, ta, tb;void">
+<meta property="og:updated_time" content="2017-01-09T06:27:24.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="USACO 2.3 Zero Sum">
-<meta name="twitter:description" content="Brutal force DFS search.
-#include &amp;lt;algorithm&amp;gt;#include &amp;lt;vector&amp;gt;#include &amp;lt;iostream&amp;gt;#include &amp;lt;fstream&amp;gt;using namespace std;int N;vector&amp;lt;char&amp;gt; ops = &amp;#123;&apos;+&apos;, &apos;-&apos;, &apos; &apos;&amp;#125;;">
+<meta name="twitter:title" content="USACO 4.2 Job Processing">
+<meta name="twitter:description" content="#include &amp;lt;vector&amp;gt;#include &amp;lt;iostream&amp;gt;#include &amp;lt;fstream&amp;gt;#include &amp;lt;algorithm&amp;gt;#include &amp;lt;climits&amp;gt;using namespace std;int N, M1, M2;vector&amp;lt;int&amp;gt; va, vb, cost, ta, tb;void">
   
     <link rel="alternate" href="/atom.xml" title="Quantum Field" type="application/atom+xml">
   
@@ -81,10 +78,10 @@ ga('send', 'pageview');
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="post-2016-09-25-USACO-ZeroSum" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-2016-01-08-USACO-JobProcessing" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2016/09/25/2016-09-25-USACO-ZeroSum/" class="article-date">
-  <time datetime="2016-09-26T00:50:31.000Z" itemprop="datePublished">2016-09-25</time>
+    <a href="/2017/01/08/2016-01-08-USACO-JobProcessing/" class="article-date">
+  <time datetime="2017-01-09T06:26:31.000Z" itemprop="datePublished">2017-01-08</time>
 </a>
     
   <div class="article-category">
@@ -99,7 +96,7 @@ ga('send', 'pageview');
         
   
     <h1 class="article-title" itemprop="name">
-      USACO 2.3 Zero Sum
+      USACO 4.2 Job Processing
     </h1>
   
 
@@ -107,17 +104,16 @@ ga('send', 'pageview');
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Brutal force DFS search.</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="keyword">int</span> N;</div><div class="line"><span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt; ops = &#123;<span class="string">'+'</span>, <span class="string">'-'</span>, <span class="string">' '</span>&#125;;</div><div class="line"><span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt; s;</div><div class="line"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt;&gt; res;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> i)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (i == N) &#123;</div><div class="line">        <span class="keyword">int</span> sum = <span class="number">0</span>, cur = <span class="number">1</span>, sign = <span class="number">1</span>;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt;= N; ++i) &#123;</div><div class="line">            <span class="keyword">char</span> op = s[i - <span class="number">2</span>];</div><div class="line">            <span class="keyword">if</span> (op == <span class="string">' '</span>) &#123;</div><div class="line">                cur = cur * <span class="number">10</span> + i;</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                sum += cur * sign;</div><div class="line">                cur = i;</div><div class="line">                <span class="keyword">if</span> (op == <span class="string">'+'</span>) &#123;</div><div class="line">                    sign = <span class="number">1</span>;</div><div class="line">                &#125; <span class="keyword">else</span> &#123;</div><div class="line">                    sign = <span class="number">-1</span>;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        sum += cur * sign;</div><div class="line">        <span class="keyword">if</span> (sum == <span class="number">0</span>) &#123;</div><div class="line">            res.push_back(s);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;c : ops) &#123;</div><div class="line">        s.push_back(c);</div><div class="line">        dfs(i + <span class="number">1</span>);</div><div class="line">        s.pop_back();</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"zerosum.in"</span>)</span></span>;</div><div class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"zerosum.out"</span>)</span></span>;</div><div class="line">    fin &gt;&gt; N;</div><div class="line">    dfs(<span class="number">1</span>);</div><div class="line">    sort(res.begin(), res.end());</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;result : res) &#123;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; N; ++i) &#123;</div><div class="line">            fout &lt;&lt; i &lt;&lt; result[i - <span class="number">1</span>];</div><div class="line">        &#125;</div><div class="line">        fout &lt;&lt; N &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+        <figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;climits&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="keyword">int</span> N, M1, M2;</div><div class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; va, vb, cost, ta, tb;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">compute</span><span class="params">(<span class="keyword">const</span> <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;vec, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;table)</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> size = (<span class="keyword">int</span>)vec.size();</div><div class="line">    cost = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(size, <span class="number">0</span>);</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</div><div class="line">        <span class="keyword">int</span> min = INT_MAX, index;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; size; ++j) &#123;</div><div class="line">            <span class="keyword">int</span> delay = cost[j] + vec[j];</div><div class="line">            <span class="keyword">if</span> (min &lt;= delay) <span class="keyword">continue</span>;</div><div class="line">            min = delay; index = j;</div><div class="line">        &#125;</div><div class="line">        cost[index] = min;</div><div class="line">        table[i] = min;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"job.in"</span>)</span></span>;</div><div class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"job.out"</span>)</span></span>;</div><div class="line">    <span class="keyword">int</span> ansA, ansB = INT_MIN;</div><div class="line">    fin &gt;&gt; N &gt;&gt; M1 &gt;&gt; M2;</div><div class="line">    va = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(M1, <span class="number">0</span>), vb = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(M2, <span class="number">0</span>);</div><div class="line">    ta = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N, <span class="number">0</span>), tb = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N, <span class="number">0</span>);</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; M1; ++i) fin &gt;&gt; va[i];</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; M2; ++i) fin &gt;&gt; vb[i];</div><div class="line">    compute(va, ta); compute(vb, tb);</div><div class="line">    sort(ta.begin(), ta.end());</div><div class="line">    sort(tb.begin(), tb.end(), [] (<span class="keyword">int</span> a, <span class="keyword">int</span> b) &#123; <span class="keyword">return</span> a &gt; b; &#125;);</div><div class="line">    ansA = ta[N - <span class="number">1</span>];</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</div><div class="line">        ansB = <span class="built_in">std</span>::max(ta[i] + tb[i], ansB);</div><div class="line">    &#125;</div><div class="line">    fout &lt;&lt; ansA &lt;&lt; <span class="string">" "</span> &lt;&lt; ansB &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">    <span class="built_in">cout</span> &lt;&lt; ansA &lt;&lt; <span class="string">" "</span> &lt;&lt; ansB &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/09/25/2016-09-25-USACO-ZeroSum/" data-id="cixpphyw0002s1xxguwexe6je" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2017/01/08/2016-01-08-USACO-JobProcessing/" data-id="cixpphytu00051xxgl0ieez4u" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2016/09/25/2016-09-25-USACO-ZeroSum/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2017/01/08/2016-01-08-USACO-JobProcessing/#disqus_thread" class="article-comment-link">Comments</a>
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DFS/">DFS</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Greedy/">Greedy</a></li></ul>
 
     </footer>
   </div>
@@ -125,19 +121,10 @@ ga('send', 'pageview');
     
 <nav id="article-nav">
   
-    <a href="/2016/09/26/2016-09-26-USACO-MoneySystem/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          USACO 2.3 Money System
-        
-      </div>
-    </a>
   
-  
-    <a href="/2016/09/24/2016-09-24-USACO-CowPedigrees/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2017/01/04/2017-01-04-USACO-ThePerfectStall/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">USACO 2.3 Cow Pedigrees</div>
+      <div class="article-nav-title">USACO 4.2 The Pefect Stall</div>
     </a>
   
 </nav>
@@ -255,7 +242,7 @@ ga('send', 'pageview');
 <script>
   var disqus_shortname = 'quantumfield';
   
-  var disqus_url = 'http://lianghan.org/2016/09/25/2016-09-25-USACO-ZeroSum/';
+  var disqus_url = 'http://lianghan.org/2017/01/08/2016-01-08-USACO-JobProcessing/';
   
   (function(){
     var dsq = document.createElement('script');
