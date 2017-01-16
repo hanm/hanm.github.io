@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://lianghan.org/"/>
-  <updated>2017-01-13T23:24:44.000Z</updated>
+  <updated>2017-01-16T00:52:06.000Z</updated>
   <id>http://lianghan.org/</id>
   
   <author>
@@ -14,6 +14,39 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>USACO 4.3 Street Race</title>
+    <link href="http://lianghan.org/2017/01/15/2017-01-15-USACO-StreetRace/"/>
+    <id>http://lianghan.org/2017/01/15/2017-01-15-USACO-StreetRace/</id>
+    <published>2017-01-16T00:47:31.000Z</published>
+    <updated>2017-01-16T00:52:06.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>Use DFS to do brutal force search given the small data size. There are two problems:</p>
+<ul>
+<li>Decide the unavoidable points. This can be solved by iterating over each point (except the starting and ending point 0 and N, respectively) and assume the current point is being taken out of the graph. If in such a graph starting from 0 there is still a path to N then the current point being taken out is not an unavoidable point. Otherwise, the current point is an unavoidable point.</li>
+<li>Decide the splitting points. The splitting points must be a subset of unavoidable points. So iterating through all the unavoidable points figured out in first step, and do two search from 0 and the current iterating point respectively, and record the sets of point that two search could reach. If the two sets intersect, then the current point can’t be a splitting point by definition; otherwise the current point is a splitting point.</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;set&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstring&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="keyword">int</span> N;</div><div class="line"><span class="keyword">bool</span> graph[<span class="number">55</span>][<span class="number">55</span>];</div><div class="line"><span class="keyword">bool</span> visited[<span class="number">55</span>];</div><div class="line"><span class="built_in">set</span>&lt;<span class="keyword">int</span>&gt; st;</div><div class="line"><span class="keyword">int</span> split;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> v, <span class="keyword">int</span> j)</span> </span>&#123;</div><div class="line">    visited[v] = <span class="literal">true</span>;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= N; ++i) &#123;</div><div class="line">        <span class="keyword">if</span> (visited[i] || !graph[v][i] || i == j || i == v) <span class="keyword">continue</span>;</div><div class="line">        <span class="keyword">if</span> ((i == N &amp;&amp; graph[v][i]) || dfs(i, j)) <span class="keyword">return</span> <span class="literal">true</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> s)</span> </span>&#123;</div><div class="line">    st.insert(s);</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= N; ++i) &#123;</div><div class="line">        <span class="keyword">if</span> (st.count(i) || !graph[s][i] || s == i || i == split) <span class="keyword">continue</span>;</div><div class="line">        dfs(i);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"race3.in"</span>)</span></span>;</div><div class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"race3.out"</span>)</span></span>;</div><div class="line"></div><div class="line">    <span class="built_in">memset</span>(graph, <span class="number">0</span>, <span class="keyword">sizeof</span>(graph));</div><div class="line">    <span class="keyword">int</span> n = <span class="number">0</span>;</div><div class="line">    <span class="keyword">while</span>(!fin.eof()) &#123;</div><div class="line">        fin &gt;&gt; n;</div><div class="line">        <span class="keyword">if</span> (n == <span class="number">-2</span>) &#123;</div><div class="line">            ++N;</div><div class="line">            <span class="keyword">continue</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span> (n == <span class="number">-1</span>) <span class="keyword">break</span>;</div><div class="line">        graph[N][n] = <span class="literal">true</span>;</div><div class="line">    &#125;</div><div class="line">    --N;</div><div class="line"></div><div class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; r1, r2;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= N - <span class="number">1</span>; ++i) &#123;</div><div class="line">        <span class="built_in">memset</span>(visited, <span class="number">0</span>, <span class="keyword">sizeof</span>(visited));</div><div class="line">        <span class="keyword">if</span> (!dfs(<span class="number">0</span>, i)) r1.push_back(i);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="built_in">cout</span> &lt;&lt; r1.size(); fout &lt;&lt; r1.size();</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> r : r1) &#123;</div><div class="line">        st.clear();</div><div class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">" "</span> &lt;&lt; r; fout &lt;&lt; <span class="string">" "</span> &lt;&lt; r;</div><div class="line">        split = r; dfs(<span class="number">0</span>); <span class="keyword">auto</span> stt = st; st.clear(); dfs(r);</div><div class="line">        <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; common_data;</div><div class="line">        set_intersection(st.begin(), st.end(), stt.begin(), stt.end(),</div><div class="line">                         <span class="built_in">std</span>::back_inserter(common_data));</div><div class="line">        <span class="keyword">if</span> (!common_data.empty()) <span class="keyword">continue</span>;</div><div class="line">        r2.push_back(r);</div><div class="line">    &#125;</div><div class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="built_in">endl</span>; fout &lt;&lt; <span class="built_in">endl</span>;</div><div class="line"></div><div class="line">    <span class="built_in">cout</span> &lt;&lt; r2.size(); fout &lt;&lt; r2.size();</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> r : r2) &#123;</div><div class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">" "</span> &lt;&lt; r; fout &lt;&lt; <span class="string">" "</span> &lt;&lt; r;</div><div class="line">    &#125;</div><div class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="built_in">endl</span>; fout &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Use DFS to do brutal force search given the small data size. There are two problems:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Decide the unavoidable points. This can
+    
+    </summary>
+    
+      <category term="USACO" scheme="http://lianghan.org/categories/USACO/"/>
+    
+    
+      <category term="Search" scheme="http://lianghan.org/tags/Search/"/>
+    
+      <category term="DFS" scheme="http://lianghan.org/tags/DFS/"/>
+    
+      <category term="Graph Theory" scheme="http://lianghan.org/tags/Graph-Theory/"/>
+    
+  </entry>
   
   <entry>
     <title>USACO 4.3 Buy Low</title>
@@ -159,9 +192,9 @@
       <category term="USACO" scheme="http://lianghan.org/categories/USACO/"/>
     
     
-      <category term="Number Theory" scheme="http://lianghan.org/tags/Number-Theory/"/>
-    
       <category term="Dynamic Programming" scheme="http://lianghan.org/tags/Dynamic-Programming/"/>
+    
+      <category term="Number Theory" scheme="http://lianghan.org/tags/Number-Theory/"/>
     
   </entry>
   
@@ -186,9 +219,9 @@
     
       <category term="Search" scheme="http://lianghan.org/tags/Search/"/>
     
-      <category term="Brutal Force" scheme="http://lianghan.org/tags/Brutal-Force/"/>
-    
       <category term="Dynamic Programming" scheme="http://lianghan.org/tags/Dynamic-Programming/"/>
+    
+      <category term="Brutal Force" scheme="http://lianghan.org/tags/Brutal-Force/"/>
     
   </entry>
   
@@ -364,9 +397,9 @@
       <category term="USACO" scheme="http://lianghan.org/categories/USACO/"/>
     
     
-      <category term="Graph" scheme="http://lianghan.org/tags/Graph/"/>
-    
       <category term="Dynamic Programming" scheme="http://lianghan.org/tags/Dynamic-Programming/"/>
+    
+      <category term="Graph" scheme="http://lianghan.org/tags/Graph/"/>
     
   </entry>
   
@@ -396,9 +429,9 @@
       <category term="USACO" scheme="http://lianghan.org/categories/USACO/"/>
     
     
-      <category term="Graph" scheme="http://lianghan.org/tags/Graph/"/>
-    
       <category term="DFS" scheme="http://lianghan.org/tags/DFS/"/>
+    
+      <category term="Graph" scheme="http://lianghan.org/tags/Graph/"/>
     
       <category term="Euler Path" scheme="http://lianghan.org/tags/Euler-Path/"/>
     
@@ -424,9 +457,9 @@
       <category term="USACO" scheme="http://lianghan.org/categories/USACO/"/>
     
     
-      <category term="Search" scheme="http://lianghan.org/tags/Search/"/>
-    
       <category term="Dijkstra" scheme="http://lianghan.org/tags/Dijkstra/"/>
+    
+      <category term="Search" scheme="http://lianghan.org/tags/Search/"/>
     
       <category term="Graph" scheme="http://lianghan.org/tags/Graph/"/>
     
@@ -524,30 +557,6 @@
       <category term="Search" scheme="http://lianghan.org/tags/Search/"/>
     
       <category term="Simulation" scheme="http://lianghan.org/tags/Simulation/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>USACO 3.2 Stringsorbits</title>
-    <link href="http://lianghan.org/2016/11/01/2016-11-01-USACO-StringsOrbits.h/"/>
-    <id>http://lianghan.org/2016/11/01/2016-11-01-USACO-StringsOrbits.h/</id>
-    <published>2016-11-01T22:21:31.000Z</published>
-    <updated>2016-11-06T23:11:29.000Z</updated>
-    
-    <content type="html"><![CDATA[<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;utility&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cmath&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;map&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unordered_map&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;climits&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sstream&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="keyword">int</span> N<span class="comment">/* length of string*/</span>, L<span class="comment">/* max number of bits per string */</span>;</div><div class="line"><span class="keyword">long</span> <span class="keyword">long</span> I <span class="comment">/* the order */</span>;</div><div class="line"><span class="keyword">int</span> dp[<span class="number">32</span>][<span class="number">32</span>];</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">compute</span><span class="params">(<span class="keyword">int</span> i, <span class="keyword">int</span> j)</span></span>&#123;</div><div class="line">  <span class="keyword">if</span>(dp[i][j] != <span class="number">0</span>)</div><div class="line">    <span class="keyword">return</span> dp[i][j];</div><div class="line">  <span class="keyword">else</span>&#123;</div><div class="line">    dp[i][j] = compute(i - <span class="number">1</span>, j) + compute(i - <span class="number">1</span>, j - <span class="number">1</span>);</div><div class="line">    <span class="keyword">return</span> dp[i][j];</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</div><div class="line">  <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"kimbits.in"</span>)</span></span>;</div><div class="line">  <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"kimbits.out"</span>)</span></span>;</div><div class="line">  </div><div class="line">  fin &gt;&gt; N &gt;&gt; L &gt;&gt; I;</div><div class="line">  <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= N; i++)&#123;</div><div class="line">    dp[i][<span class="number">0</span>] = <span class="number">1</span>;</div><div class="line">  &#125;</div><div class="line">  </div><div class="line">  <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">1</span>; j &lt;= L; j++)&#123;</div><div class="line">    dp[<span class="number">0</span>][j] = <span class="number">1</span>;</div><div class="line">  &#125;</div><div class="line">  </div><div class="line">  <span class="keyword">for</span>(<span class="keyword">int</span> k = N - <span class="number">1</span>; k &gt;= <span class="number">0</span>; k--)&#123;</div><div class="line">    <span class="keyword">if</span>(compute(k, L) &lt; I)&#123;</div><div class="line">      <span class="built_in">cout</span> &lt;&lt; <span class="number">1</span>;</div><div class="line">      fout &lt;&lt; <span class="number">1</span>;</div><div class="line">      I -= compute(k,L);</div><div class="line">      L--;</div><div class="line">    &#125;<span class="keyword">else</span>&#123;</div><div class="line">      <span class="built_in">cout</span> &lt;&lt; <span class="number">0</span>;</div><div class="line">      fout &lt;&lt; <span class="number">0</span>;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">  </div><div class="line">  <span class="built_in">cout</span> &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">  fout &lt;&lt; <span class="built_in">endl</span>;</div><div class="line"></div></pre></td></tr></table></figure>]]></content>
-    
-    <summary type="html">
-    
-      &lt;figure class=&quot;highlight cpp&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;#&lt;span class=&quot;meta-keyword&quot;&gt;include&lt;/spa
-    
-    </summary>
-    
-      <category term="USACO" scheme="http://lianghan.org/categories/USACO/"/>
-    
-    
-      <category term="Combination" scheme="http://lianghan.org/tags/Combination/"/>
-    
-      <category term="Dynamic Programming" scheme="http://lianghan.org/tags/Dynamic-Programming/"/>
     
   </entry>
   
