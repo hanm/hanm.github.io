@@ -76,6 +76,167 @@ ga('send', 'pageview');
       <div class="outer">
         <section id="main">
   
+    <article id="post-2017-07-01-ConsensusInTheCloud" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/07/03/2017-07-01-ConsensusInTheCloud/" class="article-date">
+  <time datetime="2017-07-03T21:07:31.000Z" itemprop="datePublished">2017-07-03</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Distributed-System/">Distributed System</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/07/03/2017-07-01-ConsensusInTheCloud/">Paper Digest - Consensus in the Cloud - Paxos Systems Demystified</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Paper digest - <a href="https://www.cse.buffalo.edu/tech-reports/2016-02.pdf" target="_blank" rel="external">Consensus in the Cloud - Paxos Systems Demystified</a></p>
+<h1 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h1><ul>
+<li>Compared several popular Paxos protocols and Paxos systems and present advantages and disadvantages for each.</li>
+<li>Categorized the coordination use-patterns in cloud, and examine Google and Facebook infrastructures, as well as use cases of Paxos in Apache projects.</li>
+<li>Analyzed tradeoffs in the distributed coordination domain and identify promising future directions.</li>
+</ul>
+<h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><ul>
+<li>Coordination plays a major role in cloud computing systems:<ul>
+<li>Leader election</li>
+<li>Group membership</li>
+<li>Cluster management</li>
+<li>Service discovery</li>
+<li>Resource/access management</li>
+<li>Consistent replication of the master nodes in services</li>
+<li>Barrier-orchestration when running large analytic tasks</li>
+<li>And so on..</li>
+</ul>
+</li>
+<li>The coordination problem has been studied extensively under the name “distributed consensus”.</li>
+<li>Paxos rise to fame with Google Chubby (lock service for GFS).</li>
+<li>Apache ZooKeeper as a coordination kernel<ul>
+<li>File system abstraction easy to use.</li>
+<li>Abused / misused, often constituted the bottleneck in performance of these applications and caused scalability problems.</li>
+</ul>
+</li>
+<li>More choices nowadays (Raft, etc), with confusions still remained:<ul>
+<li>Proper use cases.</li>
+<li>Which systems are more suitable for which tasks:<ul>
+<li>Paxos protocols (e.g. multi-paxos, Raft, ZAB) are useful for low-level components for server replication.</li>
+<li>Paxos systems (e.g. ZK) are useful for highly-available/durable metadata management with constraints that all metadata fit in main-memory and are not subject to very frequent changes.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="Paxos-Protocols"><a href="#Paxos-Protocols" class="headerlink" title="Paxos Protocols"></a>Paxos Protocols</h1><ul>
+<li>Protocols<ul>
+<li>Paxos: fault-tolerant consensus for a single value.</li>
+<li>Multi-Paxos: fault-tolerant consensus for multiple values.</li>
+<li>ZAB: additional constraints on Paxos (primary global order).</li>
+<li>Raft: very similar to ZAB with some implementation level difference.</li>
+</ul>
+</li>
+<li>Differences<ul>
+<li>Leader Election:<ul>
+<li>Zab and Raft protocols differ from Paxos as they divide execution into phases (called epochs in Zab and terms in Raft).</li>
+<li>Each epoch begins with a new election, goes into the broadcast phase and ends with a leader failure.</li>
+<li>The phases are sequential because of the additional safety properties are provided by the isLeader predicate.</li>
+<li>Zab and Raft there can be at most one leader at any time.</li>
+<li>Paxos can have multiple leaders coexisting.</li>
+</ul>
+</li>
+<li>Zab has discovery and sync phase, Raft does not which simplifies algorithm but makes recover longer, possibly.</li>
+<li>Communication:<ul>
+<li>ZAB is messaging model. Each update requires at least three messages:<ul>
+<li>proposal, ack and commit</li>
+</ul>
+</li>
+<li>Raft use RPC.</li>
+</ul>
+</li>
+<li>Dynamic reconfiguration:<ul>
+<li>Reconfig is just another command go through consensus process.</li>
+<li>To ensure safety, new config cannot be activated immediately and the configuration changes must go through two phases.</li>
+<li>A process can only propose commands for slots with known configuration, ∀ρ : ρ.slotin &lt; ρ.slotout+ WINDOW.</li>
+<li>With primary order property provided by Zab and Raft, both protocols are able to implement their reconfiguration algorithms without limitations to normal operations or external services.</li>
+<li>Both Zab and Raft include a pre-phase where the new processes join the cluster as a non-voting members so that the leader in Cold could initialize their states by transferring currently committed prefix of updates.</li>
+<li>In Zab, the time between new config proposed and committed, any commands received after reconfig is only scheduled but will not commit.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Paxos Extensions<ul>
+<li>Generalized Paxos: allows acceptors to vote for independent commands.</li>
+<li>EPaxos:<ul>
+<li>allows nodes to commit conflict free commands by checking the command dependency list.</li>
+<li>adds significant complexity and extra effort to resolve the conflict if concurrent commands do not commute.</li>
+<li><strong>from an engineer’s perspective, the sketch algorithm descriptions in the literature are often underspecified, and lead to divergent interpretations and implementations.</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="Paxos-Systems"><a href="#Paxos-Systems" class="headerlink" title="Paxos Systems"></a>Paxos Systems</h1><ul>
+<li>Chubby, Apache ZooKeeper, etcd<ul>
+<li>All three services hide the replicated state machine and log abstractions under a small data-store with filesystem-like API.</li>
+<li>All three support watchers.</li>
+<li>All three support ephemeral storage.</li>
+<li>All three support observers (none voting quorum peer).</li>
+</ul>
+</li>
+<li>Difference<ul>
+<li>ZK provides client FIFO order.</li>
+<li>etcd is stateless (<strong>note, not very true with etcd 3.0’s lease, which is ZK session kind things.</strong>)</li>
+<li>etcd has TTL (<strong>note, ZK has ttl too after 3.5.3.</strong>)</li>
+<li>etcd has hidden data (MVCC).</li>
+<li>ZK has weighted quorum.</li>
+</ul>
+</li>
+<li>Proper use criteria for Paxos systems<ul>
+<li><strong>Paxos system should not be in the performance critical path of the application.</strong></li>
+<li><strong>Frequency of write operations to the Paxos system should be kept low</strong></li>
+<li><strong>Amount of data maintained in the Paxos system should be kept small</strong></li>
+<li><strong>Application adopting the Paxos system should really require strong consistency</strong></li>
+<li><strong>Application adopting the Paxos system should not be distributed over the Wide Area Network (WAN).</strong></li>
+<li><strong> The API abstraction should be fit the goal.</strong></li>
+</ul>
+</li>
+</ul>
+<h1 id="Paxos-Usage-Patterns"><a href="#Paxos-Usage-Patterns" class="headerlink" title="Paxos Usage Patterns"></a>Paxos Usage Patterns</h1><ul>
+<li>Server Replication (SR)</li>
+<li>Log Replication (LR)</li>
+<li>Synchronization Service (SS).</li>
+<li>Barrier Orchestration (BO).</li>
+<li>Configuration Management.</li>
+<li>Message Queues (Q).</li>
+</ul>
+<h1 id="Paxos-Uasage-in-Production"><a href="#Paxos-Uasage-in-Production" class="headerlink" title="Paxos Uasage in Production"></a>Paxos Uasage in Production</h1>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2017/07/03/2017-07-01-ConsensusInTheCloud/" data-id="cj4opc6vg0081lcxgyi44z99a" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2017/07/03/2017-07-01-ConsensusInTheCloud/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Consensus-Protocol/">Consensus Protocol</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Paper-Digest/">Paper Digest</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Paxos/">Paxos</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-2017-07-01-TopCoder-SRM716DivI" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/07/03/2017-07-01-TopCoder-SRM716DivI/" class="article-date">
@@ -106,7 +267,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/07/03/2017-07-01-TopCoder-SRM716DivI/" data-id="cj4omwbf9008b66xg311l34i1" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2017/07/03/2017-07-01-TopCoder-SRM716DivI/" data-id="cj4opc6vj0088lcxgem48qi72" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2017/07/03/2017-07-01-TopCoder-SRM716DivI/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -149,7 +310,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/06/25/2017-06-24-USACO-MilkMeasuring/" data-id="cj4omwbf7008866xgznncmmyn" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2017/06/25/2017-06-24-USACO-MilkMeasuring/" data-id="cj4opc6ve007xlcxga0khe8ie" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2017/06/25/2017-06-24-USACO-MilkMeasuring/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -309,7 +470,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/05/08/2017-05-08-MegaStore/" data-id="cj4omwbf4008466xge4bpyiwd" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2017/05/08/2017-05-08-MegaStore/" data-id="cj4opc6vd007ulcxgfi7nhiw8" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2017/05/08/2017-05-08-MegaStore/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -488,12 +649,12 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/05/01/2017-05-01-Paxos/" data-id="cj4omwbf3008166xgpihqizx7" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2017/05/01/2017-05-01-Paxos/" data-id="cj4opc6vb007qlcxg4g5tvvpv" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2017/05/01/2017-05-01-Paxos/#disqus_thread" class="article-comment-link">Comments</a>
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Consensus-Protocol/">Consensus Protocol</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Paper-Digest/">Paper Digest</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Consensus-Protocol/">Consensus Protocol</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Paper-Digest/">Paper Digest</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Paxos/">Paxos</a></li></ul>
 
     </footer>
   </div>
@@ -533,7 +694,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/04/21/2017-04-21-USACO-SnailTrail/" data-id="cj4omwbes007x66xg0o9ahh01" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2017/04/21/2017-04-21-USACO-SnailTrail/" data-id="cj4opc6vi0084lcxgvgs3qqeb" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2017/04/21/2017-04-21-USACO-SnailTrail/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -663,7 +824,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/03/27/2017-03-27-Existential Consistency/" data-id="cj4omwbeq007u66xgm17lpyas" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2017/03/27/2017-03-27-Existential Consistency/" data-id="cj4opc6va007nlcxg4y9wrtcs" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2017/03/27/2017-03-27-Existential Consistency/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -714,7 +875,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/03/25/2017-03-25-USACO-MusicalTheme/" data-id="cj4omwbeo007q66xggti2w6ho" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2017/03/25/2017-03-25-USACO-MusicalTheme/" data-id="cj4opc6v8007jlcxgbw4befq6" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2017/03/25/2017-03-25-USACO-MusicalTheme/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -774,7 +935,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/03/17/2017-03-17-USACO-StarryNight/" data-id="cj4omwben007n66xg9zg1xuit" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2017/03/17/2017-03-17-USACO-StarryNight/" data-id="cj4opc6v7007glcxgx1cbvau4" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2017/03/17/2017-03-17-USACO-StarryNight/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -827,86 +988,12 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/03/05/2017-03-05-USACO-FencingTheCows/" data-id="cj4omwbel007j66xgj6euvvik" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2017/03/05/2017-03-05-USACO-FencingTheCows/" data-id="cj4opc6v5007clcxgm3p1xgas" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2017/03/05/2017-03-05-USACO-FencingTheCows/#disqus_thread" class="article-comment-link">Comments</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Convex-Hull/">Convex Hull</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-2017-03-03-ZooKeeper Consistency Guarantees" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/03/03/2017-03-03-ZooKeeper Consistency Guarantees/" class="article-date">
-  <time datetime="2017-03-03T22:10:31.000Z" itemprop="datePublished">2017-03-03</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Distributed-System/">Distributed System</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/03/03/2017-03-03-ZooKeeper Consistency Guarantees/">ZooKeeper Consistency Guarantees</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>There are many consistency models out there, from stronger ones to weaker ones. What consistency model best describes ZooKeeper? </p>
-<h1 id="Consistency-Models"><a href="#Consistency-Models" class="headerlink" title="Consistency Models"></a>Consistency Models</h1><p>It is useful to think consistency models from two perspectives: server side (data centric) and client side (client centric), in particular in the context of ZooKeeper (or a general distributed storage system that is composed of clients and servers.).</p>
-<ul>
-<li>Data Centric Consistency Models<ul>
-<li>Strict Consistency<br>The strongest consistency model for distributed systems. All changes to system state are required to populate to all replicas instantly, so any write should be immediately visible to all parts of the system (both server and client). More formally, any read on a data item should returns a value corresponding to the result of the most recent write on this item. This system model is not possible to implement on top of the current hardware for distributed systems, because it requires a global clock (for strict ordering), and zero latency and infinite bandwidth for communications between different parts of the system. A closer resemble of a system that satisfy this model is a single machine where latency / bandwidth / clock constraints are almost satisfied (even on a single machine, achieve strict consistency is hard due to cache hierarchies and latencies of memory / cache access.).<br>Because of the impossibilities of implementation, a less strict model called atomic register was proposed (from Leslie Lamport), and a particular version of this model is known as linearizable consistency.<ul>
-<li>Linearizable consistency<br>Linearizable consistency model, comparing to strict consistency model, takes the latency into account, so it does not require writes to an item being visible instantly. The real constraint of this consistency model is that the operations can’t interleave, can’t be reordered, and the sequence of writes are visible in strict global ordering as these writes were issued. It is a recency guarantee such that if a change to the value is visible to one client, the change has to be visible to all clients. A client can’t read old value if some other clients have seen the new value. The change history is linearized such that all operations appear to have executed atomically in the order that is consistent with the global real time ordering of operations. One nice property of linearizable consistency is that it composes - which is an extremely useful property for reasoning about the behavior of concurrent operations in distributed systems.</li>
-</ul>
-</li>
-<li>Sequential Consistency<br>Sequential consistency is a weaker consistency model comparing to linearizable consistency. It requires all operations appear to have executed atomically in some order, and the key constraint is that this order that is visible to all part of the system has to be consistent. However, this order does not have to be consistent with the ordering of the original operations. Because of this, the system is free to reorder the executions of the operations, it just need to satisfy a globally consistent visible orderings of operations for all clients. That is the key difference between linearizable consistency model. Also, sequential consistency does not compose as linearizable consistency does.</li>
-<li>Causal Consistency<br>Causal consistency is a even weaker model than sequential consistency. It only requires causally related writes must be visible by all processes, while none causally related writes are free to executed in any order. This violates the constraint for sequential consistency (all writes must converge to the same order), so it is weaker model than sequential consistency. Sequential consistency is thus by definition implicitly causal consistency as well.</li>
-<li>Eventual Consistency<br>The weakest consistency model, ever. Distributed systems adopt this model makes a lot things harder, though it is good trade off to make in certain use case. Eventual consistency is more about a liveness property (that values converge finally), so it is usually trivially satisfiable in most systems.</li>
-</ul>
-</li>
-<li>Client Centric Consistency Models:<ul>
-<li>Monotonic reads<br>Once read, subsequent reads on that data items return same or more recent values.</li>
-<li>Monotonic writes<br>A write must be propagated to all replicas before a successive write by the same process; writes from same process are processed in same order.</li>
-<li>Read your writes<br>read(x) always returns write(x) by that process.</li>
-<li>Writes follow reads<br>write(x) following read(x) will take place on same or more recent version of x.</li>
-</ul>
-</li>
-</ul>
-<p>With all these said, what consistency model ZooKeeper fit in?</p>
-<ul>
-<li>Linearizable consistency: ZooKeeper does not guarantee linearizable consistency. Two ZooKeeper clients can see two different values of the same data item (value of znode) at the same time - e.g. one client can see an old value while the other client can see the new value. Even with the sync command, which stalls the write processors, it is still possible that a client miss a value of the write (e.g. after sync executed finished but before client gets the updated value, another client issuing a new write that update the value again.). Also due to potential network delays it is hard to guarantee that operations on all clients happen on same order globally.</li>
-<li>Sequential consistency: this is what ZooKeeper guarantees. Sequential consistency does not care about exact ordering of operations and ZooKeeper can reorder operations, but all the operations ordering will converge to a single globally consistent ordering that is visible to all clients (eventually, or near instantly if client uses sync command.).</li>
-<li>Causal consistency: because ZooKeeper satisfies sequential consistency, it also satisfy causal consistency. More specifically, since causal consistency is a stronger guarantee than read your writes and monotonic reads, those properties are also guaranteed. </li>
-<li>Monotonic reads / Read your writes: as discussed, these are trivially satisfied with stronger guarantee. Note in practice there are a lot of corner cases to consider to satisfy these properties from a client point of view, for example what if a client disconnect and connect to a server node where it does not have latest values for the same znode client has seen before (that this server lags behind leader, which is normal because ZooKeeper only requires a quorum of servers in sync with leader). This and similar cases are handled by the guarantees of ZooKeeper session which provides some strong guarantees with regards to how client and server could interact (will describe this in a future post). </li>
-<li>Monotonic writes: ZooKeeper does not satisfy this because a write is only required to be replicated to a quorum of servers.</li>
-<li>Also a side note is there is a long pending bug of the sync operation - it is not a quorum operation so the guarantee it provides only apply if the client is connecting to leader.. this needs to be fixed, soon.</li>
-</ul>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/03/03/2017-03-03-ZooKeeper Consistency Guarantees/" data-id="cj4omwbek007g66xgsivq3rbs" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2017/03/03/2017-03-03-ZooKeeper Consistency Guarantees/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ZooKeeper/">ZooKeeper</a></li></ul>
 
     </footer>
   </div>
@@ -938,7 +1025,7 @@ ga('send', 'pageview');
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BFS/">BFS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BFT/">BFT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Backtrack/">Backtrack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Base-Conversion/">Base Conversion</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Big-Integer/">Big Integer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bipartite-Match/">Bipartite Match</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bit-Manipulation/">Bit Manipulation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Brutal-Force/">Brutal Force</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Combination/">Combination</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Computation-Geometry/">Computation Geometry</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Consensus-Protocol/">Consensus Protocol</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Convex-Hull/">Convex Hull</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Counting/">Counting</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DFS/">DFS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dijkstra/">Dijkstra</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Distributed-System/">Distributed System</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dynamic-Programming/">Dynamic Programming</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Enumeration/">Enumeration</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Euler-Path/">Euler Path</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flood-Fill/">Flood Fill</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Floyd/">Floyd</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ford-Fulkerson/">Ford-Fulkerson</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gauss-Elimination/">Gauss Elimination</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Graph/">Graph</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Graph-Theory/">Graph Theory</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Greedy/">Greedy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hashing/">Hashing</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hungarian-Algorithm/">Hungarian Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/KMP/">KMP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Knapsack/">Knapsack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MEMORIZED-SEARCH/">MEMORIZED SEARCH</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Math/">Math</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Minimum-Spanning-Tree/">Minimum Spanning Tree</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Network-Flow/">Network Flow</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NewSQL/">NewSQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Number-Theory/">Number Theory</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Paper-Digest/">Paper Digest</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Permutation/">Permutation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Prim/">Prim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Rolling-Array/">Rolling Array</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Search/">Search</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shortest-Path/">Shortest Path</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Simulation/">Simulation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/String/">String</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/String-Algorithm/">String Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/String-Manipulation/">String Manipulation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TopCoder/">TopCoder</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Topological-Sort/">Topological Sort</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tree/">Tree</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/UnionFind/">UnionFind</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ZooKeeper/">ZooKeeper</a></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BFS/">BFS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BFT/">BFT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Backtrack/">Backtrack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Base-Conversion/">Base Conversion</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Big-Integer/">Big Integer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bipartite-Match/">Bipartite Match</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bit-Manipulation/">Bit Manipulation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Brutal-Force/">Brutal Force</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Combination/">Combination</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Computation-Geometry/">Computation Geometry</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Consensus-Protocol/">Consensus Protocol</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Convex-Hull/">Convex Hull</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Counting/">Counting</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DFS/">DFS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dijkstra/">Dijkstra</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Distributed-System/">Distributed System</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dynamic-Programming/">Dynamic Programming</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Enumeration/">Enumeration</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Euler-Path/">Euler Path</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flood-Fill/">Flood Fill</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Floyd/">Floyd</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ford-Fulkerson/">Ford-Fulkerson</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gauss-Elimination/">Gauss Elimination</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Graph/">Graph</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Graph-Theory/">Graph Theory</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Greedy/">Greedy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hashing/">Hashing</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hungarian-Algorithm/">Hungarian Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/KMP/">KMP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Knapsack/">Knapsack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MEMORIZED-SEARCH/">MEMORIZED SEARCH</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Math/">Math</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Minimum-Spanning-Tree/">Minimum Spanning Tree</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Network-Flow/">Network Flow</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NewSQL/">NewSQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Number-Theory/">Number Theory</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Paper-Digest/">Paper Digest</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Paxos/">Paxos</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Permutation/">Permutation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Prim/">Prim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Rolling-Array/">Rolling Array</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Search/">Search</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shortest-Path/">Shortest Path</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Simulation/">Simulation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/String/">String</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/String-Algorithm/">String Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/String-Manipulation/">String Manipulation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TopCoder/">TopCoder</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Topological-Sort/">Topological Sort</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tree/">Tree</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/UnionFind/">UnionFind</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ZooKeeper/">ZooKeeper</a></li></ul>
     </div>
   </div>
 
@@ -948,7 +1035,7 @@ ga('send', 'pageview');
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Algorithm/" style="font-size: 20px;">Algorithm</a> <a href="/tags/BFS/" style="font-size: 16.67px;">BFS</a> <a href="/tags/BFT/" style="font-size: 10px;">BFT</a> <a href="/tags/Backtrack/" style="font-size: 11.11px;">Backtrack</a> <a href="/tags/Base-Conversion/" style="font-size: 10px;">Base Conversion</a> <a href="/tags/Big-Integer/" style="font-size: 10px;">Big Integer</a> <a href="/tags/Bipartite-Match/" style="font-size: 10px;">Bipartite Match</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10px;">Bit Manipulation</a> <a href="/tags/Brutal-Force/" style="font-size: 15.56px;">Brutal Force</a> <a href="/tags/Combination/" style="font-size: 11.11px;">Combination</a> <a href="/tags/Computation-Geometry/" style="font-size: 10px;">Computation Geometry</a> <a href="/tags/Consensus-Protocol/" style="font-size: 10px;">Consensus Protocol</a> <a href="/tags/Convex-Hull/" style="font-size: 10px;">Convex Hull</a> <a href="/tags/Counting/" style="font-size: 10px;">Counting</a> <a href="/tags/DFS/" style="font-size: 16.67px;">DFS</a> <a href="/tags/Dijkstra/" style="font-size: 13.33px;">Dijkstra</a> <a href="/tags/Distributed-System/" style="font-size: 12.22px;">Distributed System</a> <a href="/tags/Dynamic-Programming/" style="font-size: 18.89px;">Dynamic Programming</a> <a href="/tags/Enumeration/" style="font-size: 10px;">Enumeration</a> <a href="/tags/Euler-Path/" style="font-size: 10px;">Euler Path</a> <a href="/tags/Flood-Fill/" style="font-size: 12.22px;">Flood Fill</a> <a href="/tags/Floyd/" style="font-size: 11.11px;">Floyd</a> <a href="/tags/Ford-Fulkerson/" style="font-size: 11.11px;">Ford-Fulkerson</a> <a href="/tags/Gauss-Elimination/" style="font-size: 10px;">Gauss Elimination</a> <a href="/tags/Graph/" style="font-size: 15.56px;">Graph</a> <a href="/tags/Graph-Theory/" style="font-size: 14.44px;">Graph Theory</a> <a href="/tags/Greedy/" style="font-size: 10px;">Greedy</a> <a href="/tags/Hashing/" style="font-size: 10px;">Hashing</a> <a href="/tags/Hungarian-Algorithm/" style="font-size: 10px;">Hungarian Algorithm</a> <a href="/tags/KMP/" style="font-size: 10px;">KMP</a> <a href="/tags/Knapsack/" style="font-size: 10px;">Knapsack</a> <a href="/tags/MEMORIZED-SEARCH/" style="font-size: 10px;">MEMORIZED SEARCH</a> <a href="/tags/Math/" style="font-size: 10px;">Math</a> <a href="/tags/Minimum-Spanning-Tree/" style="font-size: 10px;">Minimum Spanning Tree</a> <a href="/tags/Network-Flow/" style="font-size: 11.11px;">Network Flow</a> <a href="/tags/NewSQL/" style="font-size: 10px;">NewSQL</a> <a href="/tags/Number-Theory/" style="font-size: 14.44px;">Number Theory</a> <a href="/tags/Paper-Digest/" style="font-size: 14.44px;">Paper Digest</a> <a href="/tags/Permutation/" style="font-size: 10px;">Permutation</a> <a href="/tags/Prim/" style="font-size: 10px;">Prim</a> <a href="/tags/Rolling-Array/" style="font-size: 10px;">Rolling Array</a> <a href="/tags/Search/" style="font-size: 17.78px;">Search</a> <a href="/tags/Shortest-Path/" style="font-size: 12.22px;">Shortest Path</a> <a href="/tags/Simulation/" style="font-size: 12.22px;">Simulation</a> <a href="/tags/String/" style="font-size: 10px;">String</a> <a href="/tags/String-Algorithm/" style="font-size: 10px;">String Algorithm</a> <a href="/tags/String-Manipulation/" style="font-size: 10px;">String Manipulation</a> <a href="/tags/TopCoder/" style="font-size: 12.22px;">TopCoder</a> <a href="/tags/Topological-Sort/" style="font-size: 10px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 10px;">Tree</a> <a href="/tags/UnionFind/" style="font-size: 10px;">UnionFind</a> <a href="/tags/ZooKeeper/" style="font-size: 10px;">ZooKeeper</a>
+      <a href="/tags/Algorithm/" style="font-size: 20px;">Algorithm</a> <a href="/tags/BFS/" style="font-size: 17px;">BFS</a> <a href="/tags/BFT/" style="font-size: 10px;">BFT</a> <a href="/tags/Backtrack/" style="font-size: 11px;">Backtrack</a> <a href="/tags/Base-Conversion/" style="font-size: 10px;">Base Conversion</a> <a href="/tags/Big-Integer/" style="font-size: 10px;">Big Integer</a> <a href="/tags/Bipartite-Match/" style="font-size: 10px;">Bipartite Match</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10px;">Bit Manipulation</a> <a href="/tags/Brutal-Force/" style="font-size: 16px;">Brutal Force</a> <a href="/tags/Combination/" style="font-size: 11px;">Combination</a> <a href="/tags/Computation-Geometry/" style="font-size: 10px;">Computation Geometry</a> <a href="/tags/Consensus-Protocol/" style="font-size: 11px;">Consensus Protocol</a> <a href="/tags/Convex-Hull/" style="font-size: 10px;">Convex Hull</a> <a href="/tags/Counting/" style="font-size: 10px;">Counting</a> <a href="/tags/DFS/" style="font-size: 17px;">DFS</a> <a href="/tags/Dijkstra/" style="font-size: 13px;">Dijkstra</a> <a href="/tags/Distributed-System/" style="font-size: 12px;">Distributed System</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19px;">Dynamic Programming</a> <a href="/tags/Enumeration/" style="font-size: 10px;">Enumeration</a> <a href="/tags/Euler-Path/" style="font-size: 10px;">Euler Path</a> <a href="/tags/Flood-Fill/" style="font-size: 12px;">Flood Fill</a> <a href="/tags/Floyd/" style="font-size: 11px;">Floyd</a> <a href="/tags/Ford-Fulkerson/" style="font-size: 11px;">Ford-Fulkerson</a> <a href="/tags/Gauss-Elimination/" style="font-size: 10px;">Gauss Elimination</a> <a href="/tags/Graph/" style="font-size: 16px;">Graph</a> <a href="/tags/Graph-Theory/" style="font-size: 14px;">Graph Theory</a> <a href="/tags/Greedy/" style="font-size: 10px;">Greedy</a> <a href="/tags/Hashing/" style="font-size: 10px;">Hashing</a> <a href="/tags/Hungarian-Algorithm/" style="font-size: 10px;">Hungarian Algorithm</a> <a href="/tags/KMP/" style="font-size: 10px;">KMP</a> <a href="/tags/Knapsack/" style="font-size: 10px;">Knapsack</a> <a href="/tags/MEMORIZED-SEARCH/" style="font-size: 10px;">MEMORIZED SEARCH</a> <a href="/tags/Math/" style="font-size: 10px;">Math</a> <a href="/tags/Minimum-Spanning-Tree/" style="font-size: 10px;">Minimum Spanning Tree</a> <a href="/tags/Network-Flow/" style="font-size: 11px;">Network Flow</a> <a href="/tags/NewSQL/" style="font-size: 10px;">NewSQL</a> <a href="/tags/Number-Theory/" style="font-size: 14px;">Number Theory</a> <a href="/tags/Paper-Digest/" style="font-size: 15px;">Paper Digest</a> <a href="/tags/Paxos/" style="font-size: 11px;">Paxos</a> <a href="/tags/Permutation/" style="font-size: 10px;">Permutation</a> <a href="/tags/Prim/" style="font-size: 10px;">Prim</a> <a href="/tags/Rolling-Array/" style="font-size: 10px;">Rolling Array</a> <a href="/tags/Search/" style="font-size: 18px;">Search</a> <a href="/tags/Shortest-Path/" style="font-size: 12px;">Shortest Path</a> <a href="/tags/Simulation/" style="font-size: 12px;">Simulation</a> <a href="/tags/String/" style="font-size: 10px;">String</a> <a href="/tags/String-Algorithm/" style="font-size: 10px;">String Algorithm</a> <a href="/tags/String-Manipulation/" style="font-size: 10px;">String Manipulation</a> <a href="/tags/TopCoder/" style="font-size: 12px;">TopCoder</a> <a href="/tags/Topological-Sort/" style="font-size: 10px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 10px;">Tree</a> <a href="/tags/UnionFind/" style="font-size: 10px;">UnionFind</a> <a href="/tags/ZooKeeper/" style="font-size: 10px;">ZooKeeper</a>
     </div>
   </div>
 
@@ -970,6 +1057,10 @@ ga('send', 'pageview');
       <ul>
         
           <li>
+            <a href="/2017/07/03/2017-07-01-ConsensusInTheCloud/">Paper Digest - Consensus in the Cloud - Paxos Systems Demystified</a>
+          </li>
+        
+          <li>
             <a href="/2017/07/03/2017-07-01-TopCoder-SRM716DivI/">SRM 716 DIV II</a>
           </li>
         
@@ -983,10 +1074,6 @@ ga('send', 'pageview');
         
           <li>
             <a href="/2017/05/01/2017-05-01-Paxos/">Paper Digest - Paxos Made Simple</a>
-          </li>
-        
-          <li>
-            <a href="/2017/04/21/2017-04-21-USACO-SnailTrail/">USACO 5.2 Snail Trail</a>
           </li>
         
       </ul>
