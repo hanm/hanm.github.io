@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+  
+  <title>USACO 4.4 Pollutant Control | Quantum Field</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="It is an obvious max flow min cut problem. The nasty part of this problems is:
+
+There might be multiple routes between same warehouses, so the graph might contain multiple edges between two vertices.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="USACO 4.4 Pollutant Control">
+<meta property="og:url" content="http://lianghan.org/2017/02/19/2017-02-19-USACO-PollutantControl/index.html">
+<meta property="og:site_name" content="Quantum Field">
+<meta property="og:description" content="It is an obvious max flow min cut problem. The nasty part of this problems is:
+
+There might be multiple routes between same warehouses, so the graph might contain multiple edges between two vertices.">
+<meta property="og:updated_time" content="2017-02-24T17:31:25.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="USACO 4.4 Pollutant Control">
+<meta name="twitter:description" content="It is an obvious max flow min cut problem. The nasty part of this problems is:
+
+There might be multiple routes between same warehouses, so the graph might contain multiple edges between two vertices.">
+  
+    <link rel="alternate" href="/atom.xml" title="Quantum Field" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-82074845-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics --><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+
+</head>
+
+<body>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Quantum Field</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://lianghan.org"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-2017-02-19-USACO-PollutantControl" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/02/19/2017-02-19-USACO-PollutantControl/" class="article-date">
+  <time datetime="2017-02-19T18:34:31.000Z" itemprop="datePublished">2017-02-19</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/USACO/">USACO</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      USACO 4.4 Pollutant Control
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>It is an obvious max flow min cut problem. The nasty part of this problems is:</p>
+<ul>
+<li>There might be multiple routes between same warehouses, so the graph might contain multiple edges between two vertices.</li>
+<li>The output requires to print the routes under certain constraints, instead of just asking about the min cut cost.</li>
+</ul>
+<p>The idea is:</p>
+<ul>
+<li>Find the max flow first. The cost of the max flow must be min cut.</li>
+<li>Sort all edges in cost descending order. Then iterate through the sorted edges, do two things:<ul>
+<li>Remove this edge from the graph temporarily, calculate the maximum flow value. If the diff between the calculated maximum flow value and the original max flow value (the value calculated without removing the edge from the graph) is the capacity of the edge, then this edge must be in the min cut.</li>
+<li>If an edge is in a min cut, remove this edge from the graph, and repeat, until we get all edges.</li>
+</ul>
+</li>
+</ul>
+<p>This code is a simple modification of the <a href="http://lianghan.org/2017/01/04/2017-01-04-USACO-DrainageDitches.h/">Drainage Ditches Problem Solution</a> that fits this problem, however it does not pass all test data because it does not deal with multiple edges connecting same two vertices. Will post another solution soon. </p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;climits&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;functional&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;numeric&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="keyword">int</span> N, M, Si, Ei, Ci;</div><div class="line"><span class="keyword">struct</span> Edge &#123;</div><div class="line">    <span class="keyword">int</span> to, cap, rev, index;</div><div class="line">    Edge(<span class="keyword">int</span> to, <span class="keyword">int</span> cap, <span class="keyword">int</span> rev, <span class="keyword">int</span> index) :</div><div class="line">    to(to), cap(cap), rev(rev), index(index) &#123;&#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;Edge&gt;&gt; graph;</div><div class="line"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;Edge&gt;&gt; graphCopy;</div><div class="line"><span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt; visited;</div><div class="line"><span class="built_in">vector</span>&lt;Edge*&gt; edges;</div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">addEdge</span><span class="params">(<span class="keyword">int</span> from, <span class="keyword">int</span> to, <span class="keyword">int</span> cap, <span class="keyword">int</span> index)</span> </span>&#123;</div><div class="line">    graph[from].emplace_back(Edge(to, cap, (<span class="keyword">int</span>)graph[to].size(), index));</div><div class="line">    graph[to].emplace_back(Edge(from, <span class="number">0</span>, (<span class="keyword">int</span>)graph[from].size() - <span class="number">1</span>, index));</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// Ford–Fulkerson</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> v, <span class="keyword">int</span> t, <span class="keyword">int</span> f)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (v == t)</div><div class="line">    <span class="keyword">return</span> f;</div><div class="line">    visited[v] = <span class="literal">true</span>;</div><div class="line">    <span class="keyword">int</span> size = (<span class="keyword">int</span>)graph[v].size();</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; size; ++i) &#123;</div><div class="line">        <span class="keyword">auto</span> &amp;e = graph[v][i];</div><div class="line">        <span class="keyword">if</span> (visited[e.to] || e.cap &lt;= <span class="number">0</span>) <span class="keyword">continue</span>;</div><div class="line">        <span class="keyword">int</span> d = dfs(e.to, t, <span class="built_in">std</span>::min(f, e.cap));</div><div class="line">        <span class="keyword">if</span> (d &lt;= <span class="number">0</span>) <span class="keyword">continue</span>;</div><div class="line">        e.cap -= d;</div><div class="line">        graph[e.to][e.rev].cap += d;</div><div class="line">        <span class="keyword">return</span> d;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">maxFlow</span><span class="params">(<span class="keyword">int</span> s, <span class="keyword">int</span> t)</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> flow = <span class="number">0</span>;</div><div class="line">    <span class="keyword">while</span> (<span class="literal">true</span>) &#123;</div><div class="line">        <span class="built_in">std</span>::fill(visited.begin(), visited.end(), <span class="literal">false</span>);</div><div class="line">        <span class="keyword">int</span> f = dfs(s, t, INT_MAX);</div><div class="line">        <span class="keyword">if</span> (f == <span class="number">0</span>) <span class="keyword">return</span> flow;</div><div class="line">        flow += f;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"milk6.in"</span>)</span></span>;</div><div class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"milk6.out"</span>)</span></span>;</div><div class="line">    </div><div class="line">    fin &gt;&gt; N <span class="comment">/* warehouses - vertices */</span> &gt;&gt; M <span class="comment">/* trucks - edges */</span>;</div><div class="line">    graph = <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;Edge&gt;&gt;(N + <span class="number">1</span>, <span class="built_in">vector</span>&lt;Edge&gt;());</div><div class="line">    </div><div class="line">    visited = <span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt;(N + <span class="number">1</span>, <span class="literal">false</span>);</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; M; ++i) &#123;</div><div class="line">        fin &gt;&gt; Si &gt;&gt; Ei &gt;&gt; Ci;</div><div class="line">        addEdge(Si, Ei, Ci, i);</div><div class="line">        <span class="comment">//cout &lt;&lt; Si &lt;&lt; " " &lt;&lt; Ei &lt;&lt; " " &lt;&lt; Ci &lt;&lt; " " &lt;&lt; i &lt;&lt; endl;</span></div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;edge : graph[i]) &#123;</div><div class="line">            <span class="keyword">if</span> (edge.cap == <span class="number">0</span>) <span class="keyword">continue</span>;</div><div class="line">            edges.emplace_back(&amp;edge);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    sort(edges.begin(), edges.end(), [] (Edge *e1, <span class="keyword">const</span> Edge *e2) &#123;</div><div class="line">        <span class="keyword">return</span> e1-&gt;cap &gt; e2-&gt;cap;</div><div class="line">    &#125;);</div><div class="line">    </div><div class="line">    graphCopy = graph;</div><div class="line">    <span class="keyword">int</span> ans = maxFlow(<span class="number">1</span>, N);</div><div class="line">    graph = graphCopy;</div><div class="line">    <span class="keyword">int</span> total = ans;</div><div class="line"></div><div class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; ret;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; edges.size(); ++i) &#123;</div><div class="line">        <span class="comment">//cout &lt;&lt; "cap : " &lt;&lt; edges[i]-&gt;cap &lt;&lt; "; index : " &lt;&lt; edges[i]-&gt;index &lt;&lt; endl;</span></div><div class="line">        graphCopy = graph;</div><div class="line">        <span class="keyword">int</span> cap = edges[i]-&gt;cap;</div><div class="line">        edges[i]-&gt;cap -= cap;</div><div class="line">        <span class="keyword">int</span> flow = maxFlow(<span class="number">1</span>, N);</div><div class="line">        <span class="keyword">if</span> (ans - flow == cap) &#123;</div><div class="line">            ret.push_back(edges[i]-&gt;index);</div><div class="line">            graph = graphCopy;</div><div class="line">            ans = flow;</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            graph = graphCopy;</div><div class="line">            edges[i]-&gt;cap += cap;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    fout &lt;&lt; total - ans &lt;&lt; <span class="string">" "</span> &lt;&lt; ret.size() &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> val : ret) &#123;</div><div class="line">        fout &lt;&lt; val + <span class="number">1</span> &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2017/02/19/2017-02-19-USACO-PollutantControl/" data-id="cj4omwbeh007966xgob6lsy05" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2017/02/19/2017-02-19-USACO-PollutantControl/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Ford-Fulkerson/">Ford-Fulkerson</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Graph-Theory/">Graph Theory</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Network-Flow/">Network Flow</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2017/02/22/2017-02-22-USACO-FrameUp/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          USACO 4.4 Frame Up
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/02/11/2017-02-11-DynamoPaper/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Dynamo, Amazon’s Highly Available Key-value Store</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<section id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Distributed-System/">Distributed System</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/TopCoder/">TopCoder</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/USACO/">USACO</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BFS/">BFS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BFT/">BFT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Backtrack/">Backtrack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Base-Conversion/">Base Conversion</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Big-Integer/">Big Integer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bipartite-Match/">Bipartite Match</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bit-Manipulation/">Bit Manipulation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Brutal-Force/">Brutal Force</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Combination/">Combination</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Computation-Geometry/">Computation Geometry</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Consensus-Protocol/">Consensus Protocol</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Convex-Hull/">Convex Hull</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Counting/">Counting</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DFS/">DFS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dijkstra/">Dijkstra</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Distributed-System/">Distributed System</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dynamic-Programming/">Dynamic Programming</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Enumeration/">Enumeration</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Euler-Path/">Euler Path</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flood-Fill/">Flood Fill</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Floyd/">Floyd</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ford-Fulkerson/">Ford-Fulkerson</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gauss-Elimination/">Gauss Elimination</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Graph/">Graph</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Graph-Theory/">Graph Theory</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Greedy/">Greedy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hashing/">Hashing</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hungarian-Algorithm/">Hungarian Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/KMP/">KMP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Knapsack/">Knapsack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MEMORIZED-SEARCH/">MEMORIZED SEARCH</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Math/">Math</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Minimum-Spanning-Tree/">Minimum Spanning Tree</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Network-Flow/">Network Flow</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NewSQL/">NewSQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Number-Theory/">Number Theory</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Paper-Digest/">Paper Digest</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Permutation/">Permutation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Prim/">Prim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Rolling-Array/">Rolling Array</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Search/">Search</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shortest-Path/">Shortest Path</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Simulation/">Simulation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/String/">String</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/String-Algorithm/">String Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/String-Manipulation/">String Manipulation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TopCoder/">TopCoder</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Topological-Sort/">Topological Sort</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tree/">Tree</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/UnionFind/">UnionFind</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ZooKeeper/">ZooKeeper</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Algorithm/" style="font-size: 20px;">Algorithm</a> <a href="/tags/BFS/" style="font-size: 16.67px;">BFS</a> <a href="/tags/BFT/" style="font-size: 10px;">BFT</a> <a href="/tags/Backtrack/" style="font-size: 11.11px;">Backtrack</a> <a href="/tags/Base-Conversion/" style="font-size: 10px;">Base Conversion</a> <a href="/tags/Big-Integer/" style="font-size: 10px;">Big Integer</a> <a href="/tags/Bipartite-Match/" style="font-size: 10px;">Bipartite Match</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10px;">Bit Manipulation</a> <a href="/tags/Brutal-Force/" style="font-size: 15.56px;">Brutal Force</a> <a href="/tags/Combination/" style="font-size: 11.11px;">Combination</a> <a href="/tags/Computation-Geometry/" style="font-size: 10px;">Computation Geometry</a> <a href="/tags/Consensus-Protocol/" style="font-size: 10px;">Consensus Protocol</a> <a href="/tags/Convex-Hull/" style="font-size: 10px;">Convex Hull</a> <a href="/tags/Counting/" style="font-size: 10px;">Counting</a> <a href="/tags/DFS/" style="font-size: 16.67px;">DFS</a> <a href="/tags/Dijkstra/" style="font-size: 13.33px;">Dijkstra</a> <a href="/tags/Distributed-System/" style="font-size: 12.22px;">Distributed System</a> <a href="/tags/Dynamic-Programming/" style="font-size: 18.89px;">Dynamic Programming</a> <a href="/tags/Enumeration/" style="font-size: 10px;">Enumeration</a> <a href="/tags/Euler-Path/" style="font-size: 10px;">Euler Path</a> <a href="/tags/Flood-Fill/" style="font-size: 12.22px;">Flood Fill</a> <a href="/tags/Floyd/" style="font-size: 11.11px;">Floyd</a> <a href="/tags/Ford-Fulkerson/" style="font-size: 11.11px;">Ford-Fulkerson</a> <a href="/tags/Gauss-Elimination/" style="font-size: 10px;">Gauss Elimination</a> <a href="/tags/Graph/" style="font-size: 15.56px;">Graph</a> <a href="/tags/Graph-Theory/" style="font-size: 14.44px;">Graph Theory</a> <a href="/tags/Greedy/" style="font-size: 10px;">Greedy</a> <a href="/tags/Hashing/" style="font-size: 10px;">Hashing</a> <a href="/tags/Hungarian-Algorithm/" style="font-size: 10px;">Hungarian Algorithm</a> <a href="/tags/KMP/" style="font-size: 10px;">KMP</a> <a href="/tags/Knapsack/" style="font-size: 10px;">Knapsack</a> <a href="/tags/MEMORIZED-SEARCH/" style="font-size: 10px;">MEMORIZED SEARCH</a> <a href="/tags/Math/" style="font-size: 10px;">Math</a> <a href="/tags/Minimum-Spanning-Tree/" style="font-size: 10px;">Minimum Spanning Tree</a> <a href="/tags/Network-Flow/" style="font-size: 11.11px;">Network Flow</a> <a href="/tags/NewSQL/" style="font-size: 10px;">NewSQL</a> <a href="/tags/Number-Theory/" style="font-size: 14.44px;">Number Theory</a> <a href="/tags/Paper-Digest/" style="font-size: 14.44px;">Paper Digest</a> <a href="/tags/Permutation/" style="font-size: 10px;">Permutation</a> <a href="/tags/Prim/" style="font-size: 10px;">Prim</a> <a href="/tags/Rolling-Array/" style="font-size: 10px;">Rolling Array</a> <a href="/tags/Search/" style="font-size: 17.78px;">Search</a> <a href="/tags/Shortest-Path/" style="font-size: 12.22px;">Shortest Path</a> <a href="/tags/Simulation/" style="font-size: 12.22px;">Simulation</a> <a href="/tags/String/" style="font-size: 10px;">String</a> <a href="/tags/String-Algorithm/" style="font-size: 10px;">String Algorithm</a> <a href="/tags/String-Manipulation/" style="font-size: 10px;">String Manipulation</a> <a href="/tags/TopCoder/" style="font-size: 12.22px;">TopCoder</a> <a href="/tags/Topological-Sort/" style="font-size: 10px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 10px;">Tree</a> <a href="/tags/UnionFind/" style="font-size: 10px;">UnionFind</a> <a href="/tags/ZooKeeper/" style="font-size: 10px;">ZooKeeper</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">May 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">January 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">August 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/07/03/2017-07-01-TopCoder-SRM716DivI/">SRM 716 DIV II</a>
+          </li>
+        
+          <li>
+            <a href="/2017/06/25/2017-06-24-USACO-MilkMeasuring/">USACO 5.3 Milk Measuring</a>
+          </li>
+        
+          <li>
+            <a href="/2017/05/08/2017-05-08-MegaStore/">Paper Digest - Megastore, Providing Scalable, Highly Available Storage for Interactive Services</a>
+          </li>
+        
+          <li>
+            <a href="/2017/05/01/2017-05-01-Paxos/">Paper Digest - Paxos Made Simple</a>
+          </li>
+        
+          <li>
+            <a href="/2017/04/21/2017-04-21-USACO-SnailTrail/">USACO 5.2 Snail Trail</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    <div class="visitor-map">
+    <script type="text/javascript" src="//ra.revolvermaps.com/0/0/6.js?i=0zwyzd573qn&amp;m=7&amp;s=320&amp;c=e63100&amp;cr1=ffffff&amp;f=arial&amp;l=0&amp;bv=90&amp;lx=-420&amp;ly=420&amp;hi=20&amp;he=7&amp;hc=a8ddff&amp;rs=80" async="async"></script>
+</div>
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2017 hanm<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+<script>
+  var disqus_shortname = 'quantumfield';
+  
+  var disqus_url = 'http://lianghan.org/2017/02/19/2017-02-19-USACO-PollutantControl/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</body>
+</html>
