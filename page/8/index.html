@@ -63,9 +63,9 @@ ga('send', 'pageview');
       </nav>
       <nav id="sub-nav">
         
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="Flux RSS"></a>
         
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+        <a id="nav-search-btn" class="nav-icon" title="Rechercher"></a>
       </nav>
       <div id="search-form-wrap">
         <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://lianghan.org"></form>
@@ -75,6 +75,51 @@ ga('send', 'pageview');
 </header>
       <div class="outer">
         <section id="main">
+  
+    <article id="post-2016-08-20-USACO-NumberTriangles" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/08/20/2016-08-20-USACO-NumberTriangles/" class="article-date">
+  <time datetime="2016-08-20T23:20:31.000Z" itemprop="datePublished">2016-08-20</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/USACO/">USACO</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/08/20/2016-08-20-USACO-NumberTriangles/">USACO 1.5 Number Triangles</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Simple DP problem.</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">getTriangle</span><span class="params">(ifstream &amp;fin, <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; &amp;triangle)</span> </span>&#123;</div><div class="line">  <span class="keyword">int</span> total;</div><div class="line">  fin &gt;&gt; total;</div><div class="line"></div><div class="line">  <span class="keyword">int</span> prev = <span class="number">1</span>;</div><div class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; total; ++i) &#123;</div><div class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; current;</div><div class="line">    <span class="keyword">int</span> cur = prev;</div><div class="line">    <span class="keyword">while</span> (cur--) &#123;</div><div class="line">      <span class="keyword">int</span> item;</div><div class="line">      fin &gt;&gt; item;</div><div class="line">      current.emplace_back(item);</div><div class="line">    &#125;</div><div class="line">    triangle.push_back(current);</div><div class="line">    ++prev;</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">findMaxPath</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; &amp;triangle)</span> </span>&#123;</div><div class="line">  <span class="keyword">auto</span> rows = (<span class="keyword">int</span>)triangle.size();</div><div class="line">  <span class="keyword">if</span> (!rows) <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">  <span class="keyword">if</span> (rows == <span class="number">1</span>) <span class="keyword">return</span> triangle[<span class="number">0</span>][<span class="number">0</span>];</div><div class="line"></div><div class="line">  <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; table(triangle[rows - <span class="number">1</span>]);</div><div class="line"></div><div class="line">  <span class="keyword">for</span>(<span class="keyword">int</span> i = rows - <span class="number">2</span>; i &gt;= <span class="number">0</span>; --i)</div><div class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; triangle[i].size(); ++j)</div><div class="line">      table[j] = <span class="built_in">std</span>::max(table[j+<span class="number">1</span>], table[j]) + triangle[i][j];</div><div class="line"></div><div class="line">  <span class="keyword">return</span> table[<span class="number">0</span>];</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"numtri.in"</span>)</span></span>;</div><div class="line">  <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"numtri.out"</span>)</span></span>;</div><div class="line"></div><div class="line">  <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; triangle;</div><div class="line">  getTriangle(fin, triangle);</div><div class="line"></div><div class="line">  fout &lt;&lt; findMaxPath(triangle) &lt;&lt; <span class="built_in">endl</span>;</div><div class="line"></div><div class="line">  <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2016/08/20/2016-08-20-USACO-NumberTriangles/" data-id="cj5fj7mbx001bpbxg30aek5kp" class="article-share-link">Partager</a>
+      
+        <a href="http://lianghan.org/2016/08/20/2016-08-20-USACO-NumberTriangles/#disqus_thread" class="article-comment-link">Commentaires</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dynamic-Programming/">Dynamic Programming</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
   
     <article id="post-2016-08-20-USACO-Mother&#39;s Milk" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
@@ -107,9 +152,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/20/2016-08-20-USACO-Mother's Milk/" data-id="cj4opc6r8001hlcxgxyn59xon" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/08/20/2016-08-20-USACO-Mother's Milk/" data-id="cj5fj7mbt0017pbxgtmvugbz8" class="article-share-link">Partager</a>
       
-        <a href="http://lianghan.org/2016/08/20/2016-08-20-USACO-Mother's Milk/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2016/08/20/2016-08-20-USACO-Mother's Milk/#disqus_thread" class="article-comment-link">Commentaires</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/BFS/">BFS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DFS/">DFS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Search/">Search</a></li></ul>
@@ -152,9 +197,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/18/2016-08-18-USACO-ArithmeticProgression/" data-id="cj4opc6qs000xlcxgst4pd5eo" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/08/18/2016-08-18-USACO-ArithmeticProgression/" data-id="cj5fj7mbp0014pbxggbjfc861" class="article-share-link">Partager</a>
       
-        <a href="http://lianghan.org/2016/08/18/2016-08-18-USACO-ArithmeticProgression/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2016/08/18/2016-08-18-USACO-ArithmeticProgression/#disqus_thread" class="article-comment-link">Commentaires</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Brutal-Force/">Brutal Force</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Number-Theory/">Number Theory</a></li></ul>
@@ -197,9 +242,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/17/2016-8-17-USACO-SkiCourseDesign/" data-id="cj4opc6tu005plcxgwmmgwog2" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/08/17/2016-8-17-USACO-SkiCourseDesign/" data-id="cj5fj7mff005upbxgs4maali0" class="article-share-link">Partager</a>
       
-        <a href="http://lianghan.org/2016/08/17/2016-8-17-USACO-SkiCourseDesign/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2016/08/17/2016-8-17-USACO-SkiCourseDesign/#disqus_thread" class="article-comment-link">Commentaires</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Brutal-Force/">Brutal Force</a></li></ul>
@@ -246,9 +291,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/17/2016-08-17-USACO-WormHoles/" data-id="cj4opc6qq000ulcxg7crjde3x" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/08/17/2016-08-17-USACO-WormHoles/" data-id="cj5fj7mbl0011pbxgkvl8p3kw" class="article-share-link">Partager</a>
       
-        <a href="http://lianghan.org/2016/08/17/2016-08-17-USACO-WormHoles/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2016/08/17/2016-08-17-USACO-WormHoles/#disqus_thread" class="article-comment-link">Commentaires</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Graph/">Graph</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Search/">Search</a></li></ul>
@@ -291,9 +336,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/13/2016-08-13-USACO-CombinationLock/" data-id="cj4opc6qx0015lcxgrobvc91u" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/08/13/2016-08-13-USACO-CombinationLock/" data-id="cj5fj7mbi000xpbxgomifu5ss" class="article-share-link">Partager</a>
       
-        <a href="http://lianghan.org/2016/08/13/2016-08-13-USACO-CombinationLock/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2016/08/13/2016-08-13-USACO-CombinationLock/#disqus_thread" class="article-comment-link">Commentaires</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Combination/">Combination</a></li></ul>
@@ -336,9 +381,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/11/2016-08-11-USACO-DualPalindrome/" data-id="cj4opc6qu0012lcxgs4sv9za6" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/08/11/2016-08-11-USACO-DualPalindrome/" data-id="cj5fj7mbe000upbxg64zy37aw" class="article-share-link">Partager</a>
       
-        <a href="http://lianghan.org/2016/08/11/2016-08-11-USACO-DualPalindrome/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2016/08/11/2016-08-11-USACO-DualPalindrome/#disqus_thread" class="article-comment-link">Commentaires</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Base-Conversion/">Base Conversion</a></li></ul>
@@ -381,9 +426,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/10/2016-08-09-TopCoderSRM696/" data-id="cj4opc6qn000plcxgebz58lpz" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/08/10/2016-08-09-TopCoderSRM696/" data-id="cj5fj7mb9000ppbxg7lju6v51" class="article-share-link">Partager</a>
       
-        <a href="http://lianghan.org/2016/08/10/2016-08-09-TopCoderSRM696/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2016/08/10/2016-08-09-TopCoderSRM696/#disqus_thread" class="article-comment-link">Commentaires</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li></ul>
@@ -426,9 +471,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/09/2016-08-09-PalindromeSquare/" data-id="cj4opc6qi000ilcxge49jcdnw" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/08/09/2016-08-09-PalindromeSquare/" data-id="cj5fj7mb6000npbxgm0riyfjn" class="article-share-link">Partager</a>
       
-        <a href="http://lianghan.org/2016/08/09/2016-08-09-PalindromeSquare/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2016/08/09/2016-08-09-PalindromeSquare/#disqus_thread" class="article-comment-link">Commentaires</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Search/">Search</a></li></ul>
@@ -471,54 +516,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/08/2016-08-08-NameThatNumber/" data-id="cj4opc6qe000flcxgr87svj7g" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/08/08/2016-08-08-NameThatNumber/" data-id="cj5fj7mb2000ipbxg2gb18iwu" class="article-share-link">Partager</a>
       
-        <a href="http://lianghan.org/2016/08/08/2016-08-08-NameThatNumber/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Search/">Search</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post- 2016-08-08-Transformation" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/08/08/ 2016-08-08-Transformation/" class="article-date">
-  <time datetime="2016-08-09T04:53:31.000Z" itemprop="datePublished">2016-08-08</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/USACO/">USACO</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/08/08/ 2016-08-08-Transformation/">USACO 1.2 Transformation</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Brutal force search… and a Hexo bug that prevent syntax being highlighted!</p>
-<figure class="highlight"><table><tr><td class="code"><pre><div class="line">#include &lt;iostream&gt;</div><div class="line">#include &lt;fstream&gt;</div><div class="line">#include &lt;string&gt;</div><div class="line">#include &lt;vector&gt;</div><div class="line">#include &lt;algorithm&gt;</div><div class="line"></div><div class="line">using namespace std;</div><div class="line"></div><div class="line">typedef vector&lt;vector&lt;char&gt; &gt; MATRIX;</div><div class="line"></div><div class="line">void rotateMatrix90(MATRIX &amp;matrix) &#123;</div><div class="line">  auto size = matrix.size();</div><div class="line">  for (int i = 0; i &lt; size; ++i) &#123;</div><div class="line">    for (int j = i + 1; j &lt; size; ++j) &#123;</div><div class="line">      swap(matrix[i][j], matrix[j][i]);</div><div class="line">    &#125;</div><div class="line">    reverse(matrix[i].begin(), matrix[i].end());</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">void rotateMatrix180(MATRIX &amp;matrix) &#123;</div><div class="line">  rotateMatrix90(matrix);</div><div class="line">  rotateMatrix90(matrix);</div><div class="line">&#125;</div><div class="line"></div><div class="line">void rotateMatrix270(MATRIX &amp;matrix) &#123;</div><div class="line">  rotateMatrix90(matrix);</div><div class="line">  rotateMatrix180(matrix);</div><div class="line">&#125;</div><div class="line"></div><div class="line">void reflectMatrixHorizontal(MATRIX &amp;matrix) &#123;</div><div class="line">  int size = static_cast&lt;int&gt;(matrix.size());</div><div class="line">  for (int i = 0, j = size - 1; i &lt; j; ++i, --j) &#123;</div><div class="line">    for (int k = 0; k &lt; size; ++k)</div><div class="line">      swap(matrix[k][i], matrix[k][j]);</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">void initializeMatrix(MATRIX &amp;matrix, ifstream &amp;fin) &#123;</div><div class="line">  auto demension = matrix.size();</div><div class="line">  for (int i = 0; i &lt; demension; ++i) &#123;</div><div class="line">    for (int j = 0; j &lt; demension; ++j) &#123;</div><div class="line">      fin &gt;&gt; matrix[i][j];</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">int main () &#123;</div><div class="line">  string str;</div><div class="line">  ifstream fin ("transform.in");</div><div class="line">  ofstream fout ("transform.out");</div><div class="line"></div><div class="line">  int demension;</div><div class="line">  fin &gt;&gt; demension;</div><div class="line">  MATRIX matrix(demension, vector&lt;char&gt;(demension, ' '));</div><div class="line">  initializeMatrix(matrix, fin);</div><div class="line"></div><div class="line">  MATRIX baseline(demension, vector&lt;char&gt;(demension, ' '));</div><div class="line">  initializeMatrix(baseline, fin);</div><div class="line"></div><div class="line">  MATRIX old = matrix;</div><div class="line"></div><div class="line">  rotateMatrix90(matrix);</div><div class="line">  if (baseline == matrix) &#123;</div><div class="line">    fout &lt;&lt; 1 &lt;&lt; std::endl;</div><div class="line">    return 0;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  matrix = old;</div><div class="line">  rotateMatrix180(matrix);</div><div class="line">  if (baseline == matrix) &#123;</div><div class="line">    fout &lt;&lt; 2 &lt;&lt; std::endl;</div><div class="line">    return 0;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  matrix = old;</div><div class="line">  rotateMatrix270(matrix);</div><div class="line">  if (baseline == matrix) &#123;</div><div class="line">    fout &lt;&lt; 3 &lt;&lt; std::endl;</div><div class="line">    return 0;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  matrix = old;</div><div class="line">  reflectMatrixHorizontal(matrix);</div><div class="line">  if (baseline == matrix) &#123;</div><div class="line">    fout &lt;&lt; 4 &lt;&lt; std::endl;</div><div class="line">    return 0;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  MATRIX reflected = matrix;</div><div class="line">  rotateMatrix90(matrix);</div><div class="line">  if (matrix == baseline) &#123;</div><div class="line">    fout &lt;&lt; 5 &lt;&lt; std::endl;</div><div class="line">    return 0;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  matrix = reflected;</div><div class="line">  rotateMatrix180(matrix);</div><div class="line">  if (matrix == baseline) &#123;</div><div class="line">    fout &lt;&lt; 5 &lt;&lt; std::endl;</div><div class="line">    return 0;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  matrix = reflected;</div><div class="line">  rotateMatrix270(matrix);</div><div class="line">  if (matrix == baseline) &#123;</div><div class="line">    fout &lt;&lt; 5 &lt;&lt; std::endl;</div><div class="line">    return 0;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  matrix = old;</div><div class="line">  if (matrix == baseline) &#123;</div><div class="line">    fout &lt;&lt; 6 &lt;&lt; std::endl;</div><div class="line">    return 0;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  fout &lt;&lt; 7 &lt;&lt; std::endl;</div><div class="line">  return 0;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/08/ 2016-08-08-Transformation/" data-id="cj4opc6pp0002lcxghays0gq2" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2016/08/08/ 2016-08-08-Transformation/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2016/08/08/2016-08-08-NameThatNumber/#disqus_thread" class="article-comment-link">Commentaires</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Search/">Search</a></li></ul>
@@ -541,7 +541,7 @@ ga('send', 'pageview');
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Categories</h3>
+    <h3 class="widget-title">Catégories</h3>
     <div class="widget">
       <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Distributed-System/">Distributed System</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/TopCoder/">TopCoder</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/USACO/">USACO</a></li></ul>
     </div>
@@ -551,7 +551,7 @@ ga('send', 'pageview');
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Tags</h3>
+    <h3 class="widget-title">Mot-clés</h3>
     <div class="widget">
       <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BFS/">BFS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BFT/">BFT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Backtrack/">Backtrack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Base-Conversion/">Base Conversion</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Big-Integer/">Big Integer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bipartite-Match/">Bipartite Match</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bit-Manipulation/">Bit Manipulation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Brutal-Force/">Brutal Force</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Combination/">Combination</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Computation-Geometry/">Computation Geometry</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Consensus-Protocol/">Consensus Protocol</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Convex-Hull/">Convex Hull</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Counting/">Counting</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DFS/">DFS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dijkstra/">Dijkstra</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Distributed-System/">Distributed System</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dynamic-Programming/">Dynamic Programming</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Enumeration/">Enumeration</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Euler-Path/">Euler Path</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flood-Fill/">Flood Fill</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Floyd/">Floyd</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ford-Fulkerson/">Ford-Fulkerson</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gauss-Elimination/">Gauss Elimination</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Graph/">Graph</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Graph-Theory/">Graph Theory</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Greedy/">Greedy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hashing/">Hashing</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hungarian-Algorithm/">Hungarian Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/KMP/">KMP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Knapsack/">Knapsack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MEMORIZED-SEARCH/">MEMORIZED SEARCH</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Math/">Math</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Minimum-Spanning-Tree/">Minimum Spanning Tree</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Network-Flow/">Network Flow</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NewSQL/">NewSQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Number-Theory/">Number Theory</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Paper-Digest/">Paper Digest</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Paxos/">Paxos</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Permutation/">Permutation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Prim/">Prim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Rolling-Array/">Rolling Array</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Search/">Search</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shortest-Path/">Shortest Path</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Simulation/">Simulation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/String/">String</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/String-Algorithm/">String Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/String-Manipulation/">String Manipulation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TopCoder/">TopCoder</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Topological-Sort/">Topological Sort</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tree/">Tree</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/UnionFind/">UnionFind</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ZooKeeper/">ZooKeeper</a></li></ul>
     </div>
@@ -561,9 +561,9 @@ ga('send', 'pageview');
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Tag Cloud</h3>
+    <h3 class="widget-title">Nuage de mot-clés</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Algorithm/" style="font-size: 20px;">Algorithm</a> <a href="/tags/BFS/" style="font-size: 17px;">BFS</a> <a href="/tags/BFT/" style="font-size: 10px;">BFT</a> <a href="/tags/Backtrack/" style="font-size: 11px;">Backtrack</a> <a href="/tags/Base-Conversion/" style="font-size: 10px;">Base Conversion</a> <a href="/tags/Big-Integer/" style="font-size: 10px;">Big Integer</a> <a href="/tags/Bipartite-Match/" style="font-size: 10px;">Bipartite Match</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10px;">Bit Manipulation</a> <a href="/tags/Brutal-Force/" style="font-size: 16px;">Brutal Force</a> <a href="/tags/Combination/" style="font-size: 11px;">Combination</a> <a href="/tags/Computation-Geometry/" style="font-size: 10px;">Computation Geometry</a> <a href="/tags/Consensus-Protocol/" style="font-size: 11px;">Consensus Protocol</a> <a href="/tags/Convex-Hull/" style="font-size: 10px;">Convex Hull</a> <a href="/tags/Counting/" style="font-size: 10px;">Counting</a> <a href="/tags/DFS/" style="font-size: 17px;">DFS</a> <a href="/tags/Dijkstra/" style="font-size: 13px;">Dijkstra</a> <a href="/tags/Distributed-System/" style="font-size: 12px;">Distributed System</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19px;">Dynamic Programming</a> <a href="/tags/Enumeration/" style="font-size: 10px;">Enumeration</a> <a href="/tags/Euler-Path/" style="font-size: 10px;">Euler Path</a> <a href="/tags/Flood-Fill/" style="font-size: 12px;">Flood Fill</a> <a href="/tags/Floyd/" style="font-size: 11px;">Floyd</a> <a href="/tags/Ford-Fulkerson/" style="font-size: 11px;">Ford-Fulkerson</a> <a href="/tags/Gauss-Elimination/" style="font-size: 10px;">Gauss Elimination</a> <a href="/tags/Graph/" style="font-size: 16px;">Graph</a> <a href="/tags/Graph-Theory/" style="font-size: 14px;">Graph Theory</a> <a href="/tags/Greedy/" style="font-size: 10px;">Greedy</a> <a href="/tags/Hashing/" style="font-size: 10px;">Hashing</a> <a href="/tags/Hungarian-Algorithm/" style="font-size: 10px;">Hungarian Algorithm</a> <a href="/tags/KMP/" style="font-size: 10px;">KMP</a> <a href="/tags/Knapsack/" style="font-size: 10px;">Knapsack</a> <a href="/tags/MEMORIZED-SEARCH/" style="font-size: 10px;">MEMORIZED SEARCH</a> <a href="/tags/Math/" style="font-size: 10px;">Math</a> <a href="/tags/Minimum-Spanning-Tree/" style="font-size: 10px;">Minimum Spanning Tree</a> <a href="/tags/Network-Flow/" style="font-size: 11px;">Network Flow</a> <a href="/tags/NewSQL/" style="font-size: 10px;">NewSQL</a> <a href="/tags/Number-Theory/" style="font-size: 14px;">Number Theory</a> <a href="/tags/Paper-Digest/" style="font-size: 15px;">Paper Digest</a> <a href="/tags/Paxos/" style="font-size: 11px;">Paxos</a> <a href="/tags/Permutation/" style="font-size: 10px;">Permutation</a> <a href="/tags/Prim/" style="font-size: 10px;">Prim</a> <a href="/tags/Rolling-Array/" style="font-size: 10px;">Rolling Array</a> <a href="/tags/Search/" style="font-size: 18px;">Search</a> <a href="/tags/Shortest-Path/" style="font-size: 12px;">Shortest Path</a> <a href="/tags/Simulation/" style="font-size: 12px;">Simulation</a> <a href="/tags/String/" style="font-size: 10px;">String</a> <a href="/tags/String-Algorithm/" style="font-size: 10px;">String Algorithm</a> <a href="/tags/String-Manipulation/" style="font-size: 10px;">String Manipulation</a> <a href="/tags/TopCoder/" style="font-size: 12px;">TopCoder</a> <a href="/tags/Topological-Sort/" style="font-size: 10px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 10px;">Tree</a> <a href="/tags/UnionFind/" style="font-size: 10px;">UnionFind</a> <a href="/tags/ZooKeeper/" style="font-size: 10px;">ZooKeeper</a>
+      <a href="/tags/Algorithm/" style="font-size: 20px;">Algorithm</a> <a href="/tags/BFS/" style="font-size: 16.36px;">BFS</a> <a href="/tags/BFT/" style="font-size: 10px;">BFT</a> <a href="/tags/Backtrack/" style="font-size: 10.91px;">Backtrack</a> <a href="/tags/Base-Conversion/" style="font-size: 10px;">Base Conversion</a> <a href="/tags/Big-Integer/" style="font-size: 10px;">Big Integer</a> <a href="/tags/Bipartite-Match/" style="font-size: 10px;">Bipartite Match</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10px;">Bit Manipulation</a> <a href="/tags/Brutal-Force/" style="font-size: 15.45px;">Brutal Force</a> <a href="/tags/Combination/" style="font-size: 10.91px;">Combination</a> <a href="/tags/Computation-Geometry/" style="font-size: 10px;">Computation Geometry</a> <a href="/tags/Consensus-Protocol/" style="font-size: 10.91px;">Consensus Protocol</a> <a href="/tags/Convex-Hull/" style="font-size: 10px;">Convex Hull</a> <a href="/tags/Counting/" style="font-size: 10px;">Counting</a> <a href="/tags/DFS/" style="font-size: 17.27px;">DFS</a> <a href="/tags/Dijkstra/" style="font-size: 12.73px;">Dijkstra</a> <a href="/tags/Distributed-System/" style="font-size: 11.82px;">Distributed System</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.09px;">Dynamic Programming</a> <a href="/tags/Enumeration/" style="font-size: 10px;">Enumeration</a> <a href="/tags/Euler-Path/" style="font-size: 10px;">Euler Path</a> <a href="/tags/Flood-Fill/" style="font-size: 11.82px;">Flood Fill</a> <a href="/tags/Floyd/" style="font-size: 10.91px;">Floyd</a> <a href="/tags/Ford-Fulkerson/" style="font-size: 10.91px;">Ford-Fulkerson</a> <a href="/tags/Gauss-Elimination/" style="font-size: 10px;">Gauss Elimination</a> <a href="/tags/Graph/" style="font-size: 15.45px;">Graph</a> <a href="/tags/Graph-Theory/" style="font-size: 13.64px;">Graph Theory</a> <a href="/tags/Greedy/" style="font-size: 10px;">Greedy</a> <a href="/tags/Hashing/" style="font-size: 10px;">Hashing</a> <a href="/tags/Hungarian-Algorithm/" style="font-size: 10px;">Hungarian Algorithm</a> <a href="/tags/KMP/" style="font-size: 10px;">KMP</a> <a href="/tags/Knapsack/" style="font-size: 10px;">Knapsack</a> <a href="/tags/MEMORIZED-SEARCH/" style="font-size: 10px;">MEMORIZED SEARCH</a> <a href="/tags/Math/" style="font-size: 10px;">Math</a> <a href="/tags/Minimum-Spanning-Tree/" style="font-size: 10px;">Minimum Spanning Tree</a> <a href="/tags/Network-Flow/" style="font-size: 10.91px;">Network Flow</a> <a href="/tags/NewSQL/" style="font-size: 10px;">NewSQL</a> <a href="/tags/Number-Theory/" style="font-size: 13.64px;">Number Theory</a> <a href="/tags/Paper-Digest/" style="font-size: 14.55px;">Paper Digest</a> <a href="/tags/Paxos/" style="font-size: 10.91px;">Paxos</a> <a href="/tags/Permutation/" style="font-size: 10px;">Permutation</a> <a href="/tags/Prim/" style="font-size: 10px;">Prim</a> <a href="/tags/Rolling-Array/" style="font-size: 10px;">Rolling Array</a> <a href="/tags/Search/" style="font-size: 18.18px;">Search</a> <a href="/tags/Shortest-Path/" style="font-size: 11.82px;">Shortest Path</a> <a href="/tags/Simulation/" style="font-size: 12.73px;">Simulation</a> <a href="/tags/String/" style="font-size: 10px;">String</a> <a href="/tags/String-Algorithm/" style="font-size: 10px;">String Algorithm</a> <a href="/tags/String-Manipulation/" style="font-size: 10px;">String Manipulation</a> <a href="/tags/TopCoder/" style="font-size: 11.82px;">TopCoder</a> <a href="/tags/Topological-Sort/" style="font-size: 10px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 10px;">Tree</a> <a href="/tags/UnionFind/" style="font-size: 10px;">UnionFind</a> <a href="/tags/ZooKeeper/" style="font-size: 10px;">ZooKeeper</a>
     </div>
   </div>
 
@@ -580,9 +580,13 @@ ga('send', 'pageview');
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
+    <h3 class="widget-title">Articles récents</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2017/07/22/2017-07-22-USACO-WindowArea/">USACO 5.3 Window Area</a>
+          </li>
         
           <li>
             <a href="/2017/07/03/2017-07-01-ConsensusInTheCloud/">Paper Digest - Consensus in the Cloud - Paxos Systems Demystified</a>
@@ -598,10 +602,6 @@ ga('send', 'pageview');
         
           <li>
             <a href="/2017/05/08/2017-05-08-MegaStore/">Paper Digest - Megastore, Providing Scalable, Highly Available Storage for Interactive Services</a>
-          </li>
-        
-          <li>
-            <a href="/2017/05/01/2017-05-01-Paxos/">Paper Digest - Paxos Made Simple</a>
           </li>
         
       </ul>
@@ -621,7 +621,7 @@ ga('send', 'pageview');
   <div class="outer">
     <div id="footer-info" class="inner">
       &copy; 2017 hanm<br>
-      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      Propulsé by <a href="http://hexo.io/" target="_blank">Hexo</a>
     </div>
   </div>
 </footer>
