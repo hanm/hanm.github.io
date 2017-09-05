@@ -63,9 +63,9 @@ ga('send', 'pageview');
       </nav>
       <nav id="sub-nav">
         
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="Flux RSS"></a>
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
         
-        <a id="nav-search-btn" class="nav-icon" title="Rechercher"></a>
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
       </nav>
       <div id="search-form-wrap">
         <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://lianghan.org"></form>
@@ -75,6 +75,185 @@ ga('send', 'pageview');
 </header>
       <div class="outer">
         <section id="main">
+  
+    <article id="post-2017-09-03-USACO-CharacterRecognition" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/09/04/2017-09-03-USACO-CharacterRecognition/" class="article-date">
+  <time datetime="2017-09-05T00:26:31.000Z" itemprop="datePublished">2017-09-04</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/USACO/">USACO</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/09/04/2017-09-03-USACO-CharacterRecognition/">USACO 5.4 Character Recognition</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;climits&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="keyword">const</span> <span class="keyword">char</span> ch[] = <span class="string">"* abcdefghijklmnopqrstuvwxyz"</span>;</div><div class="line"><span class="keyword">const</span> <span class="keyword">int</span> MAX_NUM_FONTS = <span class="number">28</span>, N = <span class="number">20</span>, MAX_LINES = <span class="number">1201</span>, INF = <span class="number">99999999</span>;</div><div class="line"><span class="keyword">char</span> font[MAX_NUM_FONTS][N + <span class="number">1</span>][N + <span class="number">1</span>], line[MAX_LINES][N + <span class="number">1</span>];</div><div class="line"><span class="comment">// diff[i][j][k]: difference between the i-th line of the input image and</span></div><div class="line"><span class="comment">// the k-th line of the j-th font soure image.</span></div><div class="line"><span class="keyword">int</span> diff[MAX_LINES][MAX_NUM_FONTS][N + <span class="number">1</span>];</div><div class="line"><span class="comment">// cost[i][j]: minimum cost of match between the i-th line and the (j + 19)-th</span></div><div class="line"><span class="comment">// line of the input image.</span></div><div class="line"><span class="keyword">int</span> cost[MAX_LINES][<span class="number">3</span>];</div><div class="line"><span class="comment">// index of the matching char.</span></div><div class="line"><span class="keyword">int</span> from[MAX_LINES][<span class="number">3</span>];</div><div class="line"><span class="keyword">int</span> dp[MAX_LINES], opt[MAX_LINES], ans[<span class="number">100</span>];</div><div class="line"></div><div class="line"><span class="function">ifstream <span class="title">fontin</span><span class="params">(<span class="string">"font.in"</span>)</span></span>;</div><div class="line"><span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"charrec.in"</span>)</span></span>;</div><div class="line"><span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"charrec.out"</span>)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">readFont</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> tmp;</div><div class="line">    fontin &gt;&gt; tmp;</div><div class="line">    <span class="built_in">string</span> str;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= <span class="number">27</span>;  ++i) &#123;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">1</span>; j &lt;= N; ++j) &#123;</div><div class="line">            fontin &gt;&gt; str;</div><div class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">1</span>; k &lt;= N; ++k) &#123;</div><div class="line">                font[i][j][k] = str[k];</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">readImages</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</div><div class="line">    <span class="built_in">string</span> str;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; ++i) &#123;</div><div class="line">        fin &gt;&gt; str;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">1</span>; j &lt;= N; ++j) &#123;</div><div class="line">            line[i][j] = str[j];</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">1</span>; j &lt;= <span class="number">27</span>; ++j) &#123;</div><div class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">1</span>; k &lt;= N; ++k) &#123;</div><div class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> t = <span class="number">1</span>; t &lt;= N; ++t) &#123;</div><div class="line">                    <span class="keyword">if</span>(line[i][t] == font[j][k][t]) <span class="keyword">continue</span>;</div><div class="line">                    ++diff[i][j][k];</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">preprocess</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i + <span class="number">18</span> &lt;= n; ++i) &#123;</div><div class="line">        cost[i][<span class="number">0</span>] = cost[i][<span class="number">1</span>] = cost[i][<span class="number">2</span>] = INF;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">1</span>; j &lt;= <span class="number">27</span>; ++j) &#123;</div><div class="line">            <span class="keyword">int</span> t = <span class="number">0</span>;</div><div class="line"></div><div class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">1</span>; k &lt; N; ++k) &#123;</div><div class="line">                t += diff[i + k - <span class="number">1</span>][j][k];</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            <span class="keyword">if</span> (t &lt; cost[i][<span class="number">0</span>]) &#123;</div><div class="line">                cost[i][<span class="number">0</span>] = t;</div><div class="line">                from[i][<span class="number">0</span>] = j;</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">19</span>; k; --k) &#123;</div><div class="line">                t -= diff[i + k - <span class="number">1</span>][j][k], t += diff[i + k - <span class="number">1</span>][j][k + <span class="number">1</span>];</div><div class="line">                <span class="keyword">if</span>(t &lt; cost[i][<span class="number">0</span>]) &#123;</div><div class="line">                    cost[i][<span class="number">0</span>] = t;</div><div class="line">                    from[i][<span class="number">0</span>] = j;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">if</span>(i + <span class="number">19</span> &lt;= n) &#123;</div><div class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">1</span>; j &lt;= <span class="number">27</span>; ++j) &#123;</div><div class="line">                <span class="keyword">int</span> t = <span class="number">0</span>;</div><div class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">1</span>; k &lt;= N; ++k) &#123;</div><div class="line">                    t += diff[i+k<span class="number">-1</span>][j][k];</div><div class="line">                &#125;</div><div class="line">                <span class="keyword">if</span> (t &lt; cost[i][<span class="number">1</span>]) &#123;</div><div class="line">                    cost[i][<span class="number">1</span>] = t;</div><div class="line">                    from[i][<span class="number">1</span>] = j;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (i + <span class="number">20</span> &lt;= n) &#123;</div><div class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">1</span>; j &lt;= <span class="number">27</span>; ++j) &#123;</div><div class="line">                <span class="keyword">int</span> t = <span class="number">0</span>;</div><div class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> k=<span class="number">1</span>; k &lt;= N; ++k) &#123;</div><div class="line">                    t += diff[i + k - <span class="number">1</span>][j][k];</div><div class="line">                &#125;</div><div class="line">                <span class="keyword">if</span> (t &lt; cost[i][<span class="number">2</span>]) &#123;</div><div class="line">                    cost[i][<span class="number">2</span>] = t,</div><div class="line">                    from[i][<span class="number">2</span>] = j;</div><div class="line">                &#125;</div><div class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> k = N; k; --k) &#123;</div><div class="line">                    t -= diff[i + k - <span class="number">1</span>][j][k];</div><div class="line">                    t += diff[i + k][j][k];</div><div class="line">                    <span class="keyword">if</span> (t &lt; cost[i][<span class="number">2</span>]) &#123;</div><div class="line">                        cost[i][<span class="number">2</span>] = t;</div><div class="line">                        from[i][<span class="number">2</span>] = j;</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">calculate</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; ++i) &#123;</div><div class="line">        dp[i] = INF;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">19</span>; i &lt;= n; ++i) &#123;</div><div class="line">        <span class="keyword">int</span> val = dp[i - <span class="number">19</span>] + cost[i - <span class="number">18</span>][<span class="number">0</span>];</div><div class="line">        <span class="keyword">if</span> (dp[i] &gt; val) &#123;</div><div class="line">            dp[i] = val;</div><div class="line">            opt[i] = <span class="number">19</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span> (i &gt;= <span class="number">20</span>) &#123;</div><div class="line">            val = dp[i - <span class="number">20</span>] + cost[i - <span class="number">19</span>][<span class="number">1</span>];</div><div class="line">            <span class="keyword">if</span> (dp[i] &gt; val) &#123;</div><div class="line">                dp[i] = val;</div><div class="line">                opt[i] = <span class="number">20</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span> (i &gt;= <span class="number">21</span>) &#123;</div><div class="line">            val = dp[i - <span class="number">21</span>] + cost[i - <span class="number">20</span>][<span class="number">2</span>];</div><div class="line">            <span class="keyword">if</span> (dp[i] &gt; val) &#123;</div><div class="line">                dp[i] = val;</div><div class="line">                opt[i] = <span class="number">21</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> n = <span class="number">0</span>, t = <span class="number">0</span>;</div><div class="line"></div><div class="line">    readFont();</div><div class="line">    fin &gt;&gt; n;</div><div class="line">    readImages(n);</div><div class="line">    preprocess(n);</div><div class="line">    calculate(n);</div><div class="line"></div><div class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = n; i; i -= opt[i]) &#123;</div><div class="line">        ans[++t] = from[i - opt[i] + <span class="number">1</span>][opt[i] - <span class="number">19</span>];</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = t; i; --i) &#123;</div><div class="line">        fout &lt;&lt; ch[ans[i]];</div><div class="line">    &#125;</div><div class="line">    fout &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div><div class="line"></div></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2017/09/04/2017-09-03-USACO-CharacterRecognition/" data-id="cj76uxh3e008twoxgygeqqvfd" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2017/09/04/2017-09-03-USACO-CharacterRecognition/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dynamic-Programming/">Dynamic Programming</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-2017-08-14-USACO-CanadaTour" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/08/14/2017-08-14-USACO-CanadaTour/" class="article-date">
+  <time datetime="2017-08-14T18:15:31.000Z" itemprop="datePublished">2017-08-14</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/USACO/">USACO</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/08/14/2017-08-14-USACO-CanadaTour/">USACO 5.4 Canada Tour</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>For every pair of cities (i,j) find maximum total length of two paths. One path starts at city 1 and ends in city i, the other path starts from city 1 and ends in city j. Both path have no common cities except the start city 1 and the end city N. First path will reach city N, and the result will be the maximum value of the other path ending at j where 1 &lt;= j &lt;= N.</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unordered_map&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="keyword">int</span> N, V;</div><div class="line"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; dp;</div><div class="line"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt;&gt; flight;</div><div class="line"><span class="built_in">unordered_map</span>&lt;<span class="built_in">string</span>, <span class="keyword">int</span>&gt; cities;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"tour.in"</span>)</span></span>;</div><div class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"tour.out"</span>)</span></span>;</div><div class="line"></div><div class="line">    fin &gt;&gt; N &gt;&gt; V;</div><div class="line">    dp = <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt;(N + <span class="number">1</span>, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N + <span class="number">1</span>));</div><div class="line">    flight = <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt;&gt;(N + <span class="number">1</span>, <span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt;(N + <span class="number">1</span>, <span class="literal">false</span>));</div><div class="line">    </div><div class="line">    <span class="built_in">string</span> city;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= N; ++i) &#123;</div><div class="line">        fin &gt;&gt; city;</div><div class="line">        cities[city] = i;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="built_in">string</span> from, to;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; V; ++i) &#123;</div><div class="line">        fin &gt;&gt; from &gt;&gt; to;</div><div class="line">        flight[cities[from]][cities[to]] = <span class="literal">true</span>;</div><div class="line">        flight[cities[to]][cities[from]] = <span class="literal">true</span>;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    dp[<span class="number">1</span>][<span class="number">1</span>] = <span class="number">1</span>;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= N; ++i) &#123;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = i + <span class="number">1</span>; j &lt;= N; ++j) &#123;</div><div class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">1</span>; k &lt; j; ++k) &#123;</div><div class="line">                <span class="keyword">if</span> (dp[i][k] &amp;&amp; flight[k][j]) &#123;</div><div class="line">                    dp[i][j] = <span class="built_in">std</span>::max(dp[i][k] + <span class="number">1</span>, dp[i][j]);</div><div class="line">                &#125;</div><div class="line">                dp[j][i] = dp[i][j];</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">int</span> ans = <span class="number">1</span>;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= N; ++i) &#123;</div><div class="line">        <span class="keyword">if</span> (!flight[i][N]) <span class="keyword">continue</span>;</div><div class="line">        ans = <span class="built_in">std</span>::max(ans, dp[i][N]);</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="built_in">cout</span> &lt;&lt; ans &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">    fout &lt;&lt; ans &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">&#125;</div><div class="line"></div></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2017/08/14/2017-08-14-USACO-CanadaTour/" data-id="cj76uxh3g008xwoxgabf65yva" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2017/08/14/2017-08-14-USACO-CanadaTour/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dynamic-Programming/">Dynamic Programming</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-2017-08-09-USACO-BigBarn" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/08/09/2017-08-09-USACO-BigBarn/" class="article-date">
+  <time datetime="2017-08-10T04:20:31.000Z" itemprop="datePublished">2017-08-09</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/USACO/">USACO</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/08/09/2017-08-09-USACO-BigBarn/">USACO 5.3 Big Barn</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Similar dynamic programming problem as the previous <a href="http://lianghan.org/2016/12/07/2016-12-07-USACO-HomeOnRange/">Home On The Range</a>.</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;climits&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"><span class="keyword">int</span> N, T;</div><div class="line"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; dp;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"bigbrn.in"</span>)</span></span>;</div><div class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"bigbrn.out"</span>)</span></span>;</div><div class="line">    </div><div class="line">    fin &gt;&gt; N &gt;&gt; T;</div><div class="line">    dp = <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt;(N, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N, <span class="number">1</span>));</div><div class="line">    <span class="keyword">int</span> x, y;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; T; ++i) &#123;</div><div class="line">        fin &gt;&gt; x &gt;&gt; y;</div><div class="line">        dp[x - <span class="number">1</span>][y - <span class="number">1</span>] = <span class="number">0</span>;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">int</span> ans = INT_MIN;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = N - <span class="number">2</span>; i &gt;= <span class="number">0</span>; --i) &#123;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = N - <span class="number">2</span>; j &gt;= <span class="number">0</span>; --j) &#123;</div><div class="line">            <span class="keyword">if</span> (!dp[i][j]) <span class="keyword">continue</span>;</div><div class="line">            dp[i][j] = <span class="built_in">std</span>::min(<span class="built_in">std</span>::min(dp[i + <span class="number">1</span>][j], dp[i][j + <span class="number">1</span>]),</div><div class="line">                                dp[i + <span class="number">1</span>][j + <span class="number">1</span>]) + <span class="number">1</span>;</div><div class="line">            ans = <span class="built_in">std</span>::max(dp[i][j], ans);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="built_in">cout</span> &lt;&lt; ans &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">    fout &lt;&lt; ans &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">&#125;</div><div class="line"></div></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2017/08/09/2017-08-09-USACO-BigBarn/" data-id="cj76uxh3b008mwoxgydj7906o" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2017/08/09/2017-08-09-USACO-BigBarn/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dynamic-Programming/">Dynamic Programming</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-2017-08-04-USACO-NetworkOfSchools" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/08/04/2017-08-04-USACO-NetworkOfSchools/" class="article-date">
+  <time datetime="2017-08-05T06:11:31.000Z" itemprop="datePublished">2017-08-04</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/USACO/">USACO</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/08/04/2017-08-04-USACO-NetworkOfSchools/">USACO 5.3 Network of Schools</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Compute the minimum number of edges to add to make a directed graph strongly connected. Use Kosaraju’s algorithm to find out strongly connected components and for each SCC count its in degree and out degree and the maximum one is the answer.</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="keyword">int</span> N;</div><div class="line"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; g, rg <span class="comment">/* reversed graph */</span>;</div><div class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; vs; <span class="comment">// post order vertices</span></div><div class="line"><span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt; visited;</div><div class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; cmp; <span class="comment">// topological order of strongly connected component.</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">add_edge</span><span class="params">(<span class="keyword">int</span> from, <span class="keyword">int</span> to)</span> </span>&#123;</div><div class="line">    g[from].push_back(to);</div><div class="line">    rg[to].push_back(from);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> v)</span> </span>&#123;</div><div class="line">    visited[v] = <span class="literal">true</span>;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; g[v].size(); ++i) &#123;</div><div class="line">        <span class="keyword">if</span> (visited[g[v][i]]) <span class="keyword">continue</span>;</div><div class="line">        dfs(g[v][i]);</div><div class="line">    &#125;</div><div class="line">    vs.push_back(v);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">rdfs</span><span class="params">(<span class="keyword">int</span> v, <span class="keyword">int</span> k)</span> </span>&#123;</div><div class="line">    visited[v] = <span class="literal">true</span>;</div><div class="line">    cmp[v] = k;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; rg[v].size(); ++i) &#123;</div><div class="line">        <span class="keyword">if</span> (visited[rg[v][i]]) <span class="keyword">continue</span>;</div><div class="line">        rdfs(rg[v][i], k);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">scc</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="built_in">std</span>::fill(visited.begin(), visited.end(), <span class="literal">false</span>);</div><div class="line">    vs.clear();</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</div><div class="line">        <span class="keyword">if</span> (visited[i]) <span class="keyword">continue</span>;</div><div class="line">        dfs(i);</div><div class="line">    &#125;</div><div class="line">    <span class="built_in">std</span>::fill(visited.begin(), visited.end(), <span class="literal">false</span>);</div><div class="line">    <span class="keyword">int</span> k = <span class="number">0</span>;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = (<span class="keyword">int</span>)vs.size() - <span class="number">1</span>; i &gt;= <span class="number">0</span>; --i) &#123;</div><div class="line">        <span class="keyword">if</span> (visited[vs[i]]) <span class="keyword">continue</span>;</div><div class="line">        rdfs(vs[i], k++);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> k;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"schlnet.in"</span>)</span></span>;</div><div class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"schlnet.out"</span>)</span></span>;</div><div class="line">    </div><div class="line">    fin &gt;&gt; N;</div><div class="line">    g = <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt;(N); rg = g;</div><div class="line">    vs = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N);</div><div class="line">    visited = <span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt;(N, <span class="literal">false</span>);</div><div class="line">    cmp = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N, <span class="number">0</span>);</div><div class="line">    <span class="keyword">auto</span> ins = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N, <span class="number">0</span>);</div><div class="line">    <span class="keyword">auto</span> outs = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N, <span class="number">0</span>);</div><div class="line">    </div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</div><div class="line">        <span class="keyword">int</span> t; fin &gt;&gt; t;</div><div class="line">        <span class="keyword">while</span> (t) &#123;</div><div class="line">            add_edge(i, t - <span class="number">1</span>);</div><div class="line">            fin &gt;&gt; t;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">int</span> numOfScc = scc();</div><div class="line">    </div><div class="line">    <span class="comment">//cout &lt;&lt; numOfScc &lt;&lt; endl;</span></div><div class="line">    </div><div class="line">    <span class="keyword">if</span>(numOfScc == <span class="number">1</span>)</div><div class="line">    &#123;</div><div class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="number">1</span> &lt;&lt; <span class="built_in">endl</span> &lt;&lt; <span class="number">0</span> &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">        fout &lt;&lt; <span class="number">1</span> &lt;&lt; <span class="built_in">endl</span> &lt;&lt; <span class="number">0</span> &lt;&lt; <span class="built_in">endl</span>;</div><div class="line"></div><div class="line">        <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; g[i].size(); ++j) &#123;</div><div class="line">            <span class="keyword">int</span> v = g[i][j];</div><div class="line">            <span class="keyword">int</span> ii = cmp[i], vv = cmp[v];</div><div class="line">            <span class="keyword">if</span>(ii != vv) &#123;</div><div class="line">                ins[vv]++; outs[ii]++;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">int</span> ans0 = <span class="number">0</span>, ans1 = <span class="number">0</span>;</div><div class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; numOfScc; ++i) &#123;</div><div class="line">        <span class="keyword">if</span>(!ins[i])  ++ans0; <span class="keyword">if</span>(!outs[i]) ++ans1;</div><div class="line">    &#125;</div><div class="line">    <span class="built_in">cout</span> &lt;&lt; ans0 &lt;&lt; <span class="built_in">endl</span> &lt;&lt; max(ans0, ans1) &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">    fout &lt;&lt; ans0 &lt;&lt; <span class="built_in">endl</span> &lt;&lt; max(ans0, ans1) &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div><div class="line"></div></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2017/08/04/2017-08-04-USACO-NetworkOfSchools/" data-id="cj76uxh38008fwoxgih0a6k4g" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2017/08/04/2017-08-04-USACO-NetworkOfSchools/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Graph-Theory/">Graph Theory</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Strongly-Connected-Components/">Strongly Connected Components</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
   
     <article id="post-2017-07-22-USACO-WindowArea" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
@@ -108,9 +287,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/07/22/2017-07-22-USACO-WindowArea/" data-id="cj5fjato1007vpzxggl1td522" class="article-share-link">Partager</a>
+      <a data-url="http://lianghan.org/2017/07/22/2017-07-22-USACO-WindowArea/" data-id="cj76uxh36008cwoxgi8tdtfn5" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2017/07/22/2017-07-22-USACO-WindowArea/#disqus_thread" class="article-comment-link">Commentaires</a>
+        <a href="http://lianghan.org/2017/07/22/2017-07-22-USACO-WindowArea/#disqus_thread" class="article-comment-link">Comments</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DFS/">DFS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Simulation/">Simulation</a></li></ul>
@@ -269,9 +448,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/07/03/2017-07-01-ConsensusInTheCloud/" data-id="cj5fjatnx007opzxgfvdkz1pt" class="article-share-link">Partager</a>
+      <a data-url="http://lianghan.org/2017/07/03/2017-07-01-ConsensusInTheCloud/" data-id="cj76uxh310082woxgvrnplhb1" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2017/07/03/2017-07-01-ConsensusInTheCloud/#disqus_thread" class="article-comment-link">Commentaires</a>
+        <a href="http://lianghan.org/2017/07/03/2017-07-01-ConsensusInTheCloud/#disqus_thread" class="article-comment-link">Comments</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Consensus-Protocol/">Consensus Protocol</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Paper-Digest/">Paper Digest</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Paxos/">Paxos</a></li></ul>
@@ -313,9 +492,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/07/03/2017-07-01-TopCoder-SRM716DivI/" data-id="cj5fjato70085pzxgdccwmlyr" class="article-share-link">Partager</a>
+      <a data-url="http://lianghan.org/2017/07/03/2017-07-01-TopCoder-SRM716DivI/" data-id="cj76uxh320085woxgkb3edkx3" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2017/07/03/2017-07-01-TopCoder-SRM716DivI/#disqus_thread" class="article-comment-link">Commentaires</a>
+        <a href="http://lianghan.org/2017/07/03/2017-07-01-TopCoder-SRM716DivI/#disqus_thread" class="article-comment-link">Comments</a>
       
       
     </footer>
@@ -356,9 +535,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/06/25/2017-06-24-USACO-MilkMeasuring/" data-id="cj5fjato50082pzxgbay64h3d" class="article-share-link">Partager</a>
+      <a data-url="http://lianghan.org/2017/06/25/2017-06-24-USACO-MilkMeasuring/" data-id="cj76uxh3a008jwoxg7hu3of9l" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2017/06/25/2017-06-24-USACO-MilkMeasuring/#disqus_thread" class="article-comment-link">Commentaires</a>
+        <a href="http://lianghan.org/2017/06/25/2017-06-24-USACO-MilkMeasuring/#disqus_thread" class="article-comment-link">Comments</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DFS/">DFS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MEMORIZED-SEARCH/">MEMORIZED SEARCH</a></li></ul>
@@ -516,9 +695,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/05/08/2017-05-08-MegaStore/" data-id="cj5fjato3007ypzxgw4f9s4pp" class="article-share-link">Partager</a>
+      <a data-url="http://lianghan.org/2017/05/08/2017-05-08-MegaStore/" data-id="cj76uxh2z007ywoxgbxqtowdr" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2017/05/08/2017-05-08-MegaStore/#disqus_thread" class="article-comment-link">Commentaires</a>
+        <a href="http://lianghan.org/2017/05/08/2017-05-08-MegaStore/#disqus_thread" class="article-comment-link">Comments</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/NewSQL/">NewSQL</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Paper-Digest/">Paper Digest</a></li></ul>
@@ -695,9 +874,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/05/01/2017-05-01-Paxos/" data-id="cj5fjatnz007rpzxgehugqvoz" class="article-share-link">Partager</a>
+      <a data-url="http://lianghan.org/2017/05/01/2017-05-01-Paxos/" data-id="cj76uxh340089woxgbkiauv1f" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2017/05/01/2017-05-01-Paxos/#disqus_thread" class="article-comment-link">Commentaires</a>
+        <a href="http://lianghan.org/2017/05/01/2017-05-01-Paxos/#disqus_thread" class="article-comment-link">Comments</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Consensus-Protocol/">Consensus Protocol</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Paper-Digest/">Paper Digest</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Paxos/">Paxos</a></li></ul>
@@ -709,296 +888,10 @@ ga('send', 'pageview');
 
 
   
-    <article id="post-2017-04-21-USACO-SnailTrail" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/04/21/2017-04-21-USACO-SnailTrail/" class="article-date">
-  <time datetime="2017-04-21T21:50:31.000Z" itemprop="datePublished">2017-04-21</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/USACO/">USACO</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/04/21/2017-04-21-USACO-SnailTrail/">USACO 5.2 Snail Trail</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>The problem is to find out the longest possible move path under certain constraints. Not sure if there are better methods, but a brutal force DFS just works with the given test data.</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="keyword">int</span> N, B, ans;</div><div class="line"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt;&gt; grid;</div><div class="line"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt;&gt; visited;</div><div class="line"><span class="keyword">int</span> dx[] = &#123;<span class="number">-1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>&#125;;</div><div class="line"><span class="keyword">int</span> dy[] = &#123;<span class="number">0</span>, <span class="number">-1</span>, <span class="number">1</span>, <span class="number">0</span>&#125;;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">on_grid</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> x &gt;= <span class="number">1</span> &amp;&amp; y &gt;= <span class="number">1</span> &amp;&amp; x &lt;= N &amp;&amp; y &lt;= N;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; next_dir(<span class="keyword">int</span> d) &#123;</div><div class="line">    <span class="keyword">if</span> (d == <span class="number">0</span> || d == <span class="number">3</span>) &#123;</div><div class="line">        <span class="keyword">return</span> &#123;<span class="number">1</span>, <span class="number">2</span>&#125;;</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="keyword">return</span> &#123;<span class="number">0</span>, <span class="number">3</span>&#125;;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">move</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y, <span class="keyword">int</span> d, <span class="keyword">int</span> step)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (visited[x][y]) <span class="keyword">return</span>;</div><div class="line">    visited[x][y] = <span class="literal">true</span>;</div><div class="line">    ans = <span class="built_in">std</span>::max(ans, step);</div><div class="line">    <span class="keyword">int</span> xx = x + dx[d], yy = y + dy[d];</div><div class="line">    <span class="keyword">if</span> (on_grid(xx, yy) &amp;&amp; grid[xx][yy] != <span class="string">'#'</span>) &#123;</div><div class="line">        move(xx, yy, d, step + <span class="number">1</span>);</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="keyword">auto</span> dirs = next_dir(d);</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> dir : dirs) &#123;</div><div class="line">            xx = x + dx[dir]; yy = y + dy[dir];</div><div class="line">            <span class="keyword">if</span> (on_grid(xx, yy) &amp;&amp; grid[xx][yy] == <span class="string">'.'</span>) &#123;</div><div class="line">                move(xx, yy, dir, step + <span class="number">1</span>);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    visited[x][y] = <span class="literal">false</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"snail.in"</span>)</span></span>;</div><div class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"snail.out"</span>)</span></span>;</div><div class="line">    fin &gt;&gt; N &gt;&gt; B;</div><div class="line">    grid = <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt;&gt;(N + <span class="number">1</span>, <span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt;(N + <span class="number">1</span>, <span class="string">'.'</span>));</div><div class="line">    visited = <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt;&gt;(N + <span class="number">1</span>, <span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt;(N + <span class="number">1</span>, <span class="literal">false</span>));</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= B; ++i) &#123;</div><div class="line">        <span class="keyword">char</span> col; <span class="keyword">int</span> row;</div><div class="line">        fin &gt;&gt; col &gt;&gt; row;</div><div class="line">        grid[row][col - <span class="string">'A'</span> + <span class="number">1</span>] = <span class="string">'#'</span>;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    move(<span class="number">1</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">1</span>);</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= N; ++i) &#123;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt;= N; ++j) &#123;</div><div class="line">            visited[i][j] = <span class="literal">false</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    move(<span class="number">1</span>, <span class="number">1</span>, <span class="number">3</span>, <span class="number">1</span>);</div><div class="line">    </div><div class="line">    <span class="built_in">cout</span> &lt;&lt; ans &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">    fout &lt;&lt; ans &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">&#125;</div><div class="line"></div></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/04/21/2017-04-21-USACO-SnailTrail/" data-id="cj5fjatnu007hpzxgg6gmyd92" class="article-share-link">Partager</a>
-      
-        <a href="http://lianghan.org/2017/04/21/2017-04-21-USACO-SnailTrail/#disqus_thread" class="article-comment-link">Commentaires</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DFS/">DFS</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-2017-03-27-Existential Consistency" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/03/27/2017-03-27-Existential Consistency/" class="article-date">
-  <time datetime="2017-03-27T23:26:31.000Z" itemprop="datePublished">2017-03-27</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Distributed-System/">Distributed System</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/03/27/2017-03-27-Existential Consistency/">Existential Consistency - Measuring and Understanding Consistency at Facebook</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Paper digest - <a href="http://sigops.org/sosp/sosp15/current/2015-Monterey/240-lu-online.pdf" target="_blank" rel="external">Existential Consistency: Measuring and Understanding Consistency at Facebook </a></p>
-<h1 id="Motivation"><a href="#Motivation" class="headerlink" title="Motivation"></a>Motivation</h1><ul>
-<li>Provides real world insights on how to quantify trade offs between performance and consistency wrt replicated storage systems.</li>
-<li>Describes a practical consistency monitoring system that tracks a new consistency metric ideally suited for health monitoring.</li>
-</ul>
-<h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><ul>
-<li>Stronger consistency implementation increases latency and/or decrease throughput.</li>
-<li>Eventual consistency (usually) provides good latency and/or throughput at larger scale. However there are drawbacks:<ul>
-<li>User visible anomalies: e.g. out order comments on social network post.</li>
-<li>Programming complexity: complicated cases to reason about on weaker consistency model.</li>
-</ul>
-</li>
-<li>So lots of recent work focus on providing stronger consistency models to overcome drawbacks of a weaker consistency model.</li>
-<li>But, not much work is done to quantify the trade offs, which this paper addresses.</li>
-<li>Within a cluster, per-object sequential and read-afterwrite consistency are provided. </li>
-<li>Across the entire system, eventual consistency is provided.</li>
-<li>Consistency is measured by running offline consistency checker (that checks various consistency models) on a logs that gathers random samples of social graph system.</li>
-</ul>
-<h1 id="Background"><a href="#Background" class="headerlink" title="Background"></a>Background</h1><ul>
-<li>Facebook’s replicated storage<ul>
-<li>Data model is directed graph.</li>
-<li>User data is persistent in relational database, which is sharded, geo-replicated.</li>
-<li>Each shard has a single maser region. Replication to slave region is async.</li>
-<li>Database is cached (two-level) for the full replica per region. Root / leaf caches. Reads served by leaf cache.</li>
-<li>Write path to cache: invalidation is async.</li>
-</ul>
-</li>
-<li>Consistency models:<ul>
-<li>The usual ones, mentioned again (linearizability, sequential, per object sequential, read-after-write, eventual.)</li>
-<li>Facebook’s consistency: per-object sequential consistency and read-after-write consistency within a cache, and eventual consistency across caches.</li>
-<li>When user session spreads across multiple leaf caches (e.g. load balanced, or leaf cache failed): eventual consistency.</li>
-</ul>
-</li>
-</ul>
-<h1 id="Principled-Consistency-Analysis"><a href="#Principled-Consistency-Analysis" class="headerlink" title="Principled Consistency Analysis"></a>Principled Consistency Analysis</h1><ul>
-<li>Trace<ul>
-<li>Collect trace to identify violation of consistency models.</li>
-<li>Trace only requests to a subset of vertices / edges stored in system for practical feasibility / avoid overhead.</li>
-<li>Requests are logged on the web server that issuing the requests.</li>
-</ul>
-</li>
-<li>Deal with clock skew<ul>
-<li>Solved by adding offsets (We account for this clock skew by expanding the invocation time and response time, i.e., we subtract 35 ms from all invocation times and add 35 ms to all response times.)</li>
-</ul>
-</li>
-<li>Deal with losing logs<ul>
-<li>Use a secondary trace from Wormhole system which is lossy as well but combined with the writes from both trace has good coverage.</li>
-</ul>
-</li>
-<li>The checker<ul>
-<li>Anomaly Checkers<ul>
-<li>Maintaining a directed graph.</li>
-<li>Vertices represent the state of an object.</li>
-<li>Edges represent the constraints on the ordering.</li>
-<li>Check state transition order observed by reads is consistent with these constraints.</li>
-</ul>
-</li>
-<li>Linearizability Checker<ul>
-<li>Model operation as vertices, edges as constraints.</li>
-<li>Check cycles.</li>
-<li>Linearizability requires that there exists a total order that is legal.</li>
-<li>Merging read vertices into the write vertices they observe requires matching reads to write.</li>
-</ul>
-</li>
-<li>Per-Object Sequential and Read-After-Write Checkers<ul>
-<li>As an add on of linearlizability checker which is superset of sequential / RAW consistency.</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>Directions on future research into systems with stronger consistency<ul>
-<li>Build system were non-anomalous types have negligible overhead or</li>
-<li>Provide stronger consistency for a small subset of a larger system. </li>
-<li>While the latter would not prevent all anomalies, it would allow incremental deployment of these systems and significantly reduce the rate of anomalies. </li>
-<li>Interestingly, such a subsystem that does provide linearizability is used within Facebook for a small set of object types, e.g., passwords.</li>
-</ul>
-</li>
-</ul>
-<h1 id="Practical-Consistency-Analysis"><a href="#Practical-Consistency-Analysis" class="headerlink" title="Practical Consistency Analysis"></a>Practical Consistency Analysis</h1><ul>
-<li>Why - need real time (for monitoring) instead of principal analysis (can be only done offline).</li>
-<li>φ-consistency</li>
-</ul>
-<h1 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h1><ul>
-<li>TAO is highly consistent.</li>
-<li>There were anomalies under all of the consistency models we studied. </li>
-</ul>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/03/27/2017-03-27-Existential Consistency/" data-id="cj5fjatnv007kpzxgqn3zjmbz" class="article-share-link">Partager</a>
-      
-        <a href="http://lianghan.org/2017/03/27/2017-03-27-Existential Consistency/#disqus_thread" class="article-comment-link">Commentaires</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Distributed-System/">Distributed System</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Paper-Digest/">Paper Digest</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-2017-03-25-USACO-MusicalTheme" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/03/25/2017-03-25-USACO-MusicalTheme/" class="article-date">
-  <time datetime="2017-03-25T22:49:31.000Z" itemprop="datePublished">2017-03-25</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/USACO/">USACO</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/03/25/2017-03-25-USACO-MusicalTheme/">USACO 5.1 Musical Theme</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>If there is no constraint of the “transpose” (Transposed means that a constant positive or negative value is added to every note value in the theme subsequence), then the problem is obviously a string search problem. How to deal with transpose when doing string search?</p>
-<ul>
-<li>The property of transpose imply that if sequence A is a transpose of sequence B, then there must be that for every Ai, we have Ai + Diff = Bi. Similarly, Ai+1 + Diff = Bi+1.</li>
-<li>Now we have Ai+1 - Ai = Bi+1 - Bi. </li>
-<li>So the problem can be reduced again to plain sub string search problem: we just need to transform the input to a diff sequence by having each element a diff between two adjacent elements.</li>
-<li>For string search, use KMP so the time is linear.</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="keyword">int</span> ans = <span class="number">0</span>;</div><div class="line"><span class="keyword">int</span> N;</div><div class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; str, table;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"theme.in"</span>)</span></span>;</div><div class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"theme.out"</span>)</span></span>;</div><div class="line">    fin &gt;&gt; N;</div><div class="line">    str = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N + <span class="number">1</span>, <span class="number">0</span>);</div><div class="line">    table = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N + <span class="number">1</span>, <span class="number">0</span>);</div><div class="line">    <span class="keyword">int</span> prev = <span class="number">0</span>, cur;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</div><div class="line">        fin &gt;&gt; cur;</div><div class="line">        str[i] = cur - prev;</div><div class="line">        prev = cur;</div><div class="line">    &#125;</div><div class="line">    str[N] = prev * <span class="number">-1</span>;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> from = N - <span class="number">5</span>; from &gt;= <span class="number">5</span>; --from) &#123;</div><div class="line">        <span class="built_in">std</span>::fill(table.begin(), table.end(), <span class="number">0</span>);</div><div class="line">        table[<span class="number">0</span>] = table[<span class="number">1</span>] = <span class="number">0</span>;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = from + <span class="number">1</span>; i &lt;= N; ++i) &#123;</div><div class="line">            <span class="keyword">int</span> j = table[i - from];</div><div class="line">            <span class="keyword">while</span> (j &gt; <span class="number">0</span> &amp;&amp; str[i] != str[from + j]) &#123;</div><div class="line">               j = table[j];</div><div class="line">            &#125;</div><div class="line">            table[i - from + <span class="number">1</span>] = (str[i] == str[from + j]) ? j + <span class="number">1</span> : <span class="number">0</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">int</span> j = <span class="number">0</span>;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; from - <span class="number">1</span>; ++i) &#123;</div><div class="line">            <span class="keyword">while</span> (j &gt; <span class="number">0</span> &amp;&amp; str[i] != str[from + j]) &#123;</div><div class="line">                j = table[j];</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">if</span> (str[i] == str[from + j]) &#123;</div><div class="line">                j++;</div><div class="line">                ans = <span class="built_in">std</span>::max(ans, j + <span class="number">1</span>);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="built_in">cout</span> &lt;&lt; (ans &lt; <span class="number">5</span> ? <span class="number">0</span> : ans) &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">    fout &lt;&lt; (ans &lt; <span class="number">5</span> ? <span class="number">0</span> : ans) &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/03/25/2017-03-25-USACO-MusicalTheme/" data-id="cj5fjatns007dpzxg3p8w30j4" class="article-share-link">Partager</a>
-      
-        <a href="http://lianghan.org/2017/03/25/2017-03-25-USACO-MusicalTheme/#disqus_thread" class="article-comment-link">Commentaires</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/KMP/">KMP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/String-Algorithm/">String Algorithm</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-2017-03-17-USACO-StarryNight" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/03/17/2017-03-17-USACO-StarryNight/" class="article-date">
-  <time datetime="2017-03-17T23:28:31.000Z" itemprop="datePublished">2017-03-17</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/USACO/">USACO</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/03/17/2017-03-17-USACO-StarryNight/">USACO 5.1 Starry Night</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>The basic idea is to find each cluster, and then compare each cluster pair by pair. There are several sub problems to solve in this case:</p>
-<ul>
-<li><p>How to represent a cluster?<br>A cluster can be represented by the rectangle that covers the cluster together with the source grid (the sky). Each cluster has two key properties: the number of stars, and the covering rectangle, which can be represented by left/bottom and right/upper points.</p>
-</li>
-<li><p>How to find a cluster?<br>A cluster can be found by using flood fill algorithm against the sky.</p>
-</li>
-<li><p>How to compare two clusters?<br>Two clusters are obviously different if they contain different number of stars. For clusters contain same number of stars, a set of transforms need to be performed on one cluster then compare the transformed cluster with another cluster:</p>
-<ul>
-<li>Rotate clockwise 90 degree.</li>
-<li>Rotate clockwise 180 degree.</li>
-<li>Rotate clockwise 270 degree.</li>
-<li>Rotate clockwise 360 degree.</li>
-<li>Mirror the cluster then repeat.</li>
-</ul>
-</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;queue&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="keyword">int</span> R, C;</div><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> Cluster &#123;</div><div class="line">    <span class="keyword">int</span> min_x, min_y, max_x, max_y;</div><div class="line">    <span class="keyword">int</span> num_of_stars;</div><div class="line">    Cluster() : min_x(<span class="number">-1</span>), min_y(<span class="number">-1</span>), max_x(<span class="number">-1</span>), max_y(<span class="number">-1</span>), num_of_stars(<span class="number">0</span>) &#123;&#125;</div><div class="line">&#125; Cluster;</div><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> Point &#123;</div><div class="line">    <span class="keyword">int</span> x; <span class="keyword">int</span> y;</div><div class="line">    Point(<span class="keyword">int</span> x, <span class="keyword">int</span> y) : x(x), y(y) &#123;&#125;</div><div class="line">&#125; Point;</div><div class="line"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt;&gt; sky;</div><div class="line"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">short</span>&gt;&gt; mark;</div><div class="line"><span class="built_in">vector</span>&lt;Cluster&gt; clusters(<span class="number">505</span>);</div><div class="line"><span class="keyword">char</span> p[<span class="number">550</span>];</div><div class="line"><span class="keyword">int</span> idx;</div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">calculate_bound</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</div><div class="line">    clusters[idx].min_x = clusters[idx].min_x == <span class="number">-1</span> ? x : <span class="built_in">std</span>::min(x, clusters[idx].min_x);</div><div class="line">    clusters[idx].min_y = clusters[idx].min_y == <span class="number">-1</span> ? y : <span class="built_in">std</span>::min(y, clusters[idx].min_y);</div><div class="line">    clusters[idx].max_x = clusters[idx].max_x == <span class="number">-1</span> ? x : <span class="built_in">std</span>::max(x, clusters[idx].max_x);</div><div class="line">    clusters[idx].max_y = clusters[idx].max_y == <span class="number">-1</span> ? y : <span class="built_in">std</span>::max(y, clusters[idx].max_y);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">flood_fill</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y, <span class="keyword">int</span> index)</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> num_of_stars = <span class="number">1</span>;</div><div class="line">    mark[x][y] = index;</div><div class="line">    calculate_bound(x, y);</div><div class="line">    </div><div class="line">    <span class="built_in">queue</span>&lt;Point&gt; q;</div><div class="line">    q.push(Point(x, y));</div><div class="line">    <span class="keyword">while</span> (!q.empty()) &#123;</div><div class="line">        <span class="keyword">auto</span> p = q.front(); q.pop();</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">-1</span>; i &lt;= <span class="number">1</span>; ++i) &#123;</div><div class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">-1</span>; j &lt;= <span class="number">1</span>; ++j) &#123;</div><div class="line">                <span class="keyword">int</span> xx = p.x + i, yy = p.y + j;</div><div class="line">                <span class="keyword">if</span> (xx &lt; <span class="number">0</span> || xx &gt;= R || yy &lt; <span class="number">0</span> || yy &gt;= C) <span class="keyword">continue</span>;</div><div class="line">                <span class="keyword">if</span> (sky[xx][yy] != <span class="string">'1'</span> || mark[xx][yy] != <span class="number">-1</span>) <span class="keyword">continue</span>;</div><div class="line">                ++num_of_stars;</div><div class="line">                mark[xx][yy] = index;</div><div class="line">                calculate_bound(xx, yy);</div><div class="line">                q.push(Point(xx, yy));</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> num_of_stars;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// Rotate 90 degree clockwise.</span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">rotate</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt;&gt; &amp;cluster, <span class="keyword">int</span> lx, <span class="keyword">int</span> ly)</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> rows = (<span class="keyword">int</span>)cluster.size(), cols = (<span class="keyword">int</span>)cluster[<span class="number">0</span>].size();</div><div class="line">    <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt;&gt; t(rows, <span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt;(cols));</div><div class="line">    </div><div class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; lx; ++i) &#123;</div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; ly; ++j) &#123;</div><div class="line">            t[j][lx - i - <span class="number">1</span>] = cluster[i][j];</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; ly; ++i) &#123;</div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; lx; ++j) &#123;</div><div class="line">            cluster[i][j] = t[i][j];</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">mirror</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt;&gt; &amp;cluster, <span class="keyword">int</span> lx, <span class="keyword">int</span> ly)</span> </span>&#123;</div><div class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; lx; ++i) &#123;</div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; ly/<span class="number">2</span>; ++j) &#123;</div><div class="line">            swap(cluster[i][j], cluster[i][ly - <span class="number">1</span> - j]);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">match</span><span class="params">(<span class="keyword">int</span> index, <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt;&gt; cluster, <span class="keyword">int</span> lx, <span class="keyword">int</span> ly)</span> </span>&#123;</div><div class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; lx; ++i) &#123;</div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; ly; ++j) &#123;</div><div class="line">            <span class="keyword">int</span> xx = clusters[index].min_x + i,</div><div class="line">                yy = clusters[index].min_y + j;</div><div class="line">            <span class="keyword">if</span>(mark[xx][yy] == index &amp;&amp; cluster[i][j] == <span class="string">'0'</span>) <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">is_two_cluster_same</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (clusters[a].num_of_stars != clusters[b].num_of_stars) &#123;</div><div class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">int</span> ax = clusters[a].max_x - clusters[a].min_x + <span class="number">1</span>,</div><div class="line">        ay = clusters[a].max_y - clusters[a].min_y + <span class="number">1</span>;</div><div class="line">    <span class="keyword">int</span> lx = clusters[b].max_x - clusters[b].min_x + <span class="number">1</span>,</div><div class="line">        ly = clusters[b].max_y - clusters[b].min_y + <span class="number">1</span>;</div><div class="line">    <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt;&gt; tmp(<span class="number">110</span>, <span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt;(<span class="number">110</span>));</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; lx; ++i) &#123;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; ly; ++j) &#123;</div><div class="line">            <span class="keyword">int</span> xx = i + clusters[b].min_x, yy = j + clusters[b].min_y;</div><div class="line">            tmp[i][j] = sky[xx][yy];</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">if</span> (ax == lx &amp;&amp; ay == ly &amp;&amp; match(a, tmp, lx, ly)) <span class="keyword">return</span> <span class="literal">true</span>;</div><div class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span>; ++i) &#123;</div><div class="line">        rotate(tmp, lx, ly);</div><div class="line">        swap(lx, ly);</div><div class="line">        <span class="keyword">if</span>(ax == lx &amp;&amp; ay == ly &amp;&amp; match(a, tmp, lx, ly)) <span class="keyword">return</span> <span class="literal">true</span>;</div><div class="line">    &#125;</div><div class="line">    mirror(tmp, lx, ly);</div><div class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span>; ++i) &#123;</div><div class="line">        rotate(tmp, lx, ly);</div><div class="line">        swap(lx, ly);</div><div class="line">        <span class="keyword">if</span>(ax == lx &amp;&amp; ay == ly &amp;&amp; match(a, tmp, lx, ly)) <span class="keyword">return</span> <span class="literal">true</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"starry.in"</span>)</span></span>;</div><div class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"starry.out"</span>)</span></span>;</div><div class="line">    </div><div class="line">    fin &gt;&gt; C &gt;&gt; R;</div><div class="line">    sky = <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt;&gt;(R, <span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt;(C));</div><div class="line">    mark = <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">short</span>&gt;&gt;(R, <span class="built_in">vector</span>&lt;<span class="keyword">short</span>&gt;(C, <span class="number">-1</span>));</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; R; ++i) &#123;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; C; ++j) &#123;</div><div class="line">            fin &gt;&gt; sky[i][j];</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    idx = <span class="number">0</span>;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; R; ++i) &#123;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; C; ++j) &#123;</div><div class="line">            <span class="keyword">if</span> (sky[i][j] == <span class="string">'1'</span> &amp;&amp; mark[i][j] == <span class="number">-1</span>) &#123;</div><div class="line">                <span class="keyword">int</span> num_of_stars = flood_fill(i, j, idx);</div><div class="line">                clusters[idx].num_of_stars = num_of_stars;</div><div class="line">                ++idx;</div><div class="line">                <span class="built_in">cout</span> &lt;&lt; idx - <span class="number">1</span> &lt;&lt; <span class="string">" : stars "</span> &lt;&lt; num_of_stars &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">char</span> c = <span class="string">'a'</span>;</div><div class="line">    <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt;&gt; ans = sky;</div><div class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; idx; ++i) &#123;</div><div class="line">        <span class="keyword">int</span> index = <span class="number">-1</span>;</div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; i; ++j) &#123;</div><div class="line">            <span class="keyword">if</span>(is_two_cluster_same(i, j)) &#123;</div><div class="line">                index = j;</div><div class="line">                <span class="built_in">cout</span> &lt;&lt; i &lt;&lt; <span class="string">" and "</span> &lt;&lt; j &lt;&lt; <span class="string">" same!"</span> &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span>(index != <span class="number">-1</span>)  &#123;</div><div class="line">            p[i] = p[index];</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            p[i] = c++;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> ii = clusters[i].min_x; ii &lt;= clusters[i].max_x; ++ii) &#123;</div><div class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> jj = clusters[i].min_y; jj &lt;= clusters[i].max_y; ++jj) &#123;</div><div class="line">                <span class="keyword">if</span>(mark[ii][jj] == i) &#123;</div><div class="line">                   ans[ii][jj] = p[i];</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; R; ++i) &#123;</div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; C; ++j) &#123;</div><div class="line">            fout &lt;&lt; ans[i][j];</div><div class="line">            <span class="built_in">cout</span> &lt;&lt; ans[i][j];</div><div class="line">        &#125;</div><div class="line">        fout &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/03/17/2017-03-17-USACO-StarryNight/" data-id="cj5fjatnr007apzxg1tq0lgrc" class="article-share-link">Partager</a>
-      
-        <a href="http://lianghan.org/2017/03/17/2017-03-17-USACO-StarryNight/#disqus_thread" class="article-comment-link">Commentaires</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Flood-Fill/">Flood Fill</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
 
 
   <nav id="page-nav">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/2/">__('next') &raquo;</a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/2/">__('next') &raquo;</a>
   </nav>
 </section>
         
@@ -1006,7 +899,7 @@ ga('send', 'pageview');
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Catégories</h3>
+    <h3 class="widget-title">Categories</h3>
     <div class="widget">
       <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Distributed-System/">Distributed System</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/TopCoder/">TopCoder</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/USACO/">USACO</a></li></ul>
     </div>
@@ -1016,9 +909,9 @@ ga('send', 'pageview');
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Mot-clés</h3>
+    <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BFS/">BFS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BFT/">BFT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Backtrack/">Backtrack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Base-Conversion/">Base Conversion</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Big-Integer/">Big Integer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bipartite-Match/">Bipartite Match</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bit-Manipulation/">Bit Manipulation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Brutal-Force/">Brutal Force</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Combination/">Combination</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Computation-Geometry/">Computation Geometry</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Consensus-Protocol/">Consensus Protocol</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Convex-Hull/">Convex Hull</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Counting/">Counting</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DFS/">DFS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dijkstra/">Dijkstra</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Distributed-System/">Distributed System</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dynamic-Programming/">Dynamic Programming</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Enumeration/">Enumeration</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Euler-Path/">Euler Path</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flood-Fill/">Flood Fill</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Floyd/">Floyd</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ford-Fulkerson/">Ford-Fulkerson</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gauss-Elimination/">Gauss Elimination</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Graph/">Graph</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Graph-Theory/">Graph Theory</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Greedy/">Greedy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hashing/">Hashing</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hungarian-Algorithm/">Hungarian Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/KMP/">KMP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Knapsack/">Knapsack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MEMORIZED-SEARCH/">MEMORIZED SEARCH</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Math/">Math</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Minimum-Spanning-Tree/">Minimum Spanning Tree</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Network-Flow/">Network Flow</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NewSQL/">NewSQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Number-Theory/">Number Theory</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Paper-Digest/">Paper Digest</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Paxos/">Paxos</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Permutation/">Permutation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Prim/">Prim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Rolling-Array/">Rolling Array</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Search/">Search</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shortest-Path/">Shortest Path</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Simulation/">Simulation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/String/">String</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/String-Algorithm/">String Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/String-Manipulation/">String Manipulation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TopCoder/">TopCoder</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Topological-Sort/">Topological Sort</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tree/">Tree</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/UnionFind/">UnionFind</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ZooKeeper/">ZooKeeper</a></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BFS/">BFS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BFT/">BFT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Backtrack/">Backtrack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Base-Conversion/">Base Conversion</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Big-Integer/">Big Integer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bipartite-Match/">Bipartite Match</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bit-Manipulation/">Bit Manipulation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Brutal-Force/">Brutal Force</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Combination/">Combination</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Computation-Geometry/">Computation Geometry</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Consensus-Protocol/">Consensus Protocol</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Convex-Hull/">Convex Hull</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Counting/">Counting</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DFS/">DFS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dijkstra/">Dijkstra</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Distributed-System/">Distributed System</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dynamic-Programming/">Dynamic Programming</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Enumeration/">Enumeration</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Euler-Path/">Euler Path</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flood-Fill/">Flood Fill</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Floyd/">Floyd</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ford-Fulkerson/">Ford-Fulkerson</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gauss-Elimination/">Gauss Elimination</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Graph/">Graph</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Graph-Theory/">Graph Theory</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Greedy/">Greedy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hashing/">Hashing</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hungarian-Algorithm/">Hungarian Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/KMP/">KMP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Knapsack/">Knapsack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MEMORIZED-SEARCH/">MEMORIZED SEARCH</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Math/">Math</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Minimum-Spanning-Tree/">Minimum Spanning Tree</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Network-Flow/">Network Flow</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NewSQL/">NewSQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Number-Theory/">Number Theory</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Paper-Digest/">Paper Digest</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Paxos/">Paxos</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Permutation/">Permutation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Prim/">Prim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Rolling-Array/">Rolling Array</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Search/">Search</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shortest-Path/">Shortest Path</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Simulation/">Simulation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/String/">String</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/String-Algorithm/">String Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/String-Manipulation/">String Manipulation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Strongly-Connected-Components/">Strongly Connected Components</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TopCoder/">TopCoder</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Topological-Sort/">Topological Sort</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tree/">Tree</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/UnionFind/">UnionFind</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ZooKeeper/">ZooKeeper</a></li></ul>
     </div>
   </div>
 
@@ -1026,9 +919,9 @@ ga('send', 'pageview');
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Nuage de mot-clés</h3>
+    <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Algorithm/" style="font-size: 20px;">Algorithm</a> <a href="/tags/BFS/" style="font-size: 16.36px;">BFS</a> <a href="/tags/BFT/" style="font-size: 10px;">BFT</a> <a href="/tags/Backtrack/" style="font-size: 10.91px;">Backtrack</a> <a href="/tags/Base-Conversion/" style="font-size: 10px;">Base Conversion</a> <a href="/tags/Big-Integer/" style="font-size: 10px;">Big Integer</a> <a href="/tags/Bipartite-Match/" style="font-size: 10px;">Bipartite Match</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10px;">Bit Manipulation</a> <a href="/tags/Brutal-Force/" style="font-size: 15.45px;">Brutal Force</a> <a href="/tags/Combination/" style="font-size: 10.91px;">Combination</a> <a href="/tags/Computation-Geometry/" style="font-size: 10px;">Computation Geometry</a> <a href="/tags/Consensus-Protocol/" style="font-size: 10.91px;">Consensus Protocol</a> <a href="/tags/Convex-Hull/" style="font-size: 10px;">Convex Hull</a> <a href="/tags/Counting/" style="font-size: 10px;">Counting</a> <a href="/tags/DFS/" style="font-size: 17.27px;">DFS</a> <a href="/tags/Dijkstra/" style="font-size: 12.73px;">Dijkstra</a> <a href="/tags/Distributed-System/" style="font-size: 11.82px;">Distributed System</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.09px;">Dynamic Programming</a> <a href="/tags/Enumeration/" style="font-size: 10px;">Enumeration</a> <a href="/tags/Euler-Path/" style="font-size: 10px;">Euler Path</a> <a href="/tags/Flood-Fill/" style="font-size: 11.82px;">Flood Fill</a> <a href="/tags/Floyd/" style="font-size: 10.91px;">Floyd</a> <a href="/tags/Ford-Fulkerson/" style="font-size: 10.91px;">Ford-Fulkerson</a> <a href="/tags/Gauss-Elimination/" style="font-size: 10px;">Gauss Elimination</a> <a href="/tags/Graph/" style="font-size: 15.45px;">Graph</a> <a href="/tags/Graph-Theory/" style="font-size: 13.64px;">Graph Theory</a> <a href="/tags/Greedy/" style="font-size: 10px;">Greedy</a> <a href="/tags/Hashing/" style="font-size: 10px;">Hashing</a> <a href="/tags/Hungarian-Algorithm/" style="font-size: 10px;">Hungarian Algorithm</a> <a href="/tags/KMP/" style="font-size: 10px;">KMP</a> <a href="/tags/Knapsack/" style="font-size: 10px;">Knapsack</a> <a href="/tags/MEMORIZED-SEARCH/" style="font-size: 10px;">MEMORIZED SEARCH</a> <a href="/tags/Math/" style="font-size: 10px;">Math</a> <a href="/tags/Minimum-Spanning-Tree/" style="font-size: 10px;">Minimum Spanning Tree</a> <a href="/tags/Network-Flow/" style="font-size: 10.91px;">Network Flow</a> <a href="/tags/NewSQL/" style="font-size: 10px;">NewSQL</a> <a href="/tags/Number-Theory/" style="font-size: 13.64px;">Number Theory</a> <a href="/tags/Paper-Digest/" style="font-size: 14.55px;">Paper Digest</a> <a href="/tags/Paxos/" style="font-size: 10.91px;">Paxos</a> <a href="/tags/Permutation/" style="font-size: 10px;">Permutation</a> <a href="/tags/Prim/" style="font-size: 10px;">Prim</a> <a href="/tags/Rolling-Array/" style="font-size: 10px;">Rolling Array</a> <a href="/tags/Search/" style="font-size: 18.18px;">Search</a> <a href="/tags/Shortest-Path/" style="font-size: 11.82px;">Shortest Path</a> <a href="/tags/Simulation/" style="font-size: 12.73px;">Simulation</a> <a href="/tags/String/" style="font-size: 10px;">String</a> <a href="/tags/String-Algorithm/" style="font-size: 10px;">String Algorithm</a> <a href="/tags/String-Manipulation/" style="font-size: 10px;">String Manipulation</a> <a href="/tags/TopCoder/" style="font-size: 11.82px;">TopCoder</a> <a href="/tags/Topological-Sort/" style="font-size: 10px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 10px;">Tree</a> <a href="/tags/UnionFind/" style="font-size: 10px;">UnionFind</a> <a href="/tags/ZooKeeper/" style="font-size: 10px;">ZooKeeper</a>
+      <a href="/tags/Algorithm/" style="font-size: 20px;">Algorithm</a> <a href="/tags/BFS/" style="font-size: 16.36px;">BFS</a> <a href="/tags/BFT/" style="font-size: 10px;">BFT</a> <a href="/tags/Backtrack/" style="font-size: 10.91px;">Backtrack</a> <a href="/tags/Base-Conversion/" style="font-size: 10px;">Base Conversion</a> <a href="/tags/Big-Integer/" style="font-size: 10px;">Big Integer</a> <a href="/tags/Bipartite-Match/" style="font-size: 10px;">Bipartite Match</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10px;">Bit Manipulation</a> <a href="/tags/Brutal-Force/" style="font-size: 15.45px;">Brutal Force</a> <a href="/tags/Combination/" style="font-size: 10.91px;">Combination</a> <a href="/tags/Computation-Geometry/" style="font-size: 10px;">Computation Geometry</a> <a href="/tags/Consensus-Protocol/" style="font-size: 10.91px;">Consensus Protocol</a> <a href="/tags/Convex-Hull/" style="font-size: 10px;">Convex Hull</a> <a href="/tags/Counting/" style="font-size: 10px;">Counting</a> <a href="/tags/DFS/" style="font-size: 17.27px;">DFS</a> <a href="/tags/Dijkstra/" style="font-size: 12.73px;">Dijkstra</a> <a href="/tags/Distributed-System/" style="font-size: 11.82px;">Distributed System</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.09px;">Dynamic Programming</a> <a href="/tags/Enumeration/" style="font-size: 10px;">Enumeration</a> <a href="/tags/Euler-Path/" style="font-size: 10px;">Euler Path</a> <a href="/tags/Flood-Fill/" style="font-size: 11.82px;">Flood Fill</a> <a href="/tags/Floyd/" style="font-size: 10.91px;">Floyd</a> <a href="/tags/Ford-Fulkerson/" style="font-size: 10.91px;">Ford-Fulkerson</a> <a href="/tags/Gauss-Elimination/" style="font-size: 10px;">Gauss Elimination</a> <a href="/tags/Graph/" style="font-size: 15.45px;">Graph</a> <a href="/tags/Graph-Theory/" style="font-size: 14.55px;">Graph Theory</a> <a href="/tags/Greedy/" style="font-size: 10px;">Greedy</a> <a href="/tags/Hashing/" style="font-size: 10px;">Hashing</a> <a href="/tags/Hungarian-Algorithm/" style="font-size: 10px;">Hungarian Algorithm</a> <a href="/tags/KMP/" style="font-size: 10px;">KMP</a> <a href="/tags/Knapsack/" style="font-size: 10px;">Knapsack</a> <a href="/tags/MEMORIZED-SEARCH/" style="font-size: 10px;">MEMORIZED SEARCH</a> <a href="/tags/Math/" style="font-size: 10px;">Math</a> <a href="/tags/Minimum-Spanning-Tree/" style="font-size: 10px;">Minimum Spanning Tree</a> <a href="/tags/Network-Flow/" style="font-size: 10.91px;">Network Flow</a> <a href="/tags/NewSQL/" style="font-size: 10px;">NewSQL</a> <a href="/tags/Number-Theory/" style="font-size: 13.64px;">Number Theory</a> <a href="/tags/Paper-Digest/" style="font-size: 14.55px;">Paper Digest</a> <a href="/tags/Paxos/" style="font-size: 10.91px;">Paxos</a> <a href="/tags/Permutation/" style="font-size: 10px;">Permutation</a> <a href="/tags/Prim/" style="font-size: 10px;">Prim</a> <a href="/tags/Rolling-Array/" style="font-size: 10px;">Rolling Array</a> <a href="/tags/Search/" style="font-size: 18.18px;">Search</a> <a href="/tags/Shortest-Path/" style="font-size: 11.82px;">Shortest Path</a> <a href="/tags/Simulation/" style="font-size: 12.73px;">Simulation</a> <a href="/tags/String/" style="font-size: 10px;">String</a> <a href="/tags/String-Algorithm/" style="font-size: 10px;">String Algorithm</a> <a href="/tags/String-Manipulation/" style="font-size: 10px;">String Manipulation</a> <a href="/tags/Strongly-Connected-Components/" style="font-size: 10px;">Strongly Connected Components</a> <a href="/tags/TopCoder/" style="font-size: 11.82px;">TopCoder</a> <a href="/tags/Topological-Sort/" style="font-size: 10px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 10px;">Tree</a> <a href="/tags/UnionFind/" style="font-size: 10px;">UnionFind</a> <a href="/tags/ZooKeeper/" style="font-size: 10px;">ZooKeeper</a>
     </div>
   </div>
 
@@ -1037,7 +930,7 @@ ga('send', 'pageview');
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">May 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">January 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">August 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">May 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">January 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">August 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li></ul>
     </div>
   </div>
 
@@ -1045,28 +938,28 @@ ga('send', 'pageview');
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Articles récents</h3>
+    <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
         
           <li>
+            <a href="/2017/09/04/2017-09-03-USACO-CharacterRecognition/">USACO 5.4 Character Recognition</a>
+          </li>
+        
+          <li>
+            <a href="/2017/08/14/2017-08-14-USACO-CanadaTour/">USACO 5.4 Canada Tour</a>
+          </li>
+        
+          <li>
+            <a href="/2017/08/09/2017-08-09-USACO-BigBarn/">USACO 5.3 Big Barn</a>
+          </li>
+        
+          <li>
+            <a href="/2017/08/04/2017-08-04-USACO-NetworkOfSchools/">USACO 5.3 Network of Schools</a>
+          </li>
+        
+          <li>
             <a href="/2017/07/22/2017-07-22-USACO-WindowArea/">USACO 5.3 Window Area</a>
-          </li>
-        
-          <li>
-            <a href="/2017/07/03/2017-07-01-ConsensusInTheCloud/">Paper Digest - Consensus in the Cloud - Paxos Systems Demystified</a>
-          </li>
-        
-          <li>
-            <a href="/2017/07/03/2017-07-01-TopCoder-SRM716DivI/">SRM 716 DIV II</a>
-          </li>
-        
-          <li>
-            <a href="/2017/06/25/2017-06-24-USACO-MilkMeasuring/">USACO 5.3 Milk Measuring</a>
-          </li>
-        
-          <li>
-            <a href="/2017/05/08/2017-05-08-MegaStore/">Paper Digest - Megastore, Providing Scalable, Highly Available Storage for Interactive Services</a>
           </li>
         
       </ul>
@@ -1086,7 +979,7 @@ ga('send', 'pageview');
   <div class="outer">
     <div id="footer-info" class="inner">
       &copy; 2017 hanm<br>
-      Propulsé by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
     </div>
   </div>
 </footer>
