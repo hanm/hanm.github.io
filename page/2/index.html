@@ -76,6 +76,185 @@ ga('send', 'pageview');
       <div class="outer">
         <section id="main">
   
+    <article id="post-2017-05-01-Paxos" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/05/01/2017-05-01-Paxos/" class="article-date">
+  <time datetime="2017-05-01T18:37:31.000Z" itemprop="datePublished">2017-05-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Distributed-System/">Distributed System</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/05/01/2017-05-01-Paxos/">Paper Digest - Paxos Made Simple</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Paper digest - <a href="http://lamport.azurewebsites.net/pubs/paxos-simple.pdf" target="_blank" rel="external">Paxos Made Simple </a></p>
+<h1 id="Motivation"><a href="#Motivation" class="headerlink" title="Motivation"></a>Motivation</h1><ul>
+<li>Solve consensus problem on a single value (basic Paxos).</li>
+<li>Consensus problem for a series of values that forming a log is solved using Multi-Paxos.</li>
+</ul>
+<h1 id="Consensus-Problem"><a href="#Consensus-Problem" class="headerlink" title="Consensus Problem"></a>Consensus Problem</h1><ul>
+<li>A consensus algorithm ensures that a single one among the proposed value is choose.</li>
+<li>Chosen: meaning a consensus has been reached.</li>
+<li>Safety properties of consensus:<ul>
+<li>Only a value that has been proposed may be chosen.</li>
+<li>Only a single value can be chosen.</li>
+<li>A process never learns that a value has been chosen unless it actually has been.</li>
+</ul>
+</li>
+<li>Liveness properties of consensus:<ul>
+<li>One of many proposed values is eventually chosen.</li>
+<li>If a value is chosen, processes eventually learn about it.</li>
+</ul>
+</li>
+</ul>
+<h1 id="Failure-Models"><a href="#Failure-Models" class="headerlink" title="Failure Models"></a>Failure Models</h1><ul>
+<li>Fail Stop: servers may crash, and stop forever.</li>
+<li>Fail Recovery: servers may crash, but finally will restart and recover.</li>
+<li>No Byzantine failures: messages can be delayed but they can’t be corrupted; servers can fail but they can’t behave maliciously.</li>
+</ul>
+<h1 id="Terms"><a href="#Terms" class="headerlink" title="Terms"></a>Terms</h1><ul>
+<li>Proposer: propose value. A proposer propose value by sending a proposal, which contains the value (among other things), to acceptors.</li>
+<li>Acceptor: accept value proposed by proposer. Accept means acknowledge to proposer that the proposed value is accepted, by sending response to proposer.</li>
+<li>Chosen: a value is chosen when majority of acceptors accept the value.</li>
+<li>A process can be both a proposer and an acceptor.</li>
+</ul>
+<h1 id="Choose-a-Value"><a href="#Choose-a-Value" class="headerlink" title="Choose a Value"></a>Choose a Value</h1><ul>
+<li>Single acceptor:<ul>
+<li>Easiest and most intuitive approach :)</li>
+<li>However, it is not fault tolerant. If the single acceptor crashes, the system will not be able to make progress.</li>
+</ul>
+</li>
+<li>Multiple acceptors:<ul>
+<li>Solve the SPOF problem for single acceptor case.</li>
+<li>A value is chosen when this value is accepted by a majority of acceptors.</li>
+<li>This majority of acceptors is called a quorum.</li>
+<li>Why majority? We need ensure that any two sets of quorum overlap. With drawer principle, if a quorum is majority, then any two majorities will have at least one acceptor in common.</li>
+<li>Now why we need ensure any two sets of quorum overlap? This is for fault tolerance / recovery purpose - so that we can have at least one acceptor that has complete history of the states (of the Paxos state machine.)</li>
+<li>Now why we need complete history? We need this so only a single value is chosen (important safety property). Why? Elaboration next.</li>
+</ul>
+</li>
+<li>How to choose a value<ul>
+<li>Case 1: single proposed value - only a single value is proposed from proposers.<ul>
+<li>If there is only a single value proposed ever, then this value has to be chosen.</li>
+<li>This implies that an acceptor must accept the first proposal that it receives.</li>
+<li>Conclusion: <strong>An acceptor must accept the first proposal that it receives. [P1]</strong></li>
+</ul>
+</li>
+<li>Case 2: multiple proposed value - multiple values are proposed from proposers.<ul>
+<li>This raises a problem. With multiple proposed value, it is possible no single value is accepted by the quorum. So it’s possible consensus will never be reached, without additional constraints.<ul>
+<li>A sample case that consensus never reached:<ul>
+<li>2 processes P1 and P2. P1 proposes V1 and P2 proposes V2.</li>
+<li>V1 is accepted by P1 (or P2), V2 is accepted by P2 (or P1), because an acceptor must accept the first value it receives.</li>
+<li>No proposal would ever get majority in such case.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>To address the problem, where P1 must be true and yet a consensus has to be reached somehow, one additional constraint should be added:<ul>
+<li><strong>An acceptor must be allowed to accept more than one proposal.</strong></li>
+<li>Since there are multiple proposals now, there is a need to distinguish between different proposals. The mechanism that serves this purpose is to use <strong>proposal number</strong></li>
+<li>A proposal number is a number attach to each proposal. How this is implemented depends on actual implementation.</li>
+</ul>
+</li>
+<li>With the new constraint that an accept can accept more than one proposal, there is a <strong>new problem: we may end up with multiple values chosen</strong>; this violates the safety property.<ul>
+<li>A sample case multiple values are chosen:<ul>
+<li>5 processes, P1 through P5.</li>
+<li>P1 proposes V1, P5 proposes V5.</li>
+<li>V1 is accepted by P1, P2, and P3.</li>
+<li>Assume there is a delay, and then V5 arrives to acceptor P3.</li>
+<li>Since an acceptor can accept multiple values, P3 is happily accepting V5.</li>
+<li>Meanwhile, V5 is accepted by P4, and P5. (It could also be accepted by P1 and P2 of course.)</li>
+<li>The end result is no consensus reached: V1 and V5 are both gaining a majority.</li>
+</ul>
+</li>
+<li>To satisfy safety property of only a single value is chosen, an additional constraint should be added.</li>
+</ul>
+</li>
+<li><strong>If a proposal with value v is chosen, then every higher numbered proposal that is chosen has value v. [P2]</strong><ul>
+<li>Because proposals are ordered (use a proposal number), this ensures only a single value is chosen.</li>
+<li>To be chosen a proposal must be accepted by at least one acceptor. So, we can satisfy P2 by satisfying:</li>
+<li><strong>If a proposal with value v is chosen, then every higher numbered proposal accepted by any acceptor has value v.</strong></li>
+</ul>
+</li>
+<li>Constraint of P2 introduces a new problem that requires a strengthened constraint:<ul>
+<li>Now assume a value V is chosen already. Because chosen a value only requires a majority of acceptors, it is possible that the proposal WRT the chosen value never reached one or more acceptors.</li>
+<li>Because an acceptor can be a proposer, from one of those unreached acceptors, one acceptor (now a proposer) may propose a new value with a higher proposal number.</li>
+<li>Because of P1, an acceptor must accept the first proposal it receives. So an acceptor that receives this new proposal which contains a different value than the chosen value must be accepted.</li>
+<li>This violates P2a, so we need add more constraints.</li>
+</ul>
+</li>
+<li><strong>Maintaining both P1 and P2a requires strengthening P2a to P2b: If a proposal with value v is chosen, then every higher numbered proposal issued by any proposer has value v. </strong><ul>
+<li>This means before a proposer proposes a value, it has to look around and see if there is any exiting chosen value.</li>
+<li>But how to satisfy this new constraint P2b?</li>
+</ul>
+</li>
+<li>We can satisfy P2b by maintaining invariance of P2c.</li>
+<li><strong>For any v and n, if a proposal with value v and number n is issued,<br>  then there is a set S consisting of a majority of acceptors such that<br>  either (a) no acceptor in S has accepted any proposal numbered less<br>  than n, or (b) v is the value of the highest-numbered proposal among<br>  all proposals numbered less than n accepted by the acceptors in S. [P2c]</strong></li>
+<li>To satisfy P2c, now comes to my favorite part of the paper:<ul>
+<li><strong>To maintain the invariance of P2c<br>  , a proposer that wants to issue a proposal<br>  numbered n must learn the highest-numbered proposal with number<br>  less than n, if any, that has been or will be accepted by each acceptor in<br>  some majority of acceptors. Learning about proposals already accepted is<br>  easy enough; predicting future acceptances is hard. Instead of trying to predict<br>  the future, the proposer controls it by extracting a promise that there<br>  won’t be any such acceptances. In other words, the proposer requests that<br>  the acceptors not accept any more proposals numbered less than n.</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="Proposer-Algorithm"><a href="#Proposer-Algorithm" class="headerlink" title="Proposer Algorithm"></a>Proposer Algorithm</h1><ul>
+<li>Two phases: prepare and propose.</li>
+<li>Prepare: A proposer chooses a new proposal number n and sends a request to each member of some set of acceptors, asking it to respond with:<ul>
+<li>a. A promise never again to accept a proposal numbered less than n, and</li>
+<li>b. The proposal with the highest number less than n that it has accepted, if any.</li>
+</ul>
+</li>
+<li>Propose: If the proposer receives the requested responses from a majority of the acceptors, then it can issue a proposal with number n and value v, where v is the value of the highest-numbered proposal among the responses, or is any value selected by the proposer if the responders reported no proposals.</li>
+</ul>
+<h1 id="Acceptor-Algorithm"><a href="#Acceptor-Algorithm" class="headerlink" title="Acceptor Algorithm"></a>Acceptor Algorithm</h1><ul>
+<li>An acceptor can ignore any request without compromising safety.</li>
+<li>We need to say only when it is allowed to respond to a request.</li>
+<li>It can always respond to a prepare request.</li>
+<li>It can respond to an accept request, accepting the proposal, iff it has not promised not to.</li>
+<li>Optimization: acceptor can ignore prepare requests which have lower proposal number, and also proposals that it already accepted.</li>
+</ul>
+<h1 id="Learning-a-Chosen-Value"><a href="#Learning-a-Chosen-Value" class="headerlink" title="Learning a Chosen Value"></a>Learning a Chosen Value</h1><ul>
+<li>Use distinguished learners to optimize from product of number of learners and acceptors, to the sum of number of acceptors and learners.</li>
+</ul>
+<h1 id="Implementation"><a href="#Implementation" class="headerlink" title="Implementation"></a>Implementation</h1><ul>
+<li>Single Paxos not so useful, as it only reaches consensus on a single value.</li>
+<li>Multiple instances of Paxos - called multi-paxos allows consensus on a set of values. Very useful for building RSM (replicated state machine) systems. </li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2017/05/01/2017-05-01-Paxos/" data-id="cj7jzria9007gj3xgkvs9u2vd" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2017/05/01/2017-05-01-Paxos/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Consensus-Protocol/">Consensus Protocol</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Paper-Digest/">Paper Digest</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Paxos/">Paxos</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-2017-04-21-USACO-SnailTrail" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/04/21/2017-04-21-USACO-SnailTrail/" class="article-date">
@@ -107,7 +286,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/04/21/2017-04-21-USACO-SnailTrail/" data-id="cj76uxh2v007owoxgai8icbul" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2017/04/21/2017-04-21-USACO-SnailTrail/" data-id="cj7jzriah007yj3xg024x52w9" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2017/04/21/2017-04-21-USACO-SnailTrail/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -237,7 +416,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/03/27/2017-03-27-Existential Consistency/" data-id="cj76uxh2w007rwoxg0655eboh" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2017/03/27/2017-03-27-Existential Consistency/" data-id="cj7jzriad007nj3xgc74d7l25" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2017/03/27/2017-03-27-Existential Consistency/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -288,7 +467,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/03/25/2017-03-25-USACO-MusicalTheme/" data-id="cj76uxh2t007kwoxguma1hqew" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2017/03/25/2017-03-25-USACO-MusicalTheme/" data-id="cj7jzria60079j3xg8scpgbws" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2017/03/25/2017-03-25-USACO-MusicalTheme/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -348,7 +527,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/03/17/2017-03-17-USACO-StarryNight/" data-id="cj76uxh2r007hwoxgpnng4wpn" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2017/03/17/2017-03-17-USACO-StarryNight/" data-id="cj7jzria10072j3xgcbij94qf" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2017/03/17/2017-03-17-USACO-StarryNight/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -401,7 +580,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/03/05/2017-03-05-USACO-FencingTheCows/" data-id="cj76uxh2p007dwoxga31jjwll" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2017/03/05/2017-03-05-USACO-FencingTheCows/" data-id="cj7jzriab007kj3xgkdvhmhnf" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2017/03/05/2017-03-05-USACO-FencingTheCows/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -475,7 +654,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/03/03/2017-03-03-ZooKeeper Consistency Guarantees/" data-id="cj76uxh2y007vwoxg9jb3pgt4" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2017/03/03/2017-03-03-ZooKeeper Consistency Guarantees/" data-id="cj7jzria8007dj3xgvsurttnp" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2017/03/03/2017-03-03-ZooKeeper Consistency Guarantees/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -524,7 +703,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/02/22/2017-02-22-USACO-FrameUp/" data-id="cj76uxh2o007awoxgg4jrf8zm" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2017/02/22/2017-02-22-USACO-FrameUp/" data-id="cj7jzria30076j3xghm0jbbsw" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2017/02/22/2017-02-22-USACO-FrameUp/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -584,7 +763,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/02/19/2017-02-19-USACO-PollutantControl/" data-id="cj76uxh270073woxgl25bij5n" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2017/02/19/2017-02-19-USACO-PollutantControl/" data-id="cj7jzri9k006oj3xgec6sfkoq" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2017/02/19/2017-02-19-USACO-PollutantControl/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -684,57 +863,12 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/02/11/2017-02-11-DynamoPaper/" data-id="cj76uxh220070woxgewgacn39" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2017/02/11/2017-02-11-DynamoPaper/" data-id="cj7jzri9i006lj3xgl2qv1osi" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2017/02/11/2017-02-11-DynamoPaper/#disqus_thread" class="article-comment-link">Comments</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Distributed-System/">Distributed System</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Paper-Digest/">Paper Digest</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-2017-02-03-USACO-ShuttlePuzzle" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/02/03/2017-02-03-USACO-ShuttlePuzzle/" class="article-date">
-  <time datetime="2017-02-03T19:45:31.000Z" itemprop="datePublished">2017-02-03</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/USACO/">USACO</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/02/03/2017-02-03-USACO-ShuttlePuzzle/">USACO 4.4 Shuttle Puzzle</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>BFS with pruning with key observation that W can only moves to right, and B can only moves to left to satisfy the constraints of smallest lexicographic order. Also the judge has tight memory bounds, so decide state duplication needs to use hashing (i.e. if using a set<string> then memory will grow out of bounds for “large” test data set.).</string></p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;set&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;queue&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;functional&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> State &#123;</div><div class="line">    <span class="keyword">int</span> op; <span class="comment">// index of the hole where next operation is going to happen.</span></div><div class="line">    <span class="keyword">struct</span> State *prev;</div><div class="line">    <span class="built_in">string</span> state;</div><div class="line">    <span class="keyword">int</span> empty; <span class="comment">// index of empty hole.</span></div><div class="line">    State(<span class="keyword">int</span> op, <span class="built_in">string</span> state, <span class="keyword">int</span> empty, State *prev) :</div><div class="line">    op(op), state(state), empty(empty), prev(prev) &#123;&#125;</div><div class="line">&#125; State;</div><div class="line"></div><div class="line"><span class="built_in">queue</span>&lt;State*&gt; q;</div><div class="line"><span class="built_in">vector</span>&lt;State*&gt; sp;</div><div class="line"><span class="built_in">string</span> target;</div><div class="line"><span class="built_in">string</span> start;</div><div class="line">State *ss;</div><div class="line"><span class="keyword">int</span> N;</div><div class="line"><span class="built_in">set</span>&lt;<span class="keyword">int</span>&gt; visited;</div><div class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; solution;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">setup</span><span class="params">()</span> </span>&#123;</div><div class="line">    start = <span class="built_in">string</span>(<span class="number">2</span> * N + <span class="number">1</span>, <span class="string">' '</span>);</div><div class="line">    target = <span class="built_in">string</span>(<span class="number">2</span> * N + <span class="number">1</span>, <span class="string">' '</span>);</div><div class="line">    </div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</div><div class="line">        start[i] = <span class="string">'W'</span>;</div><div class="line">        target[i] = <span class="string">'B'</span>;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = N + <span class="number">1</span>; i &lt; <span class="number">2</span> * N + <span class="number">1</span>; ++i) &#123;</div><div class="line">        start[i] = <span class="string">'B'</span>;</div><div class="line">        target[i] = <span class="string">'W'</span>;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    ss = <span class="keyword">new</span> State(<span class="number">0</span>, start, N, <span class="literal">nullptr</span>);</div><div class="line">    q.push(ss);</div><div class="line">    sp.push_back(ss);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">bfs</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">while</span> (!q.empty()) &#123;</div><div class="line">        <span class="keyword">auto</span> s = q.front(); q.pop();</div><div class="line">        <span class="keyword">if</span> (s-&gt;state == target) &#123;</div><div class="line">            <span class="built_in">cout</span> &lt;&lt; <span class="string">"target state reached."</span> &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">            <span class="keyword">while</span> (s) &#123;</div><div class="line">                solution.push_back(s-&gt;op);</div><div class="line">                s = s-&gt;prev;</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">return</span>;</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        <span class="keyword">int</span> empty = s-&gt;empty;</div><div class="line">        </div><div class="line">        <span class="comment">// W_ : W move right</span></div><div class="line">        <span class="keyword">if</span> (empty &gt; <span class="number">0</span> &amp;&amp; s-&gt;state[empty - <span class="number">1</span>] == <span class="string">'W'</span>) &#123;</div><div class="line">            <span class="keyword">auto</span> next = <span class="keyword">new</span> State(*s);</div><div class="line">            sp.push_back(next);</div><div class="line">            next-&gt;state[empty] = <span class="string">'W'</span>;</div><div class="line">            next-&gt;state[empty - <span class="number">1</span>] = <span class="string">' '</span>;</div><div class="line">            next-&gt;op = empty - <span class="number">1</span>;</div><div class="line">            next-&gt;prev = s;</div><div class="line">            next-&gt;empty--;</div><div class="line">            <span class="keyword">auto</span> h = <span class="built_in">std</span>::hash&lt;<span class="built_in">string</span>&gt;&#123;&#125;(next-&gt;state);</div><div class="line">            <span class="keyword">if</span> (!visited.count(h)) &#123;</div><div class="line">                visited.insert(h);</div><div class="line">                q.push(next);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        <span class="comment">// _B : B move left</span></div><div class="line">         <span class="keyword">if</span> (empty &lt; <span class="number">2</span> * N &amp;&amp; s-&gt;state[empty + <span class="number">1</span>] == <span class="string">'B'</span>) &#123;</div><div class="line">            <span class="keyword">auto</span> next = <span class="keyword">new</span> State(*s);</div><div class="line">            sp.push_back(next);</div><div class="line">            next-&gt;state[empty] = <span class="string">'B'</span>;</div><div class="line">            next-&gt;state[empty + <span class="number">1</span>] = <span class="string">' '</span>;</div><div class="line">            next-&gt;op = empty + <span class="number">1</span>;</div><div class="line">            next-&gt;prev = s;</div><div class="line">            next-&gt;empty++;</div><div class="line">            <span class="keyword">auto</span> h = <span class="built_in">std</span>::hash&lt;<span class="built_in">string</span>&gt;&#123;&#125;(next-&gt;state);</div><div class="line">            <span class="keyword">if</span> (!visited.count(h)) &#123;</div><div class="line">                visited.insert(h);</div><div class="line">                q.push(next);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        <span class="comment">// WB_ : W jump right</span></div><div class="line">        <span class="keyword">if</span> (empty &gt; <span class="number">1</span> &amp;&amp; s-&gt;state[empty - <span class="number">2</span>] == <span class="string">'W'</span> &amp;&amp;</div><div class="line">            s-&gt;state[empty - <span class="number">1</span>] != <span class="string">'W'</span>) &#123;</div><div class="line">            <span class="keyword">auto</span> next = <span class="keyword">new</span> State(*s);</div><div class="line">            sp.push_back(next);</div><div class="line">            next-&gt;state[empty] = <span class="string">'W'</span>;</div><div class="line">            next-&gt;state[empty - <span class="number">2</span>] = <span class="string">' '</span>;</div><div class="line">            next-&gt;op = empty - <span class="number">2</span>;</div><div class="line">            next-&gt;prev = s;</div><div class="line">            next-&gt;empty -= <span class="number">2</span>;</div><div class="line">            <span class="keyword">auto</span> h = <span class="built_in">std</span>::hash&lt;<span class="built_in">string</span>&gt;&#123;&#125;(next-&gt;state);</div><div class="line">            <span class="keyword">if</span> (!visited.count(h)) &#123;</div><div class="line">                visited.insert(h);</div><div class="line">                q.push(next);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        <span class="comment">// _WB : B jump left</span></div><div class="line">        <span class="keyword">if</span> (empty &lt; <span class="number">2</span> * N - <span class="number">1</span> &amp;&amp; s-&gt;state[empty + <span class="number">2</span>] == <span class="string">'B'</span> &amp;&amp;</div><div class="line">            s-&gt;state[empty + <span class="number">1</span>] == <span class="string">'W'</span>) &#123;</div><div class="line">            <span class="keyword">auto</span> next = <span class="keyword">new</span> State(*s);</div><div class="line">            sp.push_back(next);</div><div class="line">            next-&gt;state[empty] = <span class="string">'B'</span>;</div><div class="line">            next-&gt;state[empty + <span class="number">2</span>] = <span class="string">' '</span>;</div><div class="line">            next-&gt;op = empty + <span class="number">2</span>;</div><div class="line">            next-&gt;prev = s;</div><div class="line">            next-&gt;empty += <span class="number">2</span>;</div><div class="line">            <span class="keyword">auto</span> h = <span class="built_in">std</span>::hash&lt;<span class="built_in">string</span>&gt;&#123;&#125;(next-&gt;state);</div><div class="line">            <span class="keyword">if</span> (!visited.count(h)) &#123;</div><div class="line">                visited.insert(h);</div><div class="line">                q.push(next);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"shuttle.in"</span>)</span></span>;</div><div class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"shuttle.out"</span>)</span></span>;</div><div class="line">    fin &gt;&gt; N;</div><div class="line">    setup();</div><div class="line">    bfs();</div><div class="line">    </div><div class="line">    <span class="keyword">int</span> cnt = <span class="number">0</span>, size = (<span class="keyword">int</span>)solution.size() - <span class="number">1</span>;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = size - <span class="number">1</span>; i &gt;= <span class="number">0</span>; --i) &#123;</div><div class="line">        ++cnt;</div><div class="line">        <span class="built_in">cout</span> &lt;&lt; solution[i] + <span class="number">1</span>;</div><div class="line">        fout &lt;&lt; solution[i] + <span class="number">1</span>;</div><div class="line">        <span class="keyword">if</span> (cnt == <span class="number">20</span> &amp;&amp; i) &#123;</div><div class="line">            <span class="built_in">cout</span> &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">            fout &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">            cnt = <span class="number">0</span>;</div><div class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (i) &#123;</div><div class="line">            <span class="built_in">cout</span> &lt;&lt; <span class="string">" "</span>;</div><div class="line">            fout &lt;&lt; <span class="string">" "</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> ptr : sp) &#123;</div><div class="line">        <span class="keyword">if</span> (ptr != <span class="literal">nullptr</span>) &#123;</div><div class="line">            <span class="keyword">delete</span> ptr; ptr = <span class="literal">nullptr</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">    fout &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">&#125;</div><div class="line"></div></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/02/03/2017-02-03-USACO-ShuttlePuzzle/" data-id="cj76uxh2m0077woxgfejvjrtr" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2017/02/03/2017-02-03-USACO-ShuttlePuzzle/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/BFS/">BFS</a></li></ul>
 
     </footer>
   </div>
@@ -776,7 +910,7 @@ ga('send', 'pageview');
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Algorithm/" style="font-size: 20px;">Algorithm</a> <a href="/tags/BFS/" style="font-size: 16.36px;">BFS</a> <a href="/tags/BFT/" style="font-size: 10px;">BFT</a> <a href="/tags/Backtrack/" style="font-size: 10.91px;">Backtrack</a> <a href="/tags/Base-Conversion/" style="font-size: 10px;">Base Conversion</a> <a href="/tags/Big-Integer/" style="font-size: 10px;">Big Integer</a> <a href="/tags/Bipartite-Match/" style="font-size: 10px;">Bipartite Match</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10px;">Bit Manipulation</a> <a href="/tags/Brutal-Force/" style="font-size: 15.45px;">Brutal Force</a> <a href="/tags/Combination/" style="font-size: 10.91px;">Combination</a> <a href="/tags/Computation-Geometry/" style="font-size: 10px;">Computation Geometry</a> <a href="/tags/Consensus-Protocol/" style="font-size: 10.91px;">Consensus Protocol</a> <a href="/tags/Convex-Hull/" style="font-size: 10px;">Convex Hull</a> <a href="/tags/Counting/" style="font-size: 10px;">Counting</a> <a href="/tags/DFS/" style="font-size: 17.27px;">DFS</a> <a href="/tags/Dijkstra/" style="font-size: 12.73px;">Dijkstra</a> <a href="/tags/Distributed-System/" style="font-size: 11.82px;">Distributed System</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.09px;">Dynamic Programming</a> <a href="/tags/Enumeration/" style="font-size: 10px;">Enumeration</a> <a href="/tags/Euler-Path/" style="font-size: 10px;">Euler Path</a> <a href="/tags/Flood-Fill/" style="font-size: 11.82px;">Flood Fill</a> <a href="/tags/Floyd/" style="font-size: 10.91px;">Floyd</a> <a href="/tags/Ford-Fulkerson/" style="font-size: 10.91px;">Ford-Fulkerson</a> <a href="/tags/Gauss-Elimination/" style="font-size: 10px;">Gauss Elimination</a> <a href="/tags/Graph/" style="font-size: 15.45px;">Graph</a> <a href="/tags/Graph-Theory/" style="font-size: 14.55px;">Graph Theory</a> <a href="/tags/Greedy/" style="font-size: 10px;">Greedy</a> <a href="/tags/Hashing/" style="font-size: 10px;">Hashing</a> <a href="/tags/Hungarian-Algorithm/" style="font-size: 10px;">Hungarian Algorithm</a> <a href="/tags/KMP/" style="font-size: 10px;">KMP</a> <a href="/tags/Knapsack/" style="font-size: 10px;">Knapsack</a> <a href="/tags/MEMORIZED-SEARCH/" style="font-size: 10px;">MEMORIZED SEARCH</a> <a href="/tags/Math/" style="font-size: 10px;">Math</a> <a href="/tags/Minimum-Spanning-Tree/" style="font-size: 10px;">Minimum Spanning Tree</a> <a href="/tags/Network-Flow/" style="font-size: 10.91px;">Network Flow</a> <a href="/tags/NewSQL/" style="font-size: 10px;">NewSQL</a> <a href="/tags/Number-Theory/" style="font-size: 13.64px;">Number Theory</a> <a href="/tags/Paper-Digest/" style="font-size: 14.55px;">Paper Digest</a> <a href="/tags/Paxos/" style="font-size: 10.91px;">Paxos</a> <a href="/tags/Permutation/" style="font-size: 10px;">Permutation</a> <a href="/tags/Prim/" style="font-size: 10px;">Prim</a> <a href="/tags/Rolling-Array/" style="font-size: 10px;">Rolling Array</a> <a href="/tags/Search/" style="font-size: 18.18px;">Search</a> <a href="/tags/Shortest-Path/" style="font-size: 11.82px;">Shortest Path</a> <a href="/tags/Simulation/" style="font-size: 12.73px;">Simulation</a> <a href="/tags/String/" style="font-size: 10px;">String</a> <a href="/tags/String-Algorithm/" style="font-size: 10px;">String Algorithm</a> <a href="/tags/String-Manipulation/" style="font-size: 10px;">String Manipulation</a> <a href="/tags/Strongly-Connected-Components/" style="font-size: 10px;">Strongly Connected Components</a> <a href="/tags/TopCoder/" style="font-size: 11.82px;">TopCoder</a> <a href="/tags/Topological-Sort/" style="font-size: 10px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 10px;">Tree</a> <a href="/tags/UnionFind/" style="font-size: 10px;">UnionFind</a> <a href="/tags/ZooKeeper/" style="font-size: 10px;">ZooKeeper</a>
+      <a href="/tags/Algorithm/" style="font-size: 20px;">Algorithm</a> <a href="/tags/BFS/" style="font-size: 16.36px;">BFS</a> <a href="/tags/BFT/" style="font-size: 10px;">BFT</a> <a href="/tags/Backtrack/" style="font-size: 10.91px;">Backtrack</a> <a href="/tags/Base-Conversion/" style="font-size: 10px;">Base Conversion</a> <a href="/tags/Big-Integer/" style="font-size: 10px;">Big Integer</a> <a href="/tags/Bipartite-Match/" style="font-size: 10px;">Bipartite Match</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10px;">Bit Manipulation</a> <a href="/tags/Brutal-Force/" style="font-size: 15.45px;">Brutal Force</a> <a href="/tags/Combination/" style="font-size: 10.91px;">Combination</a> <a href="/tags/Computation-Geometry/" style="font-size: 10px;">Computation Geometry</a> <a href="/tags/Consensus-Protocol/" style="font-size: 11.82px;">Consensus Protocol</a> <a href="/tags/Convex-Hull/" style="font-size: 10px;">Convex Hull</a> <a href="/tags/Counting/" style="font-size: 10px;">Counting</a> <a href="/tags/DFS/" style="font-size: 17.27px;">DFS</a> <a href="/tags/Dijkstra/" style="font-size: 12.73px;">Dijkstra</a> <a href="/tags/Distributed-System/" style="font-size: 11.82px;">Distributed System</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.09px;">Dynamic Programming</a> <a href="/tags/Enumeration/" style="font-size: 10px;">Enumeration</a> <a href="/tags/Euler-Path/" style="font-size: 10px;">Euler Path</a> <a href="/tags/Flood-Fill/" style="font-size: 11.82px;">Flood Fill</a> <a href="/tags/Floyd/" style="font-size: 10.91px;">Floyd</a> <a href="/tags/Ford-Fulkerson/" style="font-size: 10.91px;">Ford-Fulkerson</a> <a href="/tags/Gauss-Elimination/" style="font-size: 10px;">Gauss Elimination</a> <a href="/tags/Graph/" style="font-size: 15.45px;">Graph</a> <a href="/tags/Graph-Theory/" style="font-size: 14.55px;">Graph Theory</a> <a href="/tags/Greedy/" style="font-size: 10px;">Greedy</a> <a href="/tags/Hashing/" style="font-size: 10px;">Hashing</a> <a href="/tags/Hungarian-Algorithm/" style="font-size: 10px;">Hungarian Algorithm</a> <a href="/tags/KMP/" style="font-size: 10px;">KMP</a> <a href="/tags/Knapsack/" style="font-size: 10px;">Knapsack</a> <a href="/tags/MEMORIZED-SEARCH/" style="font-size: 10px;">MEMORIZED SEARCH</a> <a href="/tags/Math/" style="font-size: 10px;">Math</a> <a href="/tags/Minimum-Spanning-Tree/" style="font-size: 10px;">Minimum Spanning Tree</a> <a href="/tags/Network-Flow/" style="font-size: 10.91px;">Network Flow</a> <a href="/tags/NewSQL/" style="font-size: 10px;">NewSQL</a> <a href="/tags/Number-Theory/" style="font-size: 13.64px;">Number Theory</a> <a href="/tags/Paper-Digest/" style="font-size: 14.55px;">Paper Digest</a> <a href="/tags/Paxos/" style="font-size: 11.82px;">Paxos</a> <a href="/tags/Permutation/" style="font-size: 10px;">Permutation</a> <a href="/tags/Prim/" style="font-size: 10px;">Prim</a> <a href="/tags/Rolling-Array/" style="font-size: 10px;">Rolling Array</a> <a href="/tags/Search/" style="font-size: 18.18px;">Search</a> <a href="/tags/Shortest-Path/" style="font-size: 11.82px;">Shortest Path</a> <a href="/tags/Simulation/" style="font-size: 12.73px;">Simulation</a> <a href="/tags/String/" style="font-size: 10px;">String</a> <a href="/tags/String-Algorithm/" style="font-size: 10px;">String Algorithm</a> <a href="/tags/String-Manipulation/" style="font-size: 10px;">String Manipulation</a> <a href="/tags/Strongly-Connected-Components/" style="font-size: 10px;">Strongly Connected Components</a> <a href="/tags/TopCoder/" style="font-size: 11.82px;">TopCoder</a> <a href="/tags/Topological-Sort/" style="font-size: 10px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 10px;">Tree</a> <a href="/tags/UnionFind/" style="font-size: 10px;">UnionFind</a> <a href="/tags/ZooKeeper/" style="font-size: 10px;">ZooKeeper</a>
     </div>
   </div>
 
@@ -798,6 +932,10 @@ ga('send', 'pageview');
       <ul>
         
           <li>
+            <a href="/2017/09/13/2017-09-13-Paxos/">Paxos Retrospective</a>
+          </li>
+        
+          <li>
             <a href="/2017/09/04/2017-09-03-USACO-CharacterRecognition/">USACO 5.4 Character Recognition</a>
           </li>
         
@@ -811,10 +949,6 @@ ga('send', 'pageview');
         
           <li>
             <a href="/2017/08/04/2017-08-04-USACO-NetworkOfSchools/">USACO 5.3 Network of Schools</a>
-          </li>
-        
-          <li>
-            <a href="/2017/07/22/2017-07-22-USACO-WindowArea/">USACO 5.3 Window Area</a>
           </li>
         
       </ul>
