@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head>
+<head><meta name="generator" content="Hexo 3.8.0">
   <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
   
   <title>Quantum Field</title>
@@ -9,6 +9,7 @@
 <meta property="og:title" content="Quantum Field">
 <meta property="og:url" content="http://lianghan.org/page/4/index.html">
 <meta property="og:site_name" content="Quantum Field">
+<meta property="og:locale" content="default">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Quantum Field">
   
@@ -37,7 +38,7 @@ ga('send', 'pageview');
 
 
 </head>
-
+</html>
 <body>
   <!-- hexo-inject:begin --><!-- hexo-inject:end --><div id="container">
     <div id="wrap">
@@ -68,7 +69,7 @@ ga('send', 'pageview');
         <a id="nav-search-btn" class="nav-icon" title="Search"></a>
       </nav>
       <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://lianghan.org"></form>
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://lianghan.org"></form>
       </div>
     </div>
   </div>
@@ -76,7 +77,52 @@ ga('send', 'pageview');
       <div class="outer">
         <section id="main">
   
-    <article id="post-2017-01-04-USACO-DrainageDitches.h" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2017-01-04-USACO-ThePerfectStall" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/01/04/2017-01-04-USACO-ThePerfectStall/" class="article-date">
+  <time datetime="2017-01-05T05:39:31.000Z" itemprop="datePublished">2017-01-04</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/USACO/">USACO</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/01/04/2017-01-04-USACO-ThePerfectStall/">USACO 4.2 The Pefect Stall</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Standard bipartite match with Hungarain Algorithm.</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="keyword">int</span> N <span class="comment">/* cows */</span>, M <span class="comment">/* stalls */</span>;</div><div class="line"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; graph;</div><div class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; match;</div><div class="line"><span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt; visited;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">addEdge</span><span class="params">(<span class="keyword">int</span> u, <span class="keyword">int</span> v)</span> </span>&#123;</div><div class="line">    graph[u].emplace_back(v);</div><div class="line">    graph[v].emplace_back(u);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> v)</span> </span>&#123;</div><div class="line">    visited[v] = <span class="literal">true</span>;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; graph[v].size(); ++i) &#123;</div><div class="line">        <span class="keyword">int</span> u = graph[v][i], w = match[u];</div><div class="line">        <span class="keyword">if</span> (w &lt; <span class="number">0</span> || (!visited[w] &amp;&amp; dfs(w))) &#123;</div><div class="line">            match[v] = u; match[u] = v;</div><div class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">bipartite_match</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> ans = <span class="number">0</span>;</div><div class="line">    <span class="built_in">std</span>::fill(match.begin(), match.end(), <span class="number">-1</span>);</div><div class="line">    <span class="keyword">int</span> size = (<span class="keyword">int</span>)graph.size();</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; size; ++i) &#123;</div><div class="line">        <span class="keyword">if</span> (match[i] &gt;= <span class="number">0</span>) <span class="keyword">continue</span>;</div><div class="line">        <span class="built_in">std</span>::fill(visited.begin(), visited.end(), <span class="literal">false</span>);</div><div class="line">        <span class="keyword">if</span> (!dfs(i)) <span class="keyword">continue</span>;</div><div class="line">        ++ans;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> ans;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"stall4.in"</span>)</span></span>;</div><div class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"stall4.out"</span>)</span></span>;</div><div class="line">    fin &gt;&gt; N &gt;&gt; M;</div><div class="line">    <span class="keyword">int</span> size = N + M + <span class="number">1</span>;</div><div class="line">    graph = <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt;(size, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;());</div><div class="line">    match = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(size, <span class="number">-1</span>);</div><div class="line">    visited = <span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt;(size, <span class="literal">false</span>);</div><div class="line">    <span class="keyword">int</span> n, k;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</div><div class="line">        fin &gt;&gt; n;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; n; ++j) &#123;</div><div class="line">            fin &gt;&gt; k;</div><div class="line">            addEdge(i, k + N);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">int</span> ans = bipartite_match();</div><div class="line">    <span class="built_in">cout</span> &lt;&lt; ans &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">    fout &lt;&lt; ans &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2017/01/04/2017-01-04-USACO-ThePerfectStall/" data-id="cjni2nkf6005uewxg4heeklmq" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2017/01/04/2017-01-04-USACO-ThePerfectStall/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Bipartite-Match/">Bipartite Match</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Graph-Theory/">Graph Theory</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hungarian-Algorithm/">Hungarian Algorithm</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-2017-01-04-USACO-DrainageDitches.h" class="article article-type-post" itemscope="" itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/01/04/2017-01-04-USACO-DrainageDitches.h/" class="article-date">
   <time datetime="2017-01-04T21:08:31.000Z" itemprop="datePublished">2017-01-04</time>
@@ -107,7 +153,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/01/04/2017-01-04-USACO-DrainageDitches.h/" data-id="cj7k02pw7005wmwxgz6qacits" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2017/01/04/2017-01-04-USACO-DrainageDitches.h/" data-id="cjni2nkf3005rewxgy8r0raiq" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2017/01/04/2017-01-04-USACO-DrainageDitches.h/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -121,7 +167,7 @@ ga('send', 'pageview');
 
 
   
-    <article id="post-2016-12-27-USACO-FenceLoops" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2016-12-27-USACO-FenceLoops" class="article article-type-post" itemscope="" itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/12/27/2016-12-27-USACO-FenceLoops/" class="article-date">
   <time datetime="2016-12-27T22:34:31.000Z" itemprop="datePublished">2016-12-27</time>
@@ -153,7 +199,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/12/27/2016-12-27-USACO-FenceLoops/" data-id="cj7k02pvx005fmwxghjx596kc" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/12/27/2016-12-27-USACO-FenceLoops/" data-id="cjni2nkew005dewxg6bi8a5ej" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2016/12/27/2016-12-27-USACO-FenceLoops/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -167,7 +213,7 @@ ga('send', 'pageview');
 
 
   
-    <article id="post-2016-12-23-USACO-BeefMcNuggets" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2016-12-23-USACO-BeefMcNuggets" class="article article-type-post" itemscope="" itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/12/23/2016-12-23-USACO-BeefMcNuggets/" class="article-date">
   <time datetime="2016-12-24T05:29:31.000Z" itemprop="datePublished">2016-12-23</time>
@@ -197,7 +243,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/12/23/2016-12-23-USACO-BeefMcNuggets/" data-id="cj7k02pvv005bmwxgwzggelk5" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/12/23/2016-12-23-USACO-BeefMcNuggets/" data-id="cjni2nkeu0059ewxgsn471hvz" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2016/12/23/2016-12-23-USACO-BeefMcNuggets/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -211,7 +257,7 @@ ga('send', 'pageview');
 
 
   
-    <article id="post-2016-12-16-USACO-RaucousRockers" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2016-12-16-USACO-RaucousRockers" class="article article-type-post" itemscope="" itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/12/16/2016-12-16-USACO-RaucousRockers/" class="article-date">
   <time datetime="2016-12-17T01:09:31.000Z" itemprop="datePublished">2016-12-16</time>
@@ -242,7 +288,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/12/16/2016-12-16-USACO-RaucousRockers/" data-id="cj7k02pvt0058mwxgdbxqpxg0" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/12/16/2016-12-16-USACO-RaucousRockers/" data-id="cjni2nken0056ewxg8zxi6fou" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2016/12/16/2016-12-16-USACO-RaucousRockers/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -256,7 +302,7 @@ ga('send', 'pageview');
 
 
   
-    <article id="post-2016-12-14-USACO-ElectricFence" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2016-12-14-USACO-ElectricFence" class="article article-type-post" itemscope="" itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/12/14/2016-12-14-USACO-ElectricFence/" class="article-date">
   <time datetime="2016-12-15T05:34:31.000Z" itemprop="datePublished">2016-12-14</time>
@@ -287,7 +333,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/12/14/2016-12-14-USACO-ElectricFence/" data-id="cj7k02pvq0051mwxgza9z5m70" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/12/14/2016-12-14-USACO-ElectricFence/" data-id="cjni2nkek0052ewxggf5mn8kd" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2016/12/14/2016-12-14-USACO-ElectricFence/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -301,7 +347,7 @@ ga('send', 'pageview');
 
 
   
-    <article id="post-2016-12-13-TopCoder-SRM-703-GCDGraph" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2016-12-13-TopCoder-SRM-703-GCDGraph" class="article article-type-post" itemscope="" itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/12/14/2016-12-13-TopCoder-SRM-703-GCDGraph/" class="article-date">
   <time datetime="2016-12-14T19:42:31.000Z" itemprop="datePublished">2016-12-14</time>
@@ -331,7 +377,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/12/14/2016-12-13-TopCoder-SRM-703-GCDGraph/" data-id="cj7k02pvn004umwxg64da7kph" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/12/14/2016-12-13-TopCoder-SRM-703-GCDGraph/" data-id="cjni2nkej004zewxgz4wwsu87" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2016/12/14/2016-12-13-TopCoder-SRM-703-GCDGraph/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -345,7 +391,7 @@ ga('send', 'pageview');
 
 
   
-    <article id="post-2016-12-12-USACO-AmericanHeritage" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2016-12-12-USACO-AmericanHeritage" class="article article-type-post" itemscope="" itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/12/12/2016-12-12-USACO-AmericanHeritage/" class="article-date">
   <time datetime="2016-12-13T00:17:31.000Z" itemprop="datePublished">2016-12-12</time>
@@ -376,7 +422,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/12/12/2016-12-12-USACO-AmericanHeritage/" data-id="cj7k02pvs0054mwxgcg3qwzly" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/12/12/2016-12-12-USACO-AmericanHeritage/" data-id="cjni2nkef004vewxgurugnhl1" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2016/12/12/2016-12-12-USACO-AmericanHeritage/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -390,7 +436,7 @@ ga('send', 'pageview');
 
 
   
-    <article id="post-2016-12-09-USACO-Camelot" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2016-12-09-USACO-Camelot" class="article article-type-post" itemscope="" itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/12/09/2016-12-09-USACO-Camelot/" class="article-date">
   <time datetime="2016-12-10T05:15:31.000Z" itemprop="datePublished">2016-12-09</time>
@@ -427,7 +473,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/12/09/2016-12-09-USACO-Camelot/" data-id="cj7k02pvj004nmwxg2gaoip10" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/12/09/2016-12-09-USACO-Camelot/" data-id="cjni2nkee004sewxga3l2a5z4" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2016/12/09/2016-12-09-USACO-Camelot/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -441,7 +487,7 @@ ga('send', 'pageview');
 
 
   
-    <article id="post-2016-12-07-USACO-HomeOnRange" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2016-12-07-USACO-HomeOnRange" class="article article-type-post" itemscope="" itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/12/07/2016-12-07-USACO-HomeOnRange/" class="article-date">
   <time datetime="2016-12-07T18:44:31.000Z" itemprop="datePublished">2016-12-07</time>
@@ -472,57 +518,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/12/07/2016-12-07-USACO-HomeOnRange/" data-id="cj7k02pvk004qmwxg60x3i5q9" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/12/07/2016-12-07-USACO-HomeOnRange/" data-id="cjni2nkec004oewxg1t2r5hsk" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2016/12/07/2016-12-07-USACO-HomeOnRange/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dynamic-Programming/">Dynamic Programming</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-2016-11-29-USACO-AGame" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/11/29/2016-11-29-USACO-AGame/" class="article-date">
-  <time datetime="2016-11-30T05:17:31.000Z" itemprop="datePublished">2016-11-29</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/USACO/">USACO</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/11/29/2016-11-29-USACO-AGame/">USACO 3.3 A Game</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Typical dynamic programming problem. The search space is the optimal value player A could get at a given play step. A play step can be identified by the current state of the board - namely the unused board which is marked by the starting (left) and ending (right) indices. Let’s denote the start index as a, end index as b, and denote dp[a][b] as the optimal value player A could get.</p>
-<p>Next we need find out the state transfer function. Since player B will also play optimally (that is, player B is as smart as player A, and both players will try use same optimal strategy to win the game), we can have the transfer function like this:</p>
-<p>$f(a, b) = \begin{cases}0 &amp; a &gt; b \\<br>max(f(a) + min(f(a + 2, b), f(a + 1, b - 1)), f(b) + min(f(a, b - 2), f(a + 1, b - 1) &amp; a \le b \\<br>\end{cases}$</p>
-<p>And this could be calculated recursively (from two ends of board to middle).</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sstream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;numeric&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="keyword">int</span> N;</div><div class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; board;</div><div class="line"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; dp;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">compute</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (a &gt; b) <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">    <span class="keyword">if</span> (dp[a][b] == <span class="number">-1</span>) &#123;</div><div class="line">        dp[a][b] = <span class="built_in">std</span>::max(board[a] + <span class="built_in">std</span>::min(compute(a + <span class="number">2</span>, b),</div><div class="line">                                                compute(a + <span class="number">1</span>, b - <span class="number">1</span>)),</div><div class="line">                            board[b] + <span class="built_in">std</span>::min(compute(a, b - <span class="number">2</span>),</div><div class="line">                                                compute(a + <span class="number">1</span>, b - <span class="number">1</span>)));</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> dp[a][b];</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"game1.in"</span>)</span></span>;</div><div class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"game1.out"</span>)</span></span>;</div><div class="line">    fin &gt;&gt; N;</div><div class="line">    board = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N, <span class="number">0</span>);</div><div class="line">    dp = <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt;(N, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N, <span class="number">-1</span>));</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</div><div class="line">        fin &gt;&gt; board[i];</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">int</span> sum = <span class="built_in">std</span>::accumulate(board.begin(), board.end(), <span class="number">0</span>);</div><div class="line">    <span class="keyword">int</span> p1 = compute(<span class="number">0</span>, N - <span class="number">1</span>);</div><div class="line">    <span class="keyword">int</span> p2 = sum - p1;</div><div class="line">    <span class="built_in">cout</span> &lt;&lt; p1 &lt;&lt; <span class="string">" "</span> &lt;&lt; p2 &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">    fout &lt;&lt; p1 &lt;&lt; <span class="string">" "</span> &lt;&lt; p2 &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/11/29/2016-11-29-USACO-AGame/" data-id="cj7k02pvg004jmwxge6tui95b" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2016/11/29/2016-11-29-USACO-AGame/#disqus_thread" class="article-comment-link">Comments</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dynamic-Programming/">Dynamic Programming</a></li></ul>
@@ -576,7 +574,7 @@ ga('send', 'pageview');
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">May 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">January 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">August 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">May 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">January 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">August 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li></ul>
     </div>
   </div>
 
@@ -587,6 +585,10 @@ ga('send', 'pageview');
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2018/10/20/2018-10-20-SRM740/">SRM 740 DIV II 500</a>
+          </li>
         
           <li>
             <a href="/2017/09/13/2017-09-13-Paxos/">Paxos Retrospective</a>
@@ -602,10 +604,6 @@ ga('send', 'pageview');
         
           <li>
             <a href="/2017/08/09/2017-08-09-USACO-BigBarn/">USACO 5.3 Big Barn</a>
-          </li>
-        
-          <li>
-            <a href="/2017/08/04/2017-08-04-USACO-NetworkOfSchools/">USACO 5.3 Network of Schools</a>
           </li>
         
       </ul>
@@ -624,7 +622,7 @@ ga('send', 'pageview');
   
   <div class="outer">
     <div id="footer-info" class="inner">
-      &copy; 2017 hanm<br>
+      &copy; 2018 hanm<br>
       Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
     </div>
   </div>
@@ -662,23 +660,6 @@ ga('send', 'pageview');
 
 <script src="/js/script.js"></script>
 
-  </div><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
-</script>
-
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i=0; i < all.length; i += 1) {
-      all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-  });
-</script>
-
-<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-<!-- End: Injected MathJax -->
-<!-- hexo-inject:end -->
+  </div><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </body>
 </html>
