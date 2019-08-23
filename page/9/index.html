@@ -75,14 +75,14 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-2016-8-17-USACO-SkiCourseDesign" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2017-07-01-ConsensusInTheCloud" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2016/08/17/2016-8-17-USACO-SkiCourseDesign/" class="article-date">
-  <time datetime="2016-08-17T21:56:31.000Z" itemprop="datePublished">2016-08-17</time>
+    <a href="/2017/07/03/2017-07-01-ConsensusInTheCloud/" class="article-date">
+  <time datetime="2017-07-03T21:07:31.000Z" itemprop="datePublished">2017-07-03</time>
 </a>
     
   <div class="article-category">
-    <a class="article-category-link" href="/categories/USACO/">USACO</a>
+    <a class="article-category-link" href="/categories/Distributed-System/">Distributed System</a>
   </div>
 
   </div>
@@ -93,7 +93,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/08/17/2016-8-17-USACO-SkiCourseDesign/">USACO 1.3 Ski Course Design</a>
+      <a class="article-title" href="/2017/07/03/2017-07-01-ConsensusInTheCloud/">Paper Digest - Consensus in the Cloud - Paxos Systems Demystified</a>
     </h1>
   
 
@@ -101,445 +101,134 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>At first glance, a reasonable approach seems to sort the heights of hills then starting from both ends (smallest and biggest), adjust and iterate and converge to a fixed point. However, the problem has a constraint that for each hill only a single change can be made, so this would not work. Think in the other direction, given the constraints each hill has to end up with a height that’s fall in the range of 0 to 83 (inclusive), so we can simply use brutal force to iterate that for each range, what would be the overall cost to adjust all hills.</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cmath&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;climits&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> N;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; hills;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">compute</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> ret = INT_MAX;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">83</span>; ++i) &#123;</span><br><span class="line">    <span class="keyword">int</span> result = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;h : hills) &#123;</span><br><span class="line">      <span class="keyword">if</span> (h &lt; i) &#123;</span><br><span class="line">        result += <span class="built_in">pow</span>(i - h, <span class="number">2</span>);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">if</span> (h &gt; i + <span class="number">17</span>) &#123;</span><br><span class="line">        result += <span class="built_in">pow</span>(h -i - <span class="number">17</span>, <span class="number">2</span>);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    ret = min(ret, result);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> ret;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"skidesign.in"</span>)</span></span>;</span><br><span class="line">  <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"skidesign.out"</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">  fin &gt;&gt; N;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= N; ++i) &#123;</span><br><span class="line">    <span class="keyword">int</span> h;</span><br><span class="line">    fin &gt;&gt; h;</span><br><span class="line">    hills.emplace_back(h);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">int</span> ret = compute();</span><br><span class="line">  <span class="built_in">cout</span> &lt;&lt; ret &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">  fout &lt;&lt; ret &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/17/2016-8-17-USACO-SkiCourseDesign/" data-id="cjzoltcvf001t5jxg0y8g6nhl" data-title="USACO 1.3 Ski Course Design" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2016/08/17/2016-8-17-USACO-SkiCourseDesign/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Brutal-Force/">Brutal Force</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2016-08-17-USACO-WormHoles" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/08/17/2016-08-17-USACO-WormHoles/" class="article-date">
-  <time datetime="2016-08-17T16:11:31.000Z" itemprop="datePublished">2016-08-17</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/USACO/">USACO</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/08/17/2016-08-17-USACO-WormHoles/">USACO 1.3 Wormholes</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>The problem can be reduced to two sub problems:</p>
-<ul>
-<li>Generate all combinations of pairs. This can be solved using backtrack.</li>
-<li>For each combination test if there is a cycle. This can be solved by exhaustive search: starting from each wormhole, and try move the number of total wormholes, and repeat, until all wormholes are tested.</li>
+        <p>Paper digest - <a href="https://www.cse.buffalo.edu/tech-reports/2016-02.pdf" target="_blank" rel="noopener">Consensus in the Cloud - Paxos Systems Demystified</a></p>
+<h1 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h1><ul>
+<li>Compared several popular Paxos protocols and Paxos systems and present advantages and disadvantages for each.</li>
+<li>Categorized the coordination use-patterns in cloud, and examine Google and Facebook infrastructures, as well as use cases of Paxos in Apache projects.</li>
+<li>Analyzed tradeoffs in the distributed coordination domain and identify promising future directions.</li>
 </ul>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;climits&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> kMaxHoles = <span class="number">12</span>;</span><br><span class="line"><span class="keyword">int</span> total;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; vx(kMaxHoles + <span class="number">1</span>, <span class="number">0</span>);</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; vy(kMaxHoles + <span class="number">1</span>, <span class="number">0</span>);</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; nextWormhole(kMaxHoles + <span class="number">1</span>, <span class="number">0</span>);</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; vpair(kMaxHoles + <span class="number">1</span>, <span class="number">0</span>);</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt; visited(kMaxHoles + <span class="number">1</span>, <span class="literal">false</span>);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">hasCycle</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> start = <span class="number">1</span>; start &lt;= total; ++start)&#123;</span><br><span class="line">    <span class="keyword">int</span> current = start;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> move = <span class="number">1</span>; move &lt;= total; ++move)</span><br><span class="line">      current = nextWormhole[vpair[current]];</span><br><span class="line">    <span class="keyword">if</span> (current != <span class="number">0</span>)</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">backtrack</span><span class="params">()</span></span>&#123;</span><br><span class="line">  <span class="keyword">int</span> unpaired = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= total; ++i) &#123;</span><br><span class="line">    <span class="keyword">if</span> (vpair[i] == <span class="number">0</span>)&#123;</span><br><span class="line">      unpaired = i;</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (unpaired == <span class="number">0</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> hasCycle();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">int</span> result = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> topair = unpaired + <span class="number">1</span>; topair &lt;= total; ++topair)</span><br><span class="line">    <span class="keyword">if</span> (vpair[topair]  == <span class="number">0</span>)&#123;</span><br><span class="line">      vpair[unpaired] = topair;</span><br><span class="line">      vpair[topair] = unpaired;</span><br><span class="line">      result += backtrack();</span><br><span class="line">      vpair[unpaired] = <span class="number">0</span>;</span><br><span class="line">      vpair[topair] = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">  <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"wormhole.in"</span>)</span></span>;</span><br><span class="line">  <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"wormhole.out"</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">  fin &gt;&gt; total;</span><br><span class="line">  <span class="built_in">cout</span> &lt;&lt; total &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= total; ++i) &#123;</span><br><span class="line">    fin &gt;&gt; vx[i] &gt;&gt; vy[i];</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; vx[i] &lt;&lt; <span class="string">" "</span> &lt;&lt; vy[i] &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">int</span> current, next;</span><br><span class="line">  <span class="keyword">for</span> (current = <span class="number">1</span>; current &lt;= total; ++current) &#123;</span><br><span class="line">    <span class="keyword">for</span> (next = <span class="number">1</span>; next &lt;= total; ++next)&#123;</span><br><span class="line">      <span class="keyword">if</span> (vy[current] != vy[next] || vx[next] &lt;= vx[current]) &#123;</span><br><span class="line">        <span class="keyword">continue</span>;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">if</span> (nextWormhole[current] == <span class="number">0</span> || vx[next] &lt; vx[nextWormhole[current]]) &#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">"current : "</span> &lt;&lt; current &lt;&lt; <span class="string">"; next : "</span> &lt;&lt; next &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">        nextWormhole[current] = next;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= <span class="number">12</span>; ++i) &#123;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; nextWormhole[i] &lt;&lt; <span class="string">";"</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  fout &lt;&lt; backtrack() &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><ul>
+<li>Coordination plays a major role in cloud computing systems:<ul>
+<li>Leader election</li>
+<li>Group membership</li>
+<li>Cluster management</li>
+<li>Service discovery</li>
+<li>Resource/access management</li>
+<li>Consistent replication of the master nodes in services</li>
+<li>Barrier-orchestration when running large analytic tasks</li>
+<li>And so on..</li>
+</ul>
+</li>
+<li>The coordination problem has been studied extensively under the name “distributed consensus”.</li>
+<li>Paxos rise to fame with Google Chubby (lock service for GFS).</li>
+<li>Apache ZooKeeper as a coordination kernel<ul>
+<li>File system abstraction easy to use.</li>
+<li>Abused / misused, often constituted the bottleneck in performance of these applications and caused scalability problems.</li>
+</ul>
+</li>
+<li>More choices nowadays (Raft, etc), with confusions still remained:<ul>
+<li>Proper use cases.</li>
+<li>Which systems are more suitable for which tasks:<ul>
+<li>Paxos protocols (e.g. multi-paxos, Raft, ZAB) are useful for low-level components for server replication.</li>
+<li>Paxos systems (e.g. ZK) are useful for highly-available/durable metadata management with constraints that all metadata fit in main-memory and are not subject to very frequent changes.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="Paxos-Protocols"><a href="#Paxos-Protocols" class="headerlink" title="Paxos Protocols"></a>Paxos Protocols</h1><ul>
+<li>Protocols<ul>
+<li>Paxos: fault-tolerant consensus for a single value.</li>
+<li>Multi-Paxos: fault-tolerant consensus for multiple values.</li>
+<li>ZAB: additional constraints on Paxos (primary global order).</li>
+<li>Raft: very similar to ZAB with some implementation level difference.</li>
+</ul>
+</li>
+<li>Differences<ul>
+<li>Leader Election:<ul>
+<li>Zab and Raft protocols differ from Paxos as they divide execution into phases (called epochs in Zab and terms in Raft).</li>
+<li>Each epoch begins with a new election, goes into the broadcast phase and ends with a leader failure.</li>
+<li>The phases are sequential because of the additional safety properties are provided by the isLeader predicate.</li>
+<li>Zab and Raft there can be at most one leader at any time.</li>
+<li>Paxos can have multiple leaders coexisting.</li>
+</ul>
+</li>
+<li>Zab has discovery and sync phase, Raft does not which simplifies algorithm but makes recover longer, possibly.</li>
+<li>Communication:<ul>
+<li>ZAB is messaging model. Each update requires at least three messages:<ul>
+<li>proposal, ack and commit</li>
+</ul>
+</li>
+<li>Raft use RPC.</li>
+</ul>
+</li>
+<li>Dynamic reconfiguration:<ul>
+<li>Reconfig is just another command go through consensus process.</li>
+<li>To ensure safety, new config cannot be activated immediately and the configuration changes must go through two phases.</li>
+<li>A process can only propose commands for slots with known configuration, ∀ρ : ρ.slotin &lt; ρ.slotout+ WINDOW.</li>
+<li>With primary order property provided by Zab and Raft, both protocols are able to implement their reconfiguration algorithms without limitations to normal operations or external services.</li>
+<li>Both Zab and Raft include a pre-phase where the new processes join the cluster as a non-voting members so that the leader in Cold could initialize their states by transferring currently committed prefix of updates.</li>
+<li>In Zab, the time between new config proposed and committed, any commands received after reconfig is only scheduled but will not commit.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Paxos Extensions<ul>
+<li>Generalized Paxos: allows acceptors to vote for independent commands.</li>
+<li>EPaxos:<ul>
+<li>allows nodes to commit conflict free commands by checking the command dependency list.</li>
+<li>adds significant complexity and extra effort to resolve the conflict if concurrent commands do not commute.</li>
+<li><strong>from an engineer’s perspective, the sketch algorithm descriptions in the literature are often underspecified, and lead to divergent interpretations and implementations.</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="Paxos-Systems"><a href="#Paxos-Systems" class="headerlink" title="Paxos Systems"></a>Paxos Systems</h1><ul>
+<li>Chubby, Apache ZooKeeper, etcd<ul>
+<li>All three services hide the replicated state machine and log abstractions under a small data-store with filesystem-like API.</li>
+<li>All three support watchers.</li>
+<li>All three support ephemeral storage.</li>
+<li>All three support observers (none voting quorum peer).</li>
+</ul>
+</li>
+<li>Difference<ul>
+<li>ZK provides client FIFO order.</li>
+<li>etcd is stateless (<strong>note, not very true with etcd 3.0’s lease, which is ZK session kind things.</strong>)</li>
+<li>etcd has TTL (<strong>note, ZK has ttl too after 3.5.3.</strong>)</li>
+<li>etcd has hidden data (MVCC).</li>
+<li>ZK has weighted quorum.</li>
+</ul>
+</li>
+<li>Proper use criteria for Paxos systems<ul>
+<li><strong>Paxos system should not be in the performance critical path of the application.</strong></li>
+<li><strong>Frequency of write operations to the Paxos system should be kept low</strong></li>
+<li><strong>Amount of data maintained in the Paxos system should be kept small</strong></li>
+<li><strong>Application adopting the Paxos system should really require strong consistency</strong></li>
+<li><strong>Application adopting the Paxos system should not be distributed over the Wide Area Network (WAN).</strong></li>
+<li><strong> The API abstraction should be fit the goal.</strong></li>
+</ul>
+</li>
+</ul>
+<h1 id="Paxos-Usage-Patterns"><a href="#Paxos-Usage-Patterns" class="headerlink" title="Paxos Usage Patterns"></a>Paxos Usage Patterns</h1><ul>
+<li>Server Replication (SR)</li>
+<li>Log Replication (LR)</li>
+<li>Synchronization Service (SS).</li>
+<li>Barrier Orchestration (BO).</li>
+<li>Configuration Management.</li>
+<li>Message Queues (Q).</li>
+</ul>
+<h1 id="Paxos-Uasage-in-Production"><a href="#Paxos-Uasage-in-Production" class="headerlink" title="Paxos Uasage in Production"></a>Paxos Uasage in Production</h1>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/17/2016-08-17-USACO-WormHoles/" data-id="cjzoltcub000e5jxgmhto2xl1" data-title="USACO 1.3 Wormholes" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2017/07/03/2017-07-01-ConsensusInTheCloud/" data-id="cjzomd02j0033gaxgu58a45v4" data-title="Paper Digest - Consensus in the Cloud - Paxos Systems Demystified" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2016/08/17/2016-08-17-USACO-WormHoles/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Graph/">Graph</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Search/">Search</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2016-08-13-USACO-CombinationLock" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/08/13/2016-08-13-USACO-CombinationLock/" class="article-date">
-  <time datetime="2016-08-14T04:52:31.000Z" itemprop="datePublished">2016-08-13</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/USACO/">USACO</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/08/13/2016-08-13-USACO-CombinationLock/">USACO 1.3 Combation Lock</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Reduce to a search problem, pay attion to the search space. Code can be further optimized.<br><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iterator&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cctype&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;tuple&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;set&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">wrap</span><span class="params">(<span class="keyword">int</span> num, <span class="keyword">int</span> N)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (num &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> num + N;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (num &gt; N) &#123;</span><br><span class="line">        <span class="keyword">return</span> num - N;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> num;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; getCandidate(<span class="keyword">int</span> num, <span class="keyword">int</span> N) &#123;</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; ret;</span><br><span class="line">    <span class="keyword">int</span> range;</span><br><span class="line">    <span class="keyword">if</span> (N == <span class="number">1</span>) &#123;</span><br><span class="line">        range = <span class="number">0</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (N == <span class="number">2</span>) &#123;</span><br><span class="line">        range = <span class="number">1</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        range = <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; -range &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = -range; i &lt;= range; ++i) &#123;</span><br><span class="line">        ret.emplace_back(wrap(num + i, N));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"combo.in"</span>)</span></span>;</span><br><span class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"combo.out"</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> N;</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; lock(<span class="number">3</span>, <span class="number">0</span>), master(<span class="number">3</span>, <span class="number">0</span>);</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; a, b;</span><br><span class="line">    fin &gt;&gt; N;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">3</span>; ++i) &#123;</span><br><span class="line">        fin &gt;&gt; lock[i];</span><br><span class="line">        a.emplace_back(getCandidate(lock[i], N));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">3</span>; ++i) &#123;</span><br><span class="line">        fin &gt;&gt; master[i];</span><br><span class="line">        b.emplace_back(getCandidate(master[i], N));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">set</span>&lt;tuple&lt;<span class="keyword">int</span>, <span class="keyword">int</span>, <span class="keyword">int</span>&gt;&gt; s;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; a[<span class="number">0</span>].size(); ++i) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; a[<span class="number">1</span>].size(); ++j) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; a[<span class="number">2</span>].size(); ++k) &#123;</span><br><span class="line">                s.insert(make_tuple(a[<span class="number">0</span>][i], a[<span class="number">1</span>][j], a[<span class="number">2</span>][k]));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; b[<span class="number">0</span>].size(); ++i) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; b[<span class="number">1</span>].size(); ++j) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; b[<span class="number">2</span>].size(); ++k) &#123;</span><br><span class="line">                s.insert(make_tuple(b[<span class="number">0</span>][i], b[<span class="number">1</span>][j], b[<span class="number">2</span>][k]));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    fout &lt;&lt; s.size() &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;item : s) &#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; get&lt;<span class="number">0</span>&gt;(item) &lt;&lt; <span class="string">","</span></span><br><span class="line">        &lt;&lt; get&lt;<span class="number">1</span>&gt;(item) &lt;&lt; <span class="string">","</span></span><br><span class="line">        &lt;&lt; get&lt;<span class="number">2</span>&gt;(item) &lt;&lt; <span class="string">" "</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/13/2016-08-13-USACO-CombinationLock/" data-id="cjzoltcua000d5jxgzthk4yig" data-title="USACO 1.3 Combation Lock" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2016/08/13/2016-08-13-USACO-CombinationLock/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2017/07/03/2017-07-01-ConsensusInTheCloud/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Combination/">Combination</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2016-08-11-USACO-DualPalindrome" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/08/11/2016-08-11-USACO-DualPalindrome/" class="article-date">
-  <time datetime="2016-08-12T04:48:31.000Z" itemprop="datePublished">2016-08-11</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/USACO/">USACO</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/08/11/2016-08-11-USACO-DualPalindrome/">USACO 1.2 Dual Palindrome</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Another implementation skill test for base conversion.</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">isPalindrome</span><span class="params">(<span class="built_in">string</span> str)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>, j = str.size() - <span class="number">1</span>; i &lt; j; ++i, --j) &#123;</span><br><span class="line">    <span class="keyword">if</span> (str[i] != str[j]) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="built_in">string</span> <span class="title">getNumber</span><span class="params">(<span class="keyword">int</span> number, <span class="keyword">int</span> BASE)</span> </span>&#123;</span><br><span class="line">  <span class="built_in">string</span> str;</span><br><span class="line">  <span class="keyword">int</span> base = BASE;</span><br><span class="line">  <span class="keyword">while</span> (number) &#123;</span><br><span class="line">    <span class="keyword">int</span> digit = number % base;</span><br><span class="line">    <span class="keyword">int</span> factor = base / BASE;</span><br><span class="line">    digit /= factor;</span><br><span class="line">    str.push_back(digit + <span class="string">'0'</span>);</span><br><span class="line">    number -= digit * factor;</span><br><span class="line">    base *= BASE;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> str;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"dualpal.in"</span>)</span></span>;</span><br><span class="line">  <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"dualpal.out"</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">int</span> N, S;</span><br><span class="line">  fin &gt;&gt; N &gt;&gt; S;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = S + <span class="number">1</span>, j = <span class="number">0</span>; j &lt; N;) &#123;</span><br><span class="line">    <span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">2</span>; k &lt;= <span class="number">10</span>; ++k) &#123;</span><br><span class="line">      <span class="keyword">if</span> (j &gt; N) <span class="keyword">break</span>;</span><br><span class="line">      <span class="built_in">string</span> num = getNumber(i, k);</span><br><span class="line">      <span class="keyword">if</span> (isPalindrome(num)) &#123;</span><br><span class="line">        ++count;</span><br><span class="line">        <span class="keyword">if</span> (count == <span class="number">2</span>) &#123;</span><br><span class="line">          fout &lt;&lt; i &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">          ++j; ++i;</span><br><span class="line">          <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (count != <span class="number">2</span>) ++i;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/11/2016-08-11-USACO-DualPalindrome/" data-id="cjzoltcu9000c5jxg5is3z8qn" data-title="USACO 1.2 Dual Palindrome" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2016/08/11/2016-08-11-USACO-DualPalindrome/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Base-Conversion/">Base Conversion</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2016-08-09-TopCoderSRM696" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/08/10/2016-08-09-TopCoderSRM696/" class="article-date">
-  <time datetime="2016-08-11T04:13:31.000Z" itemprop="datePublished">2016-08-10</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/TopCoder/">TopCoder</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/08/10/2016-08-09-TopCoderSRM696/">TopCoder SRM 696</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <figure class="highlight cpp"><figcaption><span>250_Rope_String</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> Ropestring &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="built_in">string</span> <span class="title">makerope</span><span class="params">(<span class="built_in">string</span> s)</span> </span>&#123;</span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; even, odd;</span><br><span class="line">        <span class="keyword">int</span> size = (<span class="keyword">int</span>)s.size();</span><br><span class="line">        <span class="keyword">int</span> cur = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; size; ++i) &#123;</span><br><span class="line">            <span class="keyword">if</span> (s[i] == <span class="string">'-'</span>)</span><br><span class="line">                ++cur;</span><br><span class="line">            <span class="keyword">if</span> (s[i] == <span class="string">'.'</span>) &#123;</span><br><span class="line">                <span class="keyword">if</span> (i &gt; <span class="number">0</span> &amp;&amp; s[i - <span class="number">1</span>] == <span class="string">'-'</span>) &#123;</span><br><span class="line">                    <span class="keyword">if</span> (cur % <span class="number">2</span>) &#123;</span><br><span class="line">                        odd.push_back(cur);</span><br><span class="line">                    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                        even.push_back(cur);</span><br><span class="line">                    &#125;</span><br><span class="line">                    cur = <span class="number">0</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (s[size - <span class="number">1</span>] == <span class="string">'-'</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (cur % <span class="number">2</span>) &#123;</span><br><span class="line">                odd.push_back(cur);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                even.push_back(cur);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        sort(odd.begin(), odd.end());</span><br><span class="line">        sort(even.begin(), even.end());</span><br><span class="line">        <span class="built_in">string</span> ret;</span><br><span class="line">        <span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = (<span class="keyword">int</span>)even.size() - <span class="number">1</span>; i &gt;= <span class="number">0</span>; --i) &#123;</span><br><span class="line">            <span class="keyword">int</span> size = even[i];</span><br><span class="line">            <span class="keyword">while</span> (size) &#123;</span><br><span class="line">                ret.push_back(<span class="string">'-'</span>);</span><br><span class="line">                ++count;</span><br><span class="line">                --size;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (i != <span class="number">0</span>) &#123;</span><br><span class="line">                ret.push_back(<span class="string">'.'</span>); ++count;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (!even.empty() &amp;&amp; !odd.empty()) &#123;</span><br><span class="line">            ret.push_back(<span class="string">'.'</span>); ++count;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = (<span class="keyword">int</span>)(odd.size() - <span class="number">1</span>); i &gt;= <span class="number">0</span>; --i) &#123;</span><br><span class="line">            <span class="keyword">int</span> size = odd[i];</span><br><span class="line">            <span class="keyword">while</span> (size) &#123;</span><br><span class="line">                ret.push_back(<span class="string">'-'</span>);</span><br><span class="line">                ++count;</span><br><span class="line">                --size;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (i != <span class="number">0</span>) &#123;</span><br><span class="line">                ret.push_back(<span class="string">'.'</span>); ++count;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> left = (<span class="keyword">int</span>)s.size() - count;</span><br><span class="line">        <span class="keyword">while</span> (left) &#123;</span><br><span class="line">            ret.push_back(<span class="string">'.'</span>); --left;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ret;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<figure class="highlight cpp"><figcaption><span>500_Array_Fix</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> Arrfix &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">mindiff</span><span class="params">(<span class="built_in">vector</span> &lt;<span class="keyword">int</span>&gt; A, <span class="built_in">vector</span> &lt;<span class="keyword">int</span>&gt; B, <span class="built_in">vector</span> &lt;<span class="keyword">int</span>&gt; F)</span> </span>&#123;</span><br><span class="line">        <span class="built_in">unordered_map</span>&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; hashb;</span><br><span class="line">        <span class="built_in">unordered_map</span>&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; hashf;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;i : B) &#123;</span><br><span class="line">            hashb[i]++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;i : F) &#123;</span><br><span class="line">            hashf[i]++;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> diff = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span> size = (<span class="keyword">int</span>)A.size();</span><br><span class="line">        <span class="keyword">int</span> used = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; size; ++i) &#123;</span><br><span class="line">            <span class="keyword">if</span> (A[i] == B[i])</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            <span class="keyword">if</span> (hashf[B[i]]) &#123;</span><br><span class="line">                hashf[B[i]]--;</span><br><span class="line">                ++used;</span><br><span class="line">                hashb[B[i]]--;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            ++diff;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (used == (<span class="keyword">int</span>)F.size())</span><br><span class="line">            <span class="keyword">return</span> diff;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> iter = hashf.begin(); iter != hashf.end(); ++iter) &#123;</span><br><span class="line">            <span class="keyword">int</span> key = iter-&gt;first;</span><br><span class="line">            <span class="keyword">int</span> count = iter-&gt;second;</span><br><span class="line">            <span class="keyword">if</span> (count == <span class="number">0</span>) <span class="keyword">continue</span>;</span><br><span class="line">            <span class="keyword">if</span> (hashb[key]) &#123;</span><br><span class="line">                hashb[key]--;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                ++diff;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> diff;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/10/2016-08-09-TopCoderSRM696/" data-id="cjzoltcu8000b5jxg70z8sefk" data-title="TopCoder SRM 696" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2016/08/10/2016-08-09-TopCoderSRM696/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2016-08-09-PalindromeSquare" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/08/09/2016-08-09-PalindromeSquare/" class="article-date">
-  <time datetime="2016-08-10T05:22:31.000Z" itemprop="datePublished">2016-08-09</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/USACO/">USACO</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/08/09/2016-08-09-PalindromeSquare/">USACO 1.2 Palindrome Square</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>This problem is very straightforward to solve, just pay attention to implementation details.</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">isPalindrome</span><span class="params">(<span class="built_in">string</span> str)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>, j = str.size() - <span class="number">1</span>; i &lt; j; ++i, --j) &#123;</span><br><span class="line">    <span class="keyword">if</span> (str[i] != str[j]) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="built_in">string</span> <span class="title">getNumber</span><span class="params">(<span class="keyword">int</span> number, <span class="keyword">int</span> BASE, <span class="keyword">const</span> <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;table)</span> </span>&#123;</span><br><span class="line">  <span class="built_in">string</span> str;</span><br><span class="line">  <span class="keyword">int</span> base = BASE;</span><br><span class="line">  <span class="keyword">while</span> (number) &#123;</span><br><span class="line">    <span class="keyword">int</span> digit = number % base;</span><br><span class="line">    <span class="keyword">int</span> factor = base / BASE;</span><br><span class="line">    digit /= factor;</span><br><span class="line">    str.push_back(table[digit]);</span><br><span class="line">    number -= digit * factor;</span><br><span class="line">    base *= BASE;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  reverse(str.begin(), str.end());</span><br><span class="line">  <span class="keyword">return</span> str;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; table = &#123; <span class="string">'0'</span> , <span class="string">'1'</span> , <span class="string">'2'</span> , <span class="string">'3'</span> , <span class="string">'4'</span> , <span class="string">'5'</span> , <span class="string">'6'</span> , <span class="string">'7'</span> , <span class="string">'8'</span> , <span class="string">'9'</span> ,</span><br><span class="line">    <span class="string">'A'</span> , <span class="string">'B'</span> , <span class="string">'C'</span> , <span class="string">'D'</span> , <span class="string">'E'</span> , <span class="string">'F'</span> , <span class="string">'G'</span> , <span class="string">'H'</span> , <span class="string">'I'</span> , <span class="string">'J'</span> &#125; ;</span><br><span class="line"></span><br><span class="line">  <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"palsquare.in"</span>)</span></span>;</span><br><span class="line">  <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"palsquare.out"</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">int</span> BASE;</span><br><span class="line">  fin &gt;&gt; BASE;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= <span class="number">300</span>; ++i) &#123;</span><br><span class="line">    <span class="built_in">string</span> num = getNumber(i * i, BASE, table);</span><br><span class="line">    <span class="keyword">if</span> (isPalindrome(num)) &#123;</span><br><span class="line">      fout &lt;&lt; getNumber(i, BASE, table) &lt;&lt; <span class="string">" "</span>;</span><br><span class="line">      fout &lt;&lt; num &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/09/2016-08-09-PalindromeSquare/" data-id="cjzoltcu6000a5jxgvehjrvlm" data-title="USACO 1.2 Palindrome Square" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2016/08/09/2016-08-09-PalindromeSquare/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Search/">Search</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2016-08-08-NameThatNumber" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/08/08/2016-08-08-NameThatNumber/" class="article-date">
-  <time datetime="2016-08-09T05:06:31.000Z" itemprop="datePublished">2016-08-08</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/USACO/">USACO</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/08/08/2016-08-08-NameThatNumber/">USACO 1.2 Name That Number</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>This is a search problem and the key is to figure out the search space. Given the input number, we can generate all possible combinations of the valid words and use these words as search space. The other approach is to generate all possible numbers from the input dictionary and then use these numbers as search space. Obviously, given the input constraints (a list of fewer than 5,000 acceptable cattle names), the number search space is more practical.<br><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sstream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="built_in">string</span> <span class="title">name2number</span><span class="params">(<span class="built_in">string</span> name)</span></span>&#123;</span><br><span class="line">  <span class="keyword">char</span> c = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">int</span> value = <span class="number">0</span>;</span><br><span class="line">  <span class="built_in">ostringstream</span> buf;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span>(<span class="keyword">auto</span> c : name)&#123;</span><br><span class="line">    <span class="keyword">if</span>(c &gt; <span class="string">'Q'</span>)</span><br><span class="line">      value = (c - <span class="number">1</span> - <span class="string">'A'</span>) / <span class="number">3</span> + <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">      value = (c - <span class="string">'A'</span>) / <span class="number">3</span> + <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line">    buf &lt;&lt; value;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> buf.str();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"namenum.out"</span>)</span></span>;</span><br><span class="line">  <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"namenum.in"</span>)</span></span>;</span><br><span class="line">  <span class="function">ifstream <span class="title">dict_fin</span><span class="params">(<span class="string">"dict.txt"</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">string</span> value;</span><br><span class="line">  fin &gt;&gt; value;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">string</span> name;</span><br><span class="line">  <span class="keyword">bool</span> not_found = <span class="literal">true</span>;</span><br><span class="line">  <span class="keyword">while</span>(dict_fin &gt;&gt; name)&#123;</span><br><span class="line">    <span class="built_in">string</span> number = name2number(name);</span><br><span class="line">    <span class="keyword">if</span>(number != value)</span><br><span class="line">      <span class="keyword">continue</span>;</span><br><span class="line">    fout &lt;&lt; name &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    not_found = <span class="literal">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span>(not_found)</span><br><span class="line">    fout&lt;&lt;<span class="string">"NONE"</span>&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">  dict_fin.close();</span><br><span class="line">  fin.close();</span><br><span class="line">  fout.close();</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/08/2016-08-08-NameThatNumber/" data-id="cjzoltcu400095jxg7ccaare9" data-title="USACO 1.2 Name That Number" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2016/08/08/2016-08-08-NameThatNumber/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Search/">Search</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post- 2016-08-08-Transformation" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/08/08/ 2016-08-08-Transformation/" class="article-date">
-  <time datetime="2016-08-09T04:53:31.000Z" itemprop="datePublished">2016-08-08</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/USACO/">USACO</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/08/08/ 2016-08-08-Transformation/">USACO 1.2 Transformation</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Brutal force search… and a Hexo bug that prevent syntax being highlighted!</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt; &gt; MATRIX;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">rotateMatrix90</span><span class="params">(MATRIX &amp;matrix)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">auto</span> size = matrix.size();</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; size; ++i) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = i + <span class="number">1</span>; j &lt; size; ++j) &#123;</span><br><span class="line">      swap(matrix[i][j], matrix[j][i]);</span><br><span class="line">    &#125;</span><br><span class="line">    reverse(matrix[i].begin(), matrix[i].end());</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">rotateMatrix180</span><span class="params">(MATRIX &amp;matrix)</span> </span>&#123;</span><br><span class="line">  rotateMatrix90(matrix);</span><br><span class="line">  rotateMatrix90(matrix);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">rotateMatrix270</span><span class="params">(MATRIX &amp;matrix)</span> </span>&#123;</span><br><span class="line">  rotateMatrix90(matrix);</span><br><span class="line">  rotateMatrix180(matrix);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">reflectMatrixHorizontal</span><span class="params">(MATRIX &amp;matrix)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> size = <span class="keyword">static_cast</span>&lt;<span class="keyword">int</span>&gt;(matrix.size());</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>, j = size - <span class="number">1</span>; i &lt; j; ++i, --j) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; size; ++k)</span><br><span class="line">      swap(matrix[k][i], matrix[k][j]);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">initializeMatrix</span><span class="params">(MATRIX &amp;matrix, ifstream &amp;fin)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">auto</span> demension = matrix.size();</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; demension; ++i) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; demension; ++j) &#123;</span><br><span class="line">      fin &gt;&gt; matrix[i][j];</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span> <span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="built_in">string</span> str;</span><br><span class="line">  <span class="function">ifstream <span class="title">fin</span> <span class="params">(<span class="string">"transform.in"</span>)</span></span>;</span><br><span class="line">  <span class="function">ofstream <span class="title">fout</span> <span class="params">(<span class="string">"transform.out"</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">int</span> demension;</span><br><span class="line">  fin &gt;&gt; demension;</span><br><span class="line">  MATRIX matrix(demension, vector&lt;char&gt;(demension, ' '));</span><br><span class="line">  initializeMatrix(matrix, fin);</span><br><span class="line"></span><br><span class="line">  MATRIX baseline(demension, vector&lt;char&gt;(demension, ' '));</span><br><span class="line">  initializeMatrix(baseline, fin);</span><br><span class="line"></span><br><span class="line">  MATRIX old = matrix;</span><br><span class="line"></span><br><span class="line">  rotateMatrix90(matrix);</span><br><span class="line">  <span class="keyword">if</span> (baseline == matrix) &#123;</span><br><span class="line">    fout &lt;&lt; <span class="number">1</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  matrix = old;</span><br><span class="line">  rotateMatrix180(matrix);</span><br><span class="line">  <span class="keyword">if</span> (baseline == matrix) &#123;</span><br><span class="line">    fout &lt;&lt; <span class="number">2</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  matrix = old;</span><br><span class="line">  rotateMatrix270(matrix);</span><br><span class="line">  <span class="keyword">if</span> (baseline == matrix) &#123;</span><br><span class="line">    fout &lt;&lt; <span class="number">3</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  matrix = old;</span><br><span class="line">  reflectMatrixHorizontal(matrix);</span><br><span class="line">  <span class="keyword">if</span> (baseline == matrix) &#123;</span><br><span class="line">    fout &lt;&lt; <span class="number">4</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  MATRIX reflected = matrix;</span><br><span class="line">  rotateMatrix90(matrix);</span><br><span class="line">  <span class="keyword">if</span> (matrix == baseline) &#123;</span><br><span class="line">    fout &lt;&lt; <span class="number">5</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  matrix = reflected;</span><br><span class="line">  rotateMatrix180(matrix);</span><br><span class="line">  <span class="keyword">if</span> (matrix == baseline) &#123;</span><br><span class="line">    fout &lt;&lt; <span class="number">5</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  matrix = reflected;</span><br><span class="line">  rotateMatrix270(matrix);</span><br><span class="line">  <span class="keyword">if</span> (matrix == baseline) &#123;</span><br><span class="line">    fout &lt;&lt; <span class="number">5</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  matrix = old;</span><br><span class="line">  <span class="keyword">if</span> (matrix == baseline) &#123;</span><br><span class="line">    fout &lt;&lt; <span class="number">6</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  fout &lt;&lt; <span class="number">7</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/08/ 2016-08-08-Transformation/" data-id="cjzoltctt00025jxg8asm8sdk" data-title="USACO 1.2 Transformation" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2016/08/08/ 2016-08-08-Transformation/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Search/">Search</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2016-08-08-MilkingCows" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/08/08/2016-08-08-MilkingCows/" class="article-date">
-  <time datetime="2016-08-09T04:31:31.000Z" itemprop="datePublished">2016-08-08</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/USACO/">USACO</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/08/08/2016-08-08-MilkingCows/">USACO 1.2 Milking Cows</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Simple brutal force search with intervals.</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> Interval &#123;</span><br><span class="line">  <span class="keyword">int</span> start, end;</span><br><span class="line">  Interval(<span class="keyword">int</span> start, <span class="keyword">int</span> end) : start(start), end(end) &#123;&#125;</span><br><span class="line">  <span class="keyword">bool</span> <span class="keyword">operator</span> &lt; (<span class="keyword">const</span> Interval&amp; interval) <span class="keyword">const</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> start &lt; interval.start;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span> <span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="built_in">string</span> str;</span><br><span class="line">  <span class="function">ifstream <span class="title">fin</span> <span class="params">(<span class="string">"milk2.in"</span>)</span></span>;</span><br><span class="line">  <span class="function">ofstream <span class="title">fout</span> <span class="params">(<span class="string">"milk2.out"</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">vector</span>&lt;Interval&gt; intervals;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">int</span> farmers;</span><br><span class="line">  fin &gt;&gt; farmers;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; farmers; ++i) &#123;</span><br><span class="line">    <span class="keyword">int</span> start, end;</span><br><span class="line">    fin &gt;&gt; start &gt;&gt; end;</span><br><span class="line">    intervals.emplace_back(Interval(start, end));</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">std</span>::sort(intervals.begin(), intervals.end());</span><br><span class="line"></span><br><span class="line">  <span class="keyword">int</span> maxOverlap = <span class="number">0</span>, maxGap = <span class="number">0</span>;</span><br><span class="line">  Interval it = intervals[<span class="number">0</span>];</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; intervals.size(); ++i) &#123;</span><br><span class="line">    <span class="keyword">if</span> (intervals[i].start &gt; it.end) &#123;</span><br><span class="line">      <span class="comment">// none overlap</span></span><br><span class="line">      maxOverlap = <span class="built_in">std</span>::max(maxOverlap, it.end - it.start);</span><br><span class="line">      maxGap = <span class="built_in">std</span>::max(maxGap, intervals[i].start - it.end);</span><br><span class="line">      it = intervals[i];</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      it.end = <span class="built_in">std</span>::max(it.end, intervals[i].end);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  maxOverlap = <span class="built_in">std</span>::max(maxOverlap, it.end - it.start);</span><br><span class="line"></span><br><span class="line">  fout &lt;&lt; maxOverlap &lt;&lt; <span class="string">" "</span> &lt;&lt; maxGap &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/08/2016-08-08-MilkingCows/" data-id="cjzoltcu200085jxgiesu0qvl" data-title="USACO 1.2 Milking Cows" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2016/08/08/2016-08-08-MilkingCows/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Search/">Search</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2016-08-06－USACO-BrokenNecklace" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/08/06/2016-08-06－USACO-BrokenNecklace/" class="article-date">
-  <time datetime="2016-08-07T01:25:31.000Z" itemprop="datePublished">2016-08-06</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/USACO/">USACO</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/08/06/2016-08-06－USACO-BrokenNecklace/">USACO 1.1 Broken Necklace</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Brutal force O(N^2) solution.</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span> <span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="built_in">string</span> str;</span><br><span class="line">  <span class="keyword">int</span> n, i, l, r, mx = <span class="number">0</span>;</span><br><span class="line">  <span class="function">ifstream <span class="title">fin</span> <span class="params">(<span class="string">"beads.in"</span>)</span></span>;</span><br><span class="line">  <span class="function">ofstream <span class="title">fout</span> <span class="params">(<span class="string">"beads.out"</span>)</span></span>;</span><br><span class="line">  fin &gt;&gt; n;</span><br><span class="line">  fin &gt;&gt; str;</span><br><span class="line">  str += str;</span><br><span class="line">  <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">    l = r = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">int</span> k = i + <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">char</span> flag;</span><br><span class="line">    <span class="keyword">while</span>(l &lt; n) &#123;</span><br><span class="line">      <span class="keyword">int</span> j = i;</span><br><span class="line">      <span class="keyword">while</span>(str[j] == <span class="string">'w'</span>)</span><br><span class="line">        j++;</span><br><span class="line">      flag = str[j];</span><br><span class="line">      <span class="keyword">if</span> (str[k] == flag || str[k] == <span class="string">'w'</span>)</span><br><span class="line">        k++, l++;</span><br><span class="line">      <span class="keyword">else</span> <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    k = i + n - <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">while</span>(r &lt; n) &#123;</span><br><span class="line">      <span class="keyword">int</span> j = i;</span><br><span class="line">      <span class="keyword">while</span>(str[j] == <span class="string">'w'</span>)</span><br><span class="line">        j--;</span><br><span class="line">      <span class="keyword">if</span> (str[k] == str[i + n - <span class="number">1</span>] || str[k] == <span class="string">'w'</span>)</span><br><span class="line">        k--, r++;</span><br><span class="line">      <span class="keyword">else</span> <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (l + r &gt; mx) mx = l + r;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (mx &gt; n) mx = n;</span><br><span class="line">  fout &lt;&lt; mx &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/06/2016-08-06－USACO-BrokenNecklace/" data-id="cjzoltcu100075jxgu66w7mex" data-title="USACO 1.1 Broken Necklace" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2016/08/06/2016-08-06－USACO-BrokenNecklace/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Consensus-Protocol/">Consensus Protocol</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Paper-Digest/">Paper Digest</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Paxos/">Paxos</a></li></ul>
 
     </footer>
   </div>
@@ -553,7 +242,7 @@
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/page/8/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><span class="page-number current">9</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/10/">Next &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/8/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><span class="page-number current">9</span><a class="page-number" href="/page/10/">10</a><a class="page-number" href="/page/11/">11</a><span class="space">&hellip;</span><a class="page-number" href="/page/97/">97</a><a class="extend next" rel="next" href="/page/10/">Next &raquo;</a>
   </nav>
 
 </section>

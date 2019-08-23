@@ -75,72 +75,10 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-2017-02-19-USACO-PollutantControl" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2017-09-13-Paxos" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2017/02/19/2017-02-19-USACO-PollutantControl/" class="article-date">
-  <time datetime="2017-02-19T18:34:31.000Z" itemprop="datePublished">2017-02-19</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/USACO/">USACO</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/02/19/2017-02-19-USACO-PollutantControl/">USACO 4.4 Pollutant Control</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>It is an obvious max flow min cut problem. The nasty part of this problems is:</p>
-<ul>
-<li>There might be multiple routes between same warehouses, so the graph might contain multiple edges between two vertices.</li>
-<li>The output requires to print the routes under certain constraints, instead of just asking about the min cut cost.</li>
-</ul>
-<p>The idea is:</p>
-<ul>
-<li>Find the max flow first. The cost of the max flow must be min cut.</li>
-<li>Sort all edges in cost descending order. Then iterate through the sorted edges, do two things:<ul>
-<li>Remove this edge from the graph temporarily, calculate the maximum flow value. If the diff between the calculated maximum flow value and the original max flow value (the value calculated without removing the edge from the graph) is the capacity of the edge, then this edge must be in the min cut.</li>
-<li>If an edge is in a min cut, remove this edge from the graph, and repeat, until we get all edges.</li>
-</ul>
-</li>
-</ul>
-<p>This code is a simple modification of the <a href="http://lianghan.org/2017/01/04/2017-01-04-USACO-DrainageDitches.h/">Drainage Ditches Problem Solution</a> that fits this problem, however it does not pass all test data because it does not deal with multiple edges connecting same two vertices. Will post another solution soon. </p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;climits&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;functional&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;numeric&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> N, M, Si, Ei, Ci;</span><br><span class="line"><span class="keyword">struct</span> Edge &#123;</span><br><span class="line">    <span class="keyword">int</span> to, cap, rev, index;</span><br><span class="line">    Edge(<span class="keyword">int</span> to, <span class="keyword">int</span> cap, <span class="keyword">int</span> rev, <span class="keyword">int</span> index) :</span><br><span class="line">    to(to), cap(cap), rev(rev), index(index) &#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;Edge&gt;&gt; graph;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;Edge&gt;&gt; graphCopy;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt; visited;</span><br><span class="line"><span class="built_in">vector</span>&lt;Edge*&gt; edges;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">addEdge</span><span class="params">(<span class="keyword">int</span> from, <span class="keyword">int</span> to, <span class="keyword">int</span> cap, <span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    graph[from].emplace_back(Edge(to, cap, (<span class="keyword">int</span>)graph[to].size(), index));</span><br><span class="line">    graph[to].emplace_back(Edge(from, <span class="number">0</span>, (<span class="keyword">int</span>)graph[from].size() - <span class="number">1</span>, index));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Ford–Fulkerson</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> v, <span class="keyword">int</span> t, <span class="keyword">int</span> f)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (v == t)</span><br><span class="line">    <span class="keyword">return</span> f;</span><br><span class="line">    visited[v] = <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">int</span> size = (<span class="keyword">int</span>)graph[v].size();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; size; ++i) &#123;</span><br><span class="line">        <span class="keyword">auto</span> &amp;e = graph[v][i];</span><br><span class="line">        <span class="keyword">if</span> (visited[e.to] || e.cap &lt;= <span class="number">0</span>) <span class="keyword">continue</span>;</span><br><span class="line">        <span class="keyword">int</span> d = dfs(e.to, t, <span class="built_in">std</span>::min(f, e.cap));</span><br><span class="line">        <span class="keyword">if</span> (d &lt;= <span class="number">0</span>) <span class="keyword">continue</span>;</span><br><span class="line">        e.cap -= d;</span><br><span class="line">        graph[e.to][e.rev].cap += d;</span><br><span class="line">        <span class="keyword">return</span> d;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">maxFlow</span><span class="params">(<span class="keyword">int</span> s, <span class="keyword">int</span> t)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> flow = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">        <span class="built_in">std</span>::fill(visited.begin(), visited.end(), <span class="literal">false</span>);</span><br><span class="line">        <span class="keyword">int</span> f = dfs(s, t, INT_MAX);</span><br><span class="line">        <span class="keyword">if</span> (f == <span class="number">0</span>) <span class="keyword">return</span> flow;</span><br><span class="line">        flow += f;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"milk6.in"</span>)</span></span>;</span><br><span class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"milk6.out"</span>)</span></span>;</span><br><span class="line">    </span><br><span class="line">    fin &gt;&gt; N <span class="comment">/* warehouses - vertices */</span> &gt;&gt; M <span class="comment">/* trucks - edges */</span>;</span><br><span class="line">    graph = <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;Edge&gt;&gt;(N + <span class="number">1</span>, <span class="built_in">vector</span>&lt;Edge&gt;());</span><br><span class="line">    </span><br><span class="line">    visited = <span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt;(N + <span class="number">1</span>, <span class="literal">false</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; M; ++i) &#123;</span><br><span class="line">        fin &gt;&gt; Si &gt;&gt; Ei &gt;&gt; Ci;</span><br><span class="line">        addEdge(Si, Ei, Ci, i);</span><br><span class="line">        <span class="comment">//cout &lt;&lt; Si &lt;&lt; " " &lt;&lt; Ei &lt;&lt; " " &lt;&lt; Ci &lt;&lt; " " &lt;&lt; i &lt;&lt; endl;</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;edge : graph[i]) &#123;</span><br><span class="line">            <span class="keyword">if</span> (edge.cap == <span class="number">0</span>) <span class="keyword">continue</span>;</span><br><span class="line">            edges.emplace_back(&amp;edge);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    sort(edges.begin(), edges.end(), [] (Edge *e1, <span class="keyword">const</span> Edge *e2) &#123;</span><br><span class="line">        <span class="keyword">return</span> e1-&gt;cap &gt; e2-&gt;cap;</span><br><span class="line">    &#125;);</span><br><span class="line">    </span><br><span class="line">    graphCopy = graph;</span><br><span class="line">    <span class="keyword">int</span> ans = maxFlow(<span class="number">1</span>, N);</span><br><span class="line">    graph = graphCopy;</span><br><span class="line">    <span class="keyword">int</span> total = ans;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; ret;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; edges.size(); ++i) &#123;</span><br><span class="line">        <span class="comment">//cout &lt;&lt; "cap : " &lt;&lt; edges[i]-&gt;cap &lt;&lt; "; index : " &lt;&lt; edges[i]-&gt;index &lt;&lt; endl;</span></span><br><span class="line">        graphCopy = graph;</span><br><span class="line">        <span class="keyword">int</span> cap = edges[i]-&gt;cap;</span><br><span class="line">        edges[i]-&gt;cap -= cap;</span><br><span class="line">        <span class="keyword">int</span> flow = maxFlow(<span class="number">1</span>, N);</span><br><span class="line">        <span class="keyword">if</span> (ans - flow == cap) &#123;</span><br><span class="line">            ret.push_back(edges[i]-&gt;index);</span><br><span class="line">            graph = graphCopy;</span><br><span class="line">            ans = flow;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            graph = graphCopy;</span><br><span class="line">            edges[i]-&gt;cap += cap;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    fout &lt;&lt; total - ans &lt;&lt; <span class="string">" "</span> &lt;&lt; ret.size() &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> val : ret) &#123;</span><br><span class="line">        fout &lt;&lt; val + <span class="number">1</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/02/19/2017-02-19-USACO-PollutantControl/" data-id="cjzoltcvt00265jxg9eb0au3u" data-title="USACO 4.4 Pollutant Control" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2017/02/19/2017-02-19-USACO-PollutantControl/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Ford-Fulkerson/">Ford-Fulkerson</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Graph-Theory/">Graph Theory</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Network-Flow/">Network Flow</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2017-02-11-DynamoPaper" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/02/11/2017-02-11-DynamoPaper/" class="article-date">
-  <time datetime="2017-02-12T03:36:31.000Z" itemprop="datePublished">2017-02-11</time>
+    <a href="/2017/09/13/2017-09-13-Paxos/" class="article-date">
+  <time datetime="2017-09-14T05:03:31.000Z" itemprop="datePublished">2017-09-13</time>
 </a>
     
   <div class="article-category">
@@ -155,7 +93,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/02/11/2017-02-11-DynamoPaper/">Dynamo, Amazon’s Highly Available Key-value Store</a>
+      <a class="article-title" href="/2017/09/13/2017-09-13-Paxos/">Paxos Retrospective</a>
     </h1>
   
 
@@ -163,532 +101,40 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Paper digest - <a href="http://s3.amazonaws.com/AllThingsDistributed/sosp/amazon-dynamo-sosp2007.pdf" target="_blank" rel="noopener">Dynamo: Amazon’s Highly Available Key-value Store </a></p>
-<h1 id="Motivation"><a href="#Motivation" class="headerlink" title="Motivation"></a>Motivation</h1><ul>
-<li>A highly available key-value storage system that manages state of Amazon services.</li>
-<li>Reliability at massive scale, provide an “always-on” experience.</li>
-</ul>
-<h1 id="Requirements"><a href="#Requirements" class="headerlink" title="Requirements"></a>Requirements</h1><ul>
-<li><p>Query Model: simple read and write operations to objects (relatively small, usually less than 1MB) that is uniquely identified by a key. </p>
-</li>
-<li><p>ACID (Atomicity, Consistency, Isolation, Durability) : weak consistency, no isolation, only single key update.</p>
-</li>
-<li><p>Efficiency: </p>
+        <p>Recently I looked through Lamport’s Paxos papers again and in retrospective, I feel Paxos as an algorithm is very elegant and easy to understand. In this post I’ll try to summary the core concepts and key steps of the single decree Paxos protocol. In future posts, I’ll write more about multi-paxos, and compare multi-paxos with similar protocols such as ZAB and Raft.</p>
+<h1 id="Terminology"><a href="#Terminology" class="headerlink" title="Terminology"></a>Terminology</h1><p>This post will use the usual terminologies for the protocol entities from the Paxos Made Simple paper, such as Proposer, Acceptor, Learner, Leader, etc.</p>
+<h1 id="The-Problem"><a href="#The-Problem" class="headerlink" title="The Problem"></a>The Problem</h1><p>Paxos is used to solve consensus problem. A consensus is about reaching agreement on a single value, among a set of values. Each value in the set is proposed by a proposer.</p>
+<h1 id="Assumptions-Use-Case-Constraints"><a href="#Assumptions-Use-Case-Constraints" class="headerlink" title="Assumptions / Use Case Constraints"></a>Assumptions / Use Case Constraints</h1><p>Paxos can solve consensus problem under a set of constraints, and these constraints happen to reflect real world use case constraints for distributed systems, thus it’s very practical and applicable. In particular:</p>
 <ul>
-<li>Function on a commodity hardware infrastructure.</li>
-<li>Strict latency requirements and SLA.</li>
-<li>Configurable to achieve customizable latency and throughput requirements.</li>
+<li>Fail-Recovery: each participant can fail. Failed participants can recover.</li>
+<li>Asynchronous: participants communicate with each other through async messages.</li>
+<li>None Byzantine Faults: These messages can be delayed, or lost, but will never be forged.</li>
 </ul>
-</li>
-<li><p>Operation and Security:</p>
+<p>It’s also worth noting that to reach consensus, a set of additional protocol level constraints have to be exposed on participants. One example is each participant can’t just insist on the value from its own, because if everyone does that, it’s possible no consensus could ever be made. In other words, participants are more interested on reach consensus on something, but they are not interested on what exactly the value of that agreement is.</p>
+<h1 id="Safety-and-Liveness"><a href="#Safety-and-Liveness" class="headerlink" title="Safety and Liveness"></a>Safety and Liveness</h1><p>Because of FLP impossibility, it’s not possible to reach consensus with the constraints Paxos protocol is exposed to, yet maintain both safety and liveness properties. Paxos chooses safety over liveness.</p>
+<p>The safety properties Paxos guarantees:</p>
 <ul>
-<li>No authentication and authorization (operating in non-hostile environment). </li>
-<li>Scale up (each service uses its distinct instance of Dynamo).</li>
+<li>Only a value that has been proposed may be chosen,</li>
+<li>Only a single value is chosen, and</li>
+<li>A process never learns that a value has been chosen unless it actually has been.</li>
 </ul>
-</li>
-<li><p>SLA:</p>
-<ul>
-<li>Traditional SLA metrics (average, median and expected variance) are not good enough to build a system where all customers have a good experience.</li>
-<li>SLAs are expressed and measured at the 99.9th percentile of the distribution. Choose 99.9 for cost effective.</li>
-</ul>
-</li>
-</ul>
-<h1 id="System-Design"><a href="#System-Design" class="headerlink" title="System Design"></a>System Design</h1><ul>
-<li>Favor availability over consistency by using optimistic replication techniques.</li>
-<li>Optimistic replication introduces conflict. Conflict resolution introduces two problems: when to resolve them and who resolves them.<ul>
-<li>When to resolve:<ul>
-<li>Write time: writes may be rejected if the data store cannot reach all the replicas at a given time. This leads to poor user experience.</li>
-<li>Read time: Dynamo targets the design space of an “always write-able” data store. So conflicts are resolved at read time.</li>
-</ul>
-</li>
-<li>Who to perform resolve:<ul>
-<li>Configurable.</li>
-<li>System level resolution: last write wins.</li>
-<li>Application level resolution: interactive guided merge conflicts, etc.</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>Other design considerations: Incremental scalability, Symmetry, Decentralization, Heterogeneity.</li>
-</ul>
-<h1 id="System-Architecture"><a href="#System-Architecture" class="headerlink" title="System Architecture"></a>System Architecture</h1><ul>
-<li>Partitioning: Consistent Hashing.</li>
-<li>Replication: Replicated write protocol with configurable NWR parameters.</li>
-<li>Conflict Resolution: Vector clock.</li>
-<li>Temporary failures: Sloppy Quorum and hinted handoff.</li>
-<li>Recovering from permanent failures: Merkle trees.</li>
-<li>Membership and failure detection: Gossip-based membership protocol and failure detection. </li>
-</ul>
-<h1 id="To-be-continued"><a href="#To-be-continued" class="headerlink" title="To be continued."></a>To be continued.</h1>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/02/11/2017-02-11-DynamoPaper/" data-id="cjzoltcvs00255jxgv7lckete" data-title="Dynamo, Amazon’s Highly Available Key-value Store" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2017/02/11/2017-02-11-DynamoPaper/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Distributed-System/">Distributed System</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Paper-Digest/">Paper Digest</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2017-02-03-USACO-ShuttlePuzzle" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/02/03/2017-02-03-USACO-ShuttlePuzzle/" class="article-date">
-  <time datetime="2017-02-03T19:45:31.000Z" itemprop="datePublished">2017-02-03</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/USACO/">USACO</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/02/03/2017-02-03-USACO-ShuttlePuzzle/">USACO 4.4 Shuttle Puzzle</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>BFS with pruning with key observation that W can only moves to right, and B can only moves to left to satisfy the constraints of smallest lexicographic order. Also the judge has tight memory bounds, so decide state duplication needs to use hashing (i.e. if using a set<string> then memory will grow out of bounds for “large” test data set.).</string></p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;set&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;queue&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;functional&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> State &#123;</span><br><span class="line">    <span class="keyword">int</span> op; <span class="comment">// index of the hole where next operation is going to happen.</span></span><br><span class="line">    <span class="keyword">struct</span> State *prev;</span><br><span class="line">    <span class="built_in">string</span> state;</span><br><span class="line">    <span class="keyword">int</span> empty; <span class="comment">// index of empty hole.</span></span><br><span class="line">    State(<span class="keyword">int</span> op, <span class="built_in">string</span> state, <span class="keyword">int</span> empty, State *prev) :</span><br><span class="line">    op(op), state(state), empty(empty), prev(prev) &#123;&#125;</span><br><span class="line">&#125; State;</span><br><span class="line"></span><br><span class="line"><span class="built_in">queue</span>&lt;State*&gt; q;</span><br><span class="line"><span class="built_in">vector</span>&lt;State*&gt; sp;</span><br><span class="line"><span class="built_in">string</span> target;</span><br><span class="line"><span class="built_in">string</span> start;</span><br><span class="line">State *ss;</span><br><span class="line"><span class="keyword">int</span> N;</span><br><span class="line"><span class="built_in">set</span>&lt;<span class="keyword">int</span>&gt; visited;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; solution;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">setup</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    start = <span class="built_in">string</span>(<span class="number">2</span> * N + <span class="number">1</span>, <span class="string">' '</span>);</span><br><span class="line">    target = <span class="built_in">string</span>(<span class="number">2</span> * N + <span class="number">1</span>, <span class="string">' '</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">        start[i] = <span class="string">'W'</span>;</span><br><span class="line">        target[i] = <span class="string">'B'</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = N + <span class="number">1</span>; i &lt; <span class="number">2</span> * N + <span class="number">1</span>; ++i) &#123;</span><br><span class="line">        start[i] = <span class="string">'B'</span>;</span><br><span class="line">        target[i] = <span class="string">'W'</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    ss = <span class="keyword">new</span> State(<span class="number">0</span>, start, N, <span class="literal">nullptr</span>);</span><br><span class="line">    q.push(ss);</span><br><span class="line">    sp.push_back(ss);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">bfs</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (!q.empty()) &#123;</span><br><span class="line">        <span class="keyword">auto</span> s = q.front(); q.pop();</span><br><span class="line">        <span class="keyword">if</span> (s-&gt;state == target) &#123;</span><br><span class="line">            <span class="built_in">cout</span> &lt;&lt; <span class="string">"target state reached."</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">            <span class="keyword">while</span> (s) &#123;</span><br><span class="line">                solution.push_back(s-&gt;op);</span><br><span class="line">                s = s-&gt;prev;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">int</span> empty = s-&gt;empty;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// W_ : W move right</span></span><br><span class="line">        <span class="keyword">if</span> (empty &gt; <span class="number">0</span> &amp;&amp; s-&gt;state[empty - <span class="number">1</span>] == <span class="string">'W'</span>) &#123;</span><br><span class="line">            <span class="keyword">auto</span> next = <span class="keyword">new</span> State(*s);</span><br><span class="line">            sp.push_back(next);</span><br><span class="line">            next-&gt;state[empty] = <span class="string">'W'</span>;</span><br><span class="line">            next-&gt;state[empty - <span class="number">1</span>] = <span class="string">' '</span>;</span><br><span class="line">            next-&gt;op = empty - <span class="number">1</span>;</span><br><span class="line">            next-&gt;prev = s;</span><br><span class="line">            next-&gt;empty--;</span><br><span class="line">            <span class="keyword">auto</span> h = <span class="built_in">std</span>::hash&lt;<span class="built_in">string</span>&gt;&#123;&#125;(next-&gt;state);</span><br><span class="line">            <span class="keyword">if</span> (!visited.count(h)) &#123;</span><br><span class="line">                visited.insert(h);</span><br><span class="line">                q.push(next);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// _B : B move left</span></span><br><span class="line">         <span class="keyword">if</span> (empty &lt; <span class="number">2</span> * N &amp;&amp; s-&gt;state[empty + <span class="number">1</span>] == <span class="string">'B'</span>) &#123;</span><br><span class="line">            <span class="keyword">auto</span> next = <span class="keyword">new</span> State(*s);</span><br><span class="line">            sp.push_back(next);</span><br><span class="line">            next-&gt;state[empty] = <span class="string">'B'</span>;</span><br><span class="line">            next-&gt;state[empty + <span class="number">1</span>] = <span class="string">' '</span>;</span><br><span class="line">            next-&gt;op = empty + <span class="number">1</span>;</span><br><span class="line">            next-&gt;prev = s;</span><br><span class="line">            next-&gt;empty++;</span><br><span class="line">            <span class="keyword">auto</span> h = <span class="built_in">std</span>::hash&lt;<span class="built_in">string</span>&gt;&#123;&#125;(next-&gt;state);</span><br><span class="line">            <span class="keyword">if</span> (!visited.count(h)) &#123;</span><br><span class="line">                visited.insert(h);</span><br><span class="line">                q.push(next);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// WB_ : W jump right</span></span><br><span class="line">        <span class="keyword">if</span> (empty &gt; <span class="number">1</span> &amp;&amp; s-&gt;state[empty - <span class="number">2</span>] == <span class="string">'W'</span> &amp;&amp;</span><br><span class="line">            s-&gt;state[empty - <span class="number">1</span>] != <span class="string">'W'</span>) &#123;</span><br><span class="line">            <span class="keyword">auto</span> next = <span class="keyword">new</span> State(*s);</span><br><span class="line">            sp.push_back(next);</span><br><span class="line">            next-&gt;state[empty] = <span class="string">'W'</span>;</span><br><span class="line">            next-&gt;state[empty - <span class="number">2</span>] = <span class="string">' '</span>;</span><br><span class="line">            next-&gt;op = empty - <span class="number">2</span>;</span><br><span class="line">            next-&gt;prev = s;</span><br><span class="line">            next-&gt;empty -= <span class="number">2</span>;</span><br><span class="line">            <span class="keyword">auto</span> h = <span class="built_in">std</span>::hash&lt;<span class="built_in">string</span>&gt;&#123;&#125;(next-&gt;state);</span><br><span class="line">            <span class="keyword">if</span> (!visited.count(h)) &#123;</span><br><span class="line">                visited.insert(h);</span><br><span class="line">                q.push(next);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// _WB : B jump left</span></span><br><span class="line">        <span class="keyword">if</span> (empty &lt; <span class="number">2</span> * N - <span class="number">1</span> &amp;&amp; s-&gt;state[empty + <span class="number">2</span>] == <span class="string">'B'</span> &amp;&amp;</span><br><span class="line">            s-&gt;state[empty + <span class="number">1</span>] == <span class="string">'W'</span>) &#123;</span><br><span class="line">            <span class="keyword">auto</span> next = <span class="keyword">new</span> State(*s);</span><br><span class="line">            sp.push_back(next);</span><br><span class="line">            next-&gt;state[empty] = <span class="string">'B'</span>;</span><br><span class="line">            next-&gt;state[empty + <span class="number">2</span>] = <span class="string">' '</span>;</span><br><span class="line">            next-&gt;op = empty + <span class="number">2</span>;</span><br><span class="line">            next-&gt;prev = s;</span><br><span class="line">            next-&gt;empty += <span class="number">2</span>;</span><br><span class="line">            <span class="keyword">auto</span> h = <span class="built_in">std</span>::hash&lt;<span class="built_in">string</span>&gt;&#123;&#125;(next-&gt;state);</span><br><span class="line">            <span class="keyword">if</span> (!visited.count(h)) &#123;</span><br><span class="line">                visited.insert(h);</span><br><span class="line">                q.push(next);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"shuttle.in"</span>)</span></span>;</span><br><span class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"shuttle.out"</span>)</span></span>;</span><br><span class="line">    fin &gt;&gt; N;</span><br><span class="line">    setup();</span><br><span class="line">    bfs();</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">int</span> cnt = <span class="number">0</span>, size = (<span class="keyword">int</span>)solution.size() - <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = size - <span class="number">1</span>; i &gt;= <span class="number">0</span>; --i) &#123;</span><br><span class="line">        ++cnt;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; solution[i] + <span class="number">1</span>;</span><br><span class="line">        fout &lt;&lt; solution[i] + <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (cnt == <span class="number">20</span> &amp;&amp; i) &#123;</span><br><span class="line">            <span class="built_in">cout</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">            fout &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">            cnt = <span class="number">0</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (i) &#123;</span><br><span class="line">            <span class="built_in">cout</span> &lt;&lt; <span class="string">" "</span>;</span><br><span class="line">            fout &lt;&lt; <span class="string">" "</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> ptr : sp) &#123;</span><br><span class="line">        <span class="keyword">if</span> (ptr != <span class="literal">nullptr</span>) &#123;</span><br><span class="line">            <span class="keyword">delete</span> ptr; ptr = <span class="literal">nullptr</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    fout &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/02/03/2017-02-03-USACO-ShuttlePuzzle/" data-id="cjzoltcvr00245jxghqyp0z15" data-title="USACO 4.4 Shuttle Puzzle" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2017/02/03/2017-02-03-USACO-ShuttlePuzzle/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/BFS/">BFS</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2017-02-01-ByzantineFaultTolerance" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/02/01/2017-02-01-ByzantineFaultTolerance/" class="article-date">
-  <time datetime="2017-02-01T18:32:31.000Z" itemprop="datePublished">2017-02-01</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Distributed-System/">Distributed System</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/02/01/2017-02-01-ByzantineFaultTolerance/">Why we need n &gt;= 3f + 1 in Byzantine Fault Tolerance</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>In distributed systems where messages are asynchronous and failures can be Byzantine, we have to use at least n = 3f + 1 replicas in total to tolerate f faulty replicas. But why?</p>
-<p>Consider this scenario: a client sends the same command to each of n servers and then waits for servers to execute the command and send back the result. If we have f byzantine servers, then up to f messages could not be trusted, or up to f servers could not responding. So the client must be able to function with n - f responses. In addition, as the messages are asynchronous, these messages could be delayed for an indefinite amount of time. So if there are f messages not received by client, then it could be also be that these f messages are not from faulty servers, but instead caused by networking partition or slow responding non-faulty servers. In this case, where the f messages are from slow but non-faulty servers, we will have n - f messages remaining and out of these n - f messages, there could be at most f faulty messages again from byzantine servers, so the worst case we will have n - 2f correct message. For the system to function properly, the correct messages must out number faulty messages for client to identify which is which, which implies we should have n - 2f &gt; f, so n &gt; 3f where f is the number of byzantine servers.</p>
+<p>Paxos does not guarantee liveness, in other words it does not guarantee making progress, or terminate.<br>For making progress, it’s possible to have live lock (which can be fixed easily through backoffs and randomization).<br>For termination, it could never terminate if not enough number of participants (the quorum) are live.</p>
+<h1 id="Protocol-Constraints"><a href="#Protocol-Constraints" class="headerlink" title="Protocol Constraints"></a>Protocol Constraints</h1><p>I feel it’s easier to understand the protocol by understanding the protocol constraints exposed to participants. There are two key constraints, one on the proposer, one on the acceptor.</p>
+<p>Proposer: a proposer must be willing to change the value it proposes, by using the value it acquires from the prepare phase. A proposer can propose any value though, if in prepare phase the queries on a quorum of acceptors returns null value (meaning those acceptors haven’t accepted anything.).</p>
+<p>Acceptor: an acceptor must be willing to reject the proposals it receives, unless the proposal it receives has a proposal number that’s equal or greater than the maximum of all proposal numbers that the acceptor ever see during the prepare phase. In other words, acceptor has to make a promise upon receiving a proposal with a bigger proposal number than it ever sees, and the promise is to not accept any future proposals with smaller proposal number.</p>
+<h1 id="Phases"><a href="#Phases" class="headerlink" title="Phases"></a>Phases</h1><p>Paxos is a two phased protocol. There are prepare phase, and accept phase. Prepare phase is used for proposer to get an updated view of the quorum and decide what to propose (e.g. update the proposal value from the response of the acceptor in prepare request if the proposal was rejected due to a smaller proposer number). Accept phase is to finish the protocol by having acceptors record the consensus and responds to proposer.</p>
+<p>To Be Continued…</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/02/01/2017-02-01-ByzantineFaultTolerance/" data-id="cjzoltcvq00235jxg1wp7dvti" data-title="Why we need n &gt;= 3f + 1 in Byzantine Fault Tolerance" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2017/09/13/2017-09-13-Paxos/" data-id="cjzomd02r003fgaxgqlaepw4u" data-title="Paxos Retrospective" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2017/02/01/2017-02-01-ByzantineFaultTolerance/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/BFT/">BFT</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2017-01-31-TopCoder-SRM-707-DivII" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/01/31/2017-01-31-TopCoder-SRM-707-DivII/" class="article-date">
-  <time datetime="2017-01-31T18:33:31.000Z" itemprop="datePublished">2017-01-31</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/TopCoder/">TopCoder</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/31/2017-01-31-TopCoder-SRM-707-DivII/">SRM 707 DIV 2 500 Steps Construct</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Problem with interesting constraints… hopefully figured this out during SRM this time. </p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> StepsConstruct &#123;</span><br><span class="line">    <span class="keyword">int</span> rows;</span><br><span class="line">    <span class="keyword">int</span> cols;</span><br><span class="line">    <span class="function"><span class="keyword">char</span> <span class="title">getD</span><span class="params">(<span class="keyword">char</span> c)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (c == <span class="string">'R'</span>) <span class="keyword">return</span> <span class="string">'L'</span>;</span><br><span class="line">        <span class="keyword">if</span> (c == <span class="string">'L'</span>) <span class="keyword">return</span> <span class="string">'R'</span>;</span><br><span class="line">        <span class="keyword">if</span> (c == <span class="string">'U'</span>) <span class="keyword">return</span> <span class="string">'D'</span>;</span><br><span class="line">        <span class="keyword">if</span> (c == <span class="string">'D'</span>) <span class="keyword">return</span> <span class="string">'U'</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">'R'</span>;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="built_in">string</span> <span class="title">construct</span><span class="params">(<span class="built_in">vector</span> &lt;<span class="built_in">string</span>&gt; board, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (board[<span class="number">0</span>][<span class="number">0</span>] == <span class="string">'#'</span>) <span class="keyword">return</span> <span class="string">""</span>;</span><br><span class="line">        rows = (<span class="keyword">int</span>)board.size(); cols = (<span class="keyword">int</span>)board[<span class="number">0</span>].size();</span><br><span class="line">        <span class="built_in">set</span>&lt;pair&lt;<span class="keyword">int</span>,<span class="keyword">int</span>&gt;&gt; visited;</span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; paths;</span><br><span class="line">        <span class="built_in">queue</span>&lt;pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt;&gt; q;</span><br><span class="line">        <span class="built_in">queue</span>&lt;<span class="built_in">string</span>&gt; qp;</span><br><span class="line">        q.push(make_pair(<span class="number">0</span>, <span class="number">0</span>));</span><br><span class="line">        qp.push(<span class="string">""</span>);</span><br><span class="line">        <span class="keyword">while</span> (!q.empty()) &#123;</span><br><span class="line">            <span class="keyword">auto</span> cur = q.front();</span><br><span class="line">            q.pop();</span><br><span class="line">            <span class="keyword">int</span> x = cur.first, y = cur.second;</span><br><span class="line">            <span class="built_in">string</span> curp = qp.front();</span><br><span class="line">            qp.pop();</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">int</span> dx[] = &#123;<span class="number">1</span>, <span class="number">-1</span>, <span class="number">0</span>, <span class="number">0</span>&#125;;</span><br><span class="line">            <span class="keyword">int</span> dy[] = &#123;<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">-1</span>&#125;;</span><br><span class="line">            <span class="keyword">char</span> steps[] = &#123;<span class="string">'D'</span>, <span class="string">'U'</span>, <span class="string">'R'</span>, <span class="string">'L'</span>&#125;;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span>; ++i) &#123;</span><br><span class="line">                pair&lt;<span class="keyword">int</span>,<span class="keyword">int</span>&gt; cur = &#123;x + dx[i], y + dy[i]&#125;;</span><br><span class="line">                <span class="keyword">if</span>(cur.first &lt; <span class="number">0</span> || cur.second &lt; <span class="number">0</span> || cur.first &gt;= rows || cur.second &gt;= cols)</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                <span class="keyword">if</span>(visited.count(cur))</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                <span class="keyword">if</span> (board[cur.first][cur.second] == <span class="string">'#'</span>) &#123;</span><br><span class="line">                    visited.insert(cur);</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                </span><br><span class="line">                <span class="built_in">string</span> p = curp + steps[i];</span><br><span class="line">                <span class="keyword">if</span> (cur.first == rows - <span class="number">1</span> &amp;&amp; cur.second == cols - <span class="number">1</span>) &#123;</span><br><span class="line">                    paths.push_back(p);</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                visited.insert(cur);</span><br><span class="line">                qp.push(p);</span><br><span class="line">                q.push(cur);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">int</span> minsteps = INT_MAX;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> path : paths) &#123;</span><br><span class="line">            minsteps = <span class="built_in">std</span>::min((<span class="keyword">int</span>)path.size(), minsteps);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (minsteps &gt; k) <span class="keyword">return</span> <span class="string">""</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="built_in">string</span> c;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> path : paths) &#123;</span><br><span class="line">            <span class="keyword">int</span> steps = (<span class="keyword">int</span>)path.size();</span><br><span class="line">            <span class="keyword">if</span> (steps &lt;= k &amp;&amp; ((k - steps) % <span class="number">2</span> == <span class="number">0</span>)) &#123;</span><br><span class="line">                <span class="keyword">int</span> d = k - steps;</span><br><span class="line">                <span class="built_in">string</span> prefix = <span class="string">""</span>;</span><br><span class="line">                <span class="keyword">char</span> c = path[<span class="number">0</span>];</span><br><span class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; d; ++i) &#123;</span><br><span class="line">                    prefix += c;</span><br><span class="line">                    c = getD(c);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">return</span> prefix + path;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">""</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/01/31/2017-01-31-TopCoder-SRM-707-DivII/" data-id="cjzoltcvq00225jxgl9rqz2nw" data-title="SRM 707 DIV 2 500 Steps Construct" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2017/01/31/2017-01-31-TopCoder-SRM-707-DivII/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2017/09/13/2017-09-13-Paxos/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/BFS/">BFS</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2017-01-27-USACO-LetterGame" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/01/27/2017-01-27-USACO-LetterGame/" class="article-date">
-  <time datetime="2017-01-27T21:37:31.000Z" itemprop="datePublished">2017-01-27</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/USACO/">USACO</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/27/2017-01-27-USACO-LetterGame/">USACO 4.3 Letter Game</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>The basic idea is to use brutal force approach by enumerating all possible words generated from input word and choose the right ones. There are a couple of optimizations that we can do:</p>
-<ul>
-<li>There are at most two strings in each anwser, because the length constraints (3 is the minimum length, 7 is the maximum length, so at most two strings.).</li>
-<li>Similarly, since each word in dictionary is at least 3 characters long, we can skip sub strings with length 1 or 2 during enumeration.</li>
-<li>During enumeration, whenever we find the first substring is greater lexicographically than the second, we can abort because the same string pair can occur later (which is what we want, the lexicographically smaller ones). There are some edge cases to deal with here though, such as the second string is empty, in which case the first string would be the full length of the source string.</li>
-<li>The STL next_enumeration comes really handy.</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;map&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;set&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">map</span>&lt;<span class="built_in">string</span>,<span class="keyword">int</span>&gt; wordval;</span><br><span class="line"><span class="built_in">set</span>&lt;<span class="built_in">string</span>&gt; used;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; ans;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; value = &#123;<span class="number">2</span>,<span class="number">5</span>,<span class="number">4</span>,<span class="number">4</span>,<span class="number">1</span>,<span class="number">6</span>,<span class="number">5</span>,<span class="number">5</span>,<span class="number">1</span>,<span class="number">7</span>,<span class="number">6</span>,<span class="number">3</span>,<span class="number">5</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">5</span>,<span class="number">7</span>,<span class="number">2</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">4</span>,<span class="number">6</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">5</span>,<span class="number">7</span>&#125;;</span><br><span class="line"><span class="keyword">int</span> ans1 = <span class="number">0</span>;</span><br><span class="line"><span class="built_in">string</span> word;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">compute</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    sort(word.begin(),word.end());</span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">3</span>; i &lt;= (<span class="keyword">int</span>)word.size(); ++i) &#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> j = i; j &lt;= (<span class="keyword">int</span>)word.size(); ++j) &#123;</span><br><span class="line">                <span class="built_in">string</span> w1, w2, w;</span><br><span class="line">                w1 = word.substr(<span class="number">0</span>,i);</span><br><span class="line">                w2 = word.substr(i,j-i);</span><br><span class="line">                <span class="keyword">if</span> (w1 &gt; w2 &amp;&amp; w2 != <span class="string">""</span>) <span class="keyword">continue</span>;</span><br><span class="line">                <span class="keyword">if</span>(!wordval[w1] || (!wordval[w2] &amp;&amp; w2 != <span class="string">""</span>)) <span class="keyword">continue</span>;</span><br><span class="line">                </span><br><span class="line">                w = w1;</span><br><span class="line">                <span class="keyword">if</span>(!w2.empty())  &#123;</span><br><span class="line">                    w += <span class="string">" "</span>; w += w2;</span><br><span class="line">                &#125;</span><br><span class="line">                </span><br><span class="line">                <span class="keyword">if</span>(ans1 == wordval[w1] + wordval[w2] &amp;&amp; !used.count(w)) &#123;</span><br><span class="line">                    used.insert(w);</span><br><span class="line">                    ans.push_back(w);</span><br><span class="line">                &#125; <span class="keyword">else</span> <span class="keyword">if</span>(ans1 &lt; wordval[w1] + wordval[w2]) &#123;</span><br><span class="line">                    ans1 = wordval[w1] + wordval[w2];</span><br><span class="line">                    used.clear();</span><br><span class="line">                    ans.clear();</span><br><span class="line">                    used.insert(w);</span><br><span class="line">                    ans.push_back(w);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">while</span> (next_permutation(word.begin(),word.end()));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">ifstream <span class="title">fdin</span><span class="params">(<span class="string">"lgame.dict"</span>)</span></span>;</span><br><span class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"lgame.in"</span>)</span></span>;</span><br><span class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"lgame.out"</span>)</span></span>;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">string</span> str;</span><br><span class="line">    wordval[<span class="string">""</span>] = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span>(fdin &gt;&gt; str &amp;&amp; str != <span class="string">"."</span>) &#123;</span><br><span class="line">        <span class="keyword">int</span> val = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i&lt; (<span class="keyword">int</span>)str.size(); ++i) &#123;</span><br><span class="line">            val += value[str[i] - <span class="string">'a'</span>];</span><br><span class="line">        &#125;</span><br><span class="line">        wordval[str] = val;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    fin &gt;&gt; word;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; word &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    compute();</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; ans1 &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    fout &lt;&lt; ans1 &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; (<span class="keyword">int</span>)ans.size(); ++i) &#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; ans[i] &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">        fout &lt;&lt; ans[i] &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/01/27/2017-01-27-USACO-LetterGame/" data-id="cjzoltcvo00215jxg4qb0xzc0" data-title="USACO 4.3 Letter Game" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2017/01/27/2017-01-27-USACO-LetterGame/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Enumeration/">Enumeration</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Permutation/">Permutation</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/String/">String</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2017-01-21-Google-File-System" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/01/21/2017-01-21-Google-File-System/" class="article-date">
-  <time datetime="2017-01-22T00:14:31.000Z" itemprop="datePublished">2017-01-21</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Distributed-System/">Distributed System</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/21/2017-01-21-Google-File-System/">The Google File System</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Paper digest - <a href="https://static.googleusercontent.com/media/research.google.com/en//archive/gfs-sosp2003.pdf" target="_blank" rel="noopener">The Google File System</a></p>
-<h1 id="Motivation"><a href="#Motivation" class="headerlink" title="Motivation"></a>Motivation</h1><ul>
-<li>Scalable distributed file system for large distributed data-intensive applications driven by observations of application workloads and technological environment, both current and anticipated:<ul>
-<li>Component failures are the norm rather than the exception.</li>
-<li>Files are huge by traditional standards. Multi-GB files are common.</li>
-<li>Workloads: large streaming reads and small random reads; many large, sequential writes.</li>
-</ul>
-</li>
-</ul>
-<h1 id="Goals"><a href="#Goals" class="headerlink" title="Goals"></a>Goals</h1><ul>
-<li><p>Provides fault tolerance while running on inexpensive commodity hardware.</p>
-</li>
-<li><p>Delivers high aggregate performance to a large number of clients.</p>
-</li>
-<li><p>Must efficiently implement well-defined semantics for multiple clients that concurrently append to the same file. Atomicity with minimal synchronization overhead is essential. </p>
-</li>
-<li><p>Prefer bandwidth over latency (batch processing, not real time.).</p>
-</li>
-<li><p>Consistency Model : co-designing the applications and the file system for flexibility (in other words, push hard problem to other places.).</p>
-</li>
-</ul>
-<h1 id="System-Design"><a href="#System-Design" class="headerlink" title="System Design"></a>System Design</h1><ul>
-<li><p>Master-Slave architecture.</p>
-<ul>
-<li>GFS Master:<ul>
-<li>Management data storage: metadata, namespace, access control, mappings from files to chunks, current location of chunk.</li>
-<li>System wide activities: chunk lease management, garbage collect of orphaned chunks, chunk migration.</li>
-<li>System is designed to minimize master’s involvement since master is SPOF.</li>
-</ul>
-</li>
-<li>GFS Slave (aka chunk server):<ul>
-<li>Chunk with 64 bit globally uniquely chunk handle. Stored on linux FS. Replicated (3 copies by default.).</li>
-<li>Does not cache files (rely on Linux’s buffer cache.).</li>
-</ul>
-</li>
-<li>GFS Client:<ul>
-<li>Interact with master for metadata operations.</li>
-<li>Actual data IO does not go through master; go through between client and chunk server.</li>
-<li>Does not cache files (infeasible to cache - too large; hard problem to solve for cache coherence, so don’t solve it.).</li>
-<li>Does not cache files - continued: GFS applications, MapReduce and BigTable. MapReduce - sequential read, no need to cache. Bigtable has its own cache management.</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>Lease Management</p>
-<ul>
-<li>Lease is used to maintain a consistent mutation order across replicas. </li>
-<li>Master grants chunk lease to one replica (primary).</li>
-<li>The primary picks a serial order for all mutations to the chunk. All replicas follow this order when applying mutations.</li>
-<li>A lease has an initial timeout of 60 seconds. Can be extended at the request of primary chunk server, or can be revoked by master after lease expire.</li>
-</ul>
-</li>
-<li><p>Consistency Model</p>
-<ul>
-<li>Relaxed consistency model.</li>
-<li>File namespace mutations (e.g., file creation) are atomic, handled by master exclusively.</li>
-<li>Data mutation case: consistent but undefined (e.g., concurrent succeed mutation).</li>
-<li>Data mutation case: Inconsistent and undefined (e.g., failed mutation).</li>
-<li>Concurrent append: at least once semantic (implies that records could have paddings in between, that readers need to dealt with).</li>
-<li>Reader dealt with validating (through checksums) and identifying records.</li>
-<li>Overall - flexible consistency model (instead of strong consistency) makes application development a little bit difficult.</li>
-</ul>
-</li>
-<li><p>Append</p>
-<ul>
-<li>Pipeline</li>
-<li>Data flow and control flow decoupled.</li>
-</ul>
-</li>
-<li><p>Fault Tolerant</p>
-<ul>
-<li>Replicated master, check points and snapshots (**Q: how replication is done??)</li>
-<li>Replicated chunk servers (default 3). Erasure codes / parity.</li>
-</ul>
-</li>
-</ul>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/01/21/2017-01-21-Google-File-System/" data-id="cjzoltcvn001z5jxgz8ihdh6o" data-title="The Google File System" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2017/01/21/2017-01-21-Google-File-System/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Distributed-System/">Distributed System</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Paper-Digest/">Paper Digest</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2017-01-21-TopCoder-SRM706-DIV2-500" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/01/21/2017-01-21-TopCoder-SRM706-DIV2-500/" class="article-date">
-  <time datetime="2017-01-21T23:43:31.000Z" itemprop="datePublished">2017-01-21</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/TopCoder/">TopCoder</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/21/2017-01-21-TopCoder-SRM706-DIV2-500/">SRM 706 DIV 2 500 Selling Fruits</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> SellingFruits &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">maxDays</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> f, <span class="keyword">int</span> d, <span class="keyword">int</span> p)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> ret = d / x;</span><br><span class="line">        <span class="keyword">if</span> (ret &lt; f) <span class="keyword">return</span> ret;</span><br><span class="line">        ret = f;</span><br><span class="line">        d -= f * x;</span><br><span class="line">        ret += (d / (x + p));</span><br><span class="line">        <span class="keyword">return</span> ret;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/01/21/2017-01-21-TopCoder-SRM706-DIV2-500/" data-id="cjzoltcvo00205jxgl8jo2e1q" data-title="SRM 706 DIV 2 500 Selling Fruits" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2017/01/21/2017-01-21-TopCoder-SRM706-DIV2-500/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2017-01-15-USACO-StreetRace" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/01/15/2017-01-15-USACO-StreetRace/" class="article-date">
-  <time datetime="2017-01-16T00:47:31.000Z" itemprop="datePublished">2017-01-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/USACO/">USACO</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/15/2017-01-15-USACO-StreetRace/">USACO 4.3 Street Race</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Use DFS to do brutal force search given the small data size. There are two problems:</p>
-<ul>
-<li>Decide the unavoidable points. This can be solved by iterating over each point (except the starting and ending point 0 and N, respectively) and assume the current point is being taken out of the graph. If in such a graph starting from 0 there is still a path to N then the current point being taken out is not an unavoidable point. Otherwise, the current point is an unavoidable point.</li>
-<li>Decide the splitting points. The splitting points must be a subset of unavoidable points. So iterating through all the unavoidable points figured out in first step, and do two search from 0 and the current iterating point respectively, and record the sets of point that two search could reach. If the two sets intersect, then the current point can’t be a splitting point by definition; otherwise the current point is a splitting point.</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;set&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstring&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> N;</span><br><span class="line"><span class="keyword">bool</span> graph[<span class="number">55</span>][<span class="number">55</span>];</span><br><span class="line"><span class="keyword">bool</span> visited[<span class="number">55</span>];</span><br><span class="line"><span class="built_in">set</span>&lt;<span class="keyword">int</span>&gt; st;</span><br><span class="line"><span class="keyword">int</span> split;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> v, <span class="keyword">int</span> j)</span> </span>&#123;</span><br><span class="line">    visited[v] = <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= N; ++i) &#123;</span><br><span class="line">        <span class="keyword">if</span> (visited[i] || !graph[v][i] || i == j || i == v) <span class="keyword">continue</span>;</span><br><span class="line">        <span class="keyword">if</span> ((i == N &amp;&amp; graph[v][i]) || dfs(i, j)) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> s)</span> </span>&#123;</span><br><span class="line">    st.insert(s);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= N; ++i) &#123;</span><br><span class="line">        <span class="keyword">if</span> (st.count(i) || !graph[s][i] || s == i || i == split) <span class="keyword">continue</span>;</span><br><span class="line">        dfs(i);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"race3.in"</span>)</span></span>;</span><br><span class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"race3.out"</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">memset</span>(graph, <span class="number">0</span>, <span class="keyword">sizeof</span>(graph));</span><br><span class="line">    <span class="keyword">int</span> n = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span>(!fin.eof()) &#123;</span><br><span class="line">        fin &gt;&gt; n;</span><br><span class="line">        <span class="keyword">if</span> (n == <span class="number">-2</span>) &#123;</span><br><span class="line">            ++N;</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (n == <span class="number">-1</span>) <span class="keyword">break</span>;</span><br><span class="line">        graph[N][n] = <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    --N;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; r1, r2;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= N - <span class="number">1</span>; ++i) &#123;</span><br><span class="line">        <span class="built_in">memset</span>(visited, <span class="number">0</span>, <span class="keyword">sizeof</span>(visited));</span><br><span class="line">        <span class="keyword">if</span> (!dfs(<span class="number">0</span>, i)) r1.push_back(i);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; r1.size(); fout &lt;&lt; r1.size();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> r : r1) &#123;</span><br><span class="line">        st.clear();</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">" "</span> &lt;&lt; r; fout &lt;&lt; <span class="string">" "</span> &lt;&lt; r;</span><br><span class="line">        split = r; dfs(<span class="number">0</span>); <span class="keyword">auto</span> stt = st; st.clear(); dfs(r);</span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; common_data;</span><br><span class="line">        set_intersection(st.begin(), st.end(), stt.begin(), stt.end(),</span><br><span class="line">                         <span class="built_in">std</span>::back_inserter(common_data));</span><br><span class="line">        <span class="keyword">if</span> (!common_data.empty()) <span class="keyword">continue</span>;</span><br><span class="line">        r2.push_back(r);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="built_in">endl</span>; fout &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; r2.size(); fout &lt;&lt; r2.size();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> r : r2) &#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">" "</span> &lt;&lt; r; fout &lt;&lt; <span class="string">" "</span> &lt;&lt; r;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="built_in">endl</span>; fout &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/01/15/2017-01-15-USACO-StreetRace/" data-id="cjzoltcvm001y5jxg3qh3ma6e" data-title="USACO 4.3 Street Race" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2017/01/15/2017-01-15-USACO-StreetRace/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DFS/">DFS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Graph-Theory/">Graph Theory</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Search/">Search</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2017-01-13-USACO-BuyLow" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/01/13/2017-01-13-USACO-BuyLow/" class="article-date">
-  <time datetime="2017-01-13T23:19:31.000Z" itemprop="datePublished">2017-01-13</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/USACO/">USACO</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/13/2017-01-13-USACO-BuyLow/">USACO 4.3 Buy Low</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Essentially a longest decreasing sequence problem that is easy to solve using typical DP approach. Counting the number of such sequences is also not hard, the real problem is that the counts could be too big to fit in 32 or 64 bit integers, so need to use big integers struct.</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;climits&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iomanip&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> base = <span class="number">1000000000</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> base_digits = <span class="number">9</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> BigInteger &#123;</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; a;</span><br><span class="line">    <span class="keyword">int</span> sign;</span><br><span class="line"></span><br><span class="line">    BigInteger() : sign(<span class="number">1</span>) &#123;&#125;</span><br><span class="line">    BigInteger(<span class="keyword">long</span> <span class="keyword">long</span> v) &#123;</span><br><span class="line">        *<span class="keyword">this</span> = v;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">void</span> <span class="keyword">operator</span>=(<span class="keyword">const</span> BigInteger &amp;v) &#123;</span><br><span class="line">        sign = v.sign;</span><br><span class="line">        a = v.a;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">void</span> <span class="keyword">operator</span>=(<span class="keyword">long</span> <span class="keyword">long</span> v) &#123;</span><br><span class="line">        sign = <span class="number">1</span>;</span><br><span class="line">        a.clear();</span><br><span class="line">        <span class="keyword">if</span> (v &lt; <span class="number">0</span>) &#123;</span><br><span class="line">            sign = <span class="number">-1</span>, v = -v;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (; v &gt; <span class="number">0</span>; v = v / base) &#123;</span><br><span class="line">            a.push_back(v % base);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    BigInteger <span class="keyword">operator</span>+(<span class="keyword">const</span> BigInteger &amp;v) <span class="keyword">const</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (sign != v.sign) <span class="keyword">return</span> *<span class="keyword">this</span> - (-v);</span><br><span class="line">        BigInteger res = v;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>, carry = <span class="number">0</span>;</span><br><span class="line">             i &lt; (<span class="keyword">int</span>) max(a.size(), v.a.size()) || carry; ++i) &#123;</span><br><span class="line">            <span class="keyword">if</span> (i == (<span class="keyword">int</span>) res.a.size())</span><br><span class="line">                res.a.push_back(<span class="number">0</span>);</span><br><span class="line">            res.a[i] += carry + (i &lt; (<span class="keyword">int</span>) a.size() ? a[i] : <span class="number">0</span>);</span><br><span class="line">            carry = res.a[i] &gt;= base;</span><br><span class="line">            <span class="keyword">if</span> (carry) res.a[i] -= base;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    BigInteger <span class="keyword">operator</span>-(<span class="keyword">const</span> BigInteger &amp;v) <span class="keyword">const</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (sign != v.sign) <span class="keyword">return</span> *<span class="keyword">this</span> + (-v);</span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">abs</span>() &lt; v.<span class="built_in">abs</span>()) <span class="keyword">return</span> -(v - *<span class="keyword">this</span>);</span><br><span class="line">        BigInteger res = *<span class="keyword">this</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>, carry = <span class="number">0</span>; i &lt; (<span class="keyword">int</span>) v.a.size() || carry; ++i) &#123;</span><br><span class="line">            res.a[i] -= carry + (i &lt; (<span class="keyword">int</span>) v.a.size() ? v.a[i] : <span class="number">0</span>);</span><br><span class="line">            carry = res.a[i] &lt; <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">if</span> (carry)</span><br><span class="line">                res.a[i] += base;</span><br><span class="line">        &#125;</span><br><span class="line">        res.trim();</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">void</span> <span class="keyword">operator</span>+=(<span class="keyword">const</span> BigInteger &amp;v) &#123;</span><br><span class="line">        *<span class="keyword">this</span> = *<span class="keyword">this</span> + v;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">void</span> <span class="keyword">operator</span>-=(<span class="keyword">const</span> BigInteger &amp;v) &#123;</span><br><span class="line">        *<span class="keyword">this</span> = *<span class="keyword">this</span> - v;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">bool</span> <span class="keyword">operator</span>&lt;(<span class="keyword">const</span> BigInteger &amp;v) <span class="keyword">const</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (sign != v.sign)</span><br><span class="line">            <span class="keyword">return</span> sign &lt; v.sign;</span><br><span class="line">        <span class="keyword">if</span> (a.size() != v.a.size())</span><br><span class="line">            <span class="keyword">return</span> a.size() * sign &lt; v.a.size() * v.sign;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = (<span class="keyword">int</span>)a.size() - <span class="number">1</span>; i &gt;= <span class="number">0</span>; i--)</span><br><span class="line">            <span class="keyword">if</span> (a[i] != v.a[i])</span><br><span class="line">                <span class="keyword">return</span> a[i] * sign &lt; v.a[i] * sign;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">bool</span> <span class="keyword">operator</span>&gt;(<span class="keyword">const</span> BigInteger &amp;v) <span class="keyword">const</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> v &lt; *<span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">bool</span> <span class="keyword">operator</span> &lt;= (<span class="keyword">const</span> BigInteger &amp;v) <span class="keyword">const</span> &#123; <span class="keyword">return</span> !(v &lt; *<span class="keyword">this</span>); &#125;</span><br><span class="line">    <span class="keyword">bool</span> <span class="keyword">operator</span> &gt;= (<span class="keyword">const</span> BigInteger &amp;v) <span class="keyword">const</span> &#123; <span class="keyword">return</span> !(*<span class="keyword">this</span> &lt; v); &#125;</span><br><span class="line">    <span class="keyword">bool</span> <span class="keyword">operator</span> == (<span class="keyword">const</span> BigInteger &amp;v) <span class="keyword">const</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> !(*<span class="keyword">this</span> &lt; v) &amp;&amp; !(v &lt; *<span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">bool</span> <span class="keyword">operator</span> != (<span class="keyword">const</span> BigInteger &amp;v) <span class="keyword">const</span> &#123; <span class="keyword">return</span> *<span class="keyword">this</span> &lt; v || v &lt; *<span class="keyword">this</span>; &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">trim</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">while</span> (!a.empty() &amp;&amp; !a.back())</span><br><span class="line">            a.pop_back();</span><br><span class="line">        <span class="keyword">if</span> (a.empty())</span><br><span class="line">            sign = <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    BigInteger <span class="keyword">operator</span>-() <span class="keyword">const</span> &#123;</span><br><span class="line">        BigInteger res = *<span class="keyword">this</span>;</span><br><span class="line">        res.sign = -sign;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function">BigInteger <span class="title">abs</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123;</span><br><span class="line">        BigInteger res = *<span class="keyword">this</span>;</span><br><span class="line">        res.sign *= res.sign;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">friend</span> ostream&amp; <span class="keyword">operator</span>&lt;&lt;(ostream &amp;stream, <span class="keyword">const</span> BigInteger &amp;v) &#123;</span><br><span class="line">        <span class="keyword">if</span> (v.sign == <span class="number">-1</span>)</span><br><span class="line">            stream &lt;&lt; <span class="string">'-'</span>;</span><br><span class="line">        stream &lt;&lt; (v.a.empty() ? <span class="number">0</span> : v.a.back());</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = (<span class="keyword">int</span>) v.a.size() - <span class="number">2</span>; i &gt;= <span class="number">0</span>; --i)</span><br><span class="line">            stream &lt;&lt; setw(base_digits) &lt;&lt; setfill(<span class="string">'0'</span>) &lt;&lt; v.a[i];</span><br><span class="line">        <span class="keyword">return</span> stream;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> N;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; num, dp;</span><br><span class="line"><span class="built_in">vector</span>&lt;BigInteger&gt; cnt;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"buylow.in"</span>)</span></span>;</span><br><span class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"buylow.out"</span>)</span></span>;</span><br><span class="line">    fin &gt;&gt; N;</span><br><span class="line">    num = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N, <span class="number">0</span>);</span><br><span class="line">    dp = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N, <span class="number">0</span>);</span><br><span class="line">    cnt = <span class="built_in">vector</span>&lt;BigInteger&gt;(N, BigInteger(<span class="number">0</span>));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">        fin &gt;&gt; num[i];</span><br><span class="line">    &#125;</span><br><span class="line">    dp[<span class="number">0</span>] = <span class="number">1</span>; cnt[<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">        dp[i] = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; i; ++j) &#123;</span><br><span class="line">            <span class="keyword">if</span> (num[j] &gt; num[i]) &#123;</span><br><span class="line">                dp[i] = <span class="built_in">std</span>::max(dp[i], dp[j] + <span class="number">1</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; i; ++j) &#123;</span><br><span class="line">            <span class="keyword">if</span> (num[j] &gt; num[i] &amp;&amp; dp[i] == dp[j] + <span class="number">1</span>) &#123;</span><br><span class="line">                cnt[i] += cnt[j];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (cnt[i] == <span class="number">0</span>) cnt[i] = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; i; ++j) &#123;</span><br><span class="line">            <span class="keyword">if</span> (num[j] == num[i] &amp;&amp; dp[j] == dp[i]) &#123;</span><br><span class="line">                cnt[i] -= cnt[j]; <span class="comment">// remove duplicates.</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> maxLen = *<span class="built_in">std</span>::minmax_element(dp.begin(), dp.end()).second;</span><br><span class="line">    BigInteger finalCnt = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">        <span class="keyword">if</span> (maxLen == dp[i]) &#123;</span><br><span class="line">            finalCnt += cnt[i];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; maxLen &lt;&lt; <span class="string">" "</span> &lt;&lt; finalCnt &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    fout &lt;&lt; maxLen &lt;&lt; <span class="string">" "</span> &lt;&lt; finalCnt &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/01/13/2017-01-13-USACO-BuyLow/" data-id="cjzoltcvm001x5jxgoeibpvzi" data-title="USACO 4.3 Buy Low" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2017/01/13/2017-01-13-USACO-BuyLow/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Big-Integer/">Big Integer</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dynamic-Programming/">Dynamic Programming</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Consensus-Protocol/">Consensus Protocol</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Paxos/">Paxos</a></li></ul>
 
     </footer>
   </div>
@@ -702,7 +148,7 @@
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/4/">Next &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/97/">97</a><a class="extend next" rel="next" href="/page/4/">Next &raquo;</a>
   </nav>
 
 </section>
