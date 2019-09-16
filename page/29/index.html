@@ -75,14 +75,14 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-2017-01-21-Google-File-System" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2016-10-14-USACO-AgriNet" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2017/01/21/2017-01-21-Google-File-System/" class="article-date">
-  <time datetime="2017-01-22T00:14:31.000Z" itemprop="datePublished">2017-01-21</time>
+    <a href="/2016/10/14/2016-10-14-USACO-AgriNet/" class="article-date">
+  <time datetime="2016-10-14T21:53:31.000Z" itemprop="datePublished">2016-10-14</time>
 </a>
     
   <div class="article-category">
-    <a class="article-category-link" href="/categories/Distributed-System/">Distributed System</a>
+    <a class="article-category-link" href="/categories/USACO/">USACO</a>
   </div>
 
   </div>
@@ -93,7 +93,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/21/2017-01-21-Google-File-System/">The Google File System</a>
+      <a class="article-title" href="/2016/10/14/2016-10-14-USACO-AgriNet/">USACO 3.1 AgriNet</a>
     </h1>
   
 
@@ -101,93 +101,67 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Paper digest - <a href="https://static.googleusercontent.com/media/research.google.com/en//archive/gfs-sosp2003.pdf" target="_blank" rel="noopener">The Google File System</a></p>
-<h1 id="Motivation"><a href="#Motivation" class="headerlink" title="Motivation"></a>Motivation</h1><ul>
-<li>Scalable distributed file system for large distributed data-intensive applications driven by observations of application workloads and technological environment, both current and anticipated:<ul>
-<li>Component failures are the norm rather than the exception.</li>
-<li>Files are huge by traditional standards. Multi-GB files are common.</li>
-<li>Workloads: large streaming reads and small random reads; many large, sequential writes.</li>
-</ul>
-</li>
-</ul>
-<h1 id="Goals"><a href="#Goals" class="headerlink" title="Goals"></a>Goals</h1><ul>
-<li><p>Provides fault tolerance while running on inexpensive commodity hardware.</p>
-</li>
-<li><p>Delivers high aggregate performance to a large number of clients.</p>
-</li>
-<li><p>Must efficiently implement well-defined semantics for multiple clients that concurrently append to the same file. Atomicity with minimal synchronization overhead is essential. </p>
-</li>
-<li><p>Prefer bandwidth over latency (batch processing, not real time.).</p>
-</li>
-<li><p>Consistency Model : co-designing the applications and the file system for flexibility (in other words, push hard problem to other places.).</p>
-</li>
-</ul>
-<h1 id="System-Design"><a href="#System-Design" class="headerlink" title="System Design"></a>System Design</h1><ul>
-<li><p>Master-Slave architecture.</p>
-<ul>
-<li>GFS Master:<ul>
-<li>Management data storage: metadata, namespace, access control, mappings from files to chunks, current location of chunk.</li>
-<li>System wide activities: chunk lease management, garbage collect of orphaned chunks, chunk migration.</li>
-<li>System is designed to minimize master’s involvement since master is SPOF.</li>
-</ul>
-</li>
-<li>GFS Slave (aka chunk server):<ul>
-<li>Chunk with 64 bit globally uniquely chunk handle. Stored on linux FS. Replicated (3 copies by default.).</li>
-<li>Does not cache files (rely on Linux’s buffer cache.).</li>
-</ul>
-</li>
-<li>GFS Client:<ul>
-<li>Interact with master for metadata operations.</li>
-<li>Actual data IO does not go through master; go through between client and chunk server.</li>
-<li>Does not cache files (infeasible to cache - too large; hard problem to solve for cache coherence, so don’t solve it.).</li>
-<li>Does not cache files - continued: GFS applications, MapReduce and BigTable. MapReduce - sequential read, no need to cache. Bigtable has its own cache management.</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>Lease Management</p>
-<ul>
-<li>Lease is used to maintain a consistent mutation order across replicas. </li>
-<li>Master grants chunk lease to one replica (primary).</li>
-<li>The primary picks a serial order for all mutations to the chunk. All replicas follow this order when applying mutations.</li>
-<li>A lease has an initial timeout of 60 seconds. Can be extended at the request of primary chunk server, or can be revoked by master after lease expire.</li>
-</ul>
-</li>
-<li><p>Consistency Model</p>
-<ul>
-<li>Relaxed consistency model.</li>
-<li>File namespace mutations (e.g., file creation) are atomic, handled by master exclusively.</li>
-<li>Data mutation case: consistent but undefined (e.g., concurrent succeed mutation).</li>
-<li>Data mutation case: Inconsistent and undefined (e.g., failed mutation).</li>
-<li>Concurrent append: at least once semantic (implies that records could have paddings in between, that readers need to dealt with).</li>
-<li>Reader dealt with validating (through checksums) and identifying records.</li>
-<li>Overall - flexible consistency model (instead of strong consistency) makes application development a little bit difficult.</li>
-</ul>
-</li>
-<li><p>Append</p>
-<ul>
-<li>Pipeline</li>
-<li>Data flow and control flow decoupled.</li>
-</ul>
-</li>
-<li><p>Fault Tolerant</p>
-<ul>
-<li>Replicated master, check points and snapshots (**Q: how replication is done??)</li>
-<li>Replicated chunk servers (default 3). Erasure codes / parity.</li>
-</ul>
-</li>
-</ul>
+        <p>Easy problem with prim MST algorithm.</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;utility&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cmath&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unordered_map&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;climits&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sstream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> N;</span><br><span class="line"><span class="keyword">int</span> ret = <span class="number">0</span>;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt; minset;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; parent;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; dist;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; grid;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"agrinet.in"</span>)</span></span>;</span><br><span class="line">  <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"agrinet.out"</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">  fin &gt;&gt; N;</span><br><span class="line">  grid = <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt;(N, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N, <span class="number">0</span>));</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; N; ++j) &#123;</span><br><span class="line">      fin &gt;&gt; grid[i][j];</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  minset = <span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt;(N, <span class="literal">false</span>);</span><br><span class="line">  parent = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N, <span class="number">-1</span>);</span><br><span class="line">  dist = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N, INT_MAX);</span><br><span class="line">  dist[<span class="number">0</span>] = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Iterate N -1 times (since we have initialized dist for vertex 0 already).</span></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N - <span class="number">1</span>; ++i) &#123;</span><br><span class="line">    <span class="comment">// Find next vertex that not in set, which has smallest distance to existing</span></span><br><span class="line">    <span class="comment">// set of vertices.</span></span><br><span class="line">    <span class="keyword">int</span> min = INT_MAX; <span class="keyword">int</span> minIdx = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> ii = <span class="number">0</span>; ii &lt; N; ++ii) &#123;</span><br><span class="line">      <span class="keyword">if</span> (!minset[ii] &amp;&amp; dist[ii] &lt; min) &#123;</span><br><span class="line">        minIdx = ii;</span><br><span class="line">        min = dist[ii];</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Add the new vertex to the set, and update all dist accordingly.</span></span><br><span class="line">    minset[minIdx] = <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; N; ++j) &#123;</span><br><span class="line">      <span class="keyword">if</span> (grid[minIdx][j] &amp;&amp; !minset[j] &amp;&amp; grid[minIdx][j] &lt; dist[j]) &#123;</span><br><span class="line">        dist[j] = grid[minIdx][j];</span><br><span class="line">        parent[j] = minIdx;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">int</span> ret = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; N; ++i) &#123;</span><br><span class="line">    ret += grid[parent[i]][i];</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  fout &lt;&lt; ret &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">  <span class="built_in">cout</span> &lt;&lt; ret &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2016/10/14/2016-10-14-USACO-AgriNet/" data-id="ck0lytog10015b4xg03ui5lgc" data-title="USACO 3.1 AgriNet" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2016/10/14/2016-10-14-USACO-AgriNet/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Graph/">Graph</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Minimum-Spanning-Tree/">Minimum Spanning Tree</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Prim/">Prim</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-2016-10-11-TopCoder-SRM700" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/10/13/2016-10-11-TopCoder-SRM700/" class="article-date">
+  <time datetime="2016-10-13T20:29:31.000Z" itemprop="datePublished">2016-10-13</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/TopCoder/">TopCoder</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/10/13/2016-10-11-TopCoder-SRM700/">SRM 700 DIV II 450</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>My DFS solution during contest, which passed all system tests except TLE for one. As a result, I received zero points.<br>This is not the first time that I am tempted to use a brutal force solution for a 450 / 500 problem that seemingly work but<br>ultimately fail due to inefficiency.</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> XMarksTheSpot &#123;</span><br><span class="line">    <span class="keyword">int</span> result;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">dfs</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; board, <span class="keyword">int</span> i, <span class="keyword">int</span> j, <span class="keyword">int</span> rs, <span class="keyword">int</span> cs)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (i == rs - <span class="number">1</span> &amp;&amp; j == cs - <span class="number">1</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (board[i][j] == <span class="string">'?'</span>) &#123;</span><br><span class="line">                board[i][j] = <span class="string">'O'</span>;</span><br><span class="line">                compute(board);</span><br><span class="line">                board[i][j] = <span class="string">'.'</span>;</span><br><span class="line">                compute(board);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                compute(board);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> ni, nj;</span><br><span class="line">        <span class="keyword">if</span> (j + <span class="number">1</span> &lt; cs) &#123;</span><br><span class="line">            ni = i;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            ni = i + <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        nj = (j + <span class="number">1</span>) % cs;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> (board[i][j] == <span class="string">'.'</span> || board[i][j] == <span class="string">'O'</span>) &#123;</span><br><span class="line">            dfs(board, ni, nj, rs, cs);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            board[i][j] = <span class="string">'.'</span>;</span><br><span class="line">            dfs(board, ni, nj, rs, cs);</span><br><span class="line">            board[i][j] = <span class="string">'O'</span>;</span><br><span class="line">            dfs(board, ni, nj, rs, cs);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">compute</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; board)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> rs = (<span class="keyword">int</span>)board.size();</span><br><span class="line">        <span class="keyword">int</span> cs = (<span class="keyword">int</span>)board[<span class="number">0</span>].size();</span><br><span class="line">        <span class="keyword">int</span> t = INT_MAX, b = INT_MIN, l = INT_MAX, r = INT_MIN;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; rs; ++i) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; cs; ++j) &#123;</span><br><span class="line">                <span class="keyword">if</span> (board[i][j] == <span class="string">'.'</span>) <span class="keyword">continue</span>;</span><br><span class="line">                t = <span class="built_in">std</span>::min(i, t);</span><br><span class="line">                b = <span class="built_in">std</span>::max(i, b);</span><br><span class="line">                l = <span class="built_in">std</span>::min(j, l);</span><br><span class="line">                r = <span class="built_in">std</span>::max(j, r);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = t; i &lt;= b; ++i) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = l; j &lt;= r; ++j) &#123;</span><br><span class="line">                ++result;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">countArea</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; board)</span> </span>&#123;</span><br><span class="line">        result = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span> rs = (<span class="keyword">int</span>)board.size();</span><br><span class="line">        <span class="keyword">int</span> cs = (<span class="keyword">int</span>)board[<span class="number">0</span>].size();</span><br><span class="line">        dfs(board, <span class="number">0</span>, <span class="number">0</span>, rs, cs);</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Actually even with brutal force, there is better approaches without recursing (which is the root of many evils of time outs during contest).<br>We can just iterate through all the states explicitly and calculate the results at higher level while iterating. <a href="https://community.topcoder.com/stat?c=problem_solution&amp;cr=40494659&amp;rd=16821&amp;pm=14416" target="_blank" rel="noopener">Here</a> is a good example on how to do so.</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/01/21/2017-01-21-Google-File-System/" data-id="ck0lylpbj001y3vxgf4hbn91a" data-title="The Google File System" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/10/13/2016-10-11-TopCoder-SRM700/" data-id="ck0lytofx000zb4xgqqj836an" data-title="SRM 700 DIV II 450" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2017/01/21/2017-01-21-Google-File-System/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2016/10/13/2016-10-11-TopCoder-SRM700/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Distributed-System/">Distributed System</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Paper-Digest/">Paper Digest</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Counting/">Counting</a></li></ul>
 
     </footer>
   </div>
@@ -201,7 +175,7 @@
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/page/28/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/27/">27</a><a class="page-number" href="/page/28/">28</a><span class="page-number current">29</span><a class="page-number" href="/page/30/">30</a><a class="page-number" href="/page/31/">31</a><span class="space">&hellip;</span><a class="page-number" href="/page/99/">99</a><a class="extend next" rel="next" href="/page/30/">Next &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/28/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/27/">27</a><a class="page-number" href="/page/28/">28</a><span class="page-number current">29</span><a class="page-number" href="/page/30/">30</a><a class="page-number" href="/page/31/">31</a><span class="space">&hellip;</span><a class="page-number" href="/page/50/">50</a><a class="extend next" rel="next" href="/page/30/">Next &raquo;</a>
   </nav>
 
 </section>

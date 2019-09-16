@@ -75,14 +75,14 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-2017-05-08-MegaStore" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2017-01-31-TopCoder-SRM-707-DivII" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2017/05/08/2017-05-08-MegaStore/" class="article-date">
-  <time datetime="2017-05-09T04:00:31.000Z" itemprop="datePublished">2017-05-08</time>
+    <a href="/2017/01/31/2017-01-31-TopCoder-SRM-707-DivII/" class="article-date">
+  <time datetime="2017-01-31T18:33:31.000Z" itemprop="datePublished">2017-01-31</time>
 </a>
     
   <div class="article-category">
-    <a class="article-category-link" href="/categories/Distributed-System/">Distributed System</a>
+    <a class="article-category-link" href="/categories/TopCoder/">TopCoder</a>
   </div>
 
   </div>
@@ -93,7 +93,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/05/08/2017-05-08-MegaStore/">Paper Digest - Megastore, Providing Scalable, Highly Available Storage for Interactive Services</a>
+      <a class="article-title" href="/2017/01/31/2017-01-31-TopCoder-SRM-707-DivII/">SRM 707 DIV 2 500 Steps Construct</a>
     </h1>
   
 
@@ -101,133 +101,71 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Paper digest - <a href="https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/36971.pdf" target="_blank" rel="noopener">Megastore: Providing Scalable, Highly Available Storage for Interactive Services</a></p>
-<h1 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h1><ul>
-<li>Blends the scalability of a NoSQL datastore with the convenience of a traditional RDBMS.</li>
-<li>Provides both strong consistency guarantees and high availability.</li>
-<li>Provides fully serializable ACID semantics within fine-grained partitions of data.</li>
-</ul>
-<h1 id="Motivation"><a href="#Motivation" class="headerlink" title="Motivation"></a>Motivation</h1><ul>
-<li>Online services are forcing the storage community to meet new demands. <ul>
-<li>Highly scalable.</li>
-<li>Rapid development.</li>
-<li>Low latency.</li>
-<li>Consistent view of data.</li>
-<li>Highly available.</li>
-</ul>
-</li>
-</ul>
-<h1 id="Design-Highlights"><a href="#Design-Highlights" class="headerlink" title="Design Highlights"></a>Design Highlights</h1><ul>
-<li>Partition data. Replicate unit is a partition.</li>
-<li>Full ACID semantics within partitions only.</li>
-<li>Across partitions, limited consistency guarantees (later spanner improves this)</li>
-<li>Provide database features (2nd indexes), but does not provide scalability guarantees (can only scale within user-tolerable latency limits.)</li>
-<li>Innovative usage of Paxos: use it for replication instead of traditional usage (locking, leader election, replicate config data - e.g. ZooKeeper/ZAB)</li>
-</ul>
-<h1 id="Availability-with-Scalability"><a href="#Availability-with-Scalability" class="headerlink" title="Availability with Scalability"></a>Availability with Scalability</h1><ul>
-<li>Replication<ul>
-<li>Replicate a write-ahead log over a group of symmetric peers.</li>
-<li>Any node can initiate reads and writes.</li>
-<li>Each log append blocks on acknowledgments from a majority of replicas.</li>
-<li>Optimizations on Paxos<ul>
-<li>Allow local reads.</li>
-<li>Single roundtrip writes.</li>
-</ul>
-</li>
-<li>Multiple replicated logs instead of single log for better availability.</li>
-</ul>
-</li>
-<li>Key Concept - <strong>Entity Groups</strong><ul>
-<li>Entity group is a collection of data and unit of replication.</li>
-<li>Within a single entity group: ACID semantic.</li>
-<li>Across entity groups:<ul>
-<li>Two phased commit (strong consistency)</li>
-<li>Or async communications through message queues.</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>Physical Layout of data<ul>
-<li>Use BigTable for data storage.</li>
-<li>Letting applications control the placement of data.<ul>
-<li>Applications try to keep data near users and replicas near each other.</li>
-<li>The data for an entity group are held in contiguous ranges of Bigtable rows.</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<h1 id="API-Design"><a href="#API-Design" class="headerlink" title="API Design"></a>API Design</h1><ul>
-<li><strong>Cost-transparent APIs</strong>: runtime costs that match application developers’ intuitions.</li>
-<li>Eliminate needs for joins:  offer fine-grained control over physical locality.</li>
-<li>Joins when required is implemented in application code.</li>
-</ul>
-<h1 id="Data-Model"><a href="#Data-Model" class="headerlink" title="Data Model"></a>Data Model</h1><ul>
-<li>Lies between the abstract tuples of an RDBMS and the concrete row-column storage of NoSQL.</li>
-<li>Data model is declared in a schema and is strongly typed.</li>
-</ul>
-<h1 id="Transactions-and-Concurrency-Control"><a href="#Transactions-and-Concurrency-Control" class="headerlink" title="Transactions and Concurrency Control"></a>Transactions and Concurrency Control</h1><ul>
-<li>Use MVCC. Readers and writers don’t block each other, and reads are isolated from writes for the duration of a transaction.</li>
-<li>Read semantics<ul>
-<li>current (single entity group)</li>
-<li>snapshot (single entity group)</li>
-<li>inconsistent (ignore state of log)</li>
-</ul>
-</li>
-<li>Queues<ul>
-<li>Cross group batch operation deliver.</li>
-</ul>
-</li>
-<li>2 Phased Commit for atomic update across entity groups.</li>
-</ul>
-<h1 id="Paxos-based-Replication-key-innovations"><a href="#Paxos-based-Replication-key-innovations" class="headerlink" title="Paxos based Replication (key innovations)"></a>Paxos based Replication <strong>(key innovations)</strong></h1><ul>
-<li>Pitfall of master-slave based Paxos<ul>
-<li>Master failover can require a complicated state machine.</li>
-<li>A series of timers must elapse before service is restored. </li>
-<li>It is difficult to avoid user-visible outages.</li>
-</ul>
-</li>
-<li>Fast Reads<ul>
-<li>Local read.</li>
-<li>Coordinator tracks if a specific replica has observed the full state of writes so it can serve local reads.</li>
-</ul>
-</li>
-<li>Fast Writes<ul>
-<li>Single round trip writes.</li>
-<li>Pre-preparing optimization: each successful write includes an implied prepare message granting the master the right to issue accept messages for the next log position.</li>
-<li>If the write succeeds, the prepares are honored, and the next write skips directly to the accept phase. </li>
-<li>Multi-Paxos: independent instance of the Paxos algorithm for each log position. T</li>
-</ul>
-</li>
-<li>Replica Types<ul>
-<li>Full Replica: contain all entity and index and able to serve current reads.</li>
-<li>Witness Replica: vote and store WAL, but does not apply the WAL (kind like observer in ZooKeeper but not strictly the same - observer in ZK does not vote.)</li>
-<li>Read Only Replica: does not vote but contain full data of a point of time in the past (more like ZK observer but ZK observer is more up to date WRT its state.)</li>
-</ul>
-</li>
-</ul>
-<h1 id="Coordinator"><a href="#Coordinator" class="headerlink" title="Coordinator"></a>Coordinator</h1><ul>
-<li>The coordinator is a simple process with no external dependencies and no persistent storage.</li>
-<li>Failure Detection<ul>
-<li>Use an out of band protocol to identify when other coordinators are up, healthy, and generally reachable.</li>
-<li>Coordinators obtain specific Chubby locks in remote datacenters at startup.</li>
-<li>Revert its state to a conservative default when loses majority of locks and / or parititons.</li>
-<li>Brief and rare outage risk..</li>
-<li>Liveness protocol is vulnerable to asymmetric network partitions.</li>
-</ul>
-</li>
-</ul>
-<h1 id="Operation-Metrics-Experience-ommitted"><a href="#Operation-Metrics-Experience-ommitted" class="headerlink" title="Operation / Metrics / Experience - ommitted."></a>Operation / Metrics / Experience - ommitted.</h1>
+        <p>Problem with interesting constraints… hopefully figured this out during SRM this time. </p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> StepsConstruct &#123;</span><br><span class="line">    <span class="keyword">int</span> rows;</span><br><span class="line">    <span class="keyword">int</span> cols;</span><br><span class="line">    <span class="function"><span class="keyword">char</span> <span class="title">getD</span><span class="params">(<span class="keyword">char</span> c)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (c == <span class="string">'R'</span>) <span class="keyword">return</span> <span class="string">'L'</span>;</span><br><span class="line">        <span class="keyword">if</span> (c == <span class="string">'L'</span>) <span class="keyword">return</span> <span class="string">'R'</span>;</span><br><span class="line">        <span class="keyword">if</span> (c == <span class="string">'U'</span>) <span class="keyword">return</span> <span class="string">'D'</span>;</span><br><span class="line">        <span class="keyword">if</span> (c == <span class="string">'D'</span>) <span class="keyword">return</span> <span class="string">'U'</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">'R'</span>;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="built_in">string</span> <span class="title">construct</span><span class="params">(<span class="built_in">vector</span> &lt;<span class="built_in">string</span>&gt; board, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (board[<span class="number">0</span>][<span class="number">0</span>] == <span class="string">'#'</span>) <span class="keyword">return</span> <span class="string">""</span>;</span><br><span class="line">        rows = (<span class="keyword">int</span>)board.size(); cols = (<span class="keyword">int</span>)board[<span class="number">0</span>].size();</span><br><span class="line">        <span class="built_in">set</span>&lt;pair&lt;<span class="keyword">int</span>,<span class="keyword">int</span>&gt;&gt; visited;</span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; paths;</span><br><span class="line">        <span class="built_in">queue</span>&lt;pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt;&gt; q;</span><br><span class="line">        <span class="built_in">queue</span>&lt;<span class="built_in">string</span>&gt; qp;</span><br><span class="line">        q.push(make_pair(<span class="number">0</span>, <span class="number">0</span>));</span><br><span class="line">        qp.push(<span class="string">""</span>);</span><br><span class="line">        <span class="keyword">while</span> (!q.empty()) &#123;</span><br><span class="line">            <span class="keyword">auto</span> cur = q.front();</span><br><span class="line">            q.pop();</span><br><span class="line">            <span class="keyword">int</span> x = cur.first, y = cur.second;</span><br><span class="line">            <span class="built_in">string</span> curp = qp.front();</span><br><span class="line">            qp.pop();</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">int</span> dx[] = &#123;<span class="number">1</span>, <span class="number">-1</span>, <span class="number">0</span>, <span class="number">0</span>&#125;;</span><br><span class="line">            <span class="keyword">int</span> dy[] = &#123;<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">-1</span>&#125;;</span><br><span class="line">            <span class="keyword">char</span> steps[] = &#123;<span class="string">'D'</span>, <span class="string">'U'</span>, <span class="string">'R'</span>, <span class="string">'L'</span>&#125;;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span>; ++i) &#123;</span><br><span class="line">                pair&lt;<span class="keyword">int</span>,<span class="keyword">int</span>&gt; cur = &#123;x + dx[i], y + dy[i]&#125;;</span><br><span class="line">                <span class="keyword">if</span>(cur.first &lt; <span class="number">0</span> || cur.second &lt; <span class="number">0</span> || cur.first &gt;= rows || cur.second &gt;= cols)</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                <span class="keyword">if</span>(visited.count(cur))</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                <span class="keyword">if</span> (board[cur.first][cur.second] == <span class="string">'#'</span>) &#123;</span><br><span class="line">                    visited.insert(cur);</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                </span><br><span class="line">                <span class="built_in">string</span> p = curp + steps[i];</span><br><span class="line">                <span class="keyword">if</span> (cur.first == rows - <span class="number">1</span> &amp;&amp; cur.second == cols - <span class="number">1</span>) &#123;</span><br><span class="line">                    paths.push_back(p);</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                visited.insert(cur);</span><br><span class="line">                qp.push(p);</span><br><span class="line">                q.push(cur);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">int</span> minsteps = INT_MAX;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> path : paths) &#123;</span><br><span class="line">            minsteps = <span class="built_in">std</span>::min((<span class="keyword">int</span>)path.size(), minsteps);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (minsteps &gt; k) <span class="keyword">return</span> <span class="string">""</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="built_in">string</span> c;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> path : paths) &#123;</span><br><span class="line">            <span class="keyword">int</span> steps = (<span class="keyword">int</span>)path.size();</span><br><span class="line">            <span class="keyword">if</span> (steps &lt;= k &amp;&amp; ((k - steps) % <span class="number">2</span> == <span class="number">0</span>)) &#123;</span><br><span class="line">                <span class="keyword">int</span> d = k - steps;</span><br><span class="line">                <span class="built_in">string</span> prefix = <span class="string">""</span>;</span><br><span class="line">                <span class="keyword">char</span> c = path[<span class="number">0</span>];</span><br><span class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; d; ++i) &#123;</span><br><span class="line">                    prefix += c;</span><br><span class="line">                    c = getD(c);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">return</span> prefix + path;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">""</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/05/08/2017-05-08-MegaStore/" data-id="ck0lylpbz002e3vxgtvliuisl" data-title="Paper Digest - Megastore, Providing Scalable, Highly Available Storage for Interactive Services" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2017/01/31/2017-01-31-TopCoder-SRM-707-DivII/" data-id="ck0lytogy0024b4xgru5zvctk" data-title="SRM 707 DIV 2 500 Steps Construct" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2017/05/08/2017-05-08-MegaStore/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2017/01/31/2017-01-31-TopCoder-SRM-707-DivII/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/NewSQL/">NewSQL</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Paper-Digest/">Paper Digest</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/BFS/">BFS</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-2017-01-27-USACO-LetterGame" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/01/27/2017-01-27-USACO-LetterGame/" class="article-date">
+  <time datetime="2017-01-27T21:37:31.000Z" itemprop="datePublished">2017-01-27</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/USACO/">USACO</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/01/27/2017-01-27-USACO-LetterGame/">USACO 4.3 Letter Game</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>The basic idea is to use brutal force approach by enumerating all possible words generated from input word and choose the right ones. There are a couple of optimizations that we can do:</p>
+<ul>
+<li>There are at most two strings in each anwser, because the length constraints (3 is the minimum length, 7 is the maximum length, so at most two strings.).</li>
+<li>Similarly, since each word in dictionary is at least 3 characters long, we can skip sub strings with length 1 or 2 during enumeration.</li>
+<li>During enumeration, whenever we find the first substring is greater lexicographically than the second, we can abort because the same string pair can occur later (which is what we want, the lexicographically smaller ones). There are some edge cases to deal with here though, such as the second string is empty, in which case the first string would be the full length of the source string.</li>
+<li>The STL next_enumeration comes really handy.</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;map&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;set&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">map</span>&lt;<span class="built_in">string</span>,<span class="keyword">int</span>&gt; wordval;</span><br><span class="line"><span class="built_in">set</span>&lt;<span class="built_in">string</span>&gt; used;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; ans;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; value = &#123;<span class="number">2</span>,<span class="number">5</span>,<span class="number">4</span>,<span class="number">4</span>,<span class="number">1</span>,<span class="number">6</span>,<span class="number">5</span>,<span class="number">5</span>,<span class="number">1</span>,<span class="number">7</span>,<span class="number">6</span>,<span class="number">3</span>,<span class="number">5</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">5</span>,<span class="number">7</span>,<span class="number">2</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">4</span>,<span class="number">6</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">5</span>,<span class="number">7</span>&#125;;</span><br><span class="line"><span class="keyword">int</span> ans1 = <span class="number">0</span>;</span><br><span class="line"><span class="built_in">string</span> word;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">compute</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    sort(word.begin(),word.end());</span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">3</span>; i &lt;= (<span class="keyword">int</span>)word.size(); ++i) &#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> j = i; j &lt;= (<span class="keyword">int</span>)word.size(); ++j) &#123;</span><br><span class="line">                <span class="built_in">string</span> w1, w2, w;</span><br><span class="line">                w1 = word.substr(<span class="number">0</span>,i);</span><br><span class="line">                w2 = word.substr(i,j-i);</span><br><span class="line">                <span class="keyword">if</span> (w1 &gt; w2 &amp;&amp; w2 != <span class="string">""</span>) <span class="keyword">continue</span>;</span><br><span class="line">                <span class="keyword">if</span>(!wordval[w1] || (!wordval[w2] &amp;&amp; w2 != <span class="string">""</span>)) <span class="keyword">continue</span>;</span><br><span class="line">                </span><br><span class="line">                w = w1;</span><br><span class="line">                <span class="keyword">if</span>(!w2.empty())  &#123;</span><br><span class="line">                    w += <span class="string">" "</span>; w += w2;</span><br><span class="line">                &#125;</span><br><span class="line">                </span><br><span class="line">                <span class="keyword">if</span>(ans1 == wordval[w1] + wordval[w2] &amp;&amp; !used.count(w)) &#123;</span><br><span class="line">                    used.insert(w);</span><br><span class="line">                    ans.push_back(w);</span><br><span class="line">                &#125; <span class="keyword">else</span> <span class="keyword">if</span>(ans1 &lt; wordval[w1] + wordval[w2]) &#123;</span><br><span class="line">                    ans1 = wordval[w1] + wordval[w2];</span><br><span class="line">                    used.clear();</span><br><span class="line">                    ans.clear();</span><br><span class="line">                    used.insert(w);</span><br><span class="line">                    ans.push_back(w);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">while</span> (next_permutation(word.begin(),word.end()));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">ifstream <span class="title">fdin</span><span class="params">(<span class="string">"lgame.dict"</span>)</span></span>;</span><br><span class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"lgame.in"</span>)</span></span>;</span><br><span class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"lgame.out"</span>)</span></span>;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">string</span> str;</span><br><span class="line">    wordval[<span class="string">""</span>] = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span>(fdin &gt;&gt; str &amp;&amp; str != <span class="string">"."</span>) &#123;</span><br><span class="line">        <span class="keyword">int</span> val = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i&lt; (<span class="keyword">int</span>)str.size(); ++i) &#123;</span><br><span class="line">            val += value[str[i] - <span class="string">'a'</span>];</span><br><span class="line">        &#125;</span><br><span class="line">        wordval[str] = val;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    fin &gt;&gt; word;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; word &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    compute();</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; ans1 &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    fout &lt;&lt; ans1 &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; (<span class="keyword">int</span>)ans.size(); ++i) &#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; ans[i] &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">        fout &lt;&lt; ans[i] &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2017/01/27/2017-01-27-USACO-LetterGame/" data-id="ck0lytogv0021b4xgyvbksh8b" data-title="USACO 4.3 Letter Game" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2017/01/27/2017-01-27-USACO-LetterGame/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Enumeration/">Enumeration</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Permutation/">Permutation</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/String/">String</a></li></ul>
 
     </footer>
   </div>
@@ -241,7 +179,7 @@
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/page/13/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><a class="page-number" href="/page/13/">13</a><span class="page-number current">14</span><a class="page-number" href="/page/15/">15</a><a class="page-number" href="/page/16/">16</a><span class="space">&hellip;</span><a class="page-number" href="/page/99/">99</a><a class="extend next" rel="next" href="/page/15/">Next &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/13/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><a class="page-number" href="/page/13/">13</a><span class="page-number current">14</span><a class="page-number" href="/page/15/">15</a><a class="page-number" href="/page/16/">16</a><span class="space">&hellip;</span><a class="page-number" href="/page/50/">50</a><a class="extend next" rel="next" href="/page/15/">Next &raquo;</a>
   </nav>
 
 </section>

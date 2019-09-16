@@ -75,14 +75,14 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-2017-07-01-TopCoder-SRM716DivI" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2017-02-19-USACO-PollutantControl" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2017/07/03/2017-07-01-TopCoder-SRM716DivI/" class="article-date">
-  <time datetime="2017-07-03T21:02:31.000Z" itemprop="datePublished">2017-07-03</time>
+    <a href="/2017/02/19/2017-02-19-USACO-PollutantControl/" class="article-date">
+  <time datetime="2017-02-19T18:34:31.000Z" itemprop="datePublished">2017-02-19</time>
 </a>
     
   <div class="article-category">
-    <a class="article-category-link" href="/categories/TopCoder/">TopCoder</a>
+    <a class="article-category-link" href="/categories/USACO/">USACO</a>
   </div>
 
   </div>
@@ -93,7 +93,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/03/2017-07-01-TopCoder-SRM716DivI/">SRM 716 DIV II</a>
+      <a class="article-title" href="/2017/02/19/2017-02-19-USACO-PollutantControl/">USACO 4.4 Pollutant Control</a>
     </h1>
   
 
@@ -101,16 +101,136 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> Permutiple &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="built_in">string</span> <span class="title">isPossible</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">        <span class="built_in">string</span> xx = <span class="built_in">std</span>::to_string(x);</span><br><span class="line">        <span class="keyword">do</span> &#123;</span><br><span class="line">            <span class="keyword">int</span> val = <span class="built_in">std</span>::stoi(xx);</span><br><span class="line">            <span class="keyword">if</span> (val &lt;= x) <span class="keyword">continue</span>;</span><br><span class="line">            <span class="keyword">if</span> (val % x == <span class="number">0</span>) <span class="keyword">return</span> <span class="string">"Possible"</span>;</span><br><span class="line">        &#125; <span class="keyword">while</span> (<span class="built_in">std</span>::next_permutation(xx.begin(), xx.end()));</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"Impossible"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> ConstructLCSEasy &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="built_in">string</span> <span class="title">construct</span><span class="params">(<span class="keyword">int</span> ab, <span class="keyword">int</span> bc, <span class="keyword">int</span> ca)</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="built_in">string</span> <span class="title">AB</span><span class="params">(ab, <span class="string">'1'</span>)</span></span>;</span><br><span class="line">        <span class="built_in">string</span> BC = AB, CA = AB;</span><br><span class="line">        <span class="keyword">int</span> diff2 = bc - ab;</span><br><span class="line">        <span class="keyword">while</span> (diff2--) &#123;</span><br><span class="line">            BC += <span class="string">"0"</span>; CA += <span class="string">"0"</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> diff3 = ca - ab;</span><br><span class="line">        <span class="keyword">while</span> (diff3--) &#123;</span><br><span class="line">            AB += <span class="string">"1"</span>; CA += <span class="string">"1"</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> AB + <span class="string">" "</span> + BC + <span class="string">" "</span> + CA;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+        <p>It is an obvious max flow min cut problem. The nasty part of this problems is:</p>
+<ul>
+<li>There might be multiple routes between same warehouses, so the graph might contain multiple edges between two vertices.</li>
+<li>The output requires to print the routes under certain constraints, instead of just asking about the min cut cost.</li>
+</ul>
+<p>The idea is:</p>
+<ul>
+<li>Find the max flow first. The cost of the max flow must be min cut.</li>
+<li>Sort all edges in cost descending order. Then iterate through the sorted edges, do two things:<ul>
+<li>Remove this edge from the graph temporarily, calculate the maximum flow value. If the diff between the calculated maximum flow value and the original max flow value (the value calculated without removing the edge from the graph) is the capacity of the edge, then this edge must be in the min cut.</li>
+<li>If an edge is in a min cut, remove this edge from the graph, and repeat, until we get all edges.</li>
+</ul>
+</li>
+</ul>
+<p>This code is a simple modification of the <a href="http://lianghan.org/2017/01/04/2017-01-04-USACO-DrainageDitches.h/">Drainage Ditches Problem Solution</a> that fits this problem, however it does not pass all test data because it does not deal with multiple edges connecting same two vertices. Will post another solution soon. </p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;climits&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;functional&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;numeric&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> N, M, Si, Ei, Ci;</span><br><span class="line"><span class="keyword">struct</span> Edge &#123;</span><br><span class="line">    <span class="keyword">int</span> to, cap, rev, index;</span><br><span class="line">    Edge(<span class="keyword">int</span> to, <span class="keyword">int</span> cap, <span class="keyword">int</span> rev, <span class="keyword">int</span> index) :</span><br><span class="line">    to(to), cap(cap), rev(rev), index(index) &#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;Edge&gt;&gt; graph;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;Edge&gt;&gt; graphCopy;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt; visited;</span><br><span class="line"><span class="built_in">vector</span>&lt;Edge*&gt; edges;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">addEdge</span><span class="params">(<span class="keyword">int</span> from, <span class="keyword">int</span> to, <span class="keyword">int</span> cap, <span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    graph[from].emplace_back(Edge(to, cap, (<span class="keyword">int</span>)graph[to].size(), index));</span><br><span class="line">    graph[to].emplace_back(Edge(from, <span class="number">0</span>, (<span class="keyword">int</span>)graph[from].size() - <span class="number">1</span>, index));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Ford–Fulkerson</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> v, <span class="keyword">int</span> t, <span class="keyword">int</span> f)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (v == t)</span><br><span class="line">    <span class="keyword">return</span> f;</span><br><span class="line">    visited[v] = <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">int</span> size = (<span class="keyword">int</span>)graph[v].size();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; size; ++i) &#123;</span><br><span class="line">        <span class="keyword">auto</span> &amp;e = graph[v][i];</span><br><span class="line">        <span class="keyword">if</span> (visited[e.to] || e.cap &lt;= <span class="number">0</span>) <span class="keyword">continue</span>;</span><br><span class="line">        <span class="keyword">int</span> d = dfs(e.to, t, <span class="built_in">std</span>::min(f, e.cap));</span><br><span class="line">        <span class="keyword">if</span> (d &lt;= <span class="number">0</span>) <span class="keyword">continue</span>;</span><br><span class="line">        e.cap -= d;</span><br><span class="line">        graph[e.to][e.rev].cap += d;</span><br><span class="line">        <span class="keyword">return</span> d;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">maxFlow</span><span class="params">(<span class="keyword">int</span> s, <span class="keyword">int</span> t)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> flow = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">        <span class="built_in">std</span>::fill(visited.begin(), visited.end(), <span class="literal">false</span>);</span><br><span class="line">        <span class="keyword">int</span> f = dfs(s, t, INT_MAX);</span><br><span class="line">        <span class="keyword">if</span> (f == <span class="number">0</span>) <span class="keyword">return</span> flow;</span><br><span class="line">        flow += f;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"milk6.in"</span>)</span></span>;</span><br><span class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"milk6.out"</span>)</span></span>;</span><br><span class="line">    </span><br><span class="line">    fin &gt;&gt; N <span class="comment">/* warehouses - vertices */</span> &gt;&gt; M <span class="comment">/* trucks - edges */</span>;</span><br><span class="line">    graph = <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;Edge&gt;&gt;(N + <span class="number">1</span>, <span class="built_in">vector</span>&lt;Edge&gt;());</span><br><span class="line">    </span><br><span class="line">    visited = <span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt;(N + <span class="number">1</span>, <span class="literal">false</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; M; ++i) &#123;</span><br><span class="line">        fin &gt;&gt; Si &gt;&gt; Ei &gt;&gt; Ci;</span><br><span class="line">        addEdge(Si, Ei, Ci, i);</span><br><span class="line">        <span class="comment">//cout &lt;&lt; Si &lt;&lt; " " &lt;&lt; Ei &lt;&lt; " " &lt;&lt; Ci &lt;&lt; " " &lt;&lt; i &lt;&lt; endl;</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;edge : graph[i]) &#123;</span><br><span class="line">            <span class="keyword">if</span> (edge.cap == <span class="number">0</span>) <span class="keyword">continue</span>;</span><br><span class="line">            edges.emplace_back(&amp;edge);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    sort(edges.begin(), edges.end(), [] (Edge *e1, <span class="keyword">const</span> Edge *e2) &#123;</span><br><span class="line">        <span class="keyword">return</span> e1-&gt;cap &gt; e2-&gt;cap;</span><br><span class="line">    &#125;);</span><br><span class="line">    </span><br><span class="line">    graphCopy = graph;</span><br><span class="line">    <span class="keyword">int</span> ans = maxFlow(<span class="number">1</span>, N);</span><br><span class="line">    graph = graphCopy;</span><br><span class="line">    <span class="keyword">int</span> total = ans;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; ret;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; edges.size(); ++i) &#123;</span><br><span class="line">        <span class="comment">//cout &lt;&lt; "cap : " &lt;&lt; edges[i]-&gt;cap &lt;&lt; "; index : " &lt;&lt; edges[i]-&gt;index &lt;&lt; endl;</span></span><br><span class="line">        graphCopy = graph;</span><br><span class="line">        <span class="keyword">int</span> cap = edges[i]-&gt;cap;</span><br><span class="line">        edges[i]-&gt;cap -= cap;</span><br><span class="line">        <span class="keyword">int</span> flow = maxFlow(<span class="number">1</span>, N);</span><br><span class="line">        <span class="keyword">if</span> (ans - flow == cap) &#123;</span><br><span class="line">            ret.push_back(edges[i]-&gt;index);</span><br><span class="line">            graph = graphCopy;</span><br><span class="line">            ans = flow;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            graph = graphCopy;</span><br><span class="line">            edges[i]-&gt;cap += cap;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    fout &lt;&lt; total - ans &lt;&lt; <span class="string">" "</span> &lt;&lt; ret.size() &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> val : ret) &#123;</span><br><span class="line">        fout &lt;&lt; val + <span class="number">1</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/07/03/2017-07-01-TopCoder-SRM716DivI/" data-id="ck0lylpc1002g3vxgwepovwpn" data-title="SRM 716 DIV II" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2017/02/19/2017-02-19-USACO-PollutantControl/" data-id="ck0lytogz0025b4xg3h5bedxn" data-title="USACO 4.4 Pollutant Control" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2017/07/03/2017-07-01-TopCoder-SRM716DivI/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2017/02/19/2017-02-19-USACO-PollutantControl/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Ford-Fulkerson/">Ford-Fulkerson</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Graph-Theory/">Graph Theory</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Network-Flow/">Network Flow</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-2017-02-11-DynamoPaper" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/02/11/2017-02-11-DynamoPaper/" class="article-date">
+  <time datetime="2017-02-12T03:36:31.000Z" itemprop="datePublished">2017-02-11</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Distributed-System/">Distributed System</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/02/11/2017-02-11-DynamoPaper/">Dynamo, Amazon’s Highly Available Key-value Store</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Paper digest - <a href="http://s3.amazonaws.com/AllThingsDistributed/sosp/amazon-dynamo-sosp2007.pdf" target="_blank" rel="noopener">Dynamo: Amazon’s Highly Available Key-value Store </a></p>
+<h1 id="Motivation"><a href="#Motivation" class="headerlink" title="Motivation"></a>Motivation</h1><ul>
+<li>A highly available key-value storage system that manages state of Amazon services.</li>
+<li>Reliability at massive scale, provide an “always-on” experience.</li>
+</ul>
+<h1 id="Requirements"><a href="#Requirements" class="headerlink" title="Requirements"></a>Requirements</h1><ul>
+<li><p>Query Model: simple read and write operations to objects (relatively small, usually less than 1MB) that is uniquely identified by a key. </p>
+</li>
+<li><p>ACID (Atomicity, Consistency, Isolation, Durability) : weak consistency, no isolation, only single key update.</p>
+</li>
+<li><p>Efficiency: </p>
+<ul>
+<li>Function on a commodity hardware infrastructure.</li>
+<li>Strict latency requirements and SLA.</li>
+<li>Configurable to achieve customizable latency and throughput requirements.</li>
+</ul>
+</li>
+<li><p>Operation and Security:</p>
+<ul>
+<li>No authentication and authorization (operating in non-hostile environment). </li>
+<li>Scale up (each service uses its distinct instance of Dynamo).</li>
+</ul>
+</li>
+<li><p>SLA:</p>
+<ul>
+<li>Traditional SLA metrics (average, median and expected variance) are not good enough to build a system where all customers have a good experience.</li>
+<li>SLAs are expressed and measured at the 99.9th percentile of the distribution. Choose 99.9 for cost effective.</li>
+</ul>
+</li>
+</ul>
+<h1 id="System-Design"><a href="#System-Design" class="headerlink" title="System Design"></a>System Design</h1><ul>
+<li>Favor availability over consistency by using optimistic replication techniques.</li>
+<li>Optimistic replication introduces conflict. Conflict resolution introduces two problems: when to resolve them and who resolves them.<ul>
+<li>When to resolve:<ul>
+<li>Write time: writes may be rejected if the data store cannot reach all the replicas at a given time. This leads to poor user experience.</li>
+<li>Read time: Dynamo targets the design space of an “always write-able” data store. So conflicts are resolved at read time.</li>
+</ul>
+</li>
+<li>Who to perform resolve:<ul>
+<li>Configurable.</li>
+<li>System level resolution: last write wins.</li>
+<li>Application level resolution: interactive guided merge conflicts, etc.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Other design considerations: Incremental scalability, Symmetry, Decentralization, Heterogeneity.</li>
+</ul>
+<h1 id="System-Architecture"><a href="#System-Architecture" class="headerlink" title="System Architecture"></a>System Architecture</h1><ul>
+<li>Partitioning: Consistent Hashing.</li>
+<li>Replication: Replicated write protocol with configurable NWR parameters.</li>
+<li>Conflict Resolution: Vector clock.</li>
+<li>Temporary failures: Sloppy Quorum and hinted handoff.</li>
+<li>Recovering from permanent failures: Merkle trees.</li>
+<li>Membership and failure detection: Gossip-based membership protocol and failure detection. </li>
+</ul>
+<h1 id="To-be-continued"><a href="#To-be-continued" class="headerlink" title="To be continued."></a>To be continued.</h1>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2017/02/11/2017-02-11-DynamoPaper/" data-id="ck0lytogx0023b4xg8npoapct" data-title="Dynamo, Amazon’s Highly Available Key-value Store" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2017/02/11/2017-02-11-DynamoPaper/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Distributed-System/">Distributed System</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Paper-Digest/">Paper Digest</a></li></ul>
+
     </footer>
   </div>
   
@@ -123,7 +243,7 @@
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/page/11/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="page-number" href="/page/11/">11</a><span class="page-number current">12</span><a class="page-number" href="/page/13/">13</a><a class="page-number" href="/page/14/">14</a><span class="space">&hellip;</span><a class="page-number" href="/page/99/">99</a><a class="extend next" rel="next" href="/page/13/">Next &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/11/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="page-number" href="/page/11/">11</a><span class="page-number current">12</span><a class="page-number" href="/page/13/">13</a><a class="page-number" href="/page/14/">14</a><span class="space">&hellip;</span><a class="page-number" href="/page/50/">50</a><a class="extend next" rel="next" href="/page/13/">Next &raquo;</a>
   </nav>
 
 </section>

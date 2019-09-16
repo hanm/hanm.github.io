@@ -75,10 +75,10 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-2017-07-01-ConsensusInTheCloud" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2017-03-03-ZooKeeper Consistency Guarantees" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2017/07/03/2017-07-01-ConsensusInTheCloud/" class="article-date">
-  <time datetime="2017-07-03T21:07:31.000Z" itemprop="datePublished">2017-07-03</time>
+    <a href="/2017/03/03/2017-03-03-ZooKeeper Consistency Guarantees/" class="article-date">
+  <time datetime="2017-03-03T22:10:31.000Z" itemprop="datePublished">2017-03-03</time>
 </a>
     
   <div class="article-category">
@@ -93,7 +93,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/03/2017-07-01-ConsensusInTheCloud/">Paper Digest - Consensus in the Cloud - Paxos Systems Demystified</a>
+      <a class="article-title" href="/2017/03/03/2017-03-03-ZooKeeper Consistency Guarantees/">ZooKeeper Consistency Guarantees</a>
     </h1>
   
 
@@ -101,134 +101,98 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Paper digest - <a href="https://www.cse.buffalo.edu/tech-reports/2016-02.pdf" target="_blank" rel="noopener">Consensus in the Cloud - Paxos Systems Demystified</a></p>
-<h1 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h1><ul>
-<li>Compared several popular Paxos protocols and Paxos systems and present advantages and disadvantages for each.</li>
-<li>Categorized the coordination use-patterns in cloud, and examine Google and Facebook infrastructures, as well as use cases of Paxos in Apache projects.</li>
-<li>Analyzed tradeoffs in the distributed coordination domain and identify promising future directions.</li>
-</ul>
-<h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><ul>
-<li>Coordination plays a major role in cloud computing systems:<ul>
-<li>Leader election</li>
-<li>Group membership</li>
-<li>Cluster management</li>
-<li>Service discovery</li>
-<li>Resource/access management</li>
-<li>Consistent replication of the master nodes in services</li>
-<li>Barrier-orchestration when running large analytic tasks</li>
-<li>And so on..</li>
+        <p>There are many consistency models out there, from stronger ones to weaker ones. What consistency model best describes ZooKeeper? </p>
+<h1 id="Consistency-Models"><a href="#Consistency-Models" class="headerlink" title="Consistency Models"></a>Consistency Models</h1><p>It is useful to think consistency models from two perspectives: server side (data centric) and client side (client centric), in particular in the context of ZooKeeper (or a general distributed storage system that is composed of clients and servers.).</p>
+<ul>
+<li>Data Centric Consistency Models<ul>
+<li>Strict Consistency<br>The strongest consistency model for distributed systems. All changes to system state are required to populate to all replicas instantly, so any write should be immediately visible to all parts of the system (both server and client). More formally, any read on a data item should returns a value corresponding to the result of the most recent write on this item. This system model is not possible to implement on top of the current hardware for distributed systems, because it requires a global clock (for strict ordering), and zero latency and infinite bandwidth for communications between different parts of the system. A closer resemble of a system that satisfy this model is a single machine where latency / bandwidth / clock constraints are almost satisfied (even on a single machine, achieve strict consistency is hard due to cache hierarchies and latencies of memory / cache access.).<br>Because of the impossibilities of implementation, a less strict model called atomic register was proposed (from Leslie Lamport), and a particular version of this model is known as linearizable consistency.<ul>
+<li>Linearizable consistency<br>Linearizable consistency model, comparing to strict consistency model, takes the latency into account, so it does not require writes to an item being visible instantly. The real constraint of this consistency model is that the operations can’t interleave, can’t be reordered, and the sequence of writes are visible in strict global ordering as these writes were issued. It is a recency guarantee such that if a change to the value is visible to one client, the change has to be visible to all clients. A client can’t read old value if some other clients have seen the new value. The change history is linearized such that all operations appear to have executed atomically in the order that is consistent with the global real time ordering of operations. One nice property of linearizable consistency is that it composes - which is an extremely useful property for reasoning about the behavior of concurrent operations in distributed systems.</li>
 </ul>
 </li>
-<li>The coordination problem has been studied extensively under the name “distributed consensus”.</li>
-<li>Paxos rise to fame with Google Chubby (lock service for GFS).</li>
-<li>Apache ZooKeeper as a coordination kernel<ul>
-<li>File system abstraction easy to use.</li>
-<li>Abused / misused, often constituted the bottleneck in performance of these applications and caused scalability problems.</li>
+<li>Sequential Consistency<br>Sequential consistency is a weaker consistency model comparing to linearizable consistency. It requires all operations appear to have executed atomically in some order, and the key constraint is that this order that is visible to all part of the system has to be consistent. However, this order does not have to be consistent with the ordering of the original operations. Because of this, the system is free to reorder the executions of the operations, it just need to satisfy a globally consistent visible orderings of operations for all clients. That is the key difference between linearizable consistency model. Also, sequential consistency does not compose as linearizable consistency does.</li>
+<li>Causal Consistency<br>Causal consistency is a even weaker model than sequential consistency. It only requires causally related writes must be visible by all processes, while none causally related writes are free to executed in any order. This violates the constraint for sequential consistency (all writes must converge to the same order), so it is weaker model than sequential consistency. Sequential consistency is thus by definition implicitly causal consistency as well.</li>
+<li>Eventual Consistency<br>The weakest consistency model, ever. Distributed systems adopt this model makes a lot things harder, though it is good trade off to make in certain use case. Eventual consistency is more about a liveness property (that values converge finally), so it is usually trivially satisfiable in most systems.</li>
 </ul>
 </li>
-<li>More choices nowadays (Raft, etc), with confusions still remained:<ul>
-<li>Proper use cases.</li>
-<li>Which systems are more suitable for which tasks:<ul>
-<li>Paxos protocols (e.g. multi-paxos, Raft, ZAB) are useful for low-level components for server replication.</li>
-<li>Paxos systems (e.g. ZK) are useful for highly-available/durable metadata management with constraints that all metadata fit in main-memory and are not subject to very frequent changes.</li>
+<li>Client Centric Consistency Models:<ul>
+<li>Monotonic reads<br>Once read, subsequent reads on that data items return same or more recent values.</li>
+<li>Monotonic writes<br>A write must be propagated to all replicas before a successive write by the same process; writes from same process are processed in same order.</li>
+<li>Read your writes<br>read(x) always returns write(x) by that process.</li>
+<li>Writes follow reads<br>write(x) following read(x) will take place on same or more recent version of x.</li>
 </ul>
 </li>
 </ul>
-</li>
+<p>With all these said, what consistency model ZooKeeper fit in?</p>
+<ul>
+<li>Linearizable consistency: ZooKeeper does not guarantee linearizable consistency. Two ZooKeeper clients can see two different values of the same data item (value of znode) at the same time - e.g. one client can see an old value while the other client can see the new value. Even with the sync command, which stalls the write processors, it is still possible that a client miss a value of the write (e.g. after sync executed finished but before client gets the updated value, another client issuing a new write that update the value again.). Also due to potential network delays it is hard to guarantee that operations on all clients happen on same order globally.</li>
+<li>Sequential consistency: this is what ZooKeeper guarantees. Sequential consistency does not care about exact ordering of operations and ZooKeeper can reorder operations, but all the operations ordering will converge to a single globally consistent ordering that is visible to all clients (eventually, or near instantly if client uses sync command.).</li>
+<li>Causal consistency: because ZooKeeper satisfies sequential consistency, it also satisfy causal consistency. More specifically, since causal consistency is a stronger guarantee than read your writes and monotonic reads, those properties are also guaranteed. </li>
+<li>Monotonic reads / Read your writes: as discussed, these are trivially satisfied with stronger guarantee. Note in practice there are a lot of corner cases to consider to satisfy these properties from a client point of view, for example what if a client disconnect and connect to a server node where it does not have latest values for the same znode client has seen before (that this server lags behind leader, which is normal because ZooKeeper only requires a quorum of servers in sync with leader). This and similar cases are handled by the guarantees of ZooKeeper session which provides some strong guarantees with regards to how client and server could interact (will describe this in a future post). </li>
+<li>Monotonic writes: ZooKeeper does not satisfy this because a write is only required to be replicated to a quorum of servers.</li>
+<li>Also a side note is there is a long pending bug of the sync operation - it is not a quorum operation so the guarantee it provides only apply if the client is connecting to leader.. this needs to be fixed, soon.</li>
 </ul>
-<h1 id="Paxos-Protocols"><a href="#Paxos-Protocols" class="headerlink" title="Paxos Protocols"></a>Paxos Protocols</h1><ul>
-<li>Protocols<ul>
-<li>Paxos: fault-tolerant consensus for a single value.</li>
-<li>Multi-Paxos: fault-tolerant consensus for multiple values.</li>
-<li>ZAB: additional constraints on Paxos (primary global order).</li>
-<li>Raft: very similar to ZAB with some implementation level difference.</li>
-</ul>
-</li>
-<li>Differences<ul>
-<li>Leader Election:<ul>
-<li>Zab and Raft protocols differ from Paxos as they divide execution into phases (called epochs in Zab and terms in Raft).</li>
-<li>Each epoch begins with a new election, goes into the broadcast phase and ends with a leader failure.</li>
-<li>The phases are sequential because of the additional safety properties are provided by the isLeader predicate.</li>
-<li>Zab and Raft there can be at most one leader at any time.</li>
-<li>Paxos can have multiple leaders coexisting.</li>
-</ul>
-</li>
-<li>Zab has discovery and sync phase, Raft does not which simplifies algorithm but makes recover longer, possibly.</li>
-<li>Communication:<ul>
-<li>ZAB is messaging model. Each update requires at least three messages:<ul>
-<li>proposal, ack and commit</li>
-</ul>
-</li>
-<li>Raft use RPC.</li>
-</ul>
-</li>
-<li>Dynamic reconfiguration:<ul>
-<li>Reconfig is just another command go through consensus process.</li>
-<li>To ensure safety, new config cannot be activated immediately and the configuration changes must go through two phases.</li>
-<li>A process can only propose commands for slots with known configuration, ∀ρ : ρ.slotin &lt; ρ.slotout+ WINDOW.</li>
-<li>With primary order property provided by Zab and Raft, both protocols are able to implement their reconfiguration algorithms without limitations to normal operations or external services.</li>
-<li>Both Zab and Raft include a pre-phase where the new processes join the cluster as a non-voting members so that the leader in Cold could initialize their states by transferring currently committed prefix of updates.</li>
-<li>In Zab, the time between new config proposed and committed, any commands received after reconfig is only scheduled but will not commit.</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>Paxos Extensions<ul>
-<li>Generalized Paxos: allows acceptors to vote for independent commands.</li>
-<li>EPaxos:<ul>
-<li>allows nodes to commit conflict free commands by checking the command dependency list.</li>
-<li>adds significant complexity and extra effort to resolve the conflict if concurrent commands do not commute.</li>
-<li><strong>from an engineer’s perspective, the sketch algorithm descriptions in the literature are often underspecified, and lead to divergent interpretations and implementations.</strong></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<h1 id="Paxos-Systems"><a href="#Paxos-Systems" class="headerlink" title="Paxos Systems"></a>Paxos Systems</h1><ul>
-<li>Chubby, Apache ZooKeeper, etcd<ul>
-<li>All three services hide the replicated state machine and log abstractions under a small data-store with filesystem-like API.</li>
-<li>All three support watchers.</li>
-<li>All three support ephemeral storage.</li>
-<li>All three support observers (none voting quorum peer).</li>
-</ul>
-</li>
-<li>Difference<ul>
-<li>ZK provides client FIFO order.</li>
-<li>etcd is stateless (<strong>note, not very true with etcd 3.0’s lease, which is ZK session kind things.</strong>)</li>
-<li>etcd has TTL (<strong>note, ZK has ttl too after 3.5.3.</strong>)</li>
-<li>etcd has hidden data (MVCC).</li>
-<li>ZK has weighted quorum.</li>
-</ul>
-</li>
-<li>Proper use criteria for Paxos systems<ul>
-<li><strong>Paxos system should not be in the performance critical path of the application.</strong></li>
-<li><strong>Frequency of write operations to the Paxos system should be kept low</strong></li>
-<li><strong>Amount of data maintained in the Paxos system should be kept small</strong></li>
-<li><strong>Application adopting the Paxos system should really require strong consistency</strong></li>
-<li><strong>Application adopting the Paxos system should not be distributed over the Wide Area Network (WAN).</strong></li>
-<li><strong> The API abstraction should be fit the goal.</strong></li>
-</ul>
-</li>
-</ul>
-<h1 id="Paxos-Usage-Patterns"><a href="#Paxos-Usage-Patterns" class="headerlink" title="Paxos Usage Patterns"></a>Paxos Usage Patterns</h1><ul>
-<li>Server Replication (SR)</li>
-<li>Log Replication (LR)</li>
-<li>Synchronization Service (SS).</li>
-<li>Barrier Orchestration (BO).</li>
-<li>Configuration Management.</li>
-<li>Message Queues (Q).</li>
-</ul>
-<h1 id="Paxos-Uasage-in-Production"><a href="#Paxos-Uasage-in-Production" class="headerlink" title="Paxos Uasage in Production"></a>Paxos Uasage in Production</h1>
+
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/07/03/2017-07-01-ConsensusInTheCloud/" data-id="ck0lylpc3002j3vxg86mlypp4" data-title="Paper Digest - Consensus in the Cloud - Paxos Systems Demystified" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2017/03/03/2017-03-03-ZooKeeper Consistency Guarantees/" data-id="ck0lytoh30029b4xgjpbvmaqx" data-title="ZooKeeper Consistency Guarantees" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2017/07/03/2017-07-01-ConsensusInTheCloud/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2017/03/03/2017-03-03-ZooKeeper Consistency Guarantees/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Consensus-Protocol/">Consensus Protocol</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Paper-Digest/">Paper Digest</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Paxos/">Paxos</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ZooKeeper/">ZooKeeper</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-2017-02-22-USACO-FrameUp" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/02/22/2017-02-22-USACO-FrameUp/" class="article-date">
+  <time datetime="2017-02-23T00:31:31.000Z" itemprop="datePublished">2017-02-22</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/USACO/">USACO</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/02/22/2017-02-22-USACO-FrameUp/">USACO 4.4 Frame Up</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>The problem description mentions:</p>
+<ul>
+<li>It is possible to see at least one part of each of the four sides of a frame.</li>
+</ul>
+<p>With the information of the position of each side, we can calculate the position of each frame, as each frame can be determined by its left/down and right/up (or left/up right/down) corner. The relationship of frame B stacks on top of frame A can be modeled as a directed graph where A and B are vertices and there is an edge from A to B. Then do a topological sort pass to generate the result. Note it requires all possible results of topological sort, which requires back tracking with DFS. A good reference implementation of such algorithm can be found <a href="http://www.geeksforgeeks.org/all-topological-sorts-of-a-directed-acyclic-graph/" target="_blank" rel="noopener">here</a>.</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstring&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> H, W;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; min_x(<span class="number">30</span>, <span class="number">-1</span>);</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; min_y(<span class="number">30</span>, <span class="number">-1</span>);</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; max_x(<span class="number">30</span>, <span class="number">-1</span>);</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; max_y(<span class="number">30</span>, <span class="number">-1</span>);</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt; exist(<span class="number">30</span>, <span class="literal">false</span>);</span><br><span class="line"><span class="keyword">char</span> grid[<span class="number">33</span>][<span class="number">33</span>]; <span class="comment">// processed input.</span></span><br><span class="line"><span class="keyword">int</span> g[<span class="number">30</span>][<span class="number">30</span>]; <span class="comment">// matrix representation of graph.</span></span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; in_degree(<span class="number">30</span>, <span class="number">0</span>);</span><br><span class="line"><span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"frameup.in"</span>)</span></span>;</span><br><span class="line"><span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"frameup.out"</span>)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> ans[<span class="number">30</span>], nans = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">buildGraph</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    fin &gt;&gt; H &gt;&gt; W;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; H; ++i) &#123;</span><br><span class="line">        fin &gt;&gt; grid[i];</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; W; ++j) &#123;</span><br><span class="line">            <span class="built_in">cout</span> &lt;&lt; grid[i][j];</span><br><span class="line">            <span class="keyword">if</span>(grid[i][j] == <span class="string">'.'</span>) <span class="keyword">continue</span>;</span><br><span class="line">            <span class="keyword">int</span> v = grid[i][j] - <span class="string">'A'</span>;</span><br><span class="line">            <span class="keyword">if</span>(min_x[v] == <span class="number">-1</span> || min_x[v]&gt;i) min_x[v] = i;</span><br><span class="line">            <span class="keyword">if</span>(min_y[v] == <span class="number">-1</span> || min_y[v]&gt;j) min_y[v] = j;</span><br><span class="line">            <span class="keyword">if</span>(max_x[v] == <span class="number">-1</span> || max_x[v]&lt;i) max_x[v] = i;</span><br><span class="line">            <span class="keyword">if</span>(max_y[v] == <span class="number">-1</span> || max_y[v]&lt;j) max_y[v] = j;</span><br><span class="line">            exist[v] = <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> u = <span class="number">0</span>; u &lt; <span class="number">26</span>; ++u) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!exist[u]) <span class="keyword">continue</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> y = min_y[u]; y &lt;= max_y[u]; ++y) &#123;</span><br><span class="line">            <span class="keyword">int</span> v = grid[min_x[u]][y] - <span class="string">'A'</span>;</span><br><span class="line">            <span class="keyword">if</span>(v != u &amp;&amp; !g[u][v]) &#123;</span><br><span class="line">                g[u][v] = <span class="number">1</span>; ++in_degree[v];</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            v = grid[max_x[u]][y] - <span class="string">'A'</span>;</span><br><span class="line">            <span class="keyword">if</span>(v != u &amp;&amp; !g[u][v]) &#123;</span><br><span class="line">                g[u][v] = <span class="number">1</span>; ++in_degree[v];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> x = min_x[u]; x &lt;= max_x[u]; ++x) &#123;</span><br><span class="line">            <span class="keyword">int</span> v = grid[x][min_y[u]] - <span class="string">'A'</span>;</span><br><span class="line">            <span class="keyword">if</span>(v != u &amp;&amp; !g[u][v]) &#123;</span><br><span class="line">                g[u][v] = <span class="number">1</span>; ++in_degree[v];</span><br><span class="line">            &#125;</span><br><span class="line">            v = grid[x][max_y[u]] - <span class="string">'A'</span>;</span><br><span class="line">            <span class="keyword">if</span>(v != u &amp;&amp; !g[u][v]) &#123;</span><br><span class="line">                g[u][v] = <span class="number">1</span>; ++in_degree[v];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// DFS that generates all topological sorts in alphabetic order.</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dfs</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">bool</span> all_used = <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">26</span>; ++i) &#123;</span><br><span class="line">        <span class="keyword">if</span>(exist[i]) &#123;</span><br><span class="line">            all_used = <span class="literal">false</span>;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span>(all_used) &#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; nans; ++i) &#123;</span><br><span class="line">            fout &lt;&lt; (<span class="keyword">char</span>)(ans[i] + <span class="string">'A'</span>);</span><br><span class="line">            <span class="built_in">cout</span> &lt;&lt; (<span class="keyword">char</span>)(ans[i] + <span class="string">'A'</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        fout &lt;&lt; <span class="built_in">endl</span>; <span class="built_in">cout</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> u = <span class="number">0</span>; u &lt; <span class="number">26</span>; ++u) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!exist[u]) <span class="keyword">continue</span>;</span><br><span class="line">        <span class="keyword">if</span> (in_degree[u]) <span class="keyword">continue</span>;</span><br><span class="line">        exist[u] = <span class="literal">false</span>;</span><br><span class="line">        ans[nans++] = u;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> v = <span class="number">0</span>; v &lt; <span class="number">26</span>; ++v) &#123;</span><br><span class="line">            <span class="keyword">if</span>(g[u][v]) --in_degree[v];</span><br><span class="line">        &#125;</span><br><span class="line">        dfs();</span><br><span class="line">        exist[u] = <span class="literal">true</span>;</span><br><span class="line">        nans--;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> v = <span class="number">0</span>; v &lt; <span class="number">26</span>; ++v) &#123;</span><br><span class="line">            <span class="keyword">if</span>(g[u][v]) in_degree[v]++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    buildGraph();</span><br><span class="line">    dfs();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2017/02/22/2017-02-22-USACO-FrameUp/" data-id="ck0lytoh10027b4xgvy22n08v" data-title="USACO 4.4 Frame Up" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2017/02/22/2017-02-22-USACO-FrameUp/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Backtrack/">Backtrack</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Topological-Sort/">Topological Sort</a></li></ul>
 
     </footer>
   </div>
@@ -242,7 +206,7 @@
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/page/10/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="page-number" href="/page/10/">10</a><span class="page-number current">11</span><a class="page-number" href="/page/12/">12</a><a class="page-number" href="/page/13/">13</a><span class="space">&hellip;</span><a class="page-number" href="/page/99/">99</a><a class="extend next" rel="next" href="/page/12/">Next &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/10/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="page-number" href="/page/10/">10</a><span class="page-number current">11</span><a class="page-number" href="/page/12/">12</a><a class="page-number" href="/page/13/">13</a><span class="space">&hellip;</span><a class="page-number" href="/page/50/">50</a><a class="extend next" rel="next" href="/page/12/">Next &raquo;</a>
   </nav>
 
 </section>

@@ -75,14 +75,14 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-2017-02-01-ByzantineFaultTolerance" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2016-11-01-USACO-StringsOrbits.h" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2017/02/01/2017-02-01-ByzantineFaultTolerance/" class="article-date">
-  <time datetime="2017-02-01T18:32:31.000Z" itemprop="datePublished">2017-02-01</time>
+    <a href="/2016/11/01/2016-11-01-USACO-StringsOrbits.h/" class="article-date">
+  <time datetime="2016-11-01T22:21:31.000Z" itemprop="datePublished">2016-11-01</time>
 </a>
     
   <div class="article-category">
-    <a class="article-category-link" href="/categories/Distributed-System/">Distributed System</a>
+    <a class="article-category-link" href="/categories/USACO/">USACO</a>
   </div>
 
   </div>
@@ -93,7 +93,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/02/01/2017-02-01-ByzantineFaultTolerance/">Why we need n &gt;= 3f + 1 in Byzantine Fault Tolerance</a>
+      <a class="article-title" href="/2016/11/01/2016-11-01-USACO-StringsOrbits.h/">USACO 3.2 Stringsorbits</a>
     </h1>
   
 
@@ -101,19 +101,64 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>In distributed systems where messages are asynchronous and failures can be Byzantine, we have to use at least n = 3f + 1 replicas in total to tolerate f faulty replicas. But why?</p>
-<p>Consider this scenario: a client sends the same command to each of n servers and then waits for servers to execute the command and send back the result. If we have f byzantine servers, then up to f messages could not be trusted, or up to f servers could not responding. So the client must be able to function with n - f responses. In addition, as the messages are asynchronous, these messages could be delayed for an indefinite amount of time. So if there are f messages not received by client, then it could be also be that these f messages are not from faulty servers, but instead caused by networking partition or slow responding non-faulty servers. In this case, where the f messages are from slow but non-faulty servers, we will have n - f messages remaining and out of these n - f messages, there could be at most f faulty messages again from byzantine servers, so the worst case we will have n - 2f correct message. For the system to function properly, the correct messages must out number faulty messages for client to identify which is which, which implies we should have n - 2f &gt; f, so n &gt; 3f where f is the number of byzantine servers.</p>
-
+        <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;utility&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cmath&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;map&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unordered_map&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;climits&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sstream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> N<span class="comment">/* length of string*/</span>, L<span class="comment">/* max number of bits per string */</span>;</span><br><span class="line"><span class="keyword">long</span> <span class="keyword">long</span> I <span class="comment">/* the order */</span>;</span><br><span class="line"><span class="keyword">int</span> dp[<span class="number">32</span>][<span class="number">32</span>];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">compute</span><span class="params">(<span class="keyword">int</span> i, <span class="keyword">int</span> j)</span></span>&#123;</span><br><span class="line">  <span class="keyword">if</span>(dp[i][j] != <span class="number">0</span>)</span><br><span class="line">    <span class="keyword">return</span> dp[i][j];</span><br><span class="line">  <span class="keyword">else</span>&#123;</span><br><span class="line">    dp[i][j] = compute(i - <span class="number">1</span>, j) + compute(i - <span class="number">1</span>, j - <span class="number">1</span>);</span><br><span class="line">    <span class="keyword">return</span> dp[i][j];</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">  <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"kimbits.in"</span>)</span></span>;</span><br><span class="line">  <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"kimbits.out"</span>)</span></span>;</span><br><span class="line">  </span><br><span class="line">  fin &gt;&gt; N &gt;&gt; L &gt;&gt; I;</span><br><span class="line">  <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= N; i++)&#123;</span><br><span class="line">    dp[i][<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">1</span>; j &lt;= L; j++)&#123;</span><br><span class="line">    dp[<span class="number">0</span>][j] = <span class="number">1</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">for</span>(<span class="keyword">int</span> k = N - <span class="number">1</span>; k &gt;= <span class="number">0</span>; k--)&#123;</span><br><span class="line">    <span class="keyword">if</span>(compute(k, L) &lt; I)&#123;</span><br><span class="line">      <span class="built_in">cout</span> &lt;&lt; <span class="number">1</span>;</span><br><span class="line">      fout &lt;&lt; <span class="number">1</span>;</span><br><span class="line">      I -= compute(k,L);</span><br><span class="line">      L--;</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">      <span class="built_in">cout</span> &lt;&lt; <span class="number">0</span>;</span><br><span class="line">      fout &lt;&lt; <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="built_in">cout</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">  fout &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/02/01/2017-02-01-ByzantineFaultTolerance/" data-id="ck0lylpbr00263vxgiaaxxj0y" data-title="Why we need n &gt;= 3f + 1 in Byzantine Fault Tolerance" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/11/01/2016-11-01-USACO-StringsOrbits.h/" data-id="ck0lytog7001cb4xg2oruq5x3" data-title="USACO 3.2 Stringsorbits" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2017/02/01/2017-02-01-ByzantineFaultTolerance/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2016/11/01/2016-11-01-USACO-StringsOrbits.h/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/BFT/">BFT</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Combination/">Combination</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dynamic-Programming/">Dynamic Programming</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-2016-10-27-Factorials" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/10/27/2016-10-27-Factorials/" class="article-date">
+  <time datetime="2016-10-27T23:35:31.000Z" itemprop="datePublished">2016-10-27</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/USACO/">USACO</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/10/27/2016-10-27-Factorials/">USACO 3.2 Factorials</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Do pre-processing steps to remove the pairs of factor 2 and 5 (which combines together can generate a 0). Then do factorial calculation against preprocessed numbers, and only keep a single digit at each step.<br>Why not just keep a single digit without pre-processing step? Because even if a digit is not zero, it could become zero after multiplying - so we need make sure kill those factors (2 and 5) first.</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> N;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"fact4.in"</span>)</span></span>;</span><br><span class="line">  <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"fact4.out"</span>)</span></span>;</span><br><span class="line">  fin &gt;&gt; N;</span><br><span class="line">  <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; num(N, <span class="number">0</span>);</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">    num[i] = i + <span class="number">1</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">int</span> cnt = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;i : num) &#123;</span><br><span class="line">    <span class="keyword">while</span> (i % <span class="number">5</span> == <span class="number">0</span>) &#123;</span><br><span class="line">      i = i / <span class="number">5</span>;</span><br><span class="line">      ++cnt;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;i : num) &#123;</span><br><span class="line">    <span class="keyword">while</span> (i % <span class="number">2</span> == <span class="number">0</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (cnt == <span class="number">0</span>) <span class="keyword">break</span>;</span><br><span class="line">      i = i / <span class="number">2</span>;</span><br><span class="line">      --cnt;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (cnt == <span class="number">0</span>) <span class="keyword">break</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">long</span> <span class="keyword">long</span> r = <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">    r = (r * num[i]) % <span class="number">10</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="built_in">cout</span> &lt;&lt; r &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">  fout &lt;&lt; r &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2016/10/27/2016-10-27-Factorials/" data-id="ck0lytog40019b4xg811u1d0r" data-title="USACO 3.2 Factorials" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2016/10/27/2016-10-27-Factorials/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Number-Theory/">Number Theory</a></li></ul>
 
     </footer>
   </div>
@@ -127,7 +172,7 @@
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/page/25/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/24/">24</a><a class="page-number" href="/page/25/">25</a><span class="page-number current">26</span><a class="page-number" href="/page/27/">27</a><a class="page-number" href="/page/28/">28</a><span class="space">&hellip;</span><a class="page-number" href="/page/99/">99</a><a class="extend next" rel="next" href="/page/27/">Next &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/25/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/24/">24</a><a class="page-number" href="/page/25/">25</a><span class="page-number current">26</span><a class="page-number" href="/page/27/">27</a><a class="page-number" href="/page/28/">28</a><span class="space">&hellip;</span><a class="page-number" href="/page/50/">50</a><a class="extend next" rel="next" href="/page/27/">Next &raquo;</a>
   </nav>
 
 </section>

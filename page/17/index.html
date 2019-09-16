@@ -75,14 +75,14 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-2017-03-27-Existential Consistency" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2017-01-08-USACO-JobProcessing" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2017/03/27/2017-03-27-Existential Consistency/" class="article-date">
-  <time datetime="2017-03-27T23:26:31.000Z" itemprop="datePublished">2017-03-27</time>
+    <a href="/2017/01/08/2017-01-08-USACO-JobProcessing/" class="article-date">
+  <time datetime="2017-01-09T06:26:31.000Z" itemprop="datePublished">2017-01-08</time>
 </a>
     
   <div class="article-category">
-    <a class="article-category-link" href="/categories/Distributed-System/">Distributed System</a>
+    <a class="article-category-link" href="/categories/USACO/">USACO</a>
   </div>
 
   </div>
@@ -93,7 +93,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/03/27/2017-03-27-Existential Consistency/">Existential Consistency - Measuring and Understanding Consistency at Facebook</a>
+      <a class="article-title" href="/2017/01/08/2017-01-08-USACO-JobProcessing/">USACO 4.2 Job Processing</a>
     </h1>
   
 
@@ -101,103 +101,64 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Paper digest - <a href="http://sigops.org/sosp/sosp15/current/2015-Monterey/240-lu-online.pdf" target="_blank" rel="noopener">Existential Consistency: Measuring and Understanding Consistency at Facebook </a></p>
-<h1 id="Motivation"><a href="#Motivation" class="headerlink" title="Motivation"></a>Motivation</h1><ul>
-<li>Provides real world insights on how to quantify trade offs between performance and consistency wrt replicated storage systems.</li>
-<li>Describes a practical consistency monitoring system that tracks a new consistency metric ideally suited for health monitoring.</li>
-</ul>
-<h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><ul>
-<li>Stronger consistency implementation increases latency and/or decrease throughput.</li>
-<li>Eventual consistency (usually) provides good latency and/or throughput at larger scale. However there are drawbacks:<ul>
-<li>User visible anomalies: e.g. out order comments on social network post.</li>
-<li>Programming complexity: complicated cases to reason about on weaker consistency model.</li>
-</ul>
-</li>
-<li>So lots of recent work focus on providing stronger consistency models to overcome drawbacks of a weaker consistency model.</li>
-<li>But, not much work is done to quantify the trade offs, which this paper addresses.</li>
-<li>Within a cluster, per-object sequential and read-afterwrite consistency are provided. </li>
-<li>Across the entire system, eventual consistency is provided.</li>
-<li>Consistency is measured by running offline consistency checker (that checks various consistency models) on a logs that gathers random samples of social graph system.</li>
-</ul>
-<h1 id="Background"><a href="#Background" class="headerlink" title="Background"></a>Background</h1><ul>
-<li>Facebook’s replicated storage<ul>
-<li>Data model is directed graph.</li>
-<li>User data is persistent in relational database, which is sharded, geo-replicated.</li>
-<li>Each shard has a single maser region. Replication to slave region is async.</li>
-<li>Database is cached (two-level) for the full replica per region. Root / leaf caches. Reads served by leaf cache.</li>
-<li>Write path to cache: invalidation is async.</li>
-</ul>
-</li>
-<li>Consistency models:<ul>
-<li>The usual ones, mentioned again (linearizability, sequential, per object sequential, read-after-write, eventual.)</li>
-<li>Facebook’s consistency: per-object sequential consistency and read-after-write consistency within a cache, and eventual consistency across caches.</li>
-<li>When user session spreads across multiple leaf caches (e.g. load balanced, or leaf cache failed): eventual consistency.</li>
-</ul>
-</li>
-</ul>
-<h1 id="Principled-Consistency-Analysis"><a href="#Principled-Consistency-Analysis" class="headerlink" title="Principled Consistency Analysis"></a>Principled Consistency Analysis</h1><ul>
-<li>Trace<ul>
-<li>Collect trace to identify violation of consistency models.</li>
-<li>Trace only requests to a subset of vertices / edges stored in system for practical feasibility / avoid overhead.</li>
-<li>Requests are logged on the web server that issuing the requests.</li>
-</ul>
-</li>
-<li>Deal with clock skew<ul>
-<li>Solved by adding offsets (We account for this clock skew by expanding the invocation time and response time, i.e., we subtract 35 ms from all invocation times and add 35 ms to all response times.)</li>
-</ul>
-</li>
-<li>Deal with losing logs<ul>
-<li>Use a secondary trace from Wormhole system which is lossy as well but combined with the writes from both trace has good coverage.</li>
-</ul>
-</li>
-<li>The checker<ul>
-<li>Anomaly Checkers<ul>
-<li>Maintaining a directed graph.</li>
-<li>Vertices represent the state of an object.</li>
-<li>Edges represent the constraints on the ordering.</li>
-<li>Check state transition order observed by reads is consistent with these constraints.</li>
-</ul>
-</li>
-<li>Linearizability Checker<ul>
-<li>Model operation as vertices, edges as constraints.</li>
-<li>Check cycles.</li>
-<li>Linearizability requires that there exists a total order that is legal.</li>
-<li>Merging read vertices into the write vertices they observe requires matching reads to write.</li>
-</ul>
-</li>
-<li>Per-Object Sequential and Read-After-Write Checkers<ul>
-<li>As an add on of linearlizability checker which is superset of sequential / RAW consistency.</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>Directions on future research into systems with stronger consistency<ul>
-<li>Build system were non-anomalous types have negligible overhead or</li>
-<li>Provide stronger consistency for a small subset of a larger system. </li>
-<li>While the latter would not prevent all anomalies, it would allow incremental deployment of these systems and significantly reduce the rate of anomalies. </li>
-<li>Interestingly, such a subsystem that does provide linearizability is used within Facebook for a small set of object types, e.g., passwords.</li>
-</ul>
-</li>
-</ul>
-<h1 id="Practical-Consistency-Analysis"><a href="#Practical-Consistency-Analysis" class="headerlink" title="Practical Consistency Analysis"></a>Practical Consistency Analysis</h1><ul>
-<li>Why - need real time (for monitoring) instead of principal analysis (can be only done offline).</li>
-<li>φ-consistency</li>
-</ul>
-<h1 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h1><ul>
-<li>TAO is highly consistent.</li>
-<li>There were anomalies under all of the consistency models we studied. </li>
-</ul>
-
+        <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;climits&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> N, M1, M2;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; va, vb, cost, ta, tb;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">compute</span><span class="params">(<span class="keyword">const</span> <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;vec, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;table)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> size = (<span class="keyword">int</span>)vec.size();</span><br><span class="line">    cost = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(size, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">        <span class="keyword">int</span> min = INT_MAX, index;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; size; ++j) &#123;</span><br><span class="line">            <span class="keyword">int</span> delay = cost[j] + vec[j];</span><br><span class="line">            <span class="keyword">if</span> (min &lt;= delay) <span class="keyword">continue</span>;</span><br><span class="line">            min = delay; index = j;</span><br><span class="line">        &#125;</span><br><span class="line">        cost[index] = min;</span><br><span class="line">        table[i] = min;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"job.in"</span>)</span></span>;</span><br><span class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"job.out"</span>)</span></span>;</span><br><span class="line">    <span class="keyword">int</span> ansA, ansB = INT_MIN;</span><br><span class="line">    fin &gt;&gt; N &gt;&gt; M1 &gt;&gt; M2;</span><br><span class="line">    va = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(M1, <span class="number">0</span>), vb = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(M2, <span class="number">0</span>);</span><br><span class="line">    ta = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N, <span class="number">0</span>), tb = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; M1; ++i) fin &gt;&gt; va[i];</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; M2; ++i) fin &gt;&gt; vb[i];</span><br><span class="line">    compute(va, ta); compute(vb, tb);</span><br><span class="line">    sort(ta.begin(), ta.end());</span><br><span class="line">    sort(tb.begin(), tb.end(), [] (<span class="keyword">int</span> a, <span class="keyword">int</span> b) &#123; <span class="keyword">return</span> a &gt; b; &#125;);</span><br><span class="line">    ansA = ta[N - <span class="number">1</span>];</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">        ansB = <span class="built_in">std</span>::max(ta[i] + tb[i], ansB);</span><br><span class="line">    &#125;</span><br><span class="line">    fout &lt;&lt; ansA &lt;&lt; <span class="string">" "</span> &lt;&lt; ansB &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; ansA &lt;&lt; <span class="string">" "</span> &lt;&lt; ansB &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/03/27/2017-03-27-Existential Consistency/" data-id="ck0lylpbz002d3vxgl74sy7c8" data-title="Existential Consistency - Measuring and Understanding Consistency at Facebook" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2017/01/08/2017-01-08-USACO-JobProcessing/" data-id="ck0lytogq001wb4xgpmvxb4h1" data-title="USACO 4.2 Job Processing" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2017/03/27/2017-03-27-Existential Consistency/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2017/01/08/2017-01-08-USACO-JobProcessing/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Distributed-System/">Distributed System</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Paper-Digest/">Paper Digest</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Greedy/">Greedy</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-2017-01-04-USACO-ThePerfectStall" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/01/04/2017-01-04-USACO-ThePerfectStall/" class="article-date">
+  <time datetime="2017-01-05T05:39:31.000Z" itemprop="datePublished">2017-01-04</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/USACO/">USACO</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/01/04/2017-01-04-USACO-ThePerfectStall/">USACO 4.2 The Pefect Stall</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Standard bipartite match with Hungarain Algorithm.</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> N <span class="comment">/* cows */</span>, M <span class="comment">/* stalls */</span>;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; graph;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; match;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt; visited;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">addEdge</span><span class="params">(<span class="keyword">int</span> u, <span class="keyword">int</span> v)</span> </span>&#123;</span><br><span class="line">    graph[u].emplace_back(v);</span><br><span class="line">    graph[v].emplace_back(u);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> v)</span> </span>&#123;</span><br><span class="line">    visited[v] = <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; graph[v].size(); ++i) &#123;</span><br><span class="line">        <span class="keyword">int</span> u = graph[v][i], w = match[u];</span><br><span class="line">        <span class="keyword">if</span> (w &lt; <span class="number">0</span> || (!visited[w] &amp;&amp; dfs(w))) &#123;</span><br><span class="line">            match[v] = u; match[u] = v;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">bipartite_match</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> ans = <span class="number">0</span>;</span><br><span class="line">    <span class="built_in">std</span>::fill(match.begin(), match.end(), <span class="number">-1</span>);</span><br><span class="line">    <span class="keyword">int</span> size = (<span class="keyword">int</span>)graph.size();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; size; ++i) &#123;</span><br><span class="line">        <span class="keyword">if</span> (match[i] &gt;= <span class="number">0</span>) <span class="keyword">continue</span>;</span><br><span class="line">        <span class="built_in">std</span>::fill(visited.begin(), visited.end(), <span class="literal">false</span>);</span><br><span class="line">        <span class="keyword">if</span> (!dfs(i)) <span class="keyword">continue</span>;</span><br><span class="line">        ++ans;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"stall4.in"</span>)</span></span>;</span><br><span class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"stall4.out"</span>)</span></span>;</span><br><span class="line">    fin &gt;&gt; N &gt;&gt; M;</span><br><span class="line">    <span class="keyword">int</span> size = N + M + <span class="number">1</span>;</span><br><span class="line">    graph = <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt;(size, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;());</span><br><span class="line">    match = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(size, <span class="number">-1</span>);</span><br><span class="line">    visited = <span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt;(size, <span class="literal">false</span>);</span><br><span class="line">    <span class="keyword">int</span> n, k;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">        fin &gt;&gt; n;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; n; ++j) &#123;</span><br><span class="line">            fin &gt;&gt; k;</span><br><span class="line">            addEdge(i, k + N);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> ans = bipartite_match();</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; ans &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    fout &lt;&lt; ans &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2017/01/04/2017-01-04-USACO-ThePerfectStall/" data-id="ck0lytogp001vb4xg4krfaxhw" data-title="USACO 4.2 The Pefect Stall" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2017/01/04/2017-01-04-USACO-ThePerfectStall/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Bipartite-Match/">Bipartite Match</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Graph-Theory/">Graph Theory</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hungarian-Algorithm/">Hungarian Algorithm</a></li></ul>
 
     </footer>
   </div>
@@ -211,7 +172,7 @@
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/page/16/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/15/">15</a><a class="page-number" href="/page/16/">16</a><span class="page-number current">17</span><a class="page-number" href="/page/18/">18</a><a class="page-number" href="/page/19/">19</a><span class="space">&hellip;</span><a class="page-number" href="/page/99/">99</a><a class="extend next" rel="next" href="/page/18/">Next &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/16/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/15/">15</a><a class="page-number" href="/page/16/">16</a><span class="page-number current">17</span><a class="page-number" href="/page/18/">18</a><a class="page-number" href="/page/19/">19</a><span class="space">&hellip;</span><a class="page-number" href="/page/50/">50</a><a class="extend next" rel="next" href="/page/18/">Next &raquo;</a>
   </nav>
 
 </section>

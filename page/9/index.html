@@ -75,10 +75,142 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-2017-08-04-USACO-NetworkOfSchools" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2017-03-27-Existential Consistency" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2017/08/04/2017-08-04-USACO-NetworkOfSchools/" class="article-date">
-  <time datetime="2017-08-05T06:11:31.000Z" itemprop="datePublished">2017-08-04</time>
+    <a href="/2017/03/27/2017-03-27-Existential Consistency/" class="article-date">
+  <time datetime="2017-03-27T23:26:31.000Z" itemprop="datePublished">2017-03-27</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Distributed-System/">Distributed System</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/03/27/2017-03-27-Existential Consistency/">Existential Consistency - Measuring and Understanding Consistency at Facebook</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Paper digest - <a href="http://sigops.org/sosp/sosp15/current/2015-Monterey/240-lu-online.pdf" target="_blank" rel="noopener">Existential Consistency: Measuring and Understanding Consistency at Facebook </a></p>
+<h1 id="Motivation"><a href="#Motivation" class="headerlink" title="Motivation"></a>Motivation</h1><ul>
+<li>Provides real world insights on how to quantify trade offs between performance and consistency wrt replicated storage systems.</li>
+<li>Describes a practical consistency monitoring system that tracks a new consistency metric ideally suited for health monitoring.</li>
+</ul>
+<h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><ul>
+<li>Stronger consistency implementation increases latency and/or decrease throughput.</li>
+<li>Eventual consistency (usually) provides good latency and/or throughput at larger scale. However there are drawbacks:<ul>
+<li>User visible anomalies: e.g. out order comments on social network post.</li>
+<li>Programming complexity: complicated cases to reason about on weaker consistency model.</li>
+</ul>
+</li>
+<li>So lots of recent work focus on providing stronger consistency models to overcome drawbacks of a weaker consistency model.</li>
+<li>But, not much work is done to quantify the trade offs, which this paper addresses.</li>
+<li>Within a cluster, per-object sequential and read-afterwrite consistency are provided. </li>
+<li>Across the entire system, eventual consistency is provided.</li>
+<li>Consistency is measured by running offline consistency checker (that checks various consistency models) on a logs that gathers random samples of social graph system.</li>
+</ul>
+<h1 id="Background"><a href="#Background" class="headerlink" title="Background"></a>Background</h1><ul>
+<li>Facebook’s replicated storage<ul>
+<li>Data model is directed graph.</li>
+<li>User data is persistent in relational database, which is sharded, geo-replicated.</li>
+<li>Each shard has a single maser region. Replication to slave region is async.</li>
+<li>Database is cached (two-level) for the full replica per region. Root / leaf caches. Reads served by leaf cache.</li>
+<li>Write path to cache: invalidation is async.</li>
+</ul>
+</li>
+<li>Consistency models:<ul>
+<li>The usual ones, mentioned again (linearizability, sequential, per object sequential, read-after-write, eventual.)</li>
+<li>Facebook’s consistency: per-object sequential consistency and read-after-write consistency within a cache, and eventual consistency across caches.</li>
+<li>When user session spreads across multiple leaf caches (e.g. load balanced, or leaf cache failed): eventual consistency.</li>
+</ul>
+</li>
+</ul>
+<h1 id="Principled-Consistency-Analysis"><a href="#Principled-Consistency-Analysis" class="headerlink" title="Principled Consistency Analysis"></a>Principled Consistency Analysis</h1><ul>
+<li>Trace<ul>
+<li>Collect trace to identify violation of consistency models.</li>
+<li>Trace only requests to a subset of vertices / edges stored in system for practical feasibility / avoid overhead.</li>
+<li>Requests are logged on the web server that issuing the requests.</li>
+</ul>
+</li>
+<li>Deal with clock skew<ul>
+<li>Solved by adding offsets (We account for this clock skew by expanding the invocation time and response time, i.e., we subtract 35 ms from all invocation times and add 35 ms to all response times.)</li>
+</ul>
+</li>
+<li>Deal with losing logs<ul>
+<li>Use a secondary trace from Wormhole system which is lossy as well but combined with the writes from both trace has good coverage.</li>
+</ul>
+</li>
+<li>The checker<ul>
+<li>Anomaly Checkers<ul>
+<li>Maintaining a directed graph.</li>
+<li>Vertices represent the state of an object.</li>
+<li>Edges represent the constraints on the ordering.</li>
+<li>Check state transition order observed by reads is consistent with these constraints.</li>
+</ul>
+</li>
+<li>Linearizability Checker<ul>
+<li>Model operation as vertices, edges as constraints.</li>
+<li>Check cycles.</li>
+<li>Linearizability requires that there exists a total order that is legal.</li>
+<li>Merging read vertices into the write vertices they observe requires matching reads to write.</li>
+</ul>
+</li>
+<li>Per-Object Sequential and Read-After-Write Checkers<ul>
+<li>As an add on of linearlizability checker which is superset of sequential / RAW consistency.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Directions on future research into systems with stronger consistency<ul>
+<li>Build system were non-anomalous types have negligible overhead or</li>
+<li>Provide stronger consistency for a small subset of a larger system. </li>
+<li>While the latter would not prevent all anomalies, it would allow incremental deployment of these systems and significantly reduce the rate of anomalies. </li>
+<li>Interestingly, such a subsystem that does provide linearizability is used within Facebook for a small set of object types, e.g., passwords.</li>
+</ul>
+</li>
+</ul>
+<h1 id="Practical-Consistency-Analysis"><a href="#Practical-Consistency-Analysis" class="headerlink" title="Practical Consistency Analysis"></a>Practical Consistency Analysis</h1><ul>
+<li>Why - need real time (for monitoring) instead of principal analysis (can be only done offline).</li>
+<li>φ-consistency</li>
+</ul>
+<h1 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h1><ul>
+<li>TAO is highly consistent.</li>
+<li>There were anomalies under all of the consistency models we studied. </li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2017/03/27/2017-03-27-Existential Consistency/" data-id="ck0lytoh5002cb4xgtijmtkjf" data-title="Existential Consistency - Measuring and Understanding Consistency at Facebook" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2017/03/27/2017-03-27-Existential Consistency/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Distributed-System/">Distributed System</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Paper-Digest/">Paper Digest</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-2017-03-25-USACO-MusicalTheme" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/03/25/2017-03-25-USACO-MusicalTheme/" class="article-date">
+  <time datetime="2017-03-25T22:49:31.000Z" itemprop="datePublished">2017-03-25</time>
 </a>
     
   <div class="article-category">
@@ -93,7 +225,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/08/04/2017-08-04-USACO-NetworkOfSchools/">USACO 5.3 Network of Schools</a>
+      <a class="article-title" href="/2017/03/25/2017-03-25-USACO-MusicalTheme/">USACO 5.1 Musical Theme</a>
     </h1>
   
 
@@ -101,18 +233,24 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Compute the minimum number of edges to add to make a directed graph strongly connected. Use Kosaraju’s algorithm to find out strongly connected components and for each SCC count its in degree and out degree and the maximum one is the answer.</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> N;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; g, rg <span class="comment">/* reversed graph */</span>;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; vs; <span class="comment">// post order vertices</span></span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt; visited;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; cmp; <span class="comment">// topological order of strongly connected component.</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">add_edge</span><span class="params">(<span class="keyword">int</span> from, <span class="keyword">int</span> to)</span> </span>&#123;</span><br><span class="line">    g[from].push_back(to);</span><br><span class="line">    rg[to].push_back(from);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> v)</span> </span>&#123;</span><br><span class="line">    visited[v] = <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; g[v].size(); ++i) &#123;</span><br><span class="line">        <span class="keyword">if</span> (visited[g[v][i]]) <span class="keyword">continue</span>;</span><br><span class="line">        dfs(g[v][i]);</span><br><span class="line">    &#125;</span><br><span class="line">    vs.push_back(v);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">rdfs</span><span class="params">(<span class="keyword">int</span> v, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">    visited[v] = <span class="literal">true</span>;</span><br><span class="line">    cmp[v] = k;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; rg[v].size(); ++i) &#123;</span><br><span class="line">        <span class="keyword">if</span> (visited[rg[v][i]]) <span class="keyword">continue</span>;</span><br><span class="line">        rdfs(rg[v][i], k);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">scc</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="built_in">std</span>::fill(visited.begin(), visited.end(), <span class="literal">false</span>);</span><br><span class="line">    vs.clear();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">        <span class="keyword">if</span> (visited[i]) <span class="keyword">continue</span>;</span><br><span class="line">        dfs(i);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">std</span>::fill(visited.begin(), visited.end(), <span class="literal">false</span>);</span><br><span class="line">    <span class="keyword">int</span> k = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = (<span class="keyword">int</span>)vs.size() - <span class="number">1</span>; i &gt;= <span class="number">0</span>; --i) &#123;</span><br><span class="line">        <span class="keyword">if</span> (visited[vs[i]]) <span class="keyword">continue</span>;</span><br><span class="line">        rdfs(vs[i], k++);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> k;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"schlnet.in"</span>)</span></span>;</span><br><span class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"schlnet.out"</span>)</span></span>;</span><br><span class="line">    </span><br><span class="line">    fin &gt;&gt; N;</span><br><span class="line">    g = <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt;(N); rg = g;</span><br><span class="line">    vs = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N);</span><br><span class="line">    visited = <span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt;(N, <span class="literal">false</span>);</span><br><span class="line">    cmp = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">auto</span> ins = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">auto</span> outs = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N, <span class="number">0</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">        <span class="keyword">int</span> t; fin &gt;&gt; t;</span><br><span class="line">        <span class="keyword">while</span> (t) &#123;</span><br><span class="line">            add_edge(i, t - <span class="number">1</span>);</span><br><span class="line">            fin &gt;&gt; t;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">int</span> numOfScc = scc();</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//cout &lt;&lt; numOfScc &lt;&lt; endl;</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span>(numOfScc == <span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="number">1</span> &lt;&lt; <span class="built_in">endl</span> &lt;&lt; <span class="number">0</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">        fout &lt;&lt; <span class="number">1</span> &lt;&lt; <span class="built_in">endl</span> &lt;&lt; <span class="number">0</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; g[i].size(); ++j) &#123;</span><br><span class="line">            <span class="keyword">int</span> v = g[i][j];</span><br><span class="line">            <span class="keyword">int</span> ii = cmp[i], vv = cmp[v];</span><br><span class="line">            <span class="keyword">if</span>(ii != vv) &#123;</span><br><span class="line">                ins[vv]++; outs[ii]++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">int</span> ans0 = <span class="number">0</span>, ans1 = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; numOfScc; ++i) &#123;</span><br><span class="line">        <span class="keyword">if</span>(!ins[i])  ++ans0; <span class="keyword">if</span>(!outs[i]) ++ans1;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; ans0 &lt;&lt; <span class="built_in">endl</span> &lt;&lt; max(ans0, ans1) &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    fout &lt;&lt; ans0 &lt;&lt; <span class="built_in">endl</span> &lt;&lt; max(ans0, ans1) &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+        <p>If there is no constraint of the “transpose” (Transposed means that a constant positive or negative value is added to every note value in the theme subsequence), then the problem is obviously a string search problem. How to deal with transpose when doing string search?</p>
+<ul>
+<li>The property of transpose imply that if sequence A is a transpose of sequence B, then there must be that for every Ai, we have Ai + Diff = Bi. Similarly, Ai+1 + Diff = Bi+1.</li>
+<li>Now we have Ai+1 - Ai = Bi+1 - Bi. </li>
+<li>So the problem can be reduced again to plain sub string search problem: we just need to transform the input to a diff sequence by having each element a diff between two adjacent elements.</li>
+<li>For string search, use KMP so the time is linear.</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> ans = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">int</span> N;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; str, table;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"theme.in"</span>)</span></span>;</span><br><span class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"theme.out"</span>)</span></span>;</span><br><span class="line">    fin &gt;&gt; N;</span><br><span class="line">    str = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N + <span class="number">1</span>, <span class="number">0</span>);</span><br><span class="line">    table = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N + <span class="number">1</span>, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">int</span> prev = <span class="number">0</span>, cur;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">        fin &gt;&gt; cur;</span><br><span class="line">        str[i] = cur - prev;</span><br><span class="line">        prev = cur;</span><br><span class="line">    &#125;</span><br><span class="line">    str[N] = prev * <span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> from = N - <span class="number">5</span>; from &gt;= <span class="number">5</span>; --from) &#123;</span><br><span class="line">        <span class="built_in">std</span>::fill(table.begin(), table.end(), <span class="number">0</span>);</span><br><span class="line">        table[<span class="number">0</span>] = table[<span class="number">1</span>] = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = from + <span class="number">1</span>; i &lt;= N; ++i) &#123;</span><br><span class="line">            <span class="keyword">int</span> j = table[i - from];</span><br><span class="line">            <span class="keyword">while</span> (j &gt; <span class="number">0</span> &amp;&amp; str[i] != str[from + j]) &#123;</span><br><span class="line">               j = table[j];</span><br><span class="line">            &#125;</span><br><span class="line">            table[i - from + <span class="number">1</span>] = (str[i] == str[from + j]) ? j + <span class="number">1</span> : <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> j = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; from - <span class="number">1</span>; ++i) &#123;</span><br><span class="line">            <span class="keyword">while</span> (j &gt; <span class="number">0</span> &amp;&amp; str[i] != str[from + j]) &#123;</span><br><span class="line">                j = table[j];</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (str[i] == str[from + j]) &#123;</span><br><span class="line">                j++;</span><br><span class="line">                ans = <span class="built_in">std</span>::max(ans, j + <span class="number">1</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; (ans &lt; <span class="number">5</span> ? <span class="number">0</span> : ans) &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    fout &lt;&lt; (ans &lt; <span class="number">5</span> ? <span class="number">0</span> : ans) &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/08/04/2017-08-04-USACO-NetworkOfSchools/" data-id="ck0lylpc2002i3vxg1qqc19x2" data-title="USACO 5.3 Network of Schools" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2017/03/25/2017-03-25-USACO-MusicalTheme/" data-id="ck0lytoh4002ab4xgb540bes5" data-title="USACO 5.1 Musical Theme" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2017/08/04/2017-08-04-USACO-NetworkOfSchools/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2017/03/25/2017-03-25-USACO-MusicalTheme/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Graph-Theory/">Graph Theory</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Strongly-Connected-Components/">Strongly Connected Components</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/KMP/">KMP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/String-Algorithm/">String Algorithm</a></li></ul>
 
     </footer>
   </div>
@@ -126,7 +264,7 @@
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/page/8/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><span class="page-number current">9</span><a class="page-number" href="/page/10/">10</a><a class="page-number" href="/page/11/">11</a><span class="space">&hellip;</span><a class="page-number" href="/page/99/">99</a><a class="extend next" rel="next" href="/page/10/">Next &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/8/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><span class="page-number current">9</span><a class="page-number" href="/page/10/">10</a><a class="page-number" href="/page/11/">11</a><span class="space">&hellip;</span><a class="page-number" href="/page/50/">50</a><a class="extend next" rel="next" href="/page/10/">Next &raquo;</a>
   </nav>
 
 </section>
