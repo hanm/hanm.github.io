@@ -75,6 +75,53 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-2016-08-31-USACO-HealthyHolsteins" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/08/31/2016-08-31-USACO-HealthyHolsteins/" class="article-date">
+  <time datetime="2016-09-01T01:17:31.000Z" itemprop="datePublished">2016-08-31</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/USACO/">USACO</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/08/31/2016-08-31-USACO-HealthyHolsteins/">USACO 2.1 Healthy Holsteins</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Brutal force approach using bit set to speed up search.</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;bitset&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> V, vit[<span class="number">26</span>], G, feedType[<span class="number">16</span>][<span class="number">26</span>], vc;</span><br><span class="line"><span class="built_in">bitset</span>&lt;16&gt; minbit(<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"holstein.in"</span>)</span></span>;</span><br><span class="line">  <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"holstein.out"</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">  vc = <span class="number">16</span>;</span><br><span class="line">	fin &gt;&gt; V;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; V; ++i)</span><br><span class="line">		fin &gt;&gt; vit[i];</span><br><span class="line"></span><br><span class="line">  fin &gt;&gt; G;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; G; ++i)</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span> ; j &lt; V; ++j)</span><br><span class="line">      fin &gt;&gt; feedType[i][j];</span><br><span class="line"></span><br><span class="line">  <span class="keyword">auto</span> limit = <span class="number">1</span> &lt;&lt; G;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; limit; ++i) &#123;</span><br><span class="line">    <span class="keyword">int</span> v[<span class="number">26</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">		<span class="built_in">bitset</span>&lt;16&gt; bit(i);</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> b = <span class="number">0</span>; b != G; ++b) &#123;</span><br><span class="line">      <span class="keyword">if</span>(bit[b]) &#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>; j != V; ++j)</span><br><span class="line">          v[j] += feedType[b][j];</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">bool</span> satisfy = <span class="literal">true</span>;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; V; ++j) &#123;</span><br><span class="line">      <span class="keyword">if</span>(v[j] &lt; vit[j]) &#123;</span><br><span class="line">        satisfy = <span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span>(satisfy &amp;&amp; <span class="keyword">int</span>(bit.count()) &lt; vc &amp;&amp; bit.to_ulong() &gt; minbit.to_ulong()) &#123;</span><br><span class="line">			vc = <span class="keyword">static_cast</span>&lt;<span class="keyword">int</span>&gt;(bit.count());</span><br><span class="line">			minbit = bit;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	fout &lt;&lt; vc;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; G; ++i) &#123;</span><br><span class="line">    <span class="keyword">if</span>(minbit[i])</span><br><span class="line">      fout &lt;&lt; <span class="string">" "</span> &lt;&lt; i + <span class="number">1</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">	fout &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2016/08/31/2016-08-31-USACO-HealthyHolsteins/" data-id="ck0wmnjj5000lzwxg3cxkfppt" data-title="USACO 2.1 Healthy Holsteins" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2016/08/31/2016-08-31-USACO-HealthyHolsteins/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Brutal-Force/">Brutal Force</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-2016-08-31-USACO-SortThreeValuedSequence" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/08/31/2016-08-31-USACO-SortThreeValuedSequence/" class="article-date">
@@ -105,7 +152,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/31/2016-08-31-USACO-SortThreeValuedSequence/" data-id="ck0wl4tym000ocjxgt3b2vxpg" data-title="USACO 2.1 Sort Three Valued Sequence" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/08/31/2016-08-31-USACO-SortThreeValuedSequence/" data-id="ck0wmnjj6000mzwxgkhumml9j" data-title="USACO 2.1 Sort Three Valued Sequence" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2016/08/31/2016-08-31-USACO-SortThreeValuedSequence/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -121,58 +168,11 @@
 
 
   
-    <article id="post-2016-08-30-USACO-OrderedFraction" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/08/30/2016-08-30-USACO-OrderedFraction/" class="article-date">
-  <time datetime="2016-08-31T05:14:31.000Z" itemprop="datePublished">2016-08-30</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/USACO/">USACO</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/08/30/2016-08-30-USACO-OrderedFraction/">USACO 2.1 Ordered Fraction</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Brutal force search.</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">gcd</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (a &lt; b)</span><br><span class="line">    swap(a, b);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">while</span> (b) &#123;</span><br><span class="line">    <span class="keyword">int</span> t = a % b;</span><br><span class="line">    a = b;</span><br><span class="line">    b = t;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> a;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"frac1.in"</span>)</span></span>;</span><br><span class="line">  <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"frac1.out"</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">int</span> N;</span><br><span class="line">  fin &gt;&gt; N;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">vector</span>&lt;pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt;&gt; vec;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= N; ++i) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt;= i; ++j) &#123;</span><br><span class="line">      <span class="keyword">if</span> (gcd(j, i) == <span class="number">1</span>)</span><br><span class="line">        vec.emplace_back(make_pair(j, i));</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  sort(vec.begin(), vec.end(), [] (<span class="keyword">const</span> pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; &amp;lhs,</span><br><span class="line">                                   <span class="keyword">const</span> pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; &amp;rhs) &#123;</span><br><span class="line">    <span class="keyword">return</span> (<span class="keyword">static_cast</span>&lt;<span class="keyword">double</span>&gt;(lhs.first) / <span class="keyword">static_cast</span>&lt;<span class="keyword">double</span>&gt;(lhs.second)) &lt;</span><br><span class="line">    (<span class="keyword">static_cast</span>&lt;<span class="keyword">double</span>&gt;(rhs.first) / (<span class="keyword">static_cast</span>&lt;<span class="keyword">double</span>&gt;(rhs.second)));</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;item : vec)</span><br><span class="line">    fout &lt;&lt; item.first &lt;&lt;  <span class="string">"/"</span> &lt;&lt; item.second &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/30/2016-08-30-USACO-OrderedFraction/" data-id="ck0wl4tyi000kcjxg8zrsy7l9" data-title="USACO 2.1 Ordered Fraction" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2016/08/30/2016-08-30-USACO-OrderedFraction/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Brutal-Force/">Brutal Force</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
 
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/page/38/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/37/">37</a><a class="page-number" href="/page/38/">38</a><span class="page-number current">39</span><a class="page-number" href="/page/40/">40</a><a class="page-number" href="/page/41/">41</a><span class="space">&hellip;</span><a class="page-number" href="/page/50/">50</a><a class="extend next" rel="next" href="/page/40/">Next &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/38/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/37/">37</a><a class="page-number" href="/page/38/">38</a><span class="page-number current">39</span><a class="page-number" href="/page/40/">40</a><a class="page-number" href="/page/41/">41</a><span class="space">&hellip;</span><a class="page-number" href="/page/51/">51</a><a class="extend next" rel="next" href="/page/40/">Next &raquo;</a>
   </nav>
 
 </section>
@@ -203,7 +203,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Algorithm/" style="font-size: 20px;">Algorithm</a> <a href="/tags/BFS/" style="font-size: 16.36px;">BFS</a> <a href="/tags/BFT/" style="font-size: 10px;">BFT</a> <a href="/tags/Backtrack/" style="font-size: 10.91px;">Backtrack</a> <a href="/tags/Base-Conversion/" style="font-size: 10px;">Base Conversion</a> <a href="/tags/Big-Integer/" style="font-size: 10px;">Big Integer</a> <a href="/tags/Bipartite-Match/" style="font-size: 10px;">Bipartite Match</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10px;">Bit Manipulation</a> <a href="/tags/Brutal-Force/" style="font-size: 15.45px;">Brutal Force</a> <a href="/tags/Combination/" style="font-size: 10.91px;">Combination</a> <a href="/tags/Computation-Geometry/" style="font-size: 10px;">Computation Geometry</a> <a href="/tags/Consensus-Protocol/" style="font-size: 11.82px;">Consensus Protocol</a> <a href="/tags/Convex-Hull/" style="font-size: 10px;">Convex Hull</a> <a href="/tags/Counting/" style="font-size: 10px;">Counting</a> <a href="/tags/DFS/" style="font-size: 17.27px;">DFS</a> <a href="/tags/Dijkstra/" style="font-size: 12.73px;">Dijkstra</a> <a href="/tags/Distributed-System/" style="font-size: 11.82px;">Distributed System</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.09px;">Dynamic Programming</a> <a href="/tags/Enumeration/" style="font-size: 10px;">Enumeration</a> <a href="/tags/Euler-Path/" style="font-size: 10px;">Euler Path</a> <a href="/tags/Flood-Fill/" style="font-size: 11.82px;">Flood Fill</a> <a href="/tags/Floyd/" style="font-size: 10.91px;">Floyd</a> <a href="/tags/Ford-Fulkerson/" style="font-size: 10.91px;">Ford-Fulkerson</a> <a href="/tags/Gauss-Elimination/" style="font-size: 10px;">Gauss Elimination</a> <a href="/tags/Graph/" style="font-size: 15.45px;">Graph</a> <a href="/tags/Graph-Theory/" style="font-size: 14.55px;">Graph Theory</a> <a href="/tags/Greedy/" style="font-size: 10px;">Greedy</a> <a href="/tags/Hashing/" style="font-size: 10px;">Hashing</a> <a href="/tags/Hungarian-Algorithm/" style="font-size: 10px;">Hungarian Algorithm</a> <a href="/tags/KMP/" style="font-size: 10px;">KMP</a> <a href="/tags/Knapsack/" style="font-size: 10px;">Knapsack</a> <a href="/tags/LeetCode/" style="font-size: 11.82px;">LeetCode</a> <a href="/tags/MEMORIZED-SEARCH/" style="font-size: 10px;">MEMORIZED SEARCH</a> <a href="/tags/Math/" style="font-size: 10px;">Math</a> <a href="/tags/Minimum-Spanning-Tree/" style="font-size: 10px;">Minimum Spanning Tree</a> <a href="/tags/Network-Flow/" style="font-size: 10.91px;">Network Flow</a> <a href="/tags/NewSQL/" style="font-size: 10px;">NewSQL</a> <a href="/tags/Number-Theory/" style="font-size: 13.64px;">Number Theory</a> <a href="/tags/Paper-Digest/" style="font-size: 14.55px;">Paper Digest</a> <a href="/tags/Paxos/" style="font-size: 11.82px;">Paxos</a> <a href="/tags/Permutation/" style="font-size: 10px;">Permutation</a> <a href="/tags/Prim/" style="font-size: 10px;">Prim</a> <a href="/tags/Rolling-Array/" style="font-size: 10px;">Rolling Array</a> <a href="/tags/Rust/" style="font-size: 11.82px;">Rust</a> <a href="/tags/Search/" style="font-size: 18.18px;">Search</a> <a href="/tags/Shortest-Path/" style="font-size: 11.82px;">Shortest Path</a> <a href="/tags/Simulation/" style="font-size: 12.73px;">Simulation</a> <a href="/tags/String/" style="font-size: 10px;">String</a> <a href="/tags/String-Algorithm/" style="font-size: 10px;">String Algorithm</a> <a href="/tags/String-Manipulation/" style="font-size: 10px;">String Manipulation</a> <a href="/tags/Strongly-Connected-Components/" style="font-size: 10px;">Strongly Connected Components</a> <a href="/tags/TopCoder/" style="font-size: 11.82px;">TopCoder</a> <a href="/tags/Topological-Sort/" style="font-size: 10px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 10px;">Tree</a> <a href="/tags/UnionFind/" style="font-size: 10px;">UnionFind</a> <a href="/tags/ZooKeeper/" style="font-size: 10px;">ZooKeeper</a>
+      <a href="/tags/Algorithm/" style="font-size: 20px;">Algorithm</a> <a href="/tags/BFS/" style="font-size: 16.36px;">BFS</a> <a href="/tags/BFT/" style="font-size: 10px;">BFT</a> <a href="/tags/Backtrack/" style="font-size: 10.91px;">Backtrack</a> <a href="/tags/Base-Conversion/" style="font-size: 10px;">Base Conversion</a> <a href="/tags/Big-Integer/" style="font-size: 10px;">Big Integer</a> <a href="/tags/Bipartite-Match/" style="font-size: 10px;">Bipartite Match</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10px;">Bit Manipulation</a> <a href="/tags/Brutal-Force/" style="font-size: 15.45px;">Brutal Force</a> <a href="/tags/Combination/" style="font-size: 10.91px;">Combination</a> <a href="/tags/Computation-Geometry/" style="font-size: 10px;">Computation Geometry</a> <a href="/tags/Consensus-Protocol/" style="font-size: 11.82px;">Consensus Protocol</a> <a href="/tags/Convex-Hull/" style="font-size: 10px;">Convex Hull</a> <a href="/tags/Counting/" style="font-size: 10px;">Counting</a> <a href="/tags/DFS/" style="font-size: 17.27px;">DFS</a> <a href="/tags/Dijkstra/" style="font-size: 12.73px;">Dijkstra</a> <a href="/tags/Distributed-System/" style="font-size: 11.82px;">Distributed System</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.09px;">Dynamic Programming</a> <a href="/tags/Enumeration/" style="font-size: 10px;">Enumeration</a> <a href="/tags/Euler-Path/" style="font-size: 10px;">Euler Path</a> <a href="/tags/Flood-Fill/" style="font-size: 11.82px;">Flood Fill</a> <a href="/tags/Floyd/" style="font-size: 10.91px;">Floyd</a> <a href="/tags/Ford-Fulkerson/" style="font-size: 10.91px;">Ford-Fulkerson</a> <a href="/tags/Gauss-Elimination/" style="font-size: 10px;">Gauss Elimination</a> <a href="/tags/Graph/" style="font-size: 15.45px;">Graph</a> <a href="/tags/Graph-Theory/" style="font-size: 14.55px;">Graph Theory</a> <a href="/tags/Greedy/" style="font-size: 10px;">Greedy</a> <a href="/tags/Hashing/" style="font-size: 10px;">Hashing</a> <a href="/tags/Hungarian-Algorithm/" style="font-size: 10px;">Hungarian Algorithm</a> <a href="/tags/KMP/" style="font-size: 10px;">KMP</a> <a href="/tags/Knapsack/" style="font-size: 10px;">Knapsack</a> <a href="/tags/LeetCode/" style="font-size: 12.73px;">LeetCode</a> <a href="/tags/MEMORIZED-SEARCH/" style="font-size: 10px;">MEMORIZED SEARCH</a> <a href="/tags/Math/" style="font-size: 10px;">Math</a> <a href="/tags/Minimum-Spanning-Tree/" style="font-size: 10px;">Minimum Spanning Tree</a> <a href="/tags/Network-Flow/" style="font-size: 10.91px;">Network Flow</a> <a href="/tags/NewSQL/" style="font-size: 10px;">NewSQL</a> <a href="/tags/Number-Theory/" style="font-size: 13.64px;">Number Theory</a> <a href="/tags/Paper-Digest/" style="font-size: 14.55px;">Paper Digest</a> <a href="/tags/Paxos/" style="font-size: 11.82px;">Paxos</a> <a href="/tags/Permutation/" style="font-size: 10px;">Permutation</a> <a href="/tags/Prim/" style="font-size: 10px;">Prim</a> <a href="/tags/Rolling-Array/" style="font-size: 10px;">Rolling Array</a> <a href="/tags/Rust/" style="font-size: 12.73px;">Rust</a> <a href="/tags/Search/" style="font-size: 18.18px;">Search</a> <a href="/tags/Shortest-Path/" style="font-size: 11.82px;">Shortest Path</a> <a href="/tags/Simulation/" style="font-size: 12.73px;">Simulation</a> <a href="/tags/String/" style="font-size: 10px;">String</a> <a href="/tags/String-Algorithm/" style="font-size: 10px;">String Algorithm</a> <a href="/tags/String-Manipulation/" style="font-size: 10px;">String Manipulation</a> <a href="/tags/Strongly-Connected-Components/" style="font-size: 10px;">Strongly Connected Components</a> <a href="/tags/TopCoder/" style="font-size: 11.82px;">TopCoder</a> <a href="/tags/Topological-Sort/" style="font-size: 10px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 10px;">Tree</a> <a href="/tags/UnionFind/" style="font-size: 10px;">UnionFind</a> <a href="/tags/ZooKeeper/" style="font-size: 10px;">ZooKeeper</a>
     </div>
   </div>
 
@@ -225,6 +225,10 @@
       <ul>
         
           <li>
+            <a href="/2019/09/23/2019-09-23-LeetCode1123/">LeetCode 1123 Lowest Common Ancestor of Deepest Leaves</a>
+          </li>
+        
+          <li>
             <a href="/2019/09/19/2019-09-19-LeetCode641/">LeetCode 641 Design Circular Deque</a>
           </li>
         
@@ -238,10 +242,6 @@
         
           <li>
             <a href="/2019/01/27/2019-01-26-SRM748/">SRM 748 DIV II 500</a>
-          </li>
-        
-          <li>
-            <a href="/2018/10/20/2018-10-20-SRM740/">SRM 740 DIV II 500</a>
           </li>
         
       </ul>
@@ -315,6 +315,6 @@
 
 
 
-  </div>
-<script src="https://cdn.jsdelivr.net/npm/live2d-widget@3.x/lib/L2Dwidget.min.js"></script><script>L2Dwidget.init({"tagMode":false,"debug":false,"model":{"jsonPath":"https://cdn.jsdelivr.net/npm/live2d-widget-model-haruto@1.x/assets/haruto.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/"});</script><!-- hexo-inject:begin --><!-- hexo-inject:end --></body>
+  </div><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+<script src="https://cdn.jsdelivr.net/npm/live2d-widget@3.x/lib/L2Dwidget.min.js"></script><script>L2Dwidget.init({"tagMode":false,"debug":false,"model":{"jsonPath":"https://cdn.jsdelivr.net/npm/live2d-widget-model-haruto@1.x/assets/haruto.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/"});</script></body>
 </html>

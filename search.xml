@@ -4,6 +4,31 @@
   
     
     <entry>
+      <title><![CDATA[LeetCode 1123 Lowest Common Ancestor of Deepest Leaves]]></title>
+      <url>http://lianghan.org/2019/09/23/2019-09-23-LeetCode1123/</url>
+      <content type="html"><![CDATA[<p><a href="https://leetcode.com/problems/lowest-common-ancestor-of-deepest-leaves/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::rc::Rc;</span><br><span class="line"><span class="keyword">use</span> std::cell::RefCell;</span><br><span class="line"><span class="keyword">use</span> std::cmp::max;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">compute_depth</span></span>(node : <span class="built_in">Option</span>&lt;&amp;Rc&lt;RefCell&lt;TreeNode&gt;&gt;&gt;) -&gt; <span class="keyword">u32</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">let</span> <span class="literal">Some</span>(n) = node &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span> + max(Solution::compute_depth(n.borrow().left.as_ref()),</span><br><span class="line">                           Solution::compute_depth(n.borrow().right.as_ref()));</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">lca_deepest_leaves</span></span>(root: <span class="built_in">Option</span>&lt;Rc&lt;RefCell&lt;TreeNode&gt;&gt;&gt;) -&gt; <span class="built_in">Option</span>&lt;Rc&lt;RefCell&lt;TreeNode&gt;&gt;&gt; &#123;</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">let</span> <span class="literal">Some</span>(node) = root.clone() &#123;</span><br><span class="line">            <span class="keyword">let</span> (l, r) = (Solution::compute_depth(node.borrow().left.as_ref()),</span><br><span class="line">                          Solution::compute_depth(node.borrow().right.as_ref()));</span><br><span class="line">            <span class="keyword">if</span> l == r &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">Some</span>(node);</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> l &lt; r &#123;</span><br><span class="line">                <span class="keyword">return</span> Solution::lca_deepest_leaves(node.borrow().right.clone());</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">return</span> Solution::lca_deepest_leaves(node.borrow().left.clone());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">None</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
+      
+        <categories>
+            
+            <category> LeetCode in Rust </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Algorithm </tag>
+            
+            <tag> LeetCode </tag>
+            
+            <tag> Rust </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
       <title><![CDATA[LeetCode 641 Design Circular Deque]]></title>
       <url>http://lianghan.org/2019/09/19/2019-09-19-LeetCode641/</url>
       <content type="html"><![CDATA[<p><a href="https://leetcode.com/problems/design-circular-deque/description/" target="_blank" rel="noopener">Problem Statement</a></p>
@@ -1761,9 +1786,9 @@
         
         <tags>
             
-            <tag> Search </tag>
-            
             <tag> Dijkstra </tag>
+            
+            <tag> Search </tag>
             
             <tag> Graph </tag>
             
