@@ -4,6 +4,31 @@
   
     
     <entry>
+      <title><![CDATA[LeetCode 1145 Binary Tree Coloring Game]]></title>
+      <url>http://lianghan.org/2019/10/15/2019-10-15-LeetCode1145/</url>
+      <content type="html"><![CDATA[<p><a href="https://leetcode.com/problems/binary-tree-coloring-game/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::rc::Rc;</span><br><span class="line"><span class="keyword">use</span> std::cell::RefCell;</span><br><span class="line"><span class="keyword">use</span> std::cmp::max;</span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">btree_game_winning_move</span></span>(root: <span class="built_in">Option</span>&lt;Rc&lt;RefCell&lt;TreeNode&gt;&gt;&gt;, n: <span class="keyword">i32</span>, x: <span class="keyword">i32</span>) -&gt; <span class="keyword">bool</span> &#123;</span><br><span class="line">        <span class="function"><span class="keyword">fn</span> <span class="title">count_sub_tree_nodes</span></span>(node: <span class="built_in">Option</span>&lt;&amp;Rc&lt;RefCell&lt;TreeNode&gt;&gt;&gt;, x : <span class="keyword">i32</span>,</span><br><span class="line">                                left : &amp;<span class="keyword">mut</span> <span class="keyword">i32</span>, right : &amp;<span class="keyword">mut</span> <span class="keyword">i32</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">let</span> <span class="literal">Some</span>(n) = node &#123;</span><br><span class="line">                <span class="keyword">let</span> l = count_sub_tree_nodes(n.borrow().left.as_ref(), x, left, right);</span><br><span class="line">                <span class="keyword">let</span> r = count_sub_tree_nodes(n.borrow().right.as_ref(), x, left, right);</span><br><span class="line">                <span class="keyword">if</span> x == n.borrow().val &#123;</span><br><span class="line">                    *left = l; *right = r;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">return</span> l + r + <span class="number">1</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> left = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> right = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">let</span> count = count_sub_tree_nodes(root.as_ref(), x, &amp;<span class="keyword">mut</span> left, &amp;<span class="keyword">mut</span> right);</span><br><span class="line">        <span class="keyword">return</span> max(max(left, right), n - left - right - <span class="number">1</span>) &gt; n / <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
+      
+        <categories>
+            
+            <category> LeetCode in Rust </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Algorithm </tag>
+            
+            <tag> LeetCode </tag>
+            
+            <tag> Rust </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
       <title><![CDATA[LeetCode 1123 Lowest Common Ancestor of Deepest Leaves]]></title>
       <url>http://lianghan.org/2019/09/23/2019-09-23-LeetCode1123/</url>
       <content type="html"><![CDATA[<p><a href="https://leetcode.com/problems/lowest-common-ancestor-of-deepest-leaves/description/" target="_blank" rel="noopener">Problem Statement</a></p>
@@ -1786,9 +1811,9 @@
         
         <tags>
             
-            <tag> Dijkstra </tag>
-            
             <tag> Search </tag>
+            
+            <tag> Dijkstra </tag>
             
             <tag> Graph </tag>
             
