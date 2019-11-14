@@ -75,14 +75,14 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-2017-01-21-Google-File-System" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2016-11-28-USACO-ShoppingOffers" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2017/01/21/2017-01-21-Google-File-System/" class="article-date">
-  <time datetime="2017-01-22T00:14:31.000Z" itemprop="datePublished">2017-01-21</time>
+    <a href="/2016/11/28/2016-11-28-USACO-ShoppingOffers/" class="article-date">
+  <time datetime="2016-11-28T17:21:31.000Z" itemprop="datePublished">2016-11-28</time>
 </a>
     
   <div class="article-category">
-    <a class="article-category-link" href="/categories/Distributed-System/">Distributed System</a>
+    <a class="article-category-link" href="/categories/USACO/">USACO</a>
   </div>
 
   </div>
@@ -93,7 +93,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/21/2017-01-21-Google-File-System/">The Google File System</a>
+      <a class="article-title" href="/2016/11/28/2016-11-28-USACO-ShoppingOffers/">USACO 3.3 Shopping Offers</a>
     </h1>
   
 
@@ -101,93 +101,17 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Paper digest - <a href="https://static.googleusercontent.com/media/research.google.com/en//archive/gfs-sosp2003.pdf" target="_blank" rel="noopener">The Google File System</a></p>
-<h1 id="Motivation"><a href="#Motivation" class="headerlink" title="Motivation"></a>Motivation</h1><ul>
-<li>Scalable distributed file system for large distributed data-intensive applications driven by observations of application workloads and technological environment, both current and anticipated:<ul>
-<li>Component failures are the norm rather than the exception.</li>
-<li>Files are huge by traditional standards. Multi-GB files are common.</li>
-<li>Workloads: large streaming reads and small random reads; many large, sequential writes.</li>
-</ul>
-</li>
-</ul>
-<h1 id="Goals"><a href="#Goals" class="headerlink" title="Goals"></a>Goals</h1><ul>
-<li><p>Provides fault tolerance while running on inexpensive commodity hardware.</p>
-</li>
-<li><p>Delivers high aggregate performance to a large number of clients.</p>
-</li>
-<li><p>Must efficiently implement well-defined semantics for multiple clients that concurrently append to the same file. Atomicity with minimal synchronization overhead is essential. </p>
-</li>
-<li><p>Prefer bandwidth over latency (batch processing, not real time.).</p>
-</li>
-<li><p>Consistency Model : co-designing the applications and the file system for flexibility (in other words, push hard problem to other places.).</p>
-</li>
-</ul>
-<h1 id="System-Design"><a href="#System-Design" class="headerlink" title="System Design"></a>System Design</h1><ul>
-<li><p>Master-Slave architecture.</p>
-<ul>
-<li>GFS Master:<ul>
-<li>Management data storage: metadata, namespace, access control, mappings from files to chunks, current location of chunk.</li>
-<li>System wide activities: chunk lease management, garbage collect of orphaned chunks, chunk migration.</li>
-<li>System is designed to minimize master’s involvement since master is SPOF.</li>
-</ul>
-</li>
-<li>GFS Slave (aka chunk server):<ul>
-<li>Chunk with 64 bit globally uniquely chunk handle. Stored on linux FS. Replicated (3 copies by default.).</li>
-<li>Does not cache files (rely on Linux’s buffer cache.).</li>
-</ul>
-</li>
-<li>GFS Client:<ul>
-<li>Interact with master for metadata operations.</li>
-<li>Actual data IO does not go through master; go through between client and chunk server.</li>
-<li>Does not cache files (infeasible to cache - too large; hard problem to solve for cache coherence, so don’t solve it.).</li>
-<li>Does not cache files - continued: GFS applications, MapReduce and BigTable. MapReduce - sequential read, no need to cache. Bigtable has its own cache management.</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>Lease Management</p>
-<ul>
-<li>Lease is used to maintain a consistent mutation order across replicas. </li>
-<li>Master grants chunk lease to one replica (primary).</li>
-<li>The primary picks a serial order for all mutations to the chunk. All replicas follow this order when applying mutations.</li>
-<li>A lease has an initial timeout of 60 seconds. Can be extended at the request of primary chunk server, or can be revoked by master after lease expire.</li>
-</ul>
-</li>
-<li><p>Consistency Model</p>
-<ul>
-<li>Relaxed consistency model.</li>
-<li>File namespace mutations (e.g., file creation) are atomic, handled by master exclusively.</li>
-<li>Data mutation case: consistent but undefined (e.g., concurrent succeed mutation).</li>
-<li>Data mutation case: Inconsistent and undefined (e.g., failed mutation).</li>
-<li>Concurrent append: at least once semantic (implies that records could have paddings in between, that readers need to dealt with).</li>
-<li>Reader dealt with validating (through checksums) and identifying records.</li>
-<li>Overall - flexible consistency model (instead of strong consistency) makes application development a little bit difficult.</li>
-</ul>
-</li>
-<li><p>Append</p>
-<ul>
-<li>Pipeline</li>
-<li>Data flow and control flow decoupled.</li>
-</ul>
-</li>
-<li><p>Fault Tolerant</p>
-<ul>
-<li>Replicated master, check points and snapshots (**Q: how replication is done??)</li>
-<li>Replicated chunk servers (default 3). Erasure codes / parity.</li>
-</ul>
-</li>
-</ul>
-
+        <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstring&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unordered_map&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> dp[<span class="number">6</span>][<span class="number">6</span>][<span class="number">6</span>][<span class="number">6</span>][<span class="number">6</span>];</span><br><span class="line"><span class="comment">// 2nd dimension stores the offer price as element 0, (normalized) product</span></span><br><span class="line"><span class="comment">// code as element 1, 2, 3, 4, 5.</span></span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; offer(<span class="number">106</span>, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(<span class="number">6</span>, <span class="number">0</span>));</span><br><span class="line"><span class="comment">// Normalize product code to the range of 1-5 inclusive.</span></span><br><span class="line"><span class="built_in">unordered_map</span>&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; <span class="built_in">map</span>;</span><br><span class="line"><span class="keyword">int</span> s;</span><br><span class="line"><span class="keyword">int</span> totalOffers;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; buy(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(<span class="number">6</span>, <span class="number">0</span>));</span><br><span class="line"><span class="keyword">int</span> sentinel;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">compute</span><span class="params">(<span class="keyword">int</span> a1,<span class="keyword">int</span> a2, <span class="keyword">int</span> a3,<span class="keyword">int</span> a4,<span class="keyword">int</span> a5)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(dp[a1][a2][a3][a4][a5] != sentinel)</span><br><span class="line">        <span class="keyword">return</span> dp[a1][a2][a3][a4][a5];</span><br><span class="line">    <span class="keyword">int</span> w1,w2,w3,w4,w5, ret = sentinel;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= totalOffers; ++i)&#123;</span><br><span class="line">        w1 = a1 - offer[i][<span class="number">1</span>];w2 = a2 - offer[i][<span class="number">2</span>];</span><br><span class="line">        w3 = a3 - offer[i][<span class="number">3</span>];w4 = a4 - offer[i][<span class="number">4</span>];</span><br><span class="line">        w5 = a5 - offer[i][<span class="number">5</span>];</span><br><span class="line">        <span class="keyword">if</span>(w1 &lt; <span class="number">0</span> || w2 &lt; <span class="number">0</span> || w3 &lt; <span class="number">0</span> || w4 &lt; <span class="number">0</span> || w5 &lt; <span class="number">0</span>) <span class="keyword">continue</span>;</span><br><span class="line">        <span class="keyword">if</span>(dp[w1][w2][w3][w4][w5] == sentinel) &#123;</span><br><span class="line">            dp[w1][w2][w3][w4][w5] = compute(w1,w2,w3,w4,w5);</span><br><span class="line">        &#125;</span><br><span class="line">        ret = <span class="built_in">std</span>::min(ret, dp[w1][w2][w3][w4][w5] + offer[i][<span class="number">0</span>]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"shopping.in"</span>)</span></span>;</span><br><span class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"shopping.out"</span>)</span></span>;</span><br><span class="line">    fin &gt;&gt; s;</span><br><span class="line">    <span class="keyword">int</span> n, c, k, b, code = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= s; ++i) &#123;</span><br><span class="line">        fin &gt;&gt; n;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; n; ++j) &#123;</span><br><span class="line">            fin &gt;&gt; c &gt;&gt; k;</span><br><span class="line">            <span class="keyword">if</span> (<span class="built_in">map</span>.find(c) == <span class="built_in">map</span>.end()) &#123;</span><br><span class="line">                <span class="built_in">map</span>[c] = ++code;</span><br><span class="line">            &#125;</span><br><span class="line">            offer[i][<span class="built_in">map</span>[c]] = k;</span><br><span class="line">        &#125;</span><br><span class="line">        fin &gt;&gt; offer[i][<span class="number">0</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    fin &gt;&gt; b;</span><br><span class="line">    totalOffers = s + b;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= b; ++i)&#123;</span><br><span class="line">        fin &gt;&gt; c &gt;&gt; k;</span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">map</span>.find(c) == <span class="built_in">map</span>.end()) &#123;</span><br><span class="line">            <span class="built_in">map</span>[c] = ++code;</span><br><span class="line">        &#125;</span><br><span class="line">        offer[s + i][<span class="built_in">map</span>[c]] = <span class="number">1</span>;</span><br><span class="line">        buy[<span class="built_in">map</span>[c]] = k;</span><br><span class="line">        fin &gt;&gt; offer[s + i][<span class="number">0</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">memset</span>(dp, <span class="number">0xf</span>, <span class="keyword">sizeof</span>(dp));</span><br><span class="line">    sentinel = dp[<span class="number">0</span>][<span class="number">0</span>][<span class="number">0</span>][<span class="number">0</span>][<span class="number">0</span>];</span><br><span class="line">    dp[<span class="number">0</span>][<span class="number">0</span>][<span class="number">0</span>][<span class="number">0</span>][<span class="number">0</span>] = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> ret = compute(buy[<span class="number">1</span>], buy[<span class="number">2</span>], buy[<span class="number">3</span>], buy[<span class="number">4</span>], buy[<span class="number">5</span>]);</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; ret &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    fout &lt;&lt; ret &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/01/21/2017-01-21-Google-File-System/" data-id="ck2y0pa8i001yjixgmmalvzrb" data-title="The Google File System" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/11/28/2016-11-28-USACO-ShoppingOffers/" data-id="ck2y0r6pc001mn6xgron0vedi" data-title="USACO 3.3 Shopping Offers" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2017/01/21/2017-01-21-Google-File-System/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2016/11/28/2016-11-28-USACO-ShoppingOffers/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Distributed-System/">Distributed System</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Paper-Digest/">Paper Digest</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dynamic-Programming/">Dynamic Programming</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Graph/">Graph</a></li></ul>
 
     </footer>
   </div>
@@ -197,14 +121,14 @@
 
 
   
-    <article id="post-2017-01-21-TopCoder-SRM706-DIV2-500" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2016-11-25-USACO-RidingTheFence" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2017/01/21/2017-01-21-TopCoder-SRM706-DIV2-500/" class="article-date">
-  <time datetime="2017-01-21T23:43:31.000Z" itemprop="datePublished">2017-01-21</time>
+    <a href="/2016/11/25/2016-11-25-USACO-RidingTheFence/" class="article-date">
+  <time datetime="2016-11-26T07:04:31.000Z" itemprop="datePublished">2016-11-25</time>
 </a>
     
   <div class="article-category">
-    <a class="article-category-link" href="/categories/TopCoder/">TopCoder</a>
+    <a class="article-category-link" href="/categories/USACO/">USACO</a>
   </div>
 
   </div>
@@ -215,7 +139,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/21/2017-01-21-TopCoder-SRM706-DIV2-500/">SRM 706 DIV 2 500 Selling Fruits</a>
+      <a class="article-title" href="/2016/11/25/2016-11-25-USACO-RidingTheFence/">UASCO 3.3 Riding The Fence</a>
     </h1>
   
 
@@ -223,16 +147,72 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> SellingFruits &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">maxDays</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> f, <span class="keyword">int</span> d, <span class="keyword">int</span> p)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> ret = d / x;</span><br><span class="line">        <span class="keyword">if</span> (ret &lt; f) <span class="keyword">return</span> ret;</span><br><span class="line">        ret = f;</span><br><span class="line">        d -= f * x;</span><br><span class="line">        ret += (d / (x + p));</span><br><span class="line">        <span class="keyword">return</span> ret;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        <p>This is a problem to find Euler Path of the graph. As this is an undirected graph, the Euler Path exists iff:</p>
+<ul>
+<li>All graph vertices have even degree. Or,</li>
+<li>All graph vertices have even degree, except two vertices have odd degree. And these two vertices will be start / end of the Euler Path.</li>
+</ul>
+<p>This problem explicitly stated that the Euler Path existing, so no need to do the test to find out if the path exists or not. Instead, the job is to find out the exact path with the constraint that vertices should be sequenced in ascending order. There are a couple of well studied algorithm can solve the Euler Path finding problem, however for this test data set I find that we can just use DFS - which is not strictly a Euler Path finding solution because the DFS solution here alone can’t decide if an edge we are going to remove is a ‘bridge edge’ (which, if removed will never makes us traverse back to the graph). I think the solution here is not sound to cover any type of Euler Path, but is just lucky enough to pass the existing test data set.</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stack&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> LIMIT = <span class="number">501</span>;</span><br><span class="line"><span class="keyword">int</span> F;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; degree(LIMIT, <span class="number">0</span>);</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; adj(LIMIT, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(LIMIT, <span class="number">0</span>));</span><br><span class="line"><span class="built_in">stack</span>&lt;<span class="keyword">int</span>&gt; path;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> idx)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!degree[idx]) &#123;</span><br><span class="line">        path.push(idx);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; LIMIT; ++i) &#123;</span><br><span class="line">        <span class="keyword">if</span> (adj[idx][i] &lt;= <span class="number">0</span>) <span class="keyword">continue</span>;</span><br><span class="line">        --adj[idx][i]; --adj[i][idx]; --degree[idx]; --degree[i];</span><br><span class="line">        dfs(i);</span><br><span class="line">    &#125;</span><br><span class="line">    path.push(idx);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"fence.in"</span>)</span></span>;</span><br><span class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"fence.out"</span>)</span></span>;</span><br><span class="line">    fin &gt;&gt; F;</span><br><span class="line">    <span class="keyword">int</span> v1, v2;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; F; ++i) &#123;</span><br><span class="line">        fin &gt;&gt; v1 &gt;&gt; v2;</span><br><span class="line">        adj[v1][v2]++; adj[v2][v1]++;</span><br><span class="line">        degree[v1]++; degree[v2]++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> start = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; LIMIT; ++i)&#123;</span><br><span class="line">        <span class="keyword">if</span>(degree[i] % <span class="number">2</span>)&#123;</span><br><span class="line">            start = i;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    dfs(start);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span> (!path.empty()) &#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; path.top() &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">        fout &lt;&lt; path.top() &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">        path.pop();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/01/21/2017-01-21-TopCoder-SRM706-DIV2-500/" data-id="ck2y0pa8j001zjixgrtdlpubi" data-title="SRM 706 DIV 2 500 Selling Fruits" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/11/25/2016-11-25-USACO-RidingTheFence/" data-id="ck2y0r6p9001jn6xgw088puf5" data-title="UASCO 3.3 Riding The Fence" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2017/01/21/2017-01-21-TopCoder-SRM706-DIV2-500/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2016/11/25/2016-11-25-USACO-RidingTheFence/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DFS/">DFS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Euler-Path/">Euler Path</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Graph/">Graph</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-2016-11-23-USACO-SweetButter" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/11/23/2016-11-23-USACO-SweetButter/" class="article-date">
+  <time datetime="2016-11-24T01:44:31.000Z" itemprop="datePublished">2016-11-23</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/USACO/">USACO</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/11/23/2016-11-23-USACO-SweetButter/">USACO 3.2 Sweet Butter</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>This problem is essentially a shortest path problem: given a graph, find a single node in the graph (where we will put the butter) such that the combined distances from this graph node (the butter) to a set of graph nodes (the graph nodes where the cows are placed) is minimized.<br>The basic idea is for every node (pasture) in the graph, we calculate the shortest distances between this node and the rest of the nodes. Then for every node (pasture), we sum up the distances between itself and the pastures where cows are placed. The calculation of shortest paths between current pasture and the rest of pasture could be further optimized, as we only care about pasture with cows, so we can skip the pastures pairs where both pastures don’t have cows. But even without this optimization the code pass the test data set. The code use a slightly modified version of <a href="http://lianghan.org/2016/08/03/2016-08-03-DijKstra/">Dijkstra algorithm I posted earlier</a>, otherwise there would be too much redundant computations that leads to timeout errors for large test data set.</p>
+<p>I suspect this problem can also be solved using Bellmen-Ford or SFPA, and that would be a good exercise at some point in future…</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;numeric&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;utility&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cmath&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;map&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unordered_map&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;climits&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;queue&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> N <span class="comment">/* cows */</span>, P <span class="comment">/* pastures */</span>, C <span class="comment">/* paths */</span>;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; c2p;<span class="comment">// [to node index, edge weight] pair.</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="built_in">std</span>::pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; edge;</span><br><span class="line"><span class="comment">// [node index, distance to source] pair.</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="built_in">std</span>::pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; element;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;edge&gt;&gt; graph;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; dist;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt; visited;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> compare &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">operator</span><span class="params">()</span><span class="params">(<span class="keyword">const</span> element&amp;a, <span class="keyword">const</span> element &amp;b)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> a.second &gt; b.second;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dijkstra</span><span class="params">(<span class="keyword">const</span> <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;edge&gt;&gt; &amp;graph, <span class="keyword">int</span> source)</span> </span>&#123;</span><br><span class="line">    <span class="built_in">std</span>::fill(visited.begin(), visited.end(), <span class="literal">false</span>);</span><br><span class="line">    <span class="built_in">std</span>::fill(dist.begin(), dist.end(), INT_MAX);</span><br><span class="line">    dist[source] = <span class="number">0</span>;</span><br><span class="line">    priority_queue&lt;element, <span class="built_in">vector</span>&lt;element&gt;, compare&gt; pq;</span><br><span class="line">    pq.emplace(make_pair(source, <span class="number">0</span>));</span><br><span class="line">    <span class="keyword">while</span> (!pq.empty()) &#123;</span><br><span class="line">        <span class="keyword">int</span> v = pq.top().first;</span><br><span class="line">        pq.pop();</span><br><span class="line">        <span class="keyword">if</span> (visited[v]) <span class="keyword">continue</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;edge : graph[v]) &#123;</span><br><span class="line">            <span class="keyword">int</span> u = edge.first; <span class="comment">// vertice u that connects to v.</span></span><br><span class="line">            <span class="keyword">int</span> w = edge.second; <span class="comment">// weight of edge that connects u and v.</span></span><br><span class="line">            <span class="keyword">if</span> (visited[u]) <span class="keyword">continue</span>;</span><br><span class="line">            <span class="keyword">if</span> (dist[v] + w &lt; dist[u]) &#123;</span><br><span class="line">                dist[u] = dist[v] + w;</span><br><span class="line">                pq.emplace(make_pair(u, dist[u]));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        visited[v] = <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"butter.in"</span>)</span></span>;</span><br><span class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"butter.out"</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">    fin &gt;&gt; N &gt;&gt; P &gt;&gt; C;</span><br><span class="line">    c2p = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N + <span class="number">1</span>, <span class="number">0</span>);</span><br><span class="line">    graph = <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;edge&gt;&gt;(C + <span class="number">1</span>, <span class="built_in">vector</span>&lt;edge&gt;());</span><br><span class="line">    dist = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(C + <span class="number">1</span>, INT_MAX);</span><br><span class="line">    visited = <span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt;(C + <span class="number">1</span>, <span class="literal">false</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; N + <span class="number">1</span>; ++i) &#123;</span><br><span class="line">        fin &gt;&gt; c2p[i];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; C; ++i) &#123;</span><br><span class="line">        <span class="keyword">int</span> s, d, w;</span><br><span class="line">        fin &gt;&gt; s &gt;&gt; d &gt;&gt; w;</span><br><span class="line">        graph[s].emplace_back(make_pair(d, w));</span><br><span class="line">        graph[d].emplace_back(make_pair(s, w));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">long</span> <span class="keyword">long</span> ret = INT_MAX;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= P; ++i) &#123;</span><br><span class="line">        <span class="keyword">long</span> <span class="keyword">long</span> ans = <span class="number">0</span>;</span><br><span class="line">        dijkstra(graph, i);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">1</span>; j &lt;= N; ++j) &#123;</span><br><span class="line">            ans += dist[c2p[j]];</span><br><span class="line">        &#125;</span><br><span class="line">        ret = <span class="built_in">std</span>::min(ret, ans);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    fout &lt;&lt; ret &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; ret &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2016/11/23/2016-11-23-USACO-SweetButter/" data-id="ck2y0r6or001in6xgg9dansvi" data-title="USACO 3.2 Sweet Butter" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2016/11/23/2016-11-23-USACO-SweetButter/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dijkstra/">Dijkstra</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Graph/">Graph</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Search/">Search</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Shortest-Path/">Shortest Path</a></li></ul>
+
     </footer>
   </div>
   
@@ -245,7 +225,7 @@
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/page/16/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/15/">15</a><a class="page-number" href="/page/16/">16</a><span class="page-number current">17</span><a class="page-number" href="/page/18/">18</a><a class="page-number" href="/page/19/">19</a><span class="space">&hellip;</span><a class="page-number" href="/page/52/">52</a><a class="extend next" rel="next" href="/page/18/">Next &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/16/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/15/">15</a><a class="page-number" href="/page/16/">16</a><span class="page-number current">17</span><a class="page-number" href="/page/18/">18</a><a class="page-number" href="/page/19/">19</a><span class="space">&hellip;</span><a class="page-number" href="/page/35/">35</a><a class="extend next" rel="next" href="/page/18/">Next &raquo;</a>
   </nav>
 
 </section>

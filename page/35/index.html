@@ -75,14 +75,14 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-2016-09-26-USACO-MoneySystem" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2016-7-20-PathFinding" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2016/09/26/2016-09-26-USACO-MoneySystem/" class="article-date">
-  <time datetime="2016-09-27T06:07:31.000Z" itemprop="datePublished">2016-09-26</time>
+    <a href="/2016/07/20/2016-7-20-PathFinding/" class="article-date">
+  <time datetime="2016-07-20T17:39:31.000Z" itemprop="datePublished">2016-07-20</time>
 </a>
     
   <div class="article-category">
-    <a class="article-category-link" href="/categories/USACO/">USACO</a>
+    <a class="article-category-link" href="/categories/TopCoder/">TopCoder</a>
   </div>
 
   </div>
@@ -93,7 +93,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/09/26/2016-09-26-USACO-MoneySystem/">USACO 2.3 Money System</a>
+      <a class="article-title" href="/2016/07/20/2016-7-20-PathFinding/">SRM 156 DIV-1 1000 Path Finding</a>
     </h1>
   
 
@@ -101,65 +101,18 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Very classic DP problem.</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> N;</span><br><span class="line"><span class="keyword">int</span> COINS;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">long</span> <span class="keyword">long</span>&gt; dp(<span class="number">100001</span>, <span class="number">0</span>);</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">long</span>&gt; coins;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">compute</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    dp[<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; COINS; ++i) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = coins[i]; j &lt;= N; ++j) &#123;</span><br><span class="line">            dp[j] += dp[j - coins[i]];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"money.in"</span>)</span></span>;</span><br><span class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"money.out"</span>)</span></span>;</span><br><span class="line">    fin &gt;&gt; COINS &gt;&gt; N;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; COINS; ++i) &#123;</span><br><span class="line">        <span class="keyword">int</span> c; fin &gt;&gt; c; coins.emplace_back(c);</span><br><span class="line">    &#125;</span><br><span class="line">    compute();</span><br><span class="line">    fout &lt;&lt; dp[N] &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        <p><a href="https://community.topcoder.com/stat?c=problem_statement&amp;pm=1110" target="_blank" rel="noopener">Problem Statement</a></p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> PathFinding &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="function"><span class="keyword">int</span> <span class="title">minTurns</span><span class="params">(<span class="built_in">vector</span> &lt;<span class="built_in">string</span>&gt; board)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">typedef</span> <span class="keyword">struct</span> state &#123;</span><br><span class="line">      <span class="keyword">int</span> ax, ay, bx, by;</span><br><span class="line">      <span class="keyword">int</span> step;</span><br><span class="line">    &#125; state;</span><br><span class="line"></span><br><span class="line">    state s;</span><br><span class="line">    s.ax = s.ay = s.bx = s.by = <span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">bool</span> visited[<span class="number">20</span>][<span class="number">20</span>][<span class="number">20</span>][<span class="number">20</span>] = &#123;<span class="literal">false</span>&#125;;</span><br><span class="line">    <span class="keyword">int</span> rows = board.size(), cols = board[<span class="number">0</span>].size();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; rows; ++i) &#123;</span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; cols; ++j) &#123;</span><br><span class="line">        <span class="keyword">if</span> (board[i][j] == <span class="string">'A'</span>) &#123;</span><br><span class="line">          s.ax = i; s.ay = j;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (board[i][j] == <span class="string">'B'</span>) &#123;</span><br><span class="line">          s.bx = i; s.by = j;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Invalid board in first place.</span></span><br><span class="line">    <span class="keyword">if</span> (s.ax == <span class="number">-1</span> || s.bx == <span class="number">-1</span>) <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    s.step = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">queue</span>&lt;state&gt; q;</span><br><span class="line">    q.push(s);</span><br><span class="line">    visited[s.ax][s.ay][s.bx][s.by] = <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">while</span> (!q.empty()) &#123;</span><br><span class="line">      state node = q.front();</span><br><span class="line">      q.pop();</span><br><span class="line">      <span class="keyword">if</span> (node.ax == s.bx &amp;&amp; node.ay == s.by &amp;&amp; node.bx == s.ax &amp;&amp;</span><br><span class="line">          node.by == s.ay) &#123;</span><br><span class="line">        <span class="keyword">return</span> node.step;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">int</span> dx1 = <span class="number">-1</span>; dx1 &lt;= <span class="number">1</span>; ++dx1) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> dy1 = <span class="number">-1</span>; dy1 &lt;= <span class="number">1</span>; ++dy1) &#123;</span><br><span class="line">          <span class="keyword">for</span> (<span class="keyword">int</span> dx2 = <span class="number">-1</span>; dx2 &lt;= <span class="number">1</span>; ++dx2) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> dy2 = <span class="number">-1</span>; dy2 &lt;= <span class="number">1</span>; ++dy2) &#123;</span><br><span class="line">              <span class="keyword">int</span> axx = node.ax + dx1;</span><br><span class="line">              <span class="keyword">int</span> ayy = node.ay + dy1;</span><br><span class="line">              <span class="keyword">int</span> bxx = node.bx + dx2;</span><br><span class="line">              <span class="keyword">int</span> byy = node.by + dy2;</span><br><span class="line"></span><br><span class="line">              <span class="comment">// Out of board.</span></span><br><span class="line">              <span class="keyword">if</span> (axx &lt; <span class="number">0</span> || axx &gt;= rows || ayy &lt; <span class="number">0</span> || ayy &gt;= cols ||</span><br><span class="line">                  bxx &lt; <span class="number">0</span> || bxx &gt;= rows || byy &lt; <span class="number">0</span> || byy &gt;= cols) &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">              &#125;</span><br><span class="line"></span><br><span class="line">              <span class="keyword">if</span> (board[axx][ayy] == <span class="string">'X'</span> || board[bxx][byy] == <span class="string">'X'</span>) &#123;</span><br><span class="line">                <span class="keyword">continue</span>; <span class="comment">// obstacle.</span></span><br><span class="line">              &#125;</span><br><span class="line"></span><br><span class="line">              <span class="comment">// Crossed line (both moves)</span></span><br><span class="line">              <span class="keyword">if</span> (axx == node.bx &amp;&amp; ayy == node.by &amp;&amp; bxx == node.ax &amp;&amp; byy == node.ay) &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">              &#125;</span><br><span class="line">              <span class="comment">// Cross line (a single side move)</span></span><br><span class="line">              <span class="keyword">if</span> (axx == bxx &amp;&amp; ayy == byy) <span class="keyword">continue</span>;</span><br><span class="line"></span><br><span class="line">              <span class="keyword">if</span> (visited[axx][ayy][bxx][byy]) <span class="keyword">continue</span>;</span><br><span class="line">              state ns;</span><br><span class="line">              ns.step = node.step + <span class="number">1</span>;</span><br><span class="line">              ns.ax = axx, ns.ay = ayy, ns.bx = bxx, ns.by = byy;</span><br><span class="line">              visited[axx][ayy][bxx][byy] = <span class="literal">true</span>;</span><br><span class="line">              q.push(ns);</span><br><span class="line">            &#125;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/09/26/2016-09-26-USACO-MoneySystem/" data-id="ck2y0pa7a000vjixgagrkf7na" data-title="USACO 2.3 Money System" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/07/20/2016-7-20-PathFinding/" data-id="ck2y0r6sw0029n6xg59ff7diw" data-title="SRM 156 DIV-1 1000 Path Finding" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2016/09/26/2016-09-26-USACO-MoneySystem/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dynamic-Programming/">Dynamic Programming</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2016-09-25-USACO-ZeroSum" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/09/25/2016-09-25-USACO-ZeroSum/" class="article-date">
-  <time datetime="2016-09-26T00:50:31.000Z" itemprop="datePublished">2016-09-25</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/USACO/">USACO</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/09/25/2016-09-25-USACO-ZeroSum/">USACO 2.3 Zero Sum</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Brutal force DFS search.</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> N;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt; ops = &#123;<span class="string">'+'</span>, <span class="string">'-'</span>, <span class="string">' '</span>&#125;;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt; s;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt;&gt; res;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> i)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (i == N) &#123;</span><br><span class="line">        <span class="keyword">int</span> sum = <span class="number">0</span>, cur = <span class="number">1</span>, sign = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt;= N; ++i) &#123;</span><br><span class="line">            <span class="keyword">char</span> op = s[i - <span class="number">2</span>];</span><br><span class="line">            <span class="keyword">if</span> (op == <span class="string">' '</span>) &#123;</span><br><span class="line">                cur = cur * <span class="number">10</span> + i;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                sum += cur * sign;</span><br><span class="line">                cur = i;</span><br><span class="line">                <span class="keyword">if</span> (op == <span class="string">'+'</span>) &#123;</span><br><span class="line">                    sign = <span class="number">1</span>;</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    sign = <span class="number">-1</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        sum += cur * sign;</span><br><span class="line">        <span class="keyword">if</span> (sum == <span class="number">0</span>) &#123;</span><br><span class="line">            res.push_back(s);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;c : ops) &#123;</span><br><span class="line">        s.push_back(c);</span><br><span class="line">        dfs(i + <span class="number">1</span>);</span><br><span class="line">        s.pop_back();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"zerosum.in"</span>)</span></span>;</span><br><span class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"zerosum.out"</span>)</span></span>;</span><br><span class="line">    fin &gt;&gt; N;</span><br><span class="line">    dfs(<span class="number">1</span>);</span><br><span class="line">    sort(res.begin(), res.end());</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;result : res) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; N; ++i) &#123;</span><br><span class="line">            fout &lt;&lt; i &lt;&lt; result[i - <span class="number">1</span>];</span><br><span class="line">        &#125;</span><br><span class="line">        fout &lt;&lt; N &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/09/25/2016-09-25-USACO-ZeroSum/" data-id="ck2y0pa79000ujixga21dh3vc" data-title="USACO 2.3 Zero Sum" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2016/09/25/2016-09-25-USACO-ZeroSum/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2016/07/20/2016-7-20-PathFinding/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DFS/">DFS</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/BFS/">BFS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TopCoder/">TopCoder</a></li></ul>
 
     </footer>
   </div>
@@ -173,7 +126,7 @@
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/page/34/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/33/">33</a><a class="page-number" href="/page/34/">34</a><span class="page-number current">35</span><a class="page-number" href="/page/36/">36</a><a class="page-number" href="/page/37/">37</a><span class="space">&hellip;</span><a class="page-number" href="/page/52/">52</a><a class="extend next" rel="next" href="/page/36/">Next &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/34/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/33/">33</a><a class="page-number" href="/page/34/">34</a><span class="page-number current">35</span>
   </nav>
 
 </section>
