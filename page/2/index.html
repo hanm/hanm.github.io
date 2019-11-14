@@ -75,53 +75,6 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-2019-09-19-LeetCode641" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/09/19/2019-09-19-LeetCode641/" class="article-date">
-  <time datetime="2019-09-19T17:39:31.000Z" itemprop="datePublished">2019-09-19</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/LeetCode-in-Rust/">LeetCode in Rust</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/09/19/2019-09-19-LeetCode641/">LeetCode 641 Design Circular Deque</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><a href="https://leetcode.com/problems/design-circular-deque/description/" target="_blank" rel="noopener">Problem Statement</a></p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">use</span> std::vec::<span class="built_in">Vec</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">MyCircularDeque</span></span> &#123;</span><br><span class="line">    v: <span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;,</span><br><span class="line">    head : <span class="keyword">usize</span>,</span><br><span class="line">    tail : <span class="keyword">usize</span>,</span><br><span class="line">    count : <span class="keyword">usize</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * `&amp;self` means the method takes an immutable reference.</span></span><br><span class="line"><span class="comment"> * If you need a mutable reference, change it to `&amp;mut self` instead.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">impl</span> MyCircularDeque &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Initialize your data structure here. Set the size of the deque to be k. */</span></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">new</span></span>(k: <span class="keyword">i32</span>) -&gt; <span class="keyword">Self</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> vec = <span class="built_in">Vec</span>::with_capacity(k.clone() <span class="keyword">as</span> <span class="keyword">usize</span>);</span><br><span class="line">        vec.resize(k.clone() <span class="keyword">as</span> <span class="keyword">usize</span>, <span class="number">0</span>);</span><br><span class="line">        MyCircularDeque &#123;</span><br><span class="line">            v : vec,</span><br><span class="line">            head : k <span class="keyword">as</span> <span class="keyword">usize</span> - <span class="number">1</span>, tail : <span class="number">0</span>, count : <span class="number">0</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Adds an item at the front of Deque. Return true if the operation is successful. */</span></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">insert_front</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>, value: <span class="keyword">i32</span>) -&gt; <span class="keyword">bool</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">self</span>.is_full() &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">self</span>.v[<span class="keyword">self</span>.head.clone()] = value;</span><br><span class="line">        <span class="keyword">self</span>.head = (<span class="keyword">self</span>.head + <span class="keyword">self</span>.v.len() - <span class="number">1</span>) % <span class="keyword">self</span>.v.len();</span><br><span class="line">        <span class="keyword">self</span>.count += <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Adds an item at the rear of Deque. Return true if the operation is successful. */</span></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">insert_last</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>, value: <span class="keyword">i32</span>) -&gt; <span class="keyword">bool</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">self</span>.is_full() &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">self</span>.v[<span class="keyword">self</span>.tail.clone()] = value;</span><br><span class="line">        <span class="keyword">self</span>.tail = (<span class="keyword">self</span>.tail + <span class="number">1</span>) % <span class="keyword">self</span>.v.len();</span><br><span class="line">        <span class="keyword">self</span>.count += <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Deletes an item from the front of Deque. Return true if the operation is successful. */</span></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">delete_front</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>) -&gt; <span class="keyword">bool</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">self</span>.is_empty() &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">self</span>.head = (<span class="keyword">self</span>.head + <span class="number">1</span>) % <span class="keyword">self</span>.v.len();</span><br><span class="line">        <span class="keyword">self</span>.count -= <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Deletes an item from the rear of Deque. Return true if the operation is successful. */</span></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">delete_last</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>) -&gt; <span class="keyword">bool</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">self</span>.is_empty() &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">self</span>.tail = (<span class="keyword">self</span>.tail + <span class="keyword">self</span>.v.len() - <span class="number">1</span>) % <span class="keyword">self</span>.v.len();</span><br><span class="line">        <span class="keyword">self</span>.count -= <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Get the front item from the deque. */</span></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">get_front</span></span>(&amp;<span class="keyword">self</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">self</span>.is_empty() &#123;</span><br><span class="line">            <span class="keyword">return</span> - <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">self</span>.v[(<span class="keyword">self</span>.head.clone() + <span class="number">1</span>) % <span class="keyword">self</span>.v.len()];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Get the last item from the deque. */</span></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">get_rear</span></span>(&amp;<span class="keyword">self</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">self</span>.is_empty() &#123;</span><br><span class="line">            <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">self</span>.v[(<span class="keyword">self</span>.tail - <span class="number">1</span> + <span class="keyword">self</span>.v.len()) % <span class="keyword">self</span>.v.len()];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Checks whether the circular deque is empty or not. */</span></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">is_empty</span></span>(&amp;<span class="keyword">self</span>) -&gt; <span class="keyword">bool</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">self</span>.count == <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Checks whether the circular deque is full or not. */</span></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">is_full</span></span>(&amp;<span class="keyword">self</span>) -&gt; <span class="keyword">bool</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">self</span>.count == <span class="keyword">self</span>.v.len();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/09/19/2019-09-19-LeetCode641/" data-id="ck2y0r6yc004hn6xgthsjkmdl" data-title="LeetCode 641 Design Circular Deque" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2019/09/19/2019-09-19-LeetCode641/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LeetCode/">LeetCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Rust/">Rust</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
     <article id="post-2019-09-15-LeetCode622" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2019/09/15/2019-09-15-LeetCode622/" class="article-date">
@@ -153,7 +106,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/09/15/2019-09-15-LeetCode622/" data-id="ck2y0r6xm0045n6xg6yahojpy" data-title="LeetCode 622 Design Circular Queue" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/09/15/2019-09-15-LeetCode622/" data-id="ck2y0u4de002qsvxgfdx31kdb" data-title="LeetCode 622 Design Circular Queue" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2019/09/15/2019-09-15-LeetCode622/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -201,7 +154,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/09/11/2019-09-11-LeetCode301/" data-id="ck2y0r6xi0043n6xgux86uurh" data-title="LeetCode 301 Remove Invalid Parentheses" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/09/11/2019-09-11-LeetCode301/" data-id="ck2y0u4dc002psvxg0tm5yjkk" data-title="LeetCode 301 Remove Invalid Parentheses" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2019/09/11/2019-09-11-LeetCode301/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -217,11 +170,100 @@
 
 
   
+    <article id="post-2019-01-26-SRM748" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/01/27/2019-01-26-SRM748/" class="article-date">
+  <time datetime="2019-01-27T18:25:31.000Z" itemprop="datePublished">2019-01-27</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/TopCoder/">TopCoder</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/01/27/2019-01-26-SRM748/">SRM 748 DIV II 500</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">class</span> Yllion &#123;</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; getString(<span class="built_in">string</span> input) &#123;</span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; ans;</span><br><span class="line">        <span class="function"><span class="built_in">stringstream</span> <span class="title">s</span><span class="params">(input)</span></span>;</span><br><span class="line">        <span class="built_in">string</span> str;</span><br><span class="line">        <span class="keyword">while</span>(s &gt;&gt; str) ans.push_back(str);</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="built_in">string</span> <span class="title">getPower</span><span class="params">(<span class="built_in">string</span> a, <span class="built_in">string</span> b)</span> </span>&#123;</span><br><span class="line">        <span class="built_in">unordered_map</span>&lt;<span class="built_in">string</span>, <span class="keyword">int</span>&gt; s2i;</span><br><span class="line">        s2i[<span class="string">"one"</span>] = <span class="number">0</span>; s2i[<span class="string">"ten"</span>] = <span class="number">1</span>;</span><br><span class="line">        s2i[<span class="string">"hundred"</span>] = <span class="number">2</span>;</span><br><span class="line">        s2i[<span class="string">"myriad"</span>] = <span class="number">4</span>; s2i[<span class="string">"myllion"</span>] = <span class="number">8</span>;</span><br><span class="line">        s2i[<span class="string">"byllion"</span>] = <span class="number">16</span>; s2i[<span class="string">"tryllion"</span>] = <span class="number">32</span>;</span><br><span class="line">        s2i[<span class="string">"quadryllion"</span>] = <span class="number">64</span>; s2i[<span class="string">"quintyllion"</span>] = <span class="number">128</span>;</span><br><span class="line">        s2i[<span class="string">"sextyllion"</span>] = <span class="number">256</span>; s2i[<span class="string">"septyllion"</span>] = <span class="number">512</span>;</span><br><span class="line">        s2i[<span class="string">"octyllion"</span>] = <span class="number">1024</span>; s2i[<span class="string">"nonyllion"</span>] = <span class="number">2048</span>;</span><br><span class="line">        s2i[<span class="string">"decyllion"</span>] = <span class="number">4096</span>;</span><br><span class="line">        <span class="built_in">unordered_map</span>&lt;<span class="keyword">int</span>, <span class="built_in">string</span>&gt; i2s;</span><br><span class="line">        i2s[<span class="number">0</span>] = <span class="string">"one"</span>; i2s[<span class="number">1</span>] = <span class="string">"ten"</span>;</span><br><span class="line">        i2s[<span class="number">2</span>] = <span class="string">"hundred"</span>;</span><br><span class="line">        i2s[<span class="number">4</span>] = <span class="string">"myriad"</span>; i2s[<span class="number">8</span>] = <span class="string">"myllion"</span>;</span><br><span class="line">        i2s[<span class="number">16</span>] = <span class="string">"byllion"</span>; i2s[<span class="number">32</span>] = <span class="string">"tryllion"</span>;</span><br><span class="line">        i2s[<span class="number">64</span>] = <span class="string">"quadryllion"</span>; i2s[<span class="number">128</span>] = <span class="string">"quintyllion"</span>;</span><br><span class="line">        i2s[<span class="number">256</span>] = <span class="string">"sextyllion"</span>; i2s[<span class="number">512</span>] = <span class="string">"septyllion"</span>;</span><br><span class="line">        i2s[<span class="number">1024</span>] = <span class="string">"octyllion"</span>; i2s[<span class="number">2048</span>] = <span class="string">"nonyllion"</span>;</span><br><span class="line">        i2s[<span class="number">4096</span>] = <span class="string">"decyllion"</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">auto</span> va = getString(a), vb = getString(b);</span><br><span class="line">        <span class="keyword">int</span> c = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> s : va) &#123;</span><br><span class="line">            c += s2i[s];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> s : vb) &#123;</span><br><span class="line">            c += s2i[s];</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; ans;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">12</span>; i &gt;= <span class="number">0</span>; --i) &#123;</span><br><span class="line">            <span class="keyword">int</span> base = <span class="built_in">pow</span>(<span class="number">2</span>, i);</span><br><span class="line">            <span class="keyword">if</span> (c &lt; base) <span class="keyword">continue</span>;</span><br><span class="line">            ans.push_back(i2s[base]);</span><br><span class="line">            <span class="keyword">if</span> (base == <span class="number">1</span>) <span class="keyword">break</span>;</span><br><span class="line">            c = c % base;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (!c) ans.push_back(<span class="string">"one"</span>);</span><br><span class="line"></span><br><span class="line">        reverse(ans.begin(), ans.end());</span><br><span class="line">        <span class="built_in">string</span> ret;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; ans.size(); ++i) &#123;</span><br><span class="line">            ret += ans[i];</span><br><span class="line">            <span class="keyword">if</span> (i != ans.size() - <span class="number">1</span>) ret += <span class="string">" "</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> ret;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2019/01/27/2019-01-26-SRM748/" data-id="ck2y0u4di002ssvxgmmorv0gs" data-title="SRM 748 DIV II 500" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2019/01/27/2019-01-26-SRM748/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-2018-10-20-SRM740" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/10/20/2018-10-20-SRM740/" class="article-date">
+  <time datetime="2018-10-20T23:23:31.000Z" itemprop="datePublished">2018-10-20</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/TopCoder/">TopCoder</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/10/20/2018-10-20-SRM740/">SRM 740 DIV II 500</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">class</span> LongJumpCompetition &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; recoverStandings(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; jumpLengths) &#123;</span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; ans;</span><br><span class="line">        <span class="keyword">int</span> N = jumpLengths.size() / <span class="number">3</span>;</span><br><span class="line">        <span class="built_in">vector</span>&lt;pair&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;, <span class="keyword">int</span>&gt;&gt; cur(N);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">            cur[i] = &#123; &#123;&#125; , i&#125;;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">3</span>; ++i) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; N; ++j) &#123;</span><br><span class="line">                <span class="keyword">int</span> length = jumpLengths[i * N + j];</span><br><span class="line">                cur[N - <span class="number">1</span> - j].first.push_back(<span class="number">-1</span> * length);</span><br><span class="line">                sort(cur[N - <span class="number">1</span> - j].first.begin(),</span><br><span class="line">                     cur[N - <span class="number">1</span> - j].first.end());</span><br><span class="line">            &#125;</span><br><span class="line">            sort(cur.begin(), cur.end());</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">            ans.push_back(cur[i].second);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2018/10/20/2018-10-20-SRM740/" data-id="ck2y0u4dg002rsvxgkvshndug" data-title="SRM 740 DIV II 500" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2018/10/20/2018-10-20-SRM740/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
 
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/35/">35</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
+    <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/26/">26</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
   </nav>
 
 </section>
@@ -364,6 +406,6 @@
 
 
 
-  </div>
-<script src="https://cdn.jsdelivr.net/npm/live2d-widget@3.x/lib/L2Dwidget.min.js"></script><script>L2Dwidget.init({"tagMode":false,"debug":false,"model":{"jsonPath":"https://cdn.jsdelivr.net/npm/live2d-widget-model-haruto@1.x/assets/haruto.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/"});</script><!-- hexo-inject:begin --><!-- hexo-inject:end --></body>
+  </div><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+<script src="https://cdn.jsdelivr.net/npm/live2d-widget@3.x/lib/L2Dwidget.min.js"></script><script>L2Dwidget.init({"tagMode":false,"debug":false,"model":{"jsonPath":"https://cdn.jsdelivr.net/npm/live2d-widget-model-haruto@1.x/assets/haruto.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/"});</script></body>
 </html>
