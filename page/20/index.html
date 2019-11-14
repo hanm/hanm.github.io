@@ -75,6 +75,99 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-2016-11-01-USACO-StringsOrbits.h" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/11/01/2016-11-01-USACO-StringsOrbits.h/" class="article-date">
+  <time datetime="2016-11-01T22:21:31.000Z" itemprop="datePublished">2016-11-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/USACO/">USACO</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/11/01/2016-11-01-USACO-StringsOrbits.h/">USACO 3.2 Stringsorbits</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;utility&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cmath&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;map&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unordered_map&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;climits&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sstream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> N<span class="comment">/* length of string*/</span>, L<span class="comment">/* max number of bits per string */</span>;</span><br><span class="line"><span class="keyword">long</span> <span class="keyword">long</span> I <span class="comment">/* the order */</span>;</span><br><span class="line"><span class="keyword">int</span> dp[<span class="number">32</span>][<span class="number">32</span>];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">compute</span><span class="params">(<span class="keyword">int</span> i, <span class="keyword">int</span> j)</span></span>&#123;</span><br><span class="line">  <span class="keyword">if</span>(dp[i][j] != <span class="number">0</span>)</span><br><span class="line">    <span class="keyword">return</span> dp[i][j];</span><br><span class="line">  <span class="keyword">else</span>&#123;</span><br><span class="line">    dp[i][j] = compute(i - <span class="number">1</span>, j) + compute(i - <span class="number">1</span>, j - <span class="number">1</span>);</span><br><span class="line">    <span class="keyword">return</span> dp[i][j];</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">  <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"kimbits.in"</span>)</span></span>;</span><br><span class="line">  <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"kimbits.out"</span>)</span></span>;</span><br><span class="line">  </span><br><span class="line">  fin &gt;&gt; N &gt;&gt; L &gt;&gt; I;</span><br><span class="line">  <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= N; i++)&#123;</span><br><span class="line">    dp[i][<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">1</span>; j &lt;= L; j++)&#123;</span><br><span class="line">    dp[<span class="number">0</span>][j] = <span class="number">1</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">for</span>(<span class="keyword">int</span> k = N - <span class="number">1</span>; k &gt;= <span class="number">0</span>; k--)&#123;</span><br><span class="line">    <span class="keyword">if</span>(compute(k, L) &lt; I)&#123;</span><br><span class="line">      <span class="built_in">cout</span> &lt;&lt; <span class="number">1</span>;</span><br><span class="line">      fout &lt;&lt; <span class="number">1</span>;</span><br><span class="line">      I -= compute(k,L);</span><br><span class="line">      L--;</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">      <span class="built_in">cout</span> &lt;&lt; <span class="number">0</span>;</span><br><span class="line">      fout &lt;&lt; <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="built_in">cout</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">  fout &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2016/11/01/2016-11-01-USACO-StringsOrbits.h/" data-id="ck2z3olm20018lbxgwhkaf4hg" data-title="USACO 3.2 Stringsorbits" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2016/11/01/2016-11-01-USACO-StringsOrbits.h/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Combination/">Combination</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dynamic-Programming/">Dynamic Programming</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-2016-10-27-Factorials" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/10/27/2016-10-27-Factorials/" class="article-date">
+  <time datetime="2016-10-27T23:35:31.000Z" itemprop="datePublished">2016-10-27</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/USACO/">USACO</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/10/27/2016-10-27-Factorials/">USACO 3.2 Factorials</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Do pre-processing steps to remove the pairs of factor 2 and 5 (which combines together can generate a 0). Then do factorial calculation against preprocessed numbers, and only keep a single digit at each step.<br>Why not just keep a single digit without pre-processing step? Because even if a digit is not zero, it could become zero after multiplying - so we need make sure kill those factors (2 and 5) first.</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> N;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"fact4.in"</span>)</span></span>;</span><br><span class="line">  <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"fact4.out"</span>)</span></span>;</span><br><span class="line">  fin &gt;&gt; N;</span><br><span class="line">  <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; num(N, <span class="number">0</span>);</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">    num[i] = i + <span class="number">1</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">int</span> cnt = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;i : num) &#123;</span><br><span class="line">    <span class="keyword">while</span> (i % <span class="number">5</span> == <span class="number">0</span>) &#123;</span><br><span class="line">      i = i / <span class="number">5</span>;</span><br><span class="line">      ++cnt;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;i : num) &#123;</span><br><span class="line">    <span class="keyword">while</span> (i % <span class="number">2</span> == <span class="number">0</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (cnt == <span class="number">0</span>) <span class="keyword">break</span>;</span><br><span class="line">      i = i / <span class="number">2</span>;</span><br><span class="line">      --cnt;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (cnt == <span class="number">0</span>) <span class="keyword">break</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">long</span> <span class="keyword">long</span> r = <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">    r = (r * num[i]) % <span class="number">10</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="built_in">cout</span> &lt;&lt; r &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">  fout &lt;&lt; r &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2016/10/27/2016-10-27-Factorials/" data-id="ck2z3olm00016lbxglzzpywbq" data-title="USACO 3.2 Factorials" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2016/10/27/2016-10-27-Factorials/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Number-Theory/">Number Theory</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-2016-10-25-USACO-Stamps" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/10/25/2016-10-25-USACO-Stamps/" class="article-date">
@@ -106,110 +199,9 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/10/25/2016-10-25-USACO-Stamps/" data-id="ck2y8vofo00191jxgggap6cpp" data-title="USACO 3.1 Stamps" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/10/25/2016-10-25-USACO-Stamps/" data-id="ck2z3olm10017lbxgt3nqmc1j" data-title="USACO 3.1 Stamps" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2016/10/25/2016-10-25-USACO-Stamps/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dynamic-Programming/">Dynamic Programming</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2016-10-23-USACO-Contact" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/10/23/2016-10-23-USACO-Contact/" class="article-date">
-  <time datetime="2016-10-23T22:43:31.000Z" itemprop="datePublished">2016-10-23</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/USACO/">USACO</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/10/23/2016-10-23-USACO-Contact/">USACO 3.1 Contact</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>The problem can be reduced to a string search and counting problem. The search space is any possible sub strings with size between A and B inclusive. Use a map to record the frequency of the occurrence of each bit pattern (string). Nothing dramatic, but the output formatting is quite nuisance. 输出坑爹!</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;utility&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cmath&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;map&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unordered_map&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;climits&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sstream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> A, B, N;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"contact.in"</span>)</span></span>;</span><br><span class="line">  <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"contact.out"</span>)</span></span>;</span><br><span class="line">  fin &gt;&gt; A &gt;&gt; B &gt;&gt; N;</span><br><span class="line">  <span class="built_in">string</span> s, t;</span><br><span class="line">  <span class="keyword">while</span> (fin &gt;&gt; t) &#123;</span><br><span class="line">    s += t;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="built_in">cout</span> &lt;&lt; s &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">  </span><br><span class="line">  <span class="built_in">map</span>&lt;<span class="built_in">string</span>, <span class="keyword">int</span>, <span class="built_in">std</span>::greater&lt;<span class="built_in">string</span>&gt;&gt; <span class="built_in">map</span>;</span><br><span class="line">  <span class="keyword">const</span> <span class="keyword">int</span> size = (<span class="keyword">int</span>)s.size();</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; size; ++i) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = A; j &lt;= B &amp;&amp; i + j &lt;= size; ++j) &#123;</span><br><span class="line">      <span class="built_in">string</span> sub = s.substr(i, j);</span><br><span class="line">      <span class="built_in">map</span>[sub]++;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;pair&lt;<span class="keyword">int</span>, <span class="built_in">string</span>&gt;&gt; v;</span><br><span class="line">  <span class="built_in">unordered_map</span>&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; cm; <span class="comment">// Key: frequence; Val: frequence count.</span></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">auto</span> iter = <span class="built_in">map</span>.begin(); iter != <span class="built_in">map</span>.end(); ++iter) &#123;</span><br><span class="line">    v.emplace_back(make_pair(iter-&gt;second, iter-&gt;first));</span><br><span class="line">    cm[iter-&gt;second]++;</span><br><span class="line">  &#125;</span><br><span class="line">  sort(v.begin(), v.end(), [] (<span class="keyword">const</span> pair&lt;<span class="keyword">int</span>, <span class="built_in">string</span>&gt; &amp;a,</span><br><span class="line">                               <span class="keyword">const</span> pair&lt;<span class="keyword">int</span>, <span class="built_in">string</span>&gt; &amp;b) &#123;</span><br><span class="line">    <span class="keyword">if</span> (a.first &gt; b.first) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">if</span> (a.first &lt; b.first) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">int</span> sa = (<span class="keyword">int</span>)a.second.size(), sb = (<span class="keyword">int</span>)b.second.size();</span><br><span class="line">    <span class="keyword">if</span> (sa &lt; sb) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">if</span> (sa &gt; sb) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">return</span> a.second &lt; b.second;</span><br><span class="line">  &#125;);</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>, count = <span class="number">0</span>; count &lt; N &amp;&amp; i &lt; v.size();) &#123;</span><br><span class="line">    <span class="keyword">int</span> cnt = cm[v[i].first];</span><br><span class="line">    fout &lt;&lt; v[i].first &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">if</span> (cnt &gt; <span class="number">1</span>) &#123;</span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; cnt; ++j) &#123;</span><br><span class="line">        <span class="keyword">if</span> ((j + <span class="number">1</span>) % <span class="number">6</span> == <span class="number">0</span> || j == cnt - <span class="number">1</span>) &#123;</span><br><span class="line">          fout &lt;&lt; v[i + j].second &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          fout &lt;&lt; v[i + j].second &lt;&lt; <span class="string">" "</span>;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      i += cnt;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      fout &lt;&lt; v[i].second &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">      ++i;</span><br><span class="line">    &#125;</span><br><span class="line">    ++count;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/10/23/2016-10-23-USACO-Contact/" data-id="ck2y8vofn00171jxgmvx2qp4p" data-title="USACO 3.1 Contact" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2016/10/23/2016-10-23-USACO-Contact/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hashing/">Hashing</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/String-Manipulation/">String Manipulation</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2016-10-21-USACO-HumbleNumbers" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/10/21/2016-10-21-USACO-HumbleNumbers/" class="article-date">
-  <time datetime="2016-10-22T02:51:31.000Z" itemprop="datePublished">2016-10-21</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/USACO/">USACO</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/10/21/2016-10-21-USACO-HumbleNumbers/">USACO 3.1 Humble Numbers</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>The idea is to generate and maintain a sorted list of humble numbers:</p>
-<ul>
-<li>Each humble number can be generated together with this sorted list, and with one of the seed prime numbers.</li>
-<li>For each humble number, there is one and only one way of generating the number - in other words the prime factors are fixed for a given humble number.</li>
-<li>For each prime factor number, maintain an index into the humble number sorted list. The indexed number in the humble number list would be the next number that this prime factor should multiply.</li>
-<li>The invariant is, at each iteration, the smallest possible humble number is generated, and each index associated with each prime factor is incremented by one, if the prime factor contributes to the generation (num % prime == 0).</li>
-</ul>
-<p>Following this idea, the humble numbers can be generated systematically without duplicates, and we only need maintain a single sorted list of humble numbers.</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;utility&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cmath&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unordered_map&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;climits&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sstream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> N, K;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"humble.in"</span>)</span></span>;</span><br><span class="line">  <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"humble.out"</span>)</span></span>;</span><br><span class="line">  </span><br><span class="line">  fin &gt;&gt; K &gt;&gt; N;</span><br><span class="line">  <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; dp(N + <span class="number">1</span>, INT_MAX);</span><br><span class="line">  <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; num(K, <span class="number">0</span>);</span><br><span class="line">  <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; indices(K, <span class="number">0</span>);</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; K; ++i) &#123;</span><br><span class="line">    fin &gt;&gt; num[i];</span><br><span class="line">  &#125;</span><br><span class="line">  dp[<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= N; ++i) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; K; ++j) &#123;</span><br><span class="line">      dp[i] = <span class="built_in">std</span>::min(dp[i], dp[indices[j]] * num[j]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; K; ++j) &#123;</span><br><span class="line">      <span class="keyword">if</span> (dp[i] % num[j] == <span class="number">0</span>) &#123;</span><br><span class="line">        ++indices[j];</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  fout &lt;&lt; dp[N] &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">  <span class="built_in">cout</span> &lt;&lt; dp[N] &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/10/21/2016-10-21-USACO-HumbleNumbers/" data-id="ck2y8vofm00161jxgaugikt2y" data-title="USACO 3.1 Humble Numbers" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2016/10/21/2016-10-21-USACO-HumbleNumbers/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
@@ -227,7 +219,7 @@
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/page/19/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/18/">18</a><a class="page-number" href="/page/19/">19</a><span class="page-number current">20</span><a class="page-number" href="/page/21/">21</a><a class="page-number" href="/page/22/">22</a><span class="space">&hellip;</span><a class="page-number" href="/page/35/">35</a><a class="extend next" rel="next" href="/page/21/">Next &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/19/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/18/">18</a><a class="page-number" href="/page/19/">19</a><span class="page-number current">20</span><a class="page-number" href="/page/21/">21</a><a class="page-number" href="/page/22/">22</a><span class="space">&hellip;</span><a class="page-number" href="/page/36/">36</a><a class="extend next" rel="next" href="/page/21/">Next &raquo;</a>
   </nav>
 
 </section>
@@ -258,7 +250,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Algorithm/" style="font-size: 20px;">Algorithm</a> <a href="/tags/BFS/" style="font-size: 16.67px;">BFS</a> <a href="/tags/BFT/" style="font-size: 10px;">BFT</a> <a href="/tags/Backtrack/" style="font-size: 10.83px;">Backtrack</a> <a href="/tags/Base-Conversion/" style="font-size: 10px;">Base Conversion</a> <a href="/tags/Big-Integer/" style="font-size: 10px;">Big Integer</a> <a href="/tags/Bipartite-Match/" style="font-size: 10px;">Bipartite Match</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10px;">Bit Manipulation</a> <a href="/tags/Brutal-Force/" style="font-size: 15.83px;">Brutal Force</a> <a href="/tags/Combination/" style="font-size: 10.83px;">Combination</a> <a href="/tags/Computation-Geometry/" style="font-size: 10px;">Computation Geometry</a> <a href="/tags/Consensus-Protocol/" style="font-size: 11.67px;">Consensus Protocol</a> <a href="/tags/Convex-Hull/" style="font-size: 10px;">Convex Hull</a> <a href="/tags/Counting/" style="font-size: 10px;">Counting</a> <a href="/tags/DFS/" style="font-size: 17.5px;">DFS</a> <a href="/tags/Dijkstra/" style="font-size: 12.5px;">Dijkstra</a> <a href="/tags/Distributed-System/" style="font-size: 11.67px;">Distributed System</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.17px;">Dynamic Programming</a> <a href="/tags/Enumeration/" style="font-size: 10px;">Enumeration</a> <a href="/tags/Euler-Path/" style="font-size: 10px;">Euler Path</a> <a href="/tags/Flood-Fill/" style="font-size: 11.67px;">Flood Fill</a> <a href="/tags/Floyd/" style="font-size: 10.83px;">Floyd</a> <a href="/tags/Ford-Fulkerson/" style="font-size: 10.83px;">Ford-Fulkerson</a> <a href="/tags/Gauss-Elimination/" style="font-size: 10px;">Gauss Elimination</a> <a href="/tags/Graph/" style="font-size: 15.83px;">Graph</a> <a href="/tags/Graph-Theory/" style="font-size: 14.17px;">Graph Theory</a> <a href="/tags/Greedy/" style="font-size: 10px;">Greedy</a> <a href="/tags/Hashing/" style="font-size: 10px;">Hashing</a> <a href="/tags/Hungarian-Algorithm/" style="font-size: 10px;">Hungarian Algorithm</a> <a href="/tags/KMP/" style="font-size: 10px;">KMP</a> <a href="/tags/Knapsack/" style="font-size: 10px;">Knapsack</a> <a href="/tags/LeetCode/" style="font-size: 15px;">LeetCode</a> <a href="/tags/MEMORIZED-SEARCH/" style="font-size: 10px;">MEMORIZED SEARCH</a> <a href="/tags/Math/" style="font-size: 10px;">Math</a> <a href="/tags/Minimum-Spanning-Tree/" style="font-size: 10px;">Minimum Spanning Tree</a> <a href="/tags/Network-Flow/" style="font-size: 10.83px;">Network Flow</a> <a href="/tags/NewSQL/" style="font-size: 10px;">NewSQL</a> <a href="/tags/Number-Theory/" style="font-size: 13.33px;">Number Theory</a> <a href="/tags/Paper-Digest/" style="font-size: 14.17px;">Paper Digest</a> <a href="/tags/Paxos/" style="font-size: 11.67px;">Paxos</a> <a href="/tags/Permutation/" style="font-size: 10px;">Permutation</a> <a href="/tags/Prim/" style="font-size: 10px;">Prim</a> <a href="/tags/Rolling-Array/" style="font-size: 10px;">Rolling Array</a> <a href="/tags/Rust/" style="font-size: 15px;">Rust</a> <a href="/tags/Search/" style="font-size: 18.33px;">Search</a> <a href="/tags/Shortest-Path/" style="font-size: 11.67px;">Shortest Path</a> <a href="/tags/Simulation/" style="font-size: 12.5px;">Simulation</a> <a href="/tags/String/" style="font-size: 10px;">String</a> <a href="/tags/String-Algorithm/" style="font-size: 10px;">String Algorithm</a> <a href="/tags/String-Manipulation/" style="font-size: 10px;">String Manipulation</a> <a href="/tags/Strongly-Connected-Components/" style="font-size: 10px;">Strongly Connected Components</a> <a href="/tags/TopCoder/" style="font-size: 11.67px;">TopCoder</a> <a href="/tags/Topological-Sort/" style="font-size: 10px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 10px;">Tree</a> <a href="/tags/UnionFind/" style="font-size: 10px;">UnionFind</a> <a href="/tags/ZooKeeper/" style="font-size: 10px;">ZooKeeper</a>
+      <a href="/tags/Algorithm/" style="font-size: 20px;">Algorithm</a> <a href="/tags/BFS/" style="font-size: 16.36px;">BFS</a> <a href="/tags/BFT/" style="font-size: 10px;">BFT</a> <a href="/tags/Backtrack/" style="font-size: 10.91px;">Backtrack</a> <a href="/tags/Base-Conversion/" style="font-size: 10px;">Base Conversion</a> <a href="/tags/Big-Integer/" style="font-size: 10px;">Big Integer</a> <a href="/tags/Bipartite-Match/" style="font-size: 10px;">Bipartite Match</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10px;">Bit Manipulation</a> <a href="/tags/Brutal-Force/" style="font-size: 15.45px;">Brutal Force</a> <a href="/tags/Combination/" style="font-size: 10.91px;">Combination</a> <a href="/tags/Computation-Geometry/" style="font-size: 10px;">Computation Geometry</a> <a href="/tags/Consensus-Protocol/" style="font-size: 11.82px;">Consensus Protocol</a> <a href="/tags/Convex-Hull/" style="font-size: 10px;">Convex Hull</a> <a href="/tags/Counting/" style="font-size: 10px;">Counting</a> <a href="/tags/DFS/" style="font-size: 17.27px;">DFS</a> <a href="/tags/Dijkstra/" style="font-size: 12.73px;">Dijkstra</a> <a href="/tags/Distributed-System/" style="font-size: 11.82px;">Distributed System</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.09px;">Dynamic Programming</a> <a href="/tags/Enumeration/" style="font-size: 10px;">Enumeration</a> <a href="/tags/Euler-Path/" style="font-size: 10px;">Euler Path</a> <a href="/tags/Flood-Fill/" style="font-size: 11.82px;">Flood Fill</a> <a href="/tags/Floyd/" style="font-size: 10.91px;">Floyd</a> <a href="/tags/Ford-Fulkerson/" style="font-size: 10.91px;">Ford-Fulkerson</a> <a href="/tags/Gauss-Elimination/" style="font-size: 10px;">Gauss Elimination</a> <a href="/tags/Graph/" style="font-size: 15.45px;">Graph</a> <a href="/tags/Graph-Theory/" style="font-size: 14.55px;">Graph Theory</a> <a href="/tags/Greedy/" style="font-size: 10px;">Greedy</a> <a href="/tags/Hashing/" style="font-size: 10px;">Hashing</a> <a href="/tags/Hungarian-Algorithm/" style="font-size: 10px;">Hungarian Algorithm</a> <a href="/tags/KMP/" style="font-size: 10px;">KMP</a> <a href="/tags/Knapsack/" style="font-size: 10px;">Knapsack</a> <a href="/tags/LeetCode/" style="font-size: 16.36px;">LeetCode</a> <a href="/tags/MEMORIZED-SEARCH/" style="font-size: 10px;">MEMORIZED SEARCH</a> <a href="/tags/Math/" style="font-size: 10px;">Math</a> <a href="/tags/Minimum-Spanning-Tree/" style="font-size: 10px;">Minimum Spanning Tree</a> <a href="/tags/Network-Flow/" style="font-size: 10.91px;">Network Flow</a> <a href="/tags/NewSQL/" style="font-size: 10px;">NewSQL</a> <a href="/tags/Number-Theory/" style="font-size: 13.64px;">Number Theory</a> <a href="/tags/Paper-Digest/" style="font-size: 14.55px;">Paper Digest</a> <a href="/tags/Paxos/" style="font-size: 11.82px;">Paxos</a> <a href="/tags/Permutation/" style="font-size: 10px;">Permutation</a> <a href="/tags/Prim/" style="font-size: 10px;">Prim</a> <a href="/tags/Rolling-Array/" style="font-size: 10px;">Rolling Array</a> <a href="/tags/Rust/" style="font-size: 16.36px;">Rust</a> <a href="/tags/Search/" style="font-size: 18.18px;">Search</a> <a href="/tags/Shortest-Path/" style="font-size: 11.82px;">Shortest Path</a> <a href="/tags/Simulation/" style="font-size: 12.73px;">Simulation</a> <a href="/tags/String/" style="font-size: 10px;">String</a> <a href="/tags/String-Algorithm/" style="font-size: 10px;">String Algorithm</a> <a href="/tags/String-Manipulation/" style="font-size: 10px;">String Manipulation</a> <a href="/tags/Strongly-Connected-Components/" style="font-size: 10px;">Strongly Connected Components</a> <a href="/tags/TopCoder/" style="font-size: 11.82px;">TopCoder</a> <a href="/tags/Topological-Sort/" style="font-size: 10px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 10px;">Tree</a> <a href="/tags/UnionFind/" style="font-size: 10px;">UnionFind</a> <a href="/tags/ZooKeeper/" style="font-size: 10px;">ZooKeeper</a>
     </div>
   </div>
 
@@ -280,7 +272,7 @@
       <ul>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1031/">LeetCode 1031 Maximum Sum of Two Non-Overlapping Subarrays</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1254/">LeetCode 1254. Number of Closed Islands</a>
           </li>
         
           <li>
@@ -288,15 +280,15 @@
           </li>
         
           <li>
+            <a href="/2019/11/11/2019-11-11-LeetCode1031/">LeetCode 1031 Maximum Sum of Two Non-Overlapping Subarrays</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/11/2019-11-11-LeetCode1020/">LeetCode 1020. Number of Enclaves</a>
+          </li>
+        
+          <li>
             <a href="/2019/10/15/2019-10-15-LeetCode1145/">LeetCode 1145 Binary Tree Coloring Game</a>
-          </li>
-        
-          <li>
-            <a href="/2019/09/23/2019-09-23-LeetCode1123/">LeetCode 1123 Lowest Common Ancestor of Deepest Leaves</a>
-          </li>
-        
-          <li>
-            <a href="/2019/09/19/2019-09-19-LeetCode641/">LeetCode 641 Design Circular Deque</a>
           </li>
         
       </ul>
@@ -370,6 +362,6 @@
 
 
 
-  </div><!-- hexo-inject:begin --><!-- hexo-inject:end -->
-<script src="https://cdn.jsdelivr.net/npm/live2d-widget@3.x/lib/L2Dwidget.min.js"></script><script>L2Dwidget.init({"tagMode":false,"debug":false,"model":{"jsonPath":"https://cdn.jsdelivr.net/npm/live2d-widget-model-haruto@1.x/assets/haruto.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/"});</script></body>
+  </div>
+<script src="https://cdn.jsdelivr.net/npm/live2d-widget@3.x/lib/L2Dwidget.min.js"></script><script>L2Dwidget.init({"tagMode":false,"debug":false,"model":{"jsonPath":"https://cdn.jsdelivr.net/npm/live2d-widget-model-haruto@1.x/assets/haruto.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/"});</script><!-- hexo-inject:begin --><!-- hexo-inject:end --></body>
 </html>
