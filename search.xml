@@ -4,6 +4,32 @@
   
     
     <entry>
+      <title><![CDATA[LeetCode 924 Minimize Malware Spread]]></title>
+      <url>http://lianghan.org/2019/11/11/2019-11-11-LeetCode924/</url>
+      <content type="html"><![CDATA[<p><a href="https://leetcode.com/problems/minimize-malware-spread/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<p>For each initially infected node, try remove it and then count the total number of infected nodes through BFS.<br>Pick up the solution that if removing such a node will yield the minimum number of infected nodes.</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::vec::<span class="built_in">Vec</span>;</span><br><span class="line"><span class="keyword">use</span> std::collections::VecDeque;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">min_malware_spread</span></span>(graph: <span class="built_in">Vec</span>&lt;<span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;&gt;, initial: <span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> ans, <span class="keyword">mut</span> min) = (-<span class="number">1</span>, <span class="number">400</span>);</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> input = initial;</span><br><span class="line">        input.sort();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> t <span class="keyword">in</span> &amp;input &#123;</span><br><span class="line">            <span class="keyword">let</span> <span class="keyword">mut</span> bad = <span class="built_in">vec!</span>[<span class="number">0</span>; graph.len()];</span><br><span class="line">            <span class="keyword">let</span> <span class="keyword">mut</span> q = VecDeque::new();</span><br><span class="line">            <span class="keyword">for</span> n <span class="keyword">in</span> &amp;input &#123;</span><br><span class="line">                <span class="keyword">if</span> *n == *t &#123;</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                bad[*n <span class="keyword">as</span> <span class="keyword">usize</span>] = <span class="number">1</span>; q.push_back(*n <span class="keyword">as</span> <span class="keyword">usize</span>);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">let</span> <span class="keyword">mut</span> affected = input.len() - <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">while</span> !q.is_empty() &#123;</span><br><span class="line">                <span class="keyword">let</span> n = q.pop_front().unwrap();</span><br><span class="line">                <span class="keyword">for</span> (i, item) <span class="keyword">in</span> graph[n].iter().enumerate() &#123;</span><br><span class="line">                    <span class="keyword">if</span> bad[i <span class="keyword">as</span> <span class="keyword">usize</span>] == <span class="number">1</span> || *item == <span class="number">0</span> &#123;</span><br><span class="line">                        <span class="keyword">continue</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                    affected += <span class="number">1</span>; bad[i <span class="keyword">as</span> <span class="keyword">usize</span>] = <span class="number">1</span>; q.push_back(i <span class="keyword">as</span> <span class="keyword">usize</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> affected &lt; min &#123;</span><br><span class="line">                min = affected;</span><br><span class="line">                ans = *t;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
+      
+        <categories>
+            
+            <category> LeetCode in Rust </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Algorithm </tag>
+            
+            <tag> LeetCode </tag>
+            
+            <tag> Rust </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
       <title><![CDATA[LeetCode 1145 Binary Tree Coloring Game]]></title>
       <url>http://lianghan.org/2019/10/15/2019-10-15-LeetCode1145/</url>
       <content type="html"><![CDATA[<p><a href="https://leetcode.com/problems/binary-tree-coloring-game/description/" target="_blank" rel="noopener">Problem Statement</a></p>
@@ -908,9 +934,9 @@
         
         <tags>
             
-            <tag> Distributed System </tag>
-            
             <tag> Paper Digest </tag>
+            
+            <tag> Distributed System </tag>
             
         </tags>
         
@@ -1197,9 +1223,9 @@
         
         <tags>
             
-            <tag> Distributed System </tag>
-            
             <tag> Paper Digest </tag>
+            
+            <tag> Distributed System </tag>
             
         </tags>
         
@@ -1390,9 +1416,9 @@
         
         <tags>
             
-            <tag> Distributed System </tag>
-            
             <tag> Paper Digest </tag>
+            
+            <tag> Distributed System </tag>
             
         </tags>
         

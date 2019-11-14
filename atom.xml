@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://lianghan.org/"/>
-  <updated>2019-10-17T23:18:08.492Z</updated>
+  <updated>2019-11-14T01:02:40.189Z</updated>
   <id>http://lianghan.org/</id>
   
   <author>
@@ -15,6 +15,36 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>LeetCode 924 Minimize Malware Spread</title>
+    <link href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode924/"/>
+    <id>http://lianghan.org/2019/11/11/2019-11-11-LeetCode924/</id>
+    <published>2019-11-11T19:11:11.000Z</published>
+    <updated>2019-11-14T01:02:40.189Z</updated>
+    
+    <content type="html"><![CDATA[<p><a href="https://leetcode.com/problems/minimize-malware-spread/description/" target="_blank" rel="noopener">Problem Statement</a></p><p>For each initially infected node, try remove it and then count the total number of infected nodes through BFS.<br>Pick up the solution that if removing such a node will yield the minimum number of infected nodes.</p><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::vec::<span class="built_in">Vec</span>;</span><br><span class="line"><span class="keyword">use</span> std::collections::VecDeque;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">min_malware_spread</span></span>(graph: <span class="built_in">Vec</span>&lt;<span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;&gt;, initial: <span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> ans, <span class="keyword">mut</span> min) = (-<span class="number">1</span>, <span class="number">400</span>);</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> input = initial;</span><br><span class="line">        input.sort();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> t <span class="keyword">in</span> &amp;input &#123;</span><br><span class="line">            <span class="keyword">let</span> <span class="keyword">mut</span> bad = <span class="built_in">vec!</span>[<span class="number">0</span>; graph.len()];</span><br><span class="line">            <span class="keyword">let</span> <span class="keyword">mut</span> q = VecDeque::new();</span><br><span class="line">            <span class="keyword">for</span> n <span class="keyword">in</span> &amp;input &#123;</span><br><span class="line">                <span class="keyword">if</span> *n == *t &#123;</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                bad[*n <span class="keyword">as</span> <span class="keyword">usize</span>] = <span class="number">1</span>; q.push_back(*n <span class="keyword">as</span> <span class="keyword">usize</span>);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">let</span> <span class="keyword">mut</span> affected = input.len() - <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">while</span> !q.is_empty() &#123;</span><br><span class="line">                <span class="keyword">let</span> n = q.pop_front().unwrap();</span><br><span class="line">                <span class="keyword">for</span> (i, item) <span class="keyword">in</span> graph[n].iter().enumerate() &#123;</span><br><span class="line">                    <span class="keyword">if</span> bad[i <span class="keyword">as</span> <span class="keyword">usize</span>] == <span class="number">1</span> || *item == <span class="number">0</span> &#123;</span><br><span class="line">                        <span class="keyword">continue</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                    affected += <span class="number">1</span>; bad[i <span class="keyword">as</span> <span class="keyword">usize</span>] = <span class="number">1</span>; q.push_back(i <span class="keyword">as</span> <span class="keyword">usize</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> affected &lt; min &#123;</span><br><span class="line">                min = affected;</span><br><span class="line">                ans = *t;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;&lt;a href=&quot;https://leetcode.com/problems/minimize-malware-spread/description/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Problem Statement&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;
+      
+    
+    </summary>
+    
+      <category term="LeetCode in Rust" scheme="http://lianghan.org/categories/LeetCode-in-Rust/"/>
+    
+    
+      <category term="Algorithm" scheme="http://lianghan.org/tags/Algorithm/"/>
+    
+      <category term="LeetCode" scheme="http://lianghan.org/tags/LeetCode/"/>
+    
+      <category term="Rust" scheme="http://lianghan.org/tags/Rust/"/>
+    
+  </entry>
   
   <entry>
     <title>LeetCode 1145 Binary Tree Coloring Game</title>
@@ -524,33 +554,6 @@
     
     
       <category term="DFS" scheme="http://lianghan.org/tags/DFS/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Existential Consistency - Measuring and Understanding Consistency at Facebook</title>
-    <link href="http://lianghan.org/2017/03/27/2017-03-27-Existential%20Consistency/"/>
-    <id>http://lianghan.org/2017/03/27/2017-03-27-Existential Consistency/</id>
-    <published>2017-03-27T23:26:31.000Z</published>
-    <updated>2019-09-23T16:26:32.969Z</updated>
-    
-    <content type="html"><![CDATA[<p>Paper digest - <a href="http://sigops.org/sosp/sosp15/current/2015-Monterey/240-lu-online.pdf" target="_blank" rel="noopener">Existential Consistency: Measuring and Understanding Consistency at Facebook </a></p><h1 id="Motivation"><a href="#Motivation" class="headerlink" title="Motivation"></a>Motivation</h1><ul><li>Provides real world insights on how to quantify trade offs between performance and consistency wrt replicated storage systems.</li><li>Describes a practical consistency monitoring system that tracks a new consistency metric ideally suited for health monitoring.</li></ul><h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><ul><li>Stronger consistency implementation increases latency and/or decrease throughput.</li><li>Eventual consistency (usually) provides good latency and/or throughput at larger scale. However there are drawbacks:<ul><li>User visible anomalies: e.g. out order comments on social network post.</li><li>Programming complexity: complicated cases to reason about on weaker consistency model.</li></ul></li><li>So lots of recent work focus on providing stronger consistency models to overcome drawbacks of a weaker consistency model.</li><li>But, not much work is done to quantify the trade offs, which this paper addresses.</li><li>Within a cluster, per-object sequential and read-afterwrite consistency are provided. </li><li>Across the entire system, eventual consistency is provided.</li><li>Consistency is measured by running offline consistency checker (that checks various consistency models) on a logs that gathers random samples of social graph system.</li></ul><h1 id="Background"><a href="#Background" class="headerlink" title="Background"></a>Background</h1><ul><li>Facebook’s replicated storage<ul><li>Data model is directed graph.</li><li>User data is persistent in relational database, which is sharded, geo-replicated.</li><li>Each shard has a single maser region. Replication to slave region is async.</li><li>Database is cached (two-level) for the full replica per region. Root / leaf caches. Reads served by leaf cache.</li><li>Write path to cache: invalidation is async.</li></ul></li><li>Consistency models:<ul><li>The usual ones, mentioned again (linearizability, sequential, per object sequential, read-after-write, eventual.)</li><li>Facebook’s consistency: per-object sequential consistency and read-after-write consistency within a cache, and eventual consistency across caches.</li><li>When user session spreads across multiple leaf caches (e.g. load balanced, or leaf cache failed): eventual consistency.</li></ul></li></ul><h1 id="Principled-Consistency-Analysis"><a href="#Principled-Consistency-Analysis" class="headerlink" title="Principled Consistency Analysis"></a>Principled Consistency Analysis</h1><ul><li>Trace<ul><li>Collect trace to identify violation of consistency models.</li><li>Trace only requests to a subset of vertices / edges stored in system for practical feasibility / avoid overhead.</li><li>Requests are logged on the web server that issuing the requests.</li></ul></li><li>Deal with clock skew<ul><li>Solved by adding offsets (We account for this clock skew by expanding the invocation time and response time, i.e., we subtract 35 ms from all invocation times and add 35 ms to all response times.)</li></ul></li><li>Deal with losing logs<ul><li>Use a secondary trace from Wormhole system which is lossy as well but combined with the writes from both trace has good coverage.</li></ul></li><li>The checker<ul><li>Anomaly Checkers<ul><li>Maintaining a directed graph.</li><li>Vertices represent the state of an object.</li><li>Edges represent the constraints on the ordering.</li><li>Check state transition order observed by reads is consistent with these constraints.</li></ul></li><li>Linearizability Checker<ul><li>Model operation as vertices, edges as constraints.</li><li>Check cycles.</li><li>Linearizability requires that there exists a total order that is legal.</li><li>Merging read vertices into the write vertices they observe requires matching reads to write.</li></ul></li><li>Per-Object Sequential and Read-After-Write Checkers<ul><li>As an add on of linearlizability checker which is superset of sequential / RAW consistency.</li></ul></li></ul></li><li>Directions on future research into systems with stronger consistency<ul><li>Build system were non-anomalous types have negligible overhead or</li><li>Provide stronger consistency for a small subset of a larger system. </li><li>While the latter would not prevent all anomalies, it would allow incremental deployment of these systems and significantly reduce the rate of anomalies. </li><li>Interestingly, such a subsystem that does provide linearizability is used within Facebook for a small set of object types, e.g., passwords.</li></ul></li></ul><h1 id="Practical-Consistency-Analysis"><a href="#Practical-Consistency-Analysis" class="headerlink" title="Practical Consistency Analysis"></a>Practical Consistency Analysis</h1><ul><li>Why - need real time (for monitoring) instead of principal analysis (can be only done offline).</li><li>φ-consistency</li></ul><h1 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h1><ul><li>TAO is highly consistent.</li><li>There were anomalies under all of the consistency models we studied. </li></ul>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;Paper digest - &lt;a href=&quot;http://sigops.org/sosp/sosp15/current/2015-Monterey/240-lu-online.pdf&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Existential
-      
-    
-    </summary>
-    
-      <category term="Distributed System" scheme="http://lianghan.org/categories/Distributed-System/"/>
-    
-    
-      <category term="Distributed System" scheme="http://lianghan.org/tags/Distributed-System/"/>
-    
-      <category term="Paper Digest" scheme="http://lianghan.org/tags/Paper-Digest/"/>
     
   </entry>
   
