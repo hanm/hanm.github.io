@@ -75,6 +75,169 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-2017-07-01-ConsensusInTheCloud" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/07/03/2017-07-01-ConsensusInTheCloud/" class="article-date">
+  <time datetime="2017-07-03T21:07:31.000Z" itemprop="datePublished">2017-07-03</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Distributed-System/">Distributed System</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/07/03/2017-07-01-ConsensusInTheCloud/">Paper Digest - Consensus in the Cloud - Paxos Systems Demystified</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Paper digest - <a href="https://www.cse.buffalo.edu/tech-reports/2016-02.pdf" target="_blank" rel="noopener">Consensus in the Cloud - Paxos Systems Demystified</a></p>
+<h1 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h1><ul>
+<li>Compared several popular Paxos protocols and Paxos systems and present advantages and disadvantages for each.</li>
+<li>Categorized the coordination use-patterns in cloud, and examine Google and Facebook infrastructures, as well as use cases of Paxos in Apache projects.</li>
+<li>Analyzed tradeoffs in the distributed coordination domain and identify promising future directions.</li>
+</ul>
+<h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><ul>
+<li>Coordination plays a major role in cloud computing systems:<ul>
+<li>Leader election</li>
+<li>Group membership</li>
+<li>Cluster management</li>
+<li>Service discovery</li>
+<li>Resource/access management</li>
+<li>Consistent replication of the master nodes in services</li>
+<li>Barrier-orchestration when running large analytic tasks</li>
+<li>And so on..</li>
+</ul>
+</li>
+<li>The coordination problem has been studied extensively under the name “distributed consensus”.</li>
+<li>Paxos rise to fame with Google Chubby (lock service for GFS).</li>
+<li>Apache ZooKeeper as a coordination kernel<ul>
+<li>File system abstraction easy to use.</li>
+<li>Abused / misused, often constituted the bottleneck in performance of these applications and caused scalability problems.</li>
+</ul>
+</li>
+<li>More choices nowadays (Raft, etc), with confusions still remained:<ul>
+<li>Proper use cases.</li>
+<li>Which systems are more suitable for which tasks:<ul>
+<li>Paxos protocols (e.g. multi-paxos, Raft, ZAB) are useful for low-level components for server replication.</li>
+<li>Paxos systems (e.g. ZK) are useful for highly-available/durable metadata management with constraints that all metadata fit in main-memory and are not subject to very frequent changes.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="Paxos-Protocols"><a href="#Paxos-Protocols" class="headerlink" title="Paxos Protocols"></a>Paxos Protocols</h1><ul>
+<li>Protocols<ul>
+<li>Paxos: fault-tolerant consensus for a single value.</li>
+<li>Multi-Paxos: fault-tolerant consensus for multiple values.</li>
+<li>ZAB: additional constraints on Paxos (primary global order).</li>
+<li>Raft: very similar to ZAB with some implementation level difference.</li>
+</ul>
+</li>
+<li>Differences<ul>
+<li>Leader Election:<ul>
+<li>Zab and Raft protocols differ from Paxos as they divide execution into phases (called epochs in Zab and terms in Raft).</li>
+<li>Each epoch begins with a new election, goes into the broadcast phase and ends with a leader failure.</li>
+<li>The phases are sequential because of the additional safety properties are provided by the isLeader predicate.</li>
+<li>Zab and Raft there can be at most one leader at any time.</li>
+<li>Paxos can have multiple leaders coexisting.</li>
+</ul>
+</li>
+<li>Zab has discovery and sync phase, Raft does not which simplifies algorithm but makes recover longer, possibly.</li>
+<li>Communication:<ul>
+<li>ZAB is messaging model. Each update requires at least three messages:<ul>
+<li>proposal, ack and commit</li>
+</ul>
+</li>
+<li>Raft use RPC.</li>
+</ul>
+</li>
+<li>Dynamic reconfiguration:<ul>
+<li>Reconfig is just another command go through consensus process.</li>
+<li>To ensure safety, new config cannot be activated immediately and the configuration changes must go through two phases.</li>
+<li>A process can only propose commands for slots with known configuration, ∀ρ : ρ.slotin &lt; ρ.slotout+ WINDOW.</li>
+<li>With primary order property provided by Zab and Raft, both protocols are able to implement their reconfiguration algorithms without limitations to normal operations or external services.</li>
+<li>Both Zab and Raft include a pre-phase where the new processes join the cluster as a non-voting members so that the leader in Cold could initialize their states by transferring currently committed prefix of updates.</li>
+<li>In Zab, the time between new config proposed and committed, any commands received after reconfig is only scheduled but will not commit.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Paxos Extensions<ul>
+<li>Generalized Paxos: allows acceptors to vote for independent commands.</li>
+<li>EPaxos:<ul>
+<li>allows nodes to commit conflict free commands by checking the command dependency list.</li>
+<li>adds significant complexity and extra effort to resolve the conflict if concurrent commands do not commute.</li>
+<li><strong>from an engineer’s perspective, the sketch algorithm descriptions in the literature are often underspecified, and lead to divergent interpretations and implementations.</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="Paxos-Systems"><a href="#Paxos-Systems" class="headerlink" title="Paxos Systems"></a>Paxos Systems</h1><ul>
+<li>Chubby, Apache ZooKeeper, etcd<ul>
+<li>All three services hide the replicated state machine and log abstractions under a small data-store with filesystem-like API.</li>
+<li>All three support watchers.</li>
+<li>All three support ephemeral storage.</li>
+<li>All three support observers (none voting quorum peer).</li>
+</ul>
+</li>
+<li>Difference<ul>
+<li>ZK provides client FIFO order.</li>
+<li>etcd is stateless (<strong>note, not very true with etcd 3.0’s lease, which is ZK session kind things.</strong>)</li>
+<li>etcd has TTL (<strong>note, ZK has ttl too after 3.5.3.</strong>)</li>
+<li>etcd has hidden data (MVCC).</li>
+<li>ZK has weighted quorum.</li>
+</ul>
+</li>
+<li>Proper use criteria for Paxos systems<ul>
+<li><strong>Paxos system should not be in the performance critical path of the application.</strong></li>
+<li><strong>Frequency of write operations to the Paxos system should be kept low</strong></li>
+<li><strong>Amount of data maintained in the Paxos system should be kept small</strong></li>
+<li><strong>Application adopting the Paxos system should really require strong consistency</strong></li>
+<li><strong>Application adopting the Paxos system should not be distributed over the Wide Area Network (WAN).</strong></li>
+<li><strong> The API abstraction should be fit the goal.</strong></li>
+</ul>
+</li>
+</ul>
+<h1 id="Paxos-Usage-Patterns"><a href="#Paxos-Usage-Patterns" class="headerlink" title="Paxos Usage Patterns"></a>Paxos Usage Patterns</h1><ul>
+<li>Server Replication (SR)</li>
+<li>Log Replication (LR)</li>
+<li>Synchronization Service (SS).</li>
+<li>Barrier Orchestration (BO).</li>
+<li>Configuration Management.</li>
+<li>Message Queues (Q).</li>
+</ul>
+<h1 id="Paxos-Uasage-in-Production"><a href="#Paxos-Uasage-in-Production" class="headerlink" title="Paxos Uasage in Production"></a>Paxos Uasage in Production</h1>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2017/07/03/2017-07-01-ConsensusInTheCloud/" data-id="ck2y8vogy002h1jxgdqi6gnr6" data-title="Paper Digest - Consensus in the Cloud - Paxos Systems Demystified" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2017/07/03/2017-07-01-ConsensusInTheCloud/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Consensus-Protocol/">Consensus Protocol</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Paper-Digest/">Paper Digest</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Paxos/">Paxos</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-2017-07-01-TopCoder-SRM716DivI" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/07/03/2017-07-01-TopCoder-SRM716DivI/" class="article-date">
@@ -105,7 +268,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/07/03/2017-07-01-TopCoder-SRM716DivI/" data-id="ck2y0yjb9002iw2xg2oe3no6k" data-title="SRM 716 DIV II" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2017/07/03/2017-07-01-TopCoder-SRM716DivI/" data-id="ck2y8vogz002i1jxgdsv9w3th" data-title="SRM 716 DIV II" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2017/07/03/2017-07-01-TopCoder-SRM716DivI/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -150,175 +313,13 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/06/25/2017-06-24-USACO-MilkMeasuring/" data-id="ck2y0yjb4002gw2xggjy54bns" data-title="USACO 5.3 Milk Measuring" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2017/06/25/2017-06-24-USACO-MilkMeasuring/" data-id="ck2y8vogw002f1jxgaxohbkhu" data-title="USACO 5.3 Milk Measuring" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2017/06/25/2017-06-24-USACO-MilkMeasuring/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DFS/">DFS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MEMORIZED-SEARCH/">MEMORIZED SEARCH</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2017-05-08-MegaStore" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/05/08/2017-05-08-MegaStore/" class="article-date">
-  <time datetime="2017-05-09T04:00:31.000Z" itemprop="datePublished">2017-05-08</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Distributed-System/">Distributed System</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/05/08/2017-05-08-MegaStore/">Paper Digest - Megastore, Providing Scalable, Highly Available Storage for Interactive Services</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Paper digest - <a href="https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/36971.pdf" target="_blank" rel="noopener">Megastore: Providing Scalable, Highly Available Storage for Interactive Services</a></p>
-<h1 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h1><ul>
-<li>Blends the scalability of a NoSQL datastore with the convenience of a traditional RDBMS.</li>
-<li>Provides both strong consistency guarantees and high availability.</li>
-<li>Provides fully serializable ACID semantics within fine-grained partitions of data.</li>
-</ul>
-<h1 id="Motivation"><a href="#Motivation" class="headerlink" title="Motivation"></a>Motivation</h1><ul>
-<li>Online services are forcing the storage community to meet new demands. <ul>
-<li>Highly scalable.</li>
-<li>Rapid development.</li>
-<li>Low latency.</li>
-<li>Consistent view of data.</li>
-<li>Highly available.</li>
-</ul>
-</li>
-</ul>
-<h1 id="Design-Highlights"><a href="#Design-Highlights" class="headerlink" title="Design Highlights"></a>Design Highlights</h1><ul>
-<li>Partition data. Replicate unit is a partition.</li>
-<li>Full ACID semantics within partitions only.</li>
-<li>Across partitions, limited consistency guarantees (later spanner improves this)</li>
-<li>Provide database features (2nd indexes), but does not provide scalability guarantees (can only scale within user-tolerable latency limits.)</li>
-<li>Innovative usage of Paxos: use it for replication instead of traditional usage (locking, leader election, replicate config data - e.g. ZooKeeper/ZAB)</li>
-</ul>
-<h1 id="Availability-with-Scalability"><a href="#Availability-with-Scalability" class="headerlink" title="Availability with Scalability"></a>Availability with Scalability</h1><ul>
-<li>Replication<ul>
-<li>Replicate a write-ahead log over a group of symmetric peers.</li>
-<li>Any node can initiate reads and writes.</li>
-<li>Each log append blocks on acknowledgments from a majority of replicas.</li>
-<li>Optimizations on Paxos<ul>
-<li>Allow local reads.</li>
-<li>Single roundtrip writes.</li>
-</ul>
-</li>
-<li>Multiple replicated logs instead of single log for better availability.</li>
-</ul>
-</li>
-<li>Key Concept - <strong>Entity Groups</strong><ul>
-<li>Entity group is a collection of data and unit of replication.</li>
-<li>Within a single entity group: ACID semantic.</li>
-<li>Across entity groups:<ul>
-<li>Two phased commit (strong consistency)</li>
-<li>Or async communications through message queues.</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>Physical Layout of data<ul>
-<li>Use BigTable for data storage.</li>
-<li>Letting applications control the placement of data.<ul>
-<li>Applications try to keep data near users and replicas near each other.</li>
-<li>The data for an entity group are held in contiguous ranges of Bigtable rows.</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<h1 id="API-Design"><a href="#API-Design" class="headerlink" title="API Design"></a>API Design</h1><ul>
-<li><strong>Cost-transparent APIs</strong>: runtime costs that match application developers’ intuitions.</li>
-<li>Eliminate needs for joins:  offer fine-grained control over physical locality.</li>
-<li>Joins when required is implemented in application code.</li>
-</ul>
-<h1 id="Data-Model"><a href="#Data-Model" class="headerlink" title="Data Model"></a>Data Model</h1><ul>
-<li>Lies between the abstract tuples of an RDBMS and the concrete row-column storage of NoSQL.</li>
-<li>Data model is declared in a schema and is strongly typed.</li>
-</ul>
-<h1 id="Transactions-and-Concurrency-Control"><a href="#Transactions-and-Concurrency-Control" class="headerlink" title="Transactions and Concurrency Control"></a>Transactions and Concurrency Control</h1><ul>
-<li>Use MVCC. Readers and writers don’t block each other, and reads are isolated from writes for the duration of a transaction.</li>
-<li>Read semantics<ul>
-<li>current (single entity group)</li>
-<li>snapshot (single entity group)</li>
-<li>inconsistent (ignore state of log)</li>
-</ul>
-</li>
-<li>Queues<ul>
-<li>Cross group batch operation deliver.</li>
-</ul>
-</li>
-<li>2 Phased Commit for atomic update across entity groups.</li>
-</ul>
-<h1 id="Paxos-based-Replication-key-innovations"><a href="#Paxos-based-Replication-key-innovations" class="headerlink" title="Paxos based Replication (key innovations)"></a>Paxos based Replication <strong>(key innovations)</strong></h1><ul>
-<li>Pitfall of master-slave based Paxos<ul>
-<li>Master failover can require a complicated state machine.</li>
-<li>A series of timers must elapse before service is restored. </li>
-<li>It is difficult to avoid user-visible outages.</li>
-</ul>
-</li>
-<li>Fast Reads<ul>
-<li>Local read.</li>
-<li>Coordinator tracks if a specific replica has observed the full state of writes so it can serve local reads.</li>
-</ul>
-</li>
-<li>Fast Writes<ul>
-<li>Single round trip writes.</li>
-<li>Pre-preparing optimization: each successful write includes an implied prepare message granting the master the right to issue accept messages for the next log position.</li>
-<li>If the write succeeds, the prepares are honored, and the next write skips directly to the accept phase. </li>
-<li>Multi-Paxos: independent instance of the Paxos algorithm for each log position. T</li>
-</ul>
-</li>
-<li>Replica Types<ul>
-<li>Full Replica: contain all entity and index and able to serve current reads.</li>
-<li>Witness Replica: vote and store WAL, but does not apply the WAL (kind like observer in ZooKeeper but not strictly the same - observer in ZK does not vote.)</li>
-<li>Read Only Replica: does not vote but contain full data of a point of time in the past (more like ZK observer but ZK observer is more up to date WRT its state.)</li>
-</ul>
-</li>
-</ul>
-<h1 id="Coordinator"><a href="#Coordinator" class="headerlink" title="Coordinator"></a>Coordinator</h1><ul>
-<li>The coordinator is a simple process with no external dependencies and no persistent storage.</li>
-<li>Failure Detection<ul>
-<li>Use an out of band protocol to identify when other coordinators are up, healthy, and generally reachable.</li>
-<li>Coordinators obtain specific Chubby locks in remote datacenters at startup.</li>
-<li>Revert its state to a conservative default when loses majority of locks and / or parititons.</li>
-<li>Brief and rare outage risk..</li>
-<li>Liveness protocol is vulnerable to asymmetric network partitions.</li>
-</ul>
-</li>
-</ul>
-<h1 id="Operation-Metrics-Experience-ommitted"><a href="#Operation-Metrics-Experience-ommitted" class="headerlink" title="Operation / Metrics / Experience - ommitted."></a>Operation / Metrics / Experience - ommitted.</h1>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/05/08/2017-05-08-MegaStore/" data-id="ck2y0yjb0002fw2xg4zg4x2y8" data-title="Paper Digest - Megastore, Providing Scalable, Highly Available Storage for Interactive Services" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2017/05/08/2017-05-08-MegaStore/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/NewSQL/">NewSQL</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Paper-Digest/">Paper Digest</a></li></ul>
 
     </footer>
   </div>
@@ -363,7 +364,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Algorithm/" style="font-size: 20px;">Algorithm</a> <a href="/tags/BFS/" style="font-size: 16.36px;">BFS</a> <a href="/tags/BFT/" style="font-size: 10px;">BFT</a> <a href="/tags/Backtrack/" style="font-size: 10.91px;">Backtrack</a> <a href="/tags/Base-Conversion/" style="font-size: 10px;">Base Conversion</a> <a href="/tags/Big-Integer/" style="font-size: 10px;">Big Integer</a> <a href="/tags/Bipartite-Match/" style="font-size: 10px;">Bipartite Match</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10px;">Bit Manipulation</a> <a href="/tags/Brutal-Force/" style="font-size: 15.45px;">Brutal Force</a> <a href="/tags/Combination/" style="font-size: 10.91px;">Combination</a> <a href="/tags/Computation-Geometry/" style="font-size: 10px;">Computation Geometry</a> <a href="/tags/Consensus-Protocol/" style="font-size: 11.82px;">Consensus Protocol</a> <a href="/tags/Convex-Hull/" style="font-size: 10px;">Convex Hull</a> <a href="/tags/Counting/" style="font-size: 10px;">Counting</a> <a href="/tags/DFS/" style="font-size: 17.27px;">DFS</a> <a href="/tags/Dijkstra/" style="font-size: 12.73px;">Dijkstra</a> <a href="/tags/Distributed-System/" style="font-size: 11.82px;">Distributed System</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.09px;">Dynamic Programming</a> <a href="/tags/Enumeration/" style="font-size: 10px;">Enumeration</a> <a href="/tags/Euler-Path/" style="font-size: 10px;">Euler Path</a> <a href="/tags/Flood-Fill/" style="font-size: 11.82px;">Flood Fill</a> <a href="/tags/Floyd/" style="font-size: 10.91px;">Floyd</a> <a href="/tags/Ford-Fulkerson/" style="font-size: 10.91px;">Ford-Fulkerson</a> <a href="/tags/Gauss-Elimination/" style="font-size: 10px;">Gauss Elimination</a> <a href="/tags/Graph/" style="font-size: 15.45px;">Graph</a> <a href="/tags/Graph-Theory/" style="font-size: 14.55px;">Graph Theory</a> <a href="/tags/Greedy/" style="font-size: 10px;">Greedy</a> <a href="/tags/Hashing/" style="font-size: 10px;">Hashing</a> <a href="/tags/Hungarian-Algorithm/" style="font-size: 10px;">Hungarian Algorithm</a> <a href="/tags/KMP/" style="font-size: 10px;">KMP</a> <a href="/tags/Knapsack/" style="font-size: 10px;">Knapsack</a> <a href="/tags/LeetCode/" style="font-size: 14.55px;">LeetCode</a> <a href="/tags/MEMORIZED-SEARCH/" style="font-size: 10px;">MEMORIZED SEARCH</a> <a href="/tags/Math/" style="font-size: 10px;">Math</a> <a href="/tags/Minimum-Spanning-Tree/" style="font-size: 10px;">Minimum Spanning Tree</a> <a href="/tags/Network-Flow/" style="font-size: 10.91px;">Network Flow</a> <a href="/tags/NewSQL/" style="font-size: 10px;">NewSQL</a> <a href="/tags/Number-Theory/" style="font-size: 13.64px;">Number Theory</a> <a href="/tags/Paper-Digest/" style="font-size: 14.55px;">Paper Digest</a> <a href="/tags/Paxos/" style="font-size: 11.82px;">Paxos</a> <a href="/tags/Permutation/" style="font-size: 10px;">Permutation</a> <a href="/tags/Prim/" style="font-size: 10px;">Prim</a> <a href="/tags/Rolling-Array/" style="font-size: 10px;">Rolling Array</a> <a href="/tags/Rust/" style="font-size: 14.55px;">Rust</a> <a href="/tags/Search/" style="font-size: 18.18px;">Search</a> <a href="/tags/Shortest-Path/" style="font-size: 11.82px;">Shortest Path</a> <a href="/tags/Simulation/" style="font-size: 12.73px;">Simulation</a> <a href="/tags/String/" style="font-size: 10px;">String</a> <a href="/tags/String-Algorithm/" style="font-size: 10px;">String Algorithm</a> <a href="/tags/String-Manipulation/" style="font-size: 10px;">String Manipulation</a> <a href="/tags/Strongly-Connected-Components/" style="font-size: 10px;">Strongly Connected Components</a> <a href="/tags/TopCoder/" style="font-size: 11.82px;">TopCoder</a> <a href="/tags/Topological-Sort/" style="font-size: 10px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 10px;">Tree</a> <a href="/tags/UnionFind/" style="font-size: 10px;">UnionFind</a> <a href="/tags/ZooKeeper/" style="font-size: 10px;">ZooKeeper</a>
+      <a href="/tags/Algorithm/" style="font-size: 20px;">Algorithm</a> <a href="/tags/BFS/" style="font-size: 16.67px;">BFS</a> <a href="/tags/BFT/" style="font-size: 10px;">BFT</a> <a href="/tags/Backtrack/" style="font-size: 10.83px;">Backtrack</a> <a href="/tags/Base-Conversion/" style="font-size: 10px;">Base Conversion</a> <a href="/tags/Big-Integer/" style="font-size: 10px;">Big Integer</a> <a href="/tags/Bipartite-Match/" style="font-size: 10px;">Bipartite Match</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10px;">Bit Manipulation</a> <a href="/tags/Brutal-Force/" style="font-size: 15.83px;">Brutal Force</a> <a href="/tags/Combination/" style="font-size: 10.83px;">Combination</a> <a href="/tags/Computation-Geometry/" style="font-size: 10px;">Computation Geometry</a> <a href="/tags/Consensus-Protocol/" style="font-size: 11.67px;">Consensus Protocol</a> <a href="/tags/Convex-Hull/" style="font-size: 10px;">Convex Hull</a> <a href="/tags/Counting/" style="font-size: 10px;">Counting</a> <a href="/tags/DFS/" style="font-size: 17.5px;">DFS</a> <a href="/tags/Dijkstra/" style="font-size: 12.5px;">Dijkstra</a> <a href="/tags/Distributed-System/" style="font-size: 11.67px;">Distributed System</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.17px;">Dynamic Programming</a> <a href="/tags/Enumeration/" style="font-size: 10px;">Enumeration</a> <a href="/tags/Euler-Path/" style="font-size: 10px;">Euler Path</a> <a href="/tags/Flood-Fill/" style="font-size: 11.67px;">Flood Fill</a> <a href="/tags/Floyd/" style="font-size: 10.83px;">Floyd</a> <a href="/tags/Ford-Fulkerson/" style="font-size: 10.83px;">Ford-Fulkerson</a> <a href="/tags/Gauss-Elimination/" style="font-size: 10px;">Gauss Elimination</a> <a href="/tags/Graph/" style="font-size: 15.83px;">Graph</a> <a href="/tags/Graph-Theory/" style="font-size: 14.17px;">Graph Theory</a> <a href="/tags/Greedy/" style="font-size: 10px;">Greedy</a> <a href="/tags/Hashing/" style="font-size: 10px;">Hashing</a> <a href="/tags/Hungarian-Algorithm/" style="font-size: 10px;">Hungarian Algorithm</a> <a href="/tags/KMP/" style="font-size: 10px;">KMP</a> <a href="/tags/Knapsack/" style="font-size: 10px;">Knapsack</a> <a href="/tags/LeetCode/" style="font-size: 15px;">LeetCode</a> <a href="/tags/MEMORIZED-SEARCH/" style="font-size: 10px;">MEMORIZED SEARCH</a> <a href="/tags/Math/" style="font-size: 10px;">Math</a> <a href="/tags/Minimum-Spanning-Tree/" style="font-size: 10px;">Minimum Spanning Tree</a> <a href="/tags/Network-Flow/" style="font-size: 10.83px;">Network Flow</a> <a href="/tags/NewSQL/" style="font-size: 10px;">NewSQL</a> <a href="/tags/Number-Theory/" style="font-size: 13.33px;">Number Theory</a> <a href="/tags/Paper-Digest/" style="font-size: 14.17px;">Paper Digest</a> <a href="/tags/Paxos/" style="font-size: 11.67px;">Paxos</a> <a href="/tags/Permutation/" style="font-size: 10px;">Permutation</a> <a href="/tags/Prim/" style="font-size: 10px;">Prim</a> <a href="/tags/Rolling-Array/" style="font-size: 10px;">Rolling Array</a> <a href="/tags/Rust/" style="font-size: 15px;">Rust</a> <a href="/tags/Search/" style="font-size: 18.33px;">Search</a> <a href="/tags/Shortest-Path/" style="font-size: 11.67px;">Shortest Path</a> <a href="/tags/Simulation/" style="font-size: 12.5px;">Simulation</a> <a href="/tags/String/" style="font-size: 10px;">String</a> <a href="/tags/String-Algorithm/" style="font-size: 10px;">String Algorithm</a> <a href="/tags/String-Manipulation/" style="font-size: 10px;">String Manipulation</a> <a href="/tags/Strongly-Connected-Components/" style="font-size: 10px;">Strongly Connected Components</a> <a href="/tags/TopCoder/" style="font-size: 11.67px;">TopCoder</a> <a href="/tags/Topological-Sort/" style="font-size: 10px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 10px;">Tree</a> <a href="/tags/UnionFind/" style="font-size: 10px;">UnionFind</a> <a href="/tags/ZooKeeper/" style="font-size: 10px;">ZooKeeper</a>
     </div>
   </div>
 
@@ -385,6 +386,10 @@
       <ul>
         
           <li>
+            <a href="/2019/11/11/2019-11-11-LeetCode1031/">LeetCode 1031 Maximum Sum of Two Non-Overlapping Subarrays</a>
+          </li>
+        
+          <li>
             <a href="/2019/11/11/2019-11-11-LeetCode924/">LeetCode 924 Minimize Malware Spread</a>
           </li>
         
@@ -398,10 +403,6 @@
         
           <li>
             <a href="/2019/09/19/2019-09-19-LeetCode641/">LeetCode 641 Design Circular Deque</a>
-          </li>
-        
-          <li>
-            <a href="/2019/09/15/2019-09-15-LeetCode622/">LeetCode 622 Design Circular Queue</a>
           </li>
         
       </ul>
@@ -475,6 +476,6 @@
 
 
 
-  </div>
-<script src="https://cdn.jsdelivr.net/npm/live2d-widget@3.x/lib/L2Dwidget.min.js"></script><script>L2Dwidget.init({"tagMode":false,"debug":false,"model":{"jsonPath":"https://cdn.jsdelivr.net/npm/live2d-widget-model-haruto@1.x/assets/haruto.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/"});</script><!-- hexo-inject:begin --><!-- hexo-inject:end --></body>
+  </div><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+<script src="https://cdn.jsdelivr.net/npm/live2d-widget@3.x/lib/L2Dwidget.min.js"></script><script>L2Dwidget.init({"tagMode":false,"debug":false,"model":{"jsonPath":"https://cdn.jsdelivr.net/npm/live2d-widget-model-haruto@1.x/assets/haruto.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/"});</script></body>
 </html>

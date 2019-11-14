@@ -15,15 +15,20 @@
 <!-- End Google Analytics -->
 
   
-  <title>Tag: Hungarian Algorithm | Quantum Field</title>
+  <title>LeetCode 1031 Maximum Sum of Two Non-Overlapping Subarrays | Quantum Field</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Quantum Field">
-<meta property="og:url" content="http://lianghan.org/tags/Hungarian-Algorithm/index.html">
+  <meta name="description" content="Problem Statement Maintain a sliding window of two sub arrays with length L and M and slide through. For each slide check two cases:L first, or M first. Use prefix sum to speed up calculation of sum o">
+<meta name="keywords" content="Algorithm,LeetCode,Rust">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LeetCode 1031 Maximum Sum of Two Non-Overlapping Subarrays">
+<meta property="og:url" content="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1031/index.html">
 <meta property="og:site_name" content="Quantum Field">
+<meta property="og:description" content="Problem Statement Maintain a sliding window of two sub arrays with length L and M and slide through. For each slide check two cases:L first, or M first. Use prefix sum to speed up calculation of sum o">
 <meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2019-11-14T04:59:58.317Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Quantum Field">
+<meta name="twitter:title" content="LeetCode 1031 Maximum Sum of Two Non-Overlapping Subarrays">
+<meta name="twitter:description" content="Problem Statement Maintain a sliding window of two sub arrays with length L and M and slide through. For each slide check two cases:L first, or M first. Use prefix sum to speed up calculation of sum o">
   
     <link rel="alternate" href="/atom.xml" title="Quantum Field" type="application/atom+xml">
   
@@ -73,40 +78,69 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main">
-  
-  
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2017" class="archive-year">2017</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2017/01/04/2017-01-04-USACO-ThePerfectStall/" class="archive-article-date">
-  <time datetime="2017-01-05T05:39:31.000Z" itemprop="datePublished">Jan 4</time>
+        <section id="main"><article id="post-2019-11-11-LeetCode1031" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/11/11/2019-11-11-LeetCode1031/" class="article-date">
+  <time datetime="2019-11-11T19:11:11.000Z" itemprop="datePublished">2019-11-11</time>
 </a>
-      
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/LeetCode-in-Rust/">LeetCode in Rust</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/01/04/2017-01-04-USACO-ThePerfectStall/">USACO 4.2 The Pefect Stall</a>
+    <h1 class="article-title" itemprop="name">
+      LeetCode 1031 Maximum Sum of Two Non-Overlapping Subarrays
     </h1>
   
 
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><a href="https://leetcode.com/problems/maximum-sum-of-two-non-overlapping-subarrays/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<p>Maintain a sliding window of two sub arrays with length L and M and slide through. For each slide check two cases:<br>L first, or M first. Use prefix sum to speed up calculation of sum of a given sub array.</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">use</span> std::cmp;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">max_sum_two_no_overlap</span></span>(a: <span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;, l: <span class="keyword">i32</span>, m: <span class="keyword">i32</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> A = a.iter().scan(<span class="number">0</span>, |sum, i| &#123;*sum += *i; <span class="literal">Some</span>(*sum)&#125;).collect::&lt;<span class="built_in">Vec</span>&lt;_&gt;&gt;();</span><br><span class="line">        <span class="keyword">let</span> (L, M) = (l <span class="keyword">as</span> <span class="keyword">usize</span>, m <span class="keyword">as</span> <span class="keyword">usize</span>);</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> ans, <span class="keyword">mut</span> lmax, <span class="keyword">mut</span> rmax) = (A[L + M - <span class="number">1</span>], A[L - <span class="number">1</span>], A[M - <span class="number">1</span>]);</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> L + M..A.len() <span class="keyword">as</span> <span class="keyword">usize</span> &#123;</span><br><span class="line">            lmax = cmp::max(lmax, A[i - M] - A[i - M - L]);</span><br><span class="line">            rmax = cmp::max(rmax, A[i - L] - A[i - L - M]);</span><br><span class="line">            ans = cmp::max(ans, cmp::max(A[i] - A[i - L] + rmax, A[i] - A[i - M] + lmax));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1031/" data-id="ck2y8vohd002u1jxg04698az9" data-title="LeetCode 1031 Maximum Sum of Two Non-Overlapping Subarrays" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1031/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LeetCode/">LeetCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Rust/">Rust</a></li></ul>
 
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2019/11/11/2019-11-11-LeetCode924/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">LeetCode 924 Minimize Malware Spread</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<section id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
 
 </section>
         
@@ -227,11 +261,13 @@
 <script>
   var disqus_shortname = 'quantumfield';
   
+  var disqus_url = 'http://lianghan.org/2019/11/11/2019-11-11-LeetCode1031/';
+  
   (function(){
     var dsq = document.createElement('script');
     dsq.type = 'text/javascript';
     dsq.async = true;
-    dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
     (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
   })();
 </script>

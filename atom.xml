@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://lianghan.org/"/>
-  <updated>2019-11-14T01:02:40.189Z</updated>
+  <updated>2019-11-14T04:59:58.317Z</updated>
   <id>http://lianghan.org/</id>
   
   <author>
@@ -15,6 +15,35 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>LeetCode 1031 Maximum Sum of Two Non-Overlapping Subarrays</title>
+    <link href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1031/"/>
+    <id>http://lianghan.org/2019/11/11/2019-11-11-LeetCode1031/</id>
+    <published>2019-11-11T19:11:11.000Z</published>
+    <updated>2019-11-14T04:59:58.317Z</updated>
+    
+    <content type="html"><![CDATA[<p><a href="https://leetcode.com/problems/maximum-sum-of-two-non-overlapping-subarrays/description/" target="_blank" rel="noopener">Problem Statement</a></p><p>Maintain a sliding window of two sub arrays with length L and M and slide through. For each slide check two cases:<br>L first, or M first. Use prefix sum to speed up calculation of sum of a given sub array.</p><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">use</span> std::cmp;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">max_sum_two_no_overlap</span></span>(a: <span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;, l: <span class="keyword">i32</span>, m: <span class="keyword">i32</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> A = a.iter().scan(<span class="number">0</span>, |sum, i| &#123;*sum += *i; <span class="literal">Some</span>(*sum)&#125;).collect::&lt;<span class="built_in">Vec</span>&lt;_&gt;&gt;();</span><br><span class="line">        <span class="keyword">let</span> (L, M) = (l <span class="keyword">as</span> <span class="keyword">usize</span>, m <span class="keyword">as</span> <span class="keyword">usize</span>);</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> ans, <span class="keyword">mut</span> lmax, <span class="keyword">mut</span> rmax) = (A[L + M - <span class="number">1</span>], A[L - <span class="number">1</span>], A[M - <span class="number">1</span>]);</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> L + M..A.len() <span class="keyword">as</span> <span class="keyword">usize</span> &#123;</span><br><span class="line">            lmax = cmp::max(lmax, A[i - M] - A[i - M - L]);</span><br><span class="line">            rmax = cmp::max(rmax, A[i - L] - A[i - L - M]);</span><br><span class="line">            ans = cmp::max(ans, cmp::max(A[i] - A[i - L] + rmax, A[i] - A[i - M] + lmax));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;&lt;a href=&quot;https://leetcode.com/problems/maximum-sum-of-two-non-overlapping-subarrays/description/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Problem 
+      
+    
+    </summary>
+    
+      <category term="LeetCode in Rust" scheme="http://lianghan.org/categories/LeetCode-in-Rust/"/>
+    
+    
+      <category term="Algorithm" scheme="http://lianghan.org/tags/Algorithm/"/>
+    
+      <category term="LeetCode" scheme="http://lianghan.org/tags/LeetCode/"/>
+    
+      <category term="Rust" scheme="http://lianghan.org/tags/Rust/"/>
+    
+  </entry>
   
   <entry>
     <title>LeetCode 924 Minimize Malware Spread</title>
@@ -529,31 +558,6 @@
       <category term="Consensus Protocol" scheme="http://lianghan.org/tags/Consensus-Protocol/"/>
     
       <category term="Paxos" scheme="http://lianghan.org/tags/Paxos/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>USACO 5.2 Snail Trail</title>
-    <link href="http://lianghan.org/2017/04/21/2017-04-21-USACO-SnailTrail/"/>
-    <id>http://lianghan.org/2017/04/21/2017-04-21-USACO-SnailTrail/</id>
-    <published>2017-04-21T21:50:31.000Z</published>
-    <updated>2019-09-23T16:26:32.970Z</updated>
-    
-    <content type="html"><![CDATA[<p>The problem is to find out the longest possible move path under certain constraints. Not sure if there are better methods, but a brutal force DFS just works with the given test data.</p><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> N, B, ans;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt;&gt; grid;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt;&gt; visited;</span><br><span class="line"><span class="keyword">int</span> dx[] = &#123;<span class="number">-1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>&#125;;</span><br><span class="line"><span class="keyword">int</span> dy[] = &#123;<span class="number">0</span>, <span class="number">-1</span>, <span class="number">1</span>, <span class="number">0</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">on_grid</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> x &gt;= <span class="number">1</span> &amp;&amp; y &gt;= <span class="number">1</span> &amp;&amp; x &lt;= N &amp;&amp; y &lt;= N;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; next_dir(<span class="keyword">int</span> d) &#123;</span><br><span class="line">    <span class="keyword">if</span> (d == <span class="number">0</span> || d == <span class="number">3</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> &#123;<span class="number">1</span>, <span class="number">2</span>&#125;;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> &#123;<span class="number">0</span>, <span class="number">3</span>&#125;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">move</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y, <span class="keyword">int</span> d, <span class="keyword">int</span> step)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (visited[x][y]) <span class="keyword">return</span>;</span><br><span class="line">    visited[x][y] = <span class="literal">true</span>;</span><br><span class="line">    ans = <span class="built_in">std</span>::max(ans, step);</span><br><span class="line">    <span class="keyword">int</span> xx = x + dx[d], yy = y + dy[d];</span><br><span class="line">    <span class="keyword">if</span> (on_grid(xx, yy) &amp;&amp; grid[xx][yy] != <span class="string">'#'</span>) &#123;</span><br><span class="line">        move(xx, yy, d, step + <span class="number">1</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">auto</span> dirs = next_dir(d);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> dir : dirs) &#123;</span><br><span class="line">            xx = x + dx[dir]; yy = y + dy[dir];</span><br><span class="line">            <span class="keyword">if</span> (on_grid(xx, yy) &amp;&amp; grid[xx][yy] == <span class="string">'.'</span>) &#123;</span><br><span class="line">                move(xx, yy, dir, step + <span class="number">1</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    visited[x][y] = <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"snail.in"</span>)</span></span>;</span><br><span class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"snail.out"</span>)</span></span>;</span><br><span class="line">    fin &gt;&gt; N &gt;&gt; B;</span><br><span class="line">    grid = <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt;&gt;(N + <span class="number">1</span>, <span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt;(N + <span class="number">1</span>, <span class="string">'.'</span>));</span><br><span class="line">    visited = <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt;&gt;(N + <span class="number">1</span>, <span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt;(N + <span class="number">1</span>, <span class="literal">false</span>));</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= B; ++i) &#123;</span><br><span class="line">        <span class="keyword">char</span> col; <span class="keyword">int</span> row;</span><br><span class="line">        fin &gt;&gt; col &gt;&gt; row;</span><br><span class="line">        grid[row][col - <span class="string">'A'</span> + <span class="number">1</span>] = <span class="string">'#'</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    move(<span class="number">1</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">1</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= N; ++i) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt;= N; ++j) &#123;</span><br><span class="line">            visited[i][j] = <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    move(<span class="number">1</span>, <span class="number">1</span>, <span class="number">3</span>, <span class="number">1</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; ans &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    fout &lt;&lt; ans &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;The problem is to find out the longest possible move path under certain constraints. Not sure if there are better methods, but a brutal f
-      
-    
-    </summary>
-    
-      <category term="USACO" scheme="http://lianghan.org/categories/USACO/"/>
-    
-    
-      <category term="DFS" scheme="http://lianghan.org/tags/DFS/"/>
     
   </entry>
   
