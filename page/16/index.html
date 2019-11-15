@@ -75,6 +75,53 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-2016-12-16-USACO-RaucousRockers" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/12/16/2016-12-16-USACO-RaucousRockers/" class="article-date">
+  <time datetime="2016-12-17T01:09:31.000Z" itemprop="datePublished">2016-12-16</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/USACO/">USACO</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/12/16/2016-12-16-USACO-RaucousRockers/">USACO 3.4 Raucous Rockers</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Typical BackPack problem but with the limited scale of test data, a straight forward brutal force search could do it. The search space is the permutation of subsets of all songs, for each song we have two choice - choose or not choose. Iterate the sequence under the constraint of ordering.</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;climits&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> N <span class="comment">/* songs */</span>, M <span class="comment">/* disks */</span>, T <span class="comment">/* disk capacity */</span>;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; songs;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; disks;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"rockers.in"</span>)</span></span>;</span><br><span class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"rockers.out"</span>)</span></span>;</span><br><span class="line">    fin &gt;&gt; N &gt;&gt; T &gt;&gt; M;</span><br><span class="line">    songs = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">        fin &gt;&gt; songs[i];</span><br><span class="line">    &#125;</span><br><span class="line">    disks = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(M, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">int</span> ans = INT_MIN;</span><br><span class="line">    <span class="keyword">int</span> upper = <span class="number">1</span> &lt;&lt; N;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= upper; ++i) &#123;</span><br><span class="line">        <span class="built_in">std</span>::fill(disks.begin(), disks.end(), <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">int</span> idx = <span class="number">0</span>, sum = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; N; ++j) &#123;</span><br><span class="line">            <span class="keyword">bool</span> pick = (<span class="number">1</span> &lt;&lt; j) &amp; i;</span><br><span class="line">            <span class="keyword">if</span> (!pick) <span class="keyword">continue</span>;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> k = idx; k &lt; M; ++k, ++idx)&#123;</span><br><span class="line">                <span class="keyword">if</span>(disks[k] + songs[j] &lt;= T)&#123;</span><br><span class="line">                    disks[k] += songs[j];</span><br><span class="line">                    ++sum;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        ans = <span class="built_in">std</span>::max(ans, sum);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; ans &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    fout &lt;&lt; ans &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2016/12/16/2016-12-16-USACO-RaucousRockers/" data-id="ck30fy38j001nf8xgl7alqv2o" data-title="USACO 3.4 Raucous Rockers" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2016/12/16/2016-12-16-USACO-RaucousRockers/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Brutal-Force/">Brutal Force</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dynamic-Programming/">Dynamic Programming</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Search/">Search</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-2016-12-14-USACO-ElectricFence" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/12/14/2016-12-14-USACO-ElectricFence/" class="article-date">
@@ -106,7 +153,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/12/14/2016-12-14-USACO-ElectricFence/" data-id="ck2z3olo4001nlbxg6haeza05" data-title="USACO 3.4 Electric Fence" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/12/14/2016-12-14-USACO-ElectricFence/" data-id="ck30fy38j001mf8xg4knfj7jg" data-title="USACO 3.4 Electric Fence" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2016/12/14/2016-12-14-USACO-ElectricFence/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -152,60 +199,13 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/12/14/2016-12-13-TopCoder-SRM-703-GCDGraph/" data-id="ck2z3olo1001llbxgtkd6ijn3" data-title="SRM 703 GCDGraph" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/12/14/2016-12-13-TopCoder-SRM-703-GCDGraph/" data-id="ck30fy38g001kf8xgkm94bua7" data-title="SRM 703 GCDGraph" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2016/12/14/2016-12-13-TopCoder-SRM-703-GCDGraph/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/UnionFind/">UnionFind</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2016-12-12-USACO-AmericanHeritage" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/12/12/2016-12-12-USACO-AmericanHeritage/" class="article-date">
-  <time datetime="2016-12-13T00:17:31.000Z" itemprop="datePublished">2016-12-12</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/USACO/">USACO</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/12/12/2016-12-12-USACO-AmericanHeritage/">USACO 3.4 American Heritage</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Probably the most easiest problem solved on USACO so far?</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">string</span> preorder;</span><br><span class="line"><span class="built_in">string</span> inorder;</span><br><span class="line"><span class="built_in">string</span> postorder;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> TreeNode &#123;</span><br><span class="line">    <span class="keyword">char</span> c;</span><br><span class="line">    TreeNode *left;</span><br><span class="line">    TreeNode *right;</span><br><span class="line">    TreeNode(<span class="keyword">char</span> c) : left(<span class="literal">nullptr</span>), right(<span class="literal">nullptr</span>), c(c) &#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function">TreeNode *<span class="title">construct</span><span class="params">(<span class="keyword">int</span> preStart, <span class="keyword">int</span> preEnd, <span class="keyword">int</span> inStart, <span class="keyword">int</span> inEnd)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (preStart &gt; preEnd || inStart &gt; inEnd) <span class="keyword">return</span> <span class="literal">nullptr</span>;</span><br><span class="line">    <span class="keyword">auto</span> root = <span class="keyword">new</span> TreeNode(preorder[preStart]);</span><br><span class="line">    <span class="keyword">int</span> index = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = inStart; i &lt;= inEnd; ++i) &#123;</span><br><span class="line">        <span class="keyword">if</span> (inorder[i] == preorder[preStart]) &#123;</span><br><span class="line">            index = i; <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    root-&gt;left = construct(preStart + <span class="number">1</span>, preStart + index - inStart,</span><br><span class="line">                           inStart, index - <span class="number">1</span>);</span><br><span class="line">    root-&gt;right = construct(preStart + index - inStart + <span class="number">1</span>, preEnd,</span><br><span class="line">                            index + <span class="number">1</span>, inEnd);</span><br><span class="line">    <span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">postTraverse</span><span class="params">(TreeNode *root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!root) <span class="keyword">return</span>;</span><br><span class="line">    postTraverse(root-&gt;left);</span><br><span class="line">    postTraverse(root-&gt;right);</span><br><span class="line">    postorder += root-&gt;c;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"heritage.in"</span>)</span></span>;</span><br><span class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"heritage.out"</span>)</span></span>;</span><br><span class="line">    fin &gt;&gt; inorder &gt;&gt; preorder;</span><br><span class="line">    <span class="keyword">int</span> size = (<span class="keyword">int</span>)inorder.size();</span><br><span class="line">    postTraverse(construct(<span class="number">0</span>, size - <span class="number">1</span>, <span class="number">0</span>, size - <span class="number">1</span>));</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; postorder &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    fout &lt;&lt; postorder &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/12/12/2016-12-12-USACO-AmericanHeritage/" data-id="ck2z3olm9001ilbxgluqt397q" data-title="USACO 3.4 American Heritage" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2016/12/12/2016-12-12-USACO-AmericanHeritage/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DFS/">DFS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Tree/">Tree</a></li></ul>
 
     </footer>
   </div>
@@ -250,7 +250,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Algorithm/" style="font-size: 20px;">Algorithm</a> <a href="/tags/BFS/" style="font-size: 16.36px;">BFS</a> <a href="/tags/BFT/" style="font-size: 10px;">BFT</a> <a href="/tags/Backtrack/" style="font-size: 10.91px;">Backtrack</a> <a href="/tags/Base-Conversion/" style="font-size: 10px;">Base Conversion</a> <a href="/tags/Big-Integer/" style="font-size: 10px;">Big Integer</a> <a href="/tags/Bipartite-Match/" style="font-size: 10px;">Bipartite Match</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10px;">Bit Manipulation</a> <a href="/tags/Brutal-Force/" style="font-size: 15.45px;">Brutal Force</a> <a href="/tags/Combination/" style="font-size: 10.91px;">Combination</a> <a href="/tags/Computation-Geometry/" style="font-size: 10px;">Computation Geometry</a> <a href="/tags/Consensus-Protocol/" style="font-size: 11.82px;">Consensus Protocol</a> <a href="/tags/Convex-Hull/" style="font-size: 10px;">Convex Hull</a> <a href="/tags/Counting/" style="font-size: 10px;">Counting</a> <a href="/tags/DFS/" style="font-size: 17.27px;">DFS</a> <a href="/tags/Dijkstra/" style="font-size: 12.73px;">Dijkstra</a> <a href="/tags/Distributed-System/" style="font-size: 11.82px;">Distributed System</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.09px;">Dynamic Programming</a> <a href="/tags/Enumeration/" style="font-size: 10px;">Enumeration</a> <a href="/tags/Euler-Path/" style="font-size: 10px;">Euler Path</a> <a href="/tags/Flood-Fill/" style="font-size: 11.82px;">Flood Fill</a> <a href="/tags/Floyd/" style="font-size: 10.91px;">Floyd</a> <a href="/tags/Ford-Fulkerson/" style="font-size: 10.91px;">Ford-Fulkerson</a> <a href="/tags/Gauss-Elimination/" style="font-size: 10px;">Gauss Elimination</a> <a href="/tags/Graph/" style="font-size: 15.45px;">Graph</a> <a href="/tags/Graph-Theory/" style="font-size: 14.55px;">Graph Theory</a> <a href="/tags/Greedy/" style="font-size: 10px;">Greedy</a> <a href="/tags/Hashing/" style="font-size: 10px;">Hashing</a> <a href="/tags/Hungarian-Algorithm/" style="font-size: 10px;">Hungarian Algorithm</a> <a href="/tags/KMP/" style="font-size: 10px;">KMP</a> <a href="/tags/Knapsack/" style="font-size: 10px;">Knapsack</a> <a href="/tags/LeetCode/" style="font-size: 16.36px;">LeetCode</a> <a href="/tags/MEMORIZED-SEARCH/" style="font-size: 10px;">MEMORIZED SEARCH</a> <a href="/tags/Math/" style="font-size: 10px;">Math</a> <a href="/tags/Minimum-Spanning-Tree/" style="font-size: 10px;">Minimum Spanning Tree</a> <a href="/tags/Network-Flow/" style="font-size: 10.91px;">Network Flow</a> <a href="/tags/NewSQL/" style="font-size: 10px;">NewSQL</a> <a href="/tags/Number-Theory/" style="font-size: 13.64px;">Number Theory</a> <a href="/tags/Paper-Digest/" style="font-size: 14.55px;">Paper Digest</a> <a href="/tags/Paxos/" style="font-size: 11.82px;">Paxos</a> <a href="/tags/Permutation/" style="font-size: 10px;">Permutation</a> <a href="/tags/Prim/" style="font-size: 10px;">Prim</a> <a href="/tags/Rolling-Array/" style="font-size: 10px;">Rolling Array</a> <a href="/tags/Rust/" style="font-size: 16.36px;">Rust</a> <a href="/tags/Search/" style="font-size: 18.18px;">Search</a> <a href="/tags/Shortest-Path/" style="font-size: 11.82px;">Shortest Path</a> <a href="/tags/Simulation/" style="font-size: 12.73px;">Simulation</a> <a href="/tags/String/" style="font-size: 10px;">String</a> <a href="/tags/String-Algorithm/" style="font-size: 10px;">String Algorithm</a> <a href="/tags/String-Manipulation/" style="font-size: 10px;">String Manipulation</a> <a href="/tags/Strongly-Connected-Components/" style="font-size: 10px;">Strongly Connected Components</a> <a href="/tags/TopCoder/" style="font-size: 11.82px;">TopCoder</a> <a href="/tags/Topological-Sort/" style="font-size: 10px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 10px;">Tree</a> <a href="/tags/UnionFind/" style="font-size: 10px;">UnionFind</a> <a href="/tags/ZooKeeper/" style="font-size: 10px;">ZooKeeper</a>
+      <a href="/tags/Algorithm/" style="font-size: 20px;">Algorithm</a> <a href="/tags/BFS/" style="font-size: 16.36px;">BFS</a> <a href="/tags/BFT/" style="font-size: 10px;">BFT</a> <a href="/tags/Backtrack/" style="font-size: 10.91px;">Backtrack</a> <a href="/tags/Base-Conversion/" style="font-size: 10px;">Base Conversion</a> <a href="/tags/Big-Integer/" style="font-size: 10px;">Big Integer</a> <a href="/tags/Bipartite-Match/" style="font-size: 10px;">Bipartite Match</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10px;">Bit Manipulation</a> <a href="/tags/Brutal-Force/" style="font-size: 15.45px;">Brutal Force</a> <a href="/tags/Combination/" style="font-size: 10.91px;">Combination</a> <a href="/tags/Computation-Geometry/" style="font-size: 10px;">Computation Geometry</a> <a href="/tags/Consensus-Protocol/" style="font-size: 11.82px;">Consensus Protocol</a> <a href="/tags/Convex-Hull/" style="font-size: 10px;">Convex Hull</a> <a href="/tags/Counting/" style="font-size: 10px;">Counting</a> <a href="/tags/DFS/" style="font-size: 17.27px;">DFS</a> <a href="/tags/Dijkstra/" style="font-size: 12.73px;">Dijkstra</a> <a href="/tags/Distributed-System/" style="font-size: 11.82px;">Distributed System</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.09px;">Dynamic Programming</a> <a href="/tags/Enumeration/" style="font-size: 10px;">Enumeration</a> <a href="/tags/Euler-Path/" style="font-size: 10px;">Euler Path</a> <a href="/tags/Flood-Fill/" style="font-size: 11.82px;">Flood Fill</a> <a href="/tags/Floyd/" style="font-size: 10.91px;">Floyd</a> <a href="/tags/Ford-Fulkerson/" style="font-size: 10.91px;">Ford-Fulkerson</a> <a href="/tags/Gauss-Elimination/" style="font-size: 10px;">Gauss Elimination</a> <a href="/tags/Graph/" style="font-size: 15.45px;">Graph</a> <a href="/tags/Graph-Theory/" style="font-size: 14.55px;">Graph Theory</a> <a href="/tags/Greedy/" style="font-size: 10px;">Greedy</a> <a href="/tags/Hashing/" style="font-size: 10px;">Hashing</a> <a href="/tags/Hungarian-Algorithm/" style="font-size: 10px;">Hungarian Algorithm</a> <a href="/tags/KMP/" style="font-size: 10px;">KMP</a> <a href="/tags/Knapsack/" style="font-size: 10px;">Knapsack</a> <a href="/tags/LeetCode/" style="font-size: 17.27px;">LeetCode</a> <a href="/tags/MEMORIZED-SEARCH/" style="font-size: 10px;">MEMORIZED SEARCH</a> <a href="/tags/Math/" style="font-size: 10px;">Math</a> <a href="/tags/Minimum-Spanning-Tree/" style="font-size: 10px;">Minimum Spanning Tree</a> <a href="/tags/Network-Flow/" style="font-size: 10.91px;">Network Flow</a> <a href="/tags/NewSQL/" style="font-size: 10px;">NewSQL</a> <a href="/tags/Number-Theory/" style="font-size: 13.64px;">Number Theory</a> <a href="/tags/Paper-Digest/" style="font-size: 14.55px;">Paper Digest</a> <a href="/tags/Paxos/" style="font-size: 11.82px;">Paxos</a> <a href="/tags/Permutation/" style="font-size: 10px;">Permutation</a> <a href="/tags/Prim/" style="font-size: 10px;">Prim</a> <a href="/tags/Rolling-Array/" style="font-size: 10px;">Rolling Array</a> <a href="/tags/Rust/" style="font-size: 17.27px;">Rust</a> <a href="/tags/Search/" style="font-size: 18.18px;">Search</a> <a href="/tags/Shortest-Path/" style="font-size: 11.82px;">Shortest Path</a> <a href="/tags/Simulation/" style="font-size: 12.73px;">Simulation</a> <a href="/tags/String/" style="font-size: 10px;">String</a> <a href="/tags/String-Algorithm/" style="font-size: 10px;">String Algorithm</a> <a href="/tags/String-Manipulation/" style="font-size: 10px;">String Manipulation</a> <a href="/tags/Strongly-Connected-Components/" style="font-size: 10px;">Strongly Connected Components</a> <a href="/tags/TopCoder/" style="font-size: 11.82px;">TopCoder</a> <a href="/tags/Topological-Sort/" style="font-size: 10px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 10px;">Tree</a> <a href="/tags/UnionFind/" style="font-size: 10px;">UnionFind</a> <a href="/tags/ZooKeeper/" style="font-size: 10px;">ZooKeeper</a>
     </div>
   </div>
 
@@ -272,11 +272,11 @@
       <ul>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1254/">LeetCode 1254. Number of Closed Islands</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1197/">1197. Minimum Knight Moves</a>
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode924/">LeetCode 924 Minimize Malware Spread</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1254/">LeetCode 1254. Number of Closed Islands</a>
           </li>
         
           <li>
@@ -284,11 +284,11 @@
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1020/">LeetCode 1020. Number of Enclaves</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode924/">LeetCode 924 Minimize Malware Spread</a>
           </li>
         
           <li>
-            <a href="/2019/10/15/2019-10-15-LeetCode1145/">LeetCode 1145 Binary Tree Coloring Game</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1020/">LeetCode 1020. Number of Enclaves</a>
           </li>
         
       </ul>
@@ -362,6 +362,6 @@
 
 
 
-  </div>
-<script src="https://cdn.jsdelivr.net/npm/live2d-widget@3.x/lib/L2Dwidget.min.js"></script><script>L2Dwidget.init({"tagMode":false,"debug":false,"model":{"jsonPath":"https://cdn.jsdelivr.net/npm/live2d-widget-model-haruto@1.x/assets/haruto.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/"});</script><!-- hexo-inject:begin --><!-- hexo-inject:end --></body>
+  </div><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+<script src="https://cdn.jsdelivr.net/npm/live2d-widget@3.x/lib/L2Dwidget.min.js"></script><script>L2Dwidget.init({"tagMode":false,"debug":false,"model":{"jsonPath":"https://cdn.jsdelivr.net/npm/live2d-widget-model-haruto@1.x/assets/haruto.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/"});</script></body>
 </html>
