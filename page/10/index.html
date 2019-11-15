@@ -75,6 +75,59 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-2017-03-25-USACO-MusicalTheme" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/03/25/2017-03-25-USACO-MusicalTheme/" class="article-date">
+  <time datetime="2017-03-25T22:49:31.000Z" itemprop="datePublished">2017-03-25</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/USACO/">USACO</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/03/25/2017-03-25-USACO-MusicalTheme/">USACO 5.1 Musical Theme</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>If there is no constraint of the “transpose” (Transposed means that a constant positive or negative value is added to every note value in the theme subsequence), then the problem is obviously a string search problem. How to deal with transpose when doing string search?</p>
+<ul>
+<li>The property of transpose imply that if sequence A is a transpose of sequence B, then there must be that for every Ai, we have Ai + Diff = Bi. Similarly, Ai+1 + Diff = Bi+1.</li>
+<li>Now we have Ai+1 - Ai = Bi+1 - Bi. </li>
+<li>So the problem can be reduced again to plain sub string search problem: we just need to transform the input to a diff sequence by having each element a diff between two adjacent elements.</li>
+<li>For string search, use KMP so the time is linear.</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> ans = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">int</span> N;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; str, table;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"theme.in"</span>)</span></span>;</span><br><span class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"theme.out"</span>)</span></span>;</span><br><span class="line">    fin &gt;&gt; N;</span><br><span class="line">    str = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N + <span class="number">1</span>, <span class="number">0</span>);</span><br><span class="line">    table = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N + <span class="number">1</span>, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">int</span> prev = <span class="number">0</span>, cur;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">        fin &gt;&gt; cur;</span><br><span class="line">        str[i] = cur - prev;</span><br><span class="line">        prev = cur;</span><br><span class="line">    &#125;</span><br><span class="line">    str[N] = prev * <span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> from = N - <span class="number">5</span>; from &gt;= <span class="number">5</span>; --from) &#123;</span><br><span class="line">        <span class="built_in">std</span>::fill(table.begin(), table.end(), <span class="number">0</span>);</span><br><span class="line">        table[<span class="number">0</span>] = table[<span class="number">1</span>] = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = from + <span class="number">1</span>; i &lt;= N; ++i) &#123;</span><br><span class="line">            <span class="keyword">int</span> j = table[i - from];</span><br><span class="line">            <span class="keyword">while</span> (j &gt; <span class="number">0</span> &amp;&amp; str[i] != str[from + j]) &#123;</span><br><span class="line">               j = table[j];</span><br><span class="line">            &#125;</span><br><span class="line">            table[i - from + <span class="number">1</span>] = (str[i] == str[from + j]) ? j + <span class="number">1</span> : <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> j = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; from - <span class="number">1</span>; ++i) &#123;</span><br><span class="line">            <span class="keyword">while</span> (j &gt; <span class="number">0</span> &amp;&amp; str[i] != str[from + j]) &#123;</span><br><span class="line">                j = table[j];</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (str[i] == str[from + j]) &#123;</span><br><span class="line">                j++;</span><br><span class="line">                ans = <span class="built_in">std</span>::max(ans, j + <span class="number">1</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; (ans &lt; <span class="number">5</span> ? <span class="number">0</span> : ans) &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    fout &lt;&lt; (ans &lt; <span class="number">5</span> ? <span class="number">0</span> : ans) &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2017/03/25/2017-03-25-USACO-MusicalTheme/" data-id="ck30oqoei00293lxg0on3gpic" data-title="USACO 5.1 Musical Theme" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2017/03/25/2017-03-25-USACO-MusicalTheme/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/KMP/">KMP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/String-Algorithm/">String Algorithm</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-2017-03-17-USACO-StarryNight" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/03/17/2017-03-17-USACO-StarryNight/" class="article-date">
@@ -121,7 +174,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/03/17/2017-03-17-USACO-StarryNight/" data-id="ck30h6hxf002cxjxgn3y69xga" data-title="USACO 5.1 Starry Night" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2017/03/17/2017-03-17-USACO-StarryNight/" data-id="ck30oqoek002c3lxgy21ejg2n" data-title="USACO 5.1 Starry Night" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2017/03/17/2017-03-17-USACO-StarryNight/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -176,7 +229,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/03/05/2017-03-05-USACO-FencingTheCows/" data-id="ck30h6hxa0027xjxgv6ids8wn" data-title="USACO 5.1 Fencing The Cows" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2017/03/05/2017-03-05-USACO-FencingTheCows/" data-id="ck30oqoef00273lxg5hbbnlt8" data-title="USACO 5.1 Fencing The Cows" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2017/03/05/2017-03-05-USACO-FencingTheCows/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -192,87 +245,11 @@
 
 
   
-    <article id="post-2017-03-03-ZooKeeper Consistency Guarantees" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/03/03/2017-03-03-ZooKeeper Consistency Guarantees/" class="article-date">
-  <time datetime="2017-03-03T22:10:31.000Z" itemprop="datePublished">2017-03-03</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Distributed-System/">Distributed System</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/03/03/2017-03-03-ZooKeeper Consistency Guarantees/">ZooKeeper Consistency Guarantees</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>There are many consistency models out there, from stronger ones to weaker ones. What consistency model best describes ZooKeeper? </p>
-<h1 id="Consistency-Models"><a href="#Consistency-Models" class="headerlink" title="Consistency Models"></a>Consistency Models</h1><p>It is useful to think consistency models from two perspectives: server side (data centric) and client side (client centric), in particular in the context of ZooKeeper (or a general distributed storage system that is composed of clients and servers.).</p>
-<ul>
-<li>Data Centric Consistency Models<ul>
-<li>Strict Consistency<br>The strongest consistency model for distributed systems. All changes to system state are required to populate to all replicas instantly, so any write should be immediately visible to all parts of the system (both server and client). More formally, any read on a data item should returns a value corresponding to the result of the most recent write on this item. This system model is not possible to implement on top of the current hardware for distributed systems, because it requires a global clock (for strict ordering), and zero latency and infinite bandwidth for communications between different parts of the system. A closer resemble of a system that satisfy this model is a single machine where latency / bandwidth / clock constraints are almost satisfied (even on a single machine, achieve strict consistency is hard due to cache hierarchies and latencies of memory / cache access.).<br>Because of the impossibilities of implementation, a less strict model called atomic register was proposed (from Leslie Lamport), and a particular version of this model is known as linearizable consistency.<ul>
-<li>Linearizable consistency<br>Linearizable consistency model, comparing to strict consistency model, takes the latency into account, so it does not require writes to an item being visible instantly. The real constraint of this consistency model is that the operations can’t interleave, can’t be reordered, and the sequence of writes are visible in strict global ordering as these writes were issued. It is a recency guarantee such that if a change to the value is visible to one client, the change has to be visible to all clients. A client can’t read old value if some other clients have seen the new value. The change history is linearized such that all operations appear to have executed atomically in the order that is consistent with the global real time ordering of operations. One nice property of linearizable consistency is that it composes - which is an extremely useful property for reasoning about the behavior of concurrent operations in distributed systems.</li>
-</ul>
-</li>
-<li>Sequential Consistency<br>Sequential consistency is a weaker consistency model comparing to linearizable consistency. It requires all operations appear to have executed atomically in some order, and the key constraint is that this order that is visible to all part of the system has to be consistent. However, this order does not have to be consistent with the ordering of the original operations. Because of this, the system is free to reorder the executions of the operations, it just need to satisfy a globally consistent visible orderings of operations for all clients. That is the key difference between linearizable consistency model. Also, sequential consistency does not compose as linearizable consistency does.</li>
-<li>Causal Consistency<br>Causal consistency is a even weaker model than sequential consistency. It only requires causally related writes must be visible by all processes, while none causally related writes are free to executed in any order. This violates the constraint for sequential consistency (all writes must converge to the same order), so it is weaker model than sequential consistency. Sequential consistency is thus by definition implicitly causal consistency as well.</li>
-<li>Eventual Consistency<br>The weakest consistency model, ever. Distributed systems adopt this model makes a lot things harder, though it is good trade off to make in certain use case. Eventual consistency is more about a liveness property (that values converge finally), so it is usually trivially satisfiable in most systems.</li>
-</ul>
-</li>
-<li>Client Centric Consistency Models:<ul>
-<li>Monotonic reads<br>Once read, subsequent reads on that data items return same or more recent values.</li>
-<li>Monotonic writes<br>A write must be propagated to all replicas before a successive write by the same process; writes from same process are processed in same order.</li>
-<li>Read your writes<br>read(x) always returns write(x) by that process.</li>
-<li>Writes follow reads<br>write(x) following read(x) will take place on same or more recent version of x.</li>
-</ul>
-</li>
-</ul>
-<p>With all these said, what consistency model ZooKeeper fit in?</p>
-<ul>
-<li>Linearizable consistency: ZooKeeper does not guarantee linearizable consistency. Two ZooKeeper clients can see two different values of the same data item (value of znode) at the same time - e.g. one client can see an old value while the other client can see the new value. Even with the sync command, which stalls the write processors, it is still possible that a client miss a value of the write (e.g. after sync executed finished but before client gets the updated value, another client issuing a new write that update the value again.). Also due to potential network delays it is hard to guarantee that operations on all clients happen on same order globally.</li>
-<li>Sequential consistency: this is what ZooKeeper guarantees. Sequential consistency does not care about exact ordering of operations and ZooKeeper can reorder operations, but all the operations ordering will converge to a single globally consistent ordering that is visible to all clients (eventually, or near instantly if client uses sync command.).</li>
-<li>Causal consistency: because ZooKeeper satisfies sequential consistency, it also satisfy causal consistency. More specifically, since causal consistency is a stronger guarantee than read your writes and monotonic reads, those properties are also guaranteed. </li>
-<li>Monotonic reads / Read your writes: as discussed, these are trivially satisfied with stronger guarantee. Note in practice there are a lot of corner cases to consider to satisfy these properties from a client point of view, for example what if a client disconnect and connect to a server node where it does not have latest values for the same znode client has seen before (that this server lags behind leader, which is normal because ZooKeeper only requires a quorum of servers in sync with leader). This and similar cases are handled by the guarantees of ZooKeeper session which provides some strong guarantees with regards to how client and server could interact (will describe this in a future post). </li>
-<li>Monotonic writes: ZooKeeper does not satisfy this because a write is only required to be replicated to a quorum of servers.</li>
-<li>Also a side note is there is a long pending bug of the sync operation - it is not a quorum operation so the guarantee it provides only apply if the client is connecting to leader.. this needs to be fixed, soon.</li>
-</ul>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/03/03/2017-03-03-ZooKeeper Consistency Guarantees/" data-id="ck30h6hxc0029xjxgppdjul11" data-title="ZooKeeper Consistency Guarantees" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2017/03/03/2017-03-03-ZooKeeper Consistency Guarantees/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ZooKeeper/">ZooKeeper</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
 
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/page/9/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><span class="page-number current">10</span><a class="page-number" href="/page/11/">11</a><a class="page-number" href="/page/12/">12</a><span class="space">&hellip;</span><a class="page-number" href="/page/36/">36</a><a class="extend next" rel="next" href="/page/11/">Next &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/9/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><span class="page-number current">10</span><a class="page-number" href="/page/11/">11</a><a class="page-number" href="/page/12/">12</a><span class="space">&hellip;</span><a class="page-number" href="/page/37/">37</a><a class="extend next" rel="next" href="/page/11/">Next &raquo;</a>
   </nav>
 
 </section>
@@ -329,11 +306,11 @@
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1020/">LeetCode 1020. Number of Enclaves</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1197/">1197. Minimum Knight Moves</a>
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1197/">1197. Minimum Knight Moves</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1020/">LeetCode 1020. Number of Enclaves</a>
           </li>
         
           <li>
@@ -341,7 +318,7 @@
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode935/">LeetCode 935. Knight Dialer</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode688/">688. Knight Probability in Chessboard</a>
           </li>
         
       </ul>
@@ -415,6 +392,6 @@
 
 
 
-  </div>
-<script src="https://cdn.jsdelivr.net/npm/live2d-widget@3.x/lib/L2Dwidget.min.js"></script><script>L2Dwidget.init({"tagMode":false,"debug":false,"model":{"jsonPath":"https://cdn.jsdelivr.net/npm/live2d-widget-model-haruto@1.x/assets/haruto.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/"});</script><!-- hexo-inject:begin --><!-- hexo-inject:end --></body>
+  </div><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+<script src="https://cdn.jsdelivr.net/npm/live2d-widget@3.x/lib/L2Dwidget.min.js"></script><script>L2Dwidget.init({"tagMode":false,"debug":false,"model":{"jsonPath":"https://cdn.jsdelivr.net/npm/live2d-widget-model-haruto@1.x/assets/haruto.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/"});</script></body>
 </html>

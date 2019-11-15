@@ -15,20 +15,20 @@
 <!-- End Google Analytics -->
 
   
-  <title>LeetCode 1123 Lowest Common Ancestor of Deepest Leaves | Quantum Field</title>
+  <title>688. Knight Probability in Chessboard | Quantum Field</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="Problem Statement use std::rc::Rc;use std::cell::RefCell;use std::cmp::max;impl Solution &amp;#123;    pub fn compute_depth(node : Option&amp;lt;&amp;amp;Rc&amp;lt;RefCell&amp;lt;TreeNode&amp;gt;&amp;gt;&amp;gt;) -&amp;gt; u32 &amp;#123;">
+  <meta name="description" content="Problem Statement DP, be careful about pow overflow. impl Solution &amp;#123;    pub fn knight_probability(n: i32, k: i32, r: i32, c: i32) -&amp;gt; f64 &amp;#123;        if k == 0 &amp;#123;            return 1 as f">
 <meta name="keywords" content="Algorithm,LeetCode,Rust">
 <meta property="og:type" content="article">
-<meta property="og:title" content="LeetCode 1123 Lowest Common Ancestor of Deepest Leaves">
-<meta property="og:url" content="http://lianghan.org/2019/09/23/2019-09-23-LeetCode1123/index.html">
+<meta property="og:title" content="688. Knight Probability in Chessboard">
+<meta property="og:url" content="http://lianghan.org/2019/11/11/2019-11-11-LeetCode688/index.html">
 <meta property="og:site_name" content="Quantum Field">
-<meta property="og:description" content="Problem Statement use std::rc::Rc;use std::cell::RefCell;use std::cmp::max;impl Solution &amp;#123;    pub fn compute_depth(node : Option&amp;lt;&amp;amp;Rc&amp;lt;RefCell&amp;lt;TreeNode&amp;gt;&amp;gt;&amp;gt;) -&amp;gt; u32 &amp;#123;">
+<meta property="og:description" content="Problem Statement DP, be careful about pow overflow. impl Solution &amp;#123;    pub fn knight_probability(n: i32, k: i32, r: i32, c: i32) -&amp;gt; f64 &amp;#123;        if k == 0 &amp;#123;            return 1 as f">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2019-09-24T01:06:29.468Z">
+<meta property="og:updated_time" content="2019-11-15T21:59:16.751Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="LeetCode 1123 Lowest Common Ancestor of Deepest Leaves">
-<meta name="twitter:description" content="Problem Statement use std::rc::Rc;use std::cell::RefCell;use std::cmp::max;impl Solution &amp;#123;    pub fn compute_depth(node : Option&amp;lt;&amp;amp;Rc&amp;lt;RefCell&amp;lt;TreeNode&amp;gt;&amp;gt;&amp;gt;) -&amp;gt; u32 &amp;#123;">
+<meta name="twitter:title" content="688. Knight Probability in Chessboard">
+<meta name="twitter:description" content="Problem Statement DP, be careful about pow overflow. impl Solution &amp;#123;    pub fn knight_probability(n: i32, k: i32, r: i32, c: i32) -&amp;gt; f64 &amp;#123;        if k == 0 &amp;#123;            return 1 as f">
   
     <link rel="alternate" href="/atom.xml" title="Quantum Field" type="application/atom+xml">
   
@@ -78,10 +78,10 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="post-2019-09-23-LeetCode1123" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-2019-11-11-LeetCode688" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2019/09/23/2019-09-23-LeetCode1123/" class="article-date">
-  <time datetime="2019-09-23T17:39:31.000Z" itemprop="datePublished">2019-09-23</time>
+    <a href="/2019/11/11/2019-11-11-LeetCode688/" class="article-date">
+  <time datetime="2019-11-11T19:11:11.000Z" itemprop="datePublished">2019-11-11</time>
 </a>
     
   <div class="article-category">
@@ -96,7 +96,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      LeetCode 1123 Lowest Common Ancestor of Deepest Leaves
+      688. Knight Probability in Chessboard
     </h1>
   
 
@@ -104,14 +104,15 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><a href="https://leetcode.com/problems/lowest-common-ancestor-of-deepest-leaves/description/" target="_blank" rel="noopener">Problem Statement</a></p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::rc::Rc;</span><br><span class="line"><span class="keyword">use</span> std::cell::RefCell;</span><br><span class="line"><span class="keyword">use</span> std::cmp::max;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">compute_depth</span></span>(node : <span class="built_in">Option</span>&lt;&amp;Rc&lt;RefCell&lt;TreeNode&gt;&gt;&gt;) -&gt; <span class="keyword">u32</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">let</span> <span class="literal">Some</span>(n) = node &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span> + max(Solution::compute_depth(n.borrow().left.as_ref()),</span><br><span class="line">                           Solution::compute_depth(n.borrow().right.as_ref()));</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">lca_deepest_leaves</span></span>(root: <span class="built_in">Option</span>&lt;Rc&lt;RefCell&lt;TreeNode&gt;&gt;&gt;) -&gt; <span class="built_in">Option</span>&lt;Rc&lt;RefCell&lt;TreeNode&gt;&gt;&gt; &#123;</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">let</span> <span class="literal">Some</span>(node) = root.clone() &#123;</span><br><span class="line">            <span class="keyword">let</span> (l, r) = (Solution::compute_depth(node.borrow().left.as_ref()),</span><br><span class="line">                          Solution::compute_depth(node.borrow().right.as_ref()));</span><br><span class="line">            <span class="keyword">if</span> l == r &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">Some</span>(node);</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> l &lt; r &#123;</span><br><span class="line">                <span class="keyword">return</span> Solution::lca_deepest_leaves(node.borrow().right.clone());</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">return</span> Solution::lca_deepest_leaves(node.borrow().left.clone());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">None</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+        <p><a href="https://leetcode.com/problems/knight-probability-in-chessboard/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<p>DP, be careful about pow overflow.</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">knight_probability</span></span>(n: <span class="keyword">i32</span>, k: <span class="keyword">i32</span>, r: <span class="keyword">i32</span>, c: <span class="keyword">i32</span>) -&gt; <span class="keyword">f64</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> k == <span class="number">0</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span> <span class="keyword">as</span> <span class="keyword">f64</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> (dx, dy) : ([<span class="keyword">i32</span>; <span class="number">8</span>], [<span class="keyword">i32</span>; <span class="number">8</span>]) = (</span><br><span class="line">            [-<span class="number">1</span>, -<span class="number">2</span>, -<span class="number">2</span>, -<span class="number">1</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">1</span>],</span><br><span class="line">            [-<span class="number">2</span>, -<span class="number">1</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">1</span>, -<span class="number">1</span>, -<span class="number">2</span>]);</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> dp = <span class="built_in">vec!</span>[<span class="built_in">vec!</span>[<span class="number">1</span> <span class="keyword">as</span> <span class="keyword">f64</span>; n <span class="keyword">as</span> <span class="keyword">usize</span>]; n <span class="keyword">as</span> <span class="keyword">usize</span>];</span><br><span class="line">        <span class="keyword">for</span> _m <span class="keyword">in</span> <span class="number">0</span>..k &#123;</span><br><span class="line">            <span class="keyword">let</span> <span class="keyword">mut</span> tmp = <span class="built_in">vec!</span>[<span class="built_in">vec!</span>[<span class="number">0</span> <span class="keyword">as</span> <span class="keyword">f64</span>; n <span class="keyword">as</span> <span class="keyword">usize</span>]; n <span class="keyword">as</span> <span class="keyword">usize</span>];</span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..n &#123;</span><br><span class="line">                <span class="keyword">for</span> j <span class="keyword">in</span> <span class="number">0</span>..n &#123;</span><br><span class="line">                    <span class="keyword">for</span> k <span class="keyword">in</span> <span class="number">0</span>..<span class="number">8</span> &#123;</span><br><span class="line">                        <span class="keyword">let</span> (xx, yy) = (i + dx[k], j + dy[k]);</span><br><span class="line">                        <span class="keyword">if</span> xx &lt; <span class="number">0</span> || yy &lt; <span class="number">0</span> || xx &gt;= n || yy &gt;= n &#123;</span><br><span class="line">                            <span class="keyword">continue</span>;</span><br><span class="line">                        &#125;</span><br><span class="line">                        tmp[i <span class="keyword">as</span> <span class="keyword">usize</span>][j <span class="keyword">as</span> <span class="keyword">usize</span>] += dp[xx <span class="keyword">as</span> <span class="keyword">usize</span>][yy <span class="keyword">as</span> <span class="keyword">usize</span>];</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            dp.swap_with_slice(&amp;<span class="keyword">mut</span> tmp[<span class="number">0</span>..]);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> dp[r <span class="keyword">as</span> <span class="keyword">usize</span>][c <span class="keyword">as</span> <span class="keyword">usize</span>] / <span class="number">8_f64</span>.powf(k <span class="keyword">as</span> <span class="keyword">f64</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/09/23/2019-09-23-LeetCode1123/" data-id="ck30oqof1002s3lxgvbru0x3g" data-title="LeetCode 1123 Lowest Common Ancestor of Deepest Leaves" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/11/2019-11-11-LeetCode688/" data-id="ck30oqof800303lxgxnvlpmwa" data-title="688. Knight Probability in Chessboard" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2019/09/23/2019-09-23-LeetCode1123/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode688/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
@@ -123,19 +124,19 @@
     
 <nav id="article-nav">
   
-    <a href="/2019/10/15/2019-10-15-LeetCode1145/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2019/11/11/2019-11-11-LeetCode1254/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Newer</strong>
       <div class="article-nav-title">
         
-          LeetCode 1145 Binary Tree Coloring Game
+          LeetCode 1254. Number of Closed Islands
         
       </div>
     </a>
   
   
-    <a href="/2019/09/19/2019-09-19-LeetCode641/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2019/11/11/2019-11-11-LeetCode935/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">LeetCode 641 Design Circular Deque</div>
+      <div class="article-nav-title">LeetCode 935. Knight Dialer</div>
     </a>
   
 </nav>
@@ -269,7 +270,7 @@
 <script>
   var disqus_shortname = 'quantumfield';
   
-  var disqus_url = 'http://lianghan.org/2019/09/23/2019-09-23-LeetCode1123/';
+  var disqus_url = 'http://lianghan.org/2019/11/11/2019-11-11-LeetCode688/';
   
   (function(){
     var dsq = document.createElement('script');

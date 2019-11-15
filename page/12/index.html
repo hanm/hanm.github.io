@@ -75,6 +75,108 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-2017-02-11-DynamoPaper" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/02/11/2017-02-11-DynamoPaper/" class="article-date">
+  <time datetime="2017-02-12T03:36:31.000Z" itemprop="datePublished">2017-02-11</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Distributed-System/">Distributed System</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/02/11/2017-02-11-DynamoPaper/">Dynamo, Amazon’s Highly Available Key-value Store</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Paper digest - <a href="http://s3.amazonaws.com/AllThingsDistributed/sosp/amazon-dynamo-sosp2007.pdf" target="_blank" rel="noopener">Dynamo: Amazon’s Highly Available Key-value Store </a></p>
+<h1 id="Motivation"><a href="#Motivation" class="headerlink" title="Motivation"></a>Motivation</h1><ul>
+<li>A highly available key-value storage system that manages state of Amazon services.</li>
+<li>Reliability at massive scale, provide an “always-on” experience.</li>
+</ul>
+<h1 id="Requirements"><a href="#Requirements" class="headerlink" title="Requirements"></a>Requirements</h1><ul>
+<li><p>Query Model: simple read and write operations to objects (relatively small, usually less than 1MB) that is uniquely identified by a key. </p>
+</li>
+<li><p>ACID (Atomicity, Consistency, Isolation, Durability) : weak consistency, no isolation, only single key update.</p>
+</li>
+<li><p>Efficiency: </p>
+<ul>
+<li>Function on a commodity hardware infrastructure.</li>
+<li>Strict latency requirements and SLA.</li>
+<li>Configurable to achieve customizable latency and throughput requirements.</li>
+</ul>
+</li>
+<li><p>Operation and Security:</p>
+<ul>
+<li>No authentication and authorization (operating in non-hostile environment). </li>
+<li>Scale up (each service uses its distinct instance of Dynamo).</li>
+</ul>
+</li>
+<li><p>SLA:</p>
+<ul>
+<li>Traditional SLA metrics (average, median and expected variance) are not good enough to build a system where all customers have a good experience.</li>
+<li>SLAs are expressed and measured at the 99.9th percentile of the distribution. Choose 99.9 for cost effective.</li>
+</ul>
+</li>
+</ul>
+<h1 id="System-Design"><a href="#System-Design" class="headerlink" title="System Design"></a>System Design</h1><ul>
+<li>Favor availability over consistency by using optimistic replication techniques.</li>
+<li>Optimistic replication introduces conflict. Conflict resolution introduces two problems: when to resolve them and who resolves them.<ul>
+<li>When to resolve:<ul>
+<li>Write time: writes may be rejected if the data store cannot reach all the replicas at a given time. This leads to poor user experience.</li>
+<li>Read time: Dynamo targets the design space of an “always write-able” data store. So conflicts are resolved at read time.</li>
+</ul>
+</li>
+<li>Who to perform resolve:<ul>
+<li>Configurable.</li>
+<li>System level resolution: last write wins.</li>
+<li>Application level resolution: interactive guided merge conflicts, etc.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Other design considerations: Incremental scalability, Symmetry, Decentralization, Heterogeneity.</li>
+</ul>
+<h1 id="System-Architecture"><a href="#System-Architecture" class="headerlink" title="System Architecture"></a>System Architecture</h1><ul>
+<li>Partitioning: Consistent Hashing.</li>
+<li>Replication: Replicated write protocol with configurable NWR parameters.</li>
+<li>Conflict Resolution: Vector clock.</li>
+<li>Temporary failures: Sloppy Quorum and hinted handoff.</li>
+<li>Recovering from permanent failures: Merkle trees.</li>
+<li>Membership and failure detection: Gossip-based membership protocol and failure detection. </li>
+</ul>
+<h1 id="To-be-continued"><a href="#To-be-continued" class="headerlink" title="To be continued."></a>To be continued.</h1>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2017/02/11/2017-02-11-DynamoPaper/" data-id="ck30oqoed00253lxgfjxhv75a" data-title="Dynamo, Amazon’s Highly Available Key-value Store" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2017/02/11/2017-02-11-DynamoPaper/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Distributed-System/">Distributed System</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Paper-Digest/">Paper Digest</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-2017-02-03-USACO-ShuttlePuzzle" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/02/03/2017-02-03-USACO-ShuttlePuzzle/" class="article-date">
@@ -106,7 +208,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/02/03/2017-02-03-USACO-ShuttlePuzzle/" data-id="ck30h6hx60024xjxgp6qx6xzz" data-title="USACO 4.4 Shuttle Puzzle" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2017/02/03/2017-02-03-USACO-ShuttlePuzzle/" data-id="ck30oqoec00243lxg9lhmaw1j" data-title="USACO 4.4 Shuttle Puzzle" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2017/02/03/2017-02-03-USACO-ShuttlePuzzle/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -154,7 +256,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/02/01/2017-02-01-ByzantineFaultTolerance/" data-id="ck30h6hx50023xjxgd635m851" data-title="Why we need n &gt;= 3f + 1 in Byzantine Fault Tolerance" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2017/02/01/2017-02-01-ByzantineFaultTolerance/" data-id="ck30oqoeb00233lxgiz87c2zv" data-title="Why we need n &gt;= 3f + 1 in Byzantine Fault Tolerance" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2017/02/01/2017-02-01-ByzantineFaultTolerance/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -170,58 +272,11 @@
 
 
   
-    <article id="post-2017-01-31-TopCoder-SRM-707-DivII" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/01/31/2017-01-31-TopCoder-SRM-707-DivII/" class="article-date">
-  <time datetime="2017-01-31T18:33:31.000Z" itemprop="datePublished">2017-01-31</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/TopCoder/">TopCoder</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/31/2017-01-31-TopCoder-SRM-707-DivII/">SRM 707 DIV 2 500 Steps Construct</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Problem with interesting constraints… hopefully figured this out during SRM this time. </p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> StepsConstruct &#123;</span><br><span class="line">    <span class="keyword">int</span> rows;</span><br><span class="line">    <span class="keyword">int</span> cols;</span><br><span class="line">    <span class="function"><span class="keyword">char</span> <span class="title">getD</span><span class="params">(<span class="keyword">char</span> c)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (c == <span class="string">'R'</span>) <span class="keyword">return</span> <span class="string">'L'</span>;</span><br><span class="line">        <span class="keyword">if</span> (c == <span class="string">'L'</span>) <span class="keyword">return</span> <span class="string">'R'</span>;</span><br><span class="line">        <span class="keyword">if</span> (c == <span class="string">'U'</span>) <span class="keyword">return</span> <span class="string">'D'</span>;</span><br><span class="line">        <span class="keyword">if</span> (c == <span class="string">'D'</span>) <span class="keyword">return</span> <span class="string">'U'</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">'R'</span>;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="built_in">string</span> <span class="title">construct</span><span class="params">(<span class="built_in">vector</span> &lt;<span class="built_in">string</span>&gt; board, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (board[<span class="number">0</span>][<span class="number">0</span>] == <span class="string">'#'</span>) <span class="keyword">return</span> <span class="string">""</span>;</span><br><span class="line">        rows = (<span class="keyword">int</span>)board.size(); cols = (<span class="keyword">int</span>)board[<span class="number">0</span>].size();</span><br><span class="line">        <span class="built_in">set</span>&lt;pair&lt;<span class="keyword">int</span>,<span class="keyword">int</span>&gt;&gt; visited;</span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; paths;</span><br><span class="line">        <span class="built_in">queue</span>&lt;pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt;&gt; q;</span><br><span class="line">        <span class="built_in">queue</span>&lt;<span class="built_in">string</span>&gt; qp;</span><br><span class="line">        q.push(make_pair(<span class="number">0</span>, <span class="number">0</span>));</span><br><span class="line">        qp.push(<span class="string">""</span>);</span><br><span class="line">        <span class="keyword">while</span> (!q.empty()) &#123;</span><br><span class="line">            <span class="keyword">auto</span> cur = q.front();</span><br><span class="line">            q.pop();</span><br><span class="line">            <span class="keyword">int</span> x = cur.first, y = cur.second;</span><br><span class="line">            <span class="built_in">string</span> curp = qp.front();</span><br><span class="line">            qp.pop();</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">int</span> dx[] = &#123;<span class="number">1</span>, <span class="number">-1</span>, <span class="number">0</span>, <span class="number">0</span>&#125;;</span><br><span class="line">            <span class="keyword">int</span> dy[] = &#123;<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">-1</span>&#125;;</span><br><span class="line">            <span class="keyword">char</span> steps[] = &#123;<span class="string">'D'</span>, <span class="string">'U'</span>, <span class="string">'R'</span>, <span class="string">'L'</span>&#125;;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span>; ++i) &#123;</span><br><span class="line">                pair&lt;<span class="keyword">int</span>,<span class="keyword">int</span>&gt; cur = &#123;x + dx[i], y + dy[i]&#125;;</span><br><span class="line">                <span class="keyword">if</span>(cur.first &lt; <span class="number">0</span> || cur.second &lt; <span class="number">0</span> || cur.first &gt;= rows || cur.second &gt;= cols)</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                <span class="keyword">if</span>(visited.count(cur))</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                <span class="keyword">if</span> (board[cur.first][cur.second] == <span class="string">'#'</span>) &#123;</span><br><span class="line">                    visited.insert(cur);</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                </span><br><span class="line">                <span class="built_in">string</span> p = curp + steps[i];</span><br><span class="line">                <span class="keyword">if</span> (cur.first == rows - <span class="number">1</span> &amp;&amp; cur.second == cols - <span class="number">1</span>) &#123;</span><br><span class="line">                    paths.push_back(p);</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                visited.insert(cur);</span><br><span class="line">                qp.push(p);</span><br><span class="line">                q.push(cur);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">int</span> minsteps = INT_MAX;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> path : paths) &#123;</span><br><span class="line">            minsteps = <span class="built_in">std</span>::min((<span class="keyword">int</span>)path.size(), minsteps);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (minsteps &gt; k) <span class="keyword">return</span> <span class="string">""</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="built_in">string</span> c;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> path : paths) &#123;</span><br><span class="line">            <span class="keyword">int</span> steps = (<span class="keyword">int</span>)path.size();</span><br><span class="line">            <span class="keyword">if</span> (steps &lt;= k &amp;&amp; ((k - steps) % <span class="number">2</span> == <span class="number">0</span>)) &#123;</span><br><span class="line">                <span class="keyword">int</span> d = k - steps;</span><br><span class="line">                <span class="built_in">string</span> prefix = <span class="string">""</span>;</span><br><span class="line">                <span class="keyword">char</span> c = path[<span class="number">0</span>];</span><br><span class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; d; ++i) &#123;</span><br><span class="line">                    prefix += c;</span><br><span class="line">                    c = getD(c);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">return</span> prefix + path;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">""</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/01/31/2017-01-31-TopCoder-SRM-707-DivII/" data-id="ck30h6hx40022xjxgc8l1900h" data-title="SRM 707 DIV 2 500 Steps Construct" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2017/01/31/2017-01-31-TopCoder-SRM-707-DivII/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/BFS/">BFS</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
 
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/page/11/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="page-number" href="/page/11/">11</a><span class="page-number current">12</span><a class="page-number" href="/page/13/">13</a><a class="page-number" href="/page/14/">14</a><span class="space">&hellip;</span><a class="page-number" href="/page/36/">36</a><a class="extend next" rel="next" href="/page/13/">Next &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/11/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="page-number" href="/page/11/">11</a><span class="page-number current">12</span><a class="page-number" href="/page/13/">13</a><a class="page-number" href="/page/14/">14</a><span class="space">&hellip;</span><a class="page-number" href="/page/37/">37</a><a class="extend next" rel="next" href="/page/13/">Next &raquo;</a>
   </nav>
 
 </section>
@@ -278,11 +333,11 @@
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1020/">LeetCode 1020. Number of Enclaves</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1197/">1197. Minimum Knight Moves</a>
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1197/">1197. Minimum Knight Moves</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1020/">LeetCode 1020. Number of Enclaves</a>
           </li>
         
           <li>
@@ -290,7 +345,7 @@
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode935/">LeetCode 935. Knight Dialer</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode688/">688. Knight Probability in Chessboard</a>
           </li>
         
       </ul>
@@ -364,6 +419,6 @@
 
 
 
-  </div>
-<script src="https://cdn.jsdelivr.net/npm/live2d-widget@3.x/lib/L2Dwidget.min.js"></script><script>L2Dwidget.init({"tagMode":false,"debug":false,"model":{"jsonPath":"https://cdn.jsdelivr.net/npm/live2d-widget-model-haruto@1.x/assets/haruto.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/"});</script><!-- hexo-inject:begin --><!-- hexo-inject:end --></body>
+  </div><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+<script src="https://cdn.jsdelivr.net/npm/live2d-widget@3.x/lib/L2Dwidget.min.js"></script><script>L2Dwidget.init({"tagMode":false,"debug":false,"model":{"jsonPath":"https://cdn.jsdelivr.net/npm/live2d-widget-model-haruto@1.x/assets/haruto.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/"});</script></body>
 </html>

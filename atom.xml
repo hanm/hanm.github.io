@@ -46,36 +46,6 @@
   </entry>
   
   <entry>
-    <title>LeetCode 1020. Number of Enclaves</title>
-    <link href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1020/"/>
-    <id>http://lianghan.org/2019/11/11/2019-11-11-LeetCode1020/</id>
-    <published>2019-11-11T19:11:11.000Z</published>
-    <updated>2019-11-14T20:45:08.623Z</updated>
-    
-    <content type="html"><![CDATA[<p><a href="https://leetcode.com/problems/number-of-enclaves/description/" target="_blank" rel="noopener">Problem Statement</a></p><p>Typical DFS. Similar to <a href="https://leetcode.com/problems/number-of-closed-islands/" target="_blank" rel="noopener">1254. Number of Closed Islands</a></p><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">dfs</span></span>(a : &amp;<span class="keyword">mut</span> <span class="built_in">Vec</span>&lt;<span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;&gt;, x : <span class="keyword">usize</span>, y : <span class="keyword">usize</span>) -&gt; () &#123;</span><br><span class="line">        <span class="keyword">let</span> (m, n) = (a.len(), a[<span class="number">0</span>].len());</span><br><span class="line">        <span class="keyword">let</span> (dx, dy) : ([<span class="keyword">i32</span>; <span class="number">4</span>], [<span class="keyword">i32</span>; <span class="number">4</span>]) = ([<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, -<span class="number">1</span>], [<span class="number">1</span>, -<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>]);</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..<span class="number">4</span> &#123;</span><br><span class="line">            <span class="keyword">let</span> (xx, yy) : (<span class="keyword">i32</span>, <span class="keyword">i32</span>) = (x <span class="keyword">as</span> <span class="keyword">i32</span> + dx[i], y <span class="keyword">as</span> <span class="keyword">i32</span> + dy[i]);</span><br><span class="line">            <span class="keyword">if</span> xx &gt;= m <span class="keyword">as</span> <span class="keyword">i32</span> || xx &lt; <span class="number">0</span> || yy &gt;= n <span class="keyword">as</span> <span class="keyword">i32</span> || yy &lt; <span class="number">0</span> &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">let</span> (nx, ny) = (xx <span class="keyword">as</span> <span class="keyword">usize</span>, yy <span class="keyword">as</span> <span class="keyword">usize</span>);</span><br><span class="line">            <span class="keyword">if</span> a[nx][ny] == <span class="number">0</span> &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            a[nx][ny] = <span class="number">0</span>;</span><br><span class="line">            Self::dfs(a, nx, ny);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">num_enclaves</span></span>(a: <span class="built_in">Vec</span>&lt;<span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;&gt;) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> A = a;</span><br><span class="line">        <span class="keyword">let</span> (m, n, <span class="keyword">mut</span> ans) = (A.len(), A[<span class="number">0</span>].len(), <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..m &#123;</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> <span class="number">0</span>..n &#123;</span><br><span class="line">                <span class="keyword">if</span> i == <span class="number">0</span> || j == <span class="number">0</span> || i == m - <span class="number">1</span> || j == n - <span class="number">1</span> &#123;</span><br><span class="line">                    <span class="keyword">if</span> A[i][j] != <span class="number">0</span> &#123;</span><br><span class="line">                        A[i][j] = <span class="number">0</span>;</span><br><span class="line">                        Self::dfs(&amp;<span class="keyword">mut</span> A, i, j);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..m &#123;</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> <span class="number">0</span>..n &#123;</span><br><span class="line">                <span class="keyword">if</span> A[i][j] != <span class="number">0</span> &#123;</span><br><span class="line">                    ans += <span class="number">1</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;&lt;a href=&quot;https://leetcode.com/problems/number-of-enclaves/description/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Problem Statement&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Typic
-      
-    
-    </summary>
-    
-      <category term="LeetCode in Rust" scheme="http://lianghan.org/categories/LeetCode-in-Rust/"/>
-    
-    
-      <category term="Algorithm" scheme="http://lianghan.org/tags/Algorithm/"/>
-    
-      <category term="LeetCode" scheme="http://lianghan.org/tags/LeetCode/"/>
-    
-      <category term="Rust" scheme="http://lianghan.org/tags/Rust/"/>
-    
-  </entry>
-  
-  <entry>
     <title>1197. Minimum Knight Moves</title>
     <link href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1197/"/>
     <id>http://lianghan.org/2019/11/11/2019-11-11-LeetCode1197/</id>
@@ -106,6 +76,36 @@
   </entry>
   
   <entry>
+    <title>LeetCode 1020. Number of Enclaves</title>
+    <link href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1020/"/>
+    <id>http://lianghan.org/2019/11/11/2019-11-11-LeetCode1020/</id>
+    <published>2019-11-11T19:11:11.000Z</published>
+    <updated>2019-11-14T20:45:08.623Z</updated>
+    
+    <content type="html"><![CDATA[<p><a href="https://leetcode.com/problems/number-of-enclaves/description/" target="_blank" rel="noopener">Problem Statement</a></p><p>Typical DFS. Similar to <a href="https://leetcode.com/problems/number-of-closed-islands/" target="_blank" rel="noopener">1254. Number of Closed Islands</a></p><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">dfs</span></span>(a : &amp;<span class="keyword">mut</span> <span class="built_in">Vec</span>&lt;<span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;&gt;, x : <span class="keyword">usize</span>, y : <span class="keyword">usize</span>) -&gt; () &#123;</span><br><span class="line">        <span class="keyword">let</span> (m, n) = (a.len(), a[<span class="number">0</span>].len());</span><br><span class="line">        <span class="keyword">let</span> (dx, dy) : ([<span class="keyword">i32</span>; <span class="number">4</span>], [<span class="keyword">i32</span>; <span class="number">4</span>]) = ([<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, -<span class="number">1</span>], [<span class="number">1</span>, -<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>]);</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..<span class="number">4</span> &#123;</span><br><span class="line">            <span class="keyword">let</span> (xx, yy) : (<span class="keyword">i32</span>, <span class="keyword">i32</span>) = (x <span class="keyword">as</span> <span class="keyword">i32</span> + dx[i], y <span class="keyword">as</span> <span class="keyword">i32</span> + dy[i]);</span><br><span class="line">            <span class="keyword">if</span> xx &gt;= m <span class="keyword">as</span> <span class="keyword">i32</span> || xx &lt; <span class="number">0</span> || yy &gt;= n <span class="keyword">as</span> <span class="keyword">i32</span> || yy &lt; <span class="number">0</span> &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">let</span> (nx, ny) = (xx <span class="keyword">as</span> <span class="keyword">usize</span>, yy <span class="keyword">as</span> <span class="keyword">usize</span>);</span><br><span class="line">            <span class="keyword">if</span> a[nx][ny] == <span class="number">0</span> &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            a[nx][ny] = <span class="number">0</span>;</span><br><span class="line">            Self::dfs(a, nx, ny);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">num_enclaves</span></span>(a: <span class="built_in">Vec</span>&lt;<span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;&gt;) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> A = a;</span><br><span class="line">        <span class="keyword">let</span> (m, n, <span class="keyword">mut</span> ans) = (A.len(), A[<span class="number">0</span>].len(), <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..m &#123;</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> <span class="number">0</span>..n &#123;</span><br><span class="line">                <span class="keyword">if</span> i == <span class="number">0</span> || j == <span class="number">0</span> || i == m - <span class="number">1</span> || j == n - <span class="number">1</span> &#123;</span><br><span class="line">                    <span class="keyword">if</span> A[i][j] != <span class="number">0</span> &#123;</span><br><span class="line">                        A[i][j] = <span class="number">0</span>;</span><br><span class="line">                        Self::dfs(&amp;<span class="keyword">mut</span> A, i, j);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..m &#123;</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> <span class="number">0</span>..n &#123;</span><br><span class="line">                <span class="keyword">if</span> A[i][j] != <span class="number">0</span> &#123;</span><br><span class="line">                    ans += <span class="number">1</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;&lt;a href=&quot;https://leetcode.com/problems/number-of-enclaves/description/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Problem Statement&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Typic
+      
+    
+    </summary>
+    
+      <category term="LeetCode in Rust" scheme="http://lianghan.org/categories/LeetCode-in-Rust/"/>
+    
+    
+      <category term="Algorithm" scheme="http://lianghan.org/tags/Algorithm/"/>
+    
+      <category term="LeetCode" scheme="http://lianghan.org/tags/LeetCode/"/>
+    
+      <category term="Rust" scheme="http://lianghan.org/tags/Rust/"/>
+    
+  </entry>
+  
+  <entry>
     <title>LeetCode 1254. Number of Closed Islands</title>
     <link href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1254/"/>
     <id>http://lianghan.org/2019/11/11/2019-11-11-LeetCode1254/</id>
@@ -120,6 +120,35 @@
       
         &lt;p&gt;&lt;a href=&quot;https://leetcode.com/problems/number-of-closed-islands/description/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Problem Statement&lt;/a&gt;&lt;/p&gt;
 &lt;p
+      
+    
+    </summary>
+    
+      <category term="LeetCode in Rust" scheme="http://lianghan.org/categories/LeetCode-in-Rust/"/>
+    
+    
+      <category term="Algorithm" scheme="http://lianghan.org/tags/Algorithm/"/>
+    
+      <category term="LeetCode" scheme="http://lianghan.org/tags/LeetCode/"/>
+    
+      <category term="Rust" scheme="http://lianghan.org/tags/Rust/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>688. Knight Probability in Chessboard</title>
+    <link href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode688/"/>
+    <id>http://lianghan.org/2019/11/11/2019-11-11-LeetCode688/</id>
+    <published>2019-11-11T19:11:11.000Z</published>
+    <updated>2019-11-15T21:59:16.751Z</updated>
+    
+    <content type="html"><![CDATA[<p><a href="https://leetcode.com/problems/knight-probability-in-chessboard/description/" target="_blank" rel="noopener">Problem Statement</a></p><p>DP, be careful about pow overflow.</p><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">knight_probability</span></span>(n: <span class="keyword">i32</span>, k: <span class="keyword">i32</span>, r: <span class="keyword">i32</span>, c: <span class="keyword">i32</span>) -&gt; <span class="keyword">f64</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> k == <span class="number">0</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span> <span class="keyword">as</span> <span class="keyword">f64</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> (dx, dy) : ([<span class="keyword">i32</span>; <span class="number">8</span>], [<span class="keyword">i32</span>; <span class="number">8</span>]) = (</span><br><span class="line">            [-<span class="number">1</span>, -<span class="number">2</span>, -<span class="number">2</span>, -<span class="number">1</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">1</span>],</span><br><span class="line">            [-<span class="number">2</span>, -<span class="number">1</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">1</span>, -<span class="number">1</span>, -<span class="number">2</span>]);</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> dp = <span class="built_in">vec!</span>[<span class="built_in">vec!</span>[<span class="number">1</span> <span class="keyword">as</span> <span class="keyword">f64</span>; n <span class="keyword">as</span> <span class="keyword">usize</span>]; n <span class="keyword">as</span> <span class="keyword">usize</span>];</span><br><span class="line">        <span class="keyword">for</span> _m <span class="keyword">in</span> <span class="number">0</span>..k &#123;</span><br><span class="line">            <span class="keyword">let</span> <span class="keyword">mut</span> tmp = <span class="built_in">vec!</span>[<span class="built_in">vec!</span>[<span class="number">0</span> <span class="keyword">as</span> <span class="keyword">f64</span>; n <span class="keyword">as</span> <span class="keyword">usize</span>]; n <span class="keyword">as</span> <span class="keyword">usize</span>];</span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..n &#123;</span><br><span class="line">                <span class="keyword">for</span> j <span class="keyword">in</span> <span class="number">0</span>..n &#123;</span><br><span class="line">                    <span class="keyword">for</span> k <span class="keyword">in</span> <span class="number">0</span>..<span class="number">8</span> &#123;</span><br><span class="line">                        <span class="keyword">let</span> (xx, yy) = (i + dx[k], j + dy[k]);</span><br><span class="line">                        <span class="keyword">if</span> xx &lt; <span class="number">0</span> || yy &lt; <span class="number">0</span> || xx &gt;= n || yy &gt;= n &#123;</span><br><span class="line">                            <span class="keyword">continue</span>;</span><br><span class="line">                        &#125;</span><br><span class="line">                        tmp[i <span class="keyword">as</span> <span class="keyword">usize</span>][j <span class="keyword">as</span> <span class="keyword">usize</span>] += dp[xx <span class="keyword">as</span> <span class="keyword">usize</span>][yy <span class="keyword">as</span> <span class="keyword">usize</span>];</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            dp.swap_with_slice(&amp;<span class="keyword">mut</span> tmp[<span class="number">0</span>..]);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> dp[r <span class="keyword">as</span> <span class="keyword">usize</span>][c <span class="keyword">as</span> <span class="keyword">usize</span>] / <span class="number">8_f64</span>.powf(k <span class="keyword">as</span> <span class="keyword">f64</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;&lt;a href=&quot;https://leetcode.com/problems/knight-probability-in-chessboard/description/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Problem Statement&lt;/a
       
     
     </summary>
@@ -543,35 +572,6 @@
       <category term="DFS" scheme="http://lianghan.org/tags/DFS/"/>
     
       <category term="Simulation" scheme="http://lianghan.org/tags/Simulation/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Paper Digest - Consensus in the Cloud - Paxos Systems Demystified</title>
-    <link href="http://lianghan.org/2017/07/03/2017-07-01-ConsensusInTheCloud/"/>
-    <id>http://lianghan.org/2017/07/03/2017-07-01-ConsensusInTheCloud/</id>
-    <published>2017-07-03T21:07:31.000Z</published>
-    <updated>2019-09-23T16:26:32.972Z</updated>
-    
-    <content type="html"><![CDATA[<p>Paper digest - <a href="https://www.cse.buffalo.edu/tech-reports/2016-02.pdf" target="_blank" rel="noopener">Consensus in the Cloud - Paxos Systems Demystified</a></p><h1 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h1><ul><li>Compared several popular Paxos protocols and Paxos systems and present advantages and disadvantages for each.</li><li>Categorized the coordination use-patterns in cloud, and examine Google and Facebook infrastructures, as well as use cases of Paxos in Apache projects.</li><li>Analyzed tradeoffs in the distributed coordination domain and identify promising future directions.</li></ul><h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><ul><li>Coordination plays a major role in cloud computing systems:<ul><li>Leader election</li><li>Group membership</li><li>Cluster management</li><li>Service discovery</li><li>Resource/access management</li><li>Consistent replication of the master nodes in services</li><li>Barrier-orchestration when running large analytic tasks</li><li>And so on..</li></ul></li><li>The coordination problem has been studied extensively under the name “distributed consensus”.</li><li>Paxos rise to fame with Google Chubby (lock service for GFS).</li><li>Apache ZooKeeper as a coordination kernel<ul><li>File system abstraction easy to use.</li><li>Abused / misused, often constituted the bottleneck in performance of these applications and caused scalability problems.</li></ul></li><li>More choices nowadays (Raft, etc), with confusions still remained:<ul><li>Proper use cases.</li><li>Which systems are more suitable for which tasks:<ul><li>Paxos protocols (e.g. multi-paxos, Raft, ZAB) are useful for low-level components for server replication.</li><li>Paxos systems (e.g. ZK) are useful for highly-available/durable metadata management with constraints that all metadata fit in main-memory and are not subject to very frequent changes.</li></ul></li></ul></li></ul><h1 id="Paxos-Protocols"><a href="#Paxos-Protocols" class="headerlink" title="Paxos Protocols"></a>Paxos Protocols</h1><ul><li>Protocols<ul><li>Paxos: fault-tolerant consensus for a single value.</li><li>Multi-Paxos: fault-tolerant consensus for multiple values.</li><li>ZAB: additional constraints on Paxos (primary global order).</li><li>Raft: very similar to ZAB with some implementation level difference.</li></ul></li><li>Differences<ul><li>Leader Election:<ul><li>Zab and Raft protocols differ from Paxos as they divide execution into phases (called epochs in Zab and terms in Raft).</li><li>Each epoch begins with a new election, goes into the broadcast phase and ends with a leader failure.</li><li>The phases are sequential because of the additional safety properties are provided by the isLeader predicate.</li><li>Zab and Raft there can be at most one leader at any time.</li><li>Paxos can have multiple leaders coexisting.</li></ul></li><li>Zab has discovery and sync phase, Raft does not which simplifies algorithm but makes recover longer, possibly.</li><li>Communication:<ul><li>ZAB is messaging model. Each update requires at least three messages:<ul><li>proposal, ack and commit</li></ul></li><li>Raft use RPC.</li></ul></li><li>Dynamic reconfiguration:<ul><li>Reconfig is just another command go through consensus process.</li><li>To ensure safety, new config cannot be activated immediately and the configuration changes must go through two phases.</li><li>A process can only propose commands for slots with known configuration, ∀ρ : ρ.slotin &lt; ρ.slotout+ WINDOW.</li><li>With primary order property provided by Zab and Raft, both protocols are able to implement their reconfiguration algorithms without limitations to normal operations or external services.</li><li>Both Zab and Raft include a pre-phase where the new processes join the cluster as a non-voting members so that the leader in Cold could initialize their states by transferring currently committed prefix of updates.</li><li>In Zab, the time between new config proposed and committed, any commands received after reconfig is only scheduled but will not commit.</li></ul></li></ul></li><li>Paxos Extensions<ul><li>Generalized Paxos: allows acceptors to vote for independent commands.</li><li>EPaxos:<ul><li>allows nodes to commit conflict free commands by checking the command dependency list.</li><li>adds significant complexity and extra effort to resolve the conflict if concurrent commands do not commute.</li><li><strong>from an engineer’s perspective, the sketch algorithm descriptions in the literature are often underspecified, and lead to divergent interpretations and implementations.</strong></li></ul></li></ul></li></ul><h1 id="Paxos-Systems"><a href="#Paxos-Systems" class="headerlink" title="Paxos Systems"></a>Paxos Systems</h1><ul><li>Chubby, Apache ZooKeeper, etcd<ul><li>All three services hide the replicated state machine and log abstractions under a small data-store with filesystem-like API.</li><li>All three support watchers.</li><li>All three support ephemeral storage.</li><li>All three support observers (none voting quorum peer).</li></ul></li><li>Difference<ul><li>ZK provides client FIFO order.</li><li>etcd is stateless (<strong>note, not very true with etcd 3.0’s lease, which is ZK session kind things.</strong>)</li><li>etcd has TTL (<strong>note, ZK has ttl too after 3.5.3.</strong>)</li><li>etcd has hidden data (MVCC).</li><li>ZK has weighted quorum.</li></ul></li><li>Proper use criteria for Paxos systems<ul><li><strong>Paxos system should not be in the performance critical path of the application.</strong></li><li><strong>Frequency of write operations to the Paxos system should be kept low</strong></li><li><strong>Amount of data maintained in the Paxos system should be kept small</strong></li><li><strong>Application adopting the Paxos system should really require strong consistency</strong></li><li><strong>Application adopting the Paxos system should not be distributed over the Wide Area Network (WAN).</strong></li><li><strong> The API abstraction should be fit the goal.</strong></li></ul></li></ul><h1 id="Paxos-Usage-Patterns"><a href="#Paxos-Usage-Patterns" class="headerlink" title="Paxos Usage Patterns"></a>Paxos Usage Patterns</h1><ul><li>Server Replication (SR)</li><li>Log Replication (LR)</li><li>Synchronization Service (SS).</li><li>Barrier Orchestration (BO).</li><li>Configuration Management.</li><li>Message Queues (Q).</li></ul><h1 id="Paxos-Uasage-in-Production"><a href="#Paxos-Uasage-in-Production" class="headerlink" title="Paxos Uasage in Production"></a>Paxos Uasage in Production</h1>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;Paper digest - &lt;a href=&quot;https://www.cse.buffalo.edu/tech-reports/2016-02.pdf&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Consensus in the Cloud - Pax
-      
-    
-    </summary>
-    
-      <category term="Distributed System" scheme="http://lianghan.org/categories/Distributed-System/"/>
-    
-    
-      <category term="Paper Digest" scheme="http://lianghan.org/tags/Paper-Digest/"/>
-    
-      <category term="Consensus Protocol" scheme="http://lianghan.org/tags/Consensus-Protocol/"/>
-    
-      <category term="Paxos" scheme="http://lianghan.org/tags/Paxos/"/>
     
   </entry>
   
