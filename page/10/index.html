@@ -75,6 +75,138 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-2017-03-27-Existential Consistency" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/03/27/2017-03-27-Existential Consistency/" class="article-date">
+  <time datetime="2017-03-27T23:26:31.000Z" itemprop="datePublished">2017-03-27</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Distributed-System/">Distributed System</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/03/27/2017-03-27-Existential Consistency/">Existential Consistency - Measuring and Understanding Consistency at Facebook</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Paper digest - <a href="http://sigops.org/sosp/sosp15/current/2015-Monterey/240-lu-online.pdf" target="_blank" rel="noopener">Existential Consistency: Measuring and Understanding Consistency at Facebook </a></p>
+<h1 id="Motivation"><a href="#Motivation" class="headerlink" title="Motivation"></a>Motivation</h1><ul>
+<li>Provides real world insights on how to quantify trade offs between performance and consistency wrt replicated storage systems.</li>
+<li>Describes a practical consistency monitoring system that tracks a new consistency metric ideally suited for health monitoring.</li>
+</ul>
+<h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><ul>
+<li>Stronger consistency implementation increases latency and/or decrease throughput.</li>
+<li>Eventual consistency (usually) provides good latency and/or throughput at larger scale. However there are drawbacks:<ul>
+<li>User visible anomalies: e.g. out order comments on social network post.</li>
+<li>Programming complexity: complicated cases to reason about on weaker consistency model.</li>
+</ul>
+</li>
+<li>So lots of recent work focus on providing stronger consistency models to overcome drawbacks of a weaker consistency model.</li>
+<li>But, not much work is done to quantify the trade offs, which this paper addresses.</li>
+<li>Within a cluster, per-object sequential and read-afterwrite consistency are provided. </li>
+<li>Across the entire system, eventual consistency is provided.</li>
+<li>Consistency is measured by running offline consistency checker (that checks various consistency models) on a logs that gathers random samples of social graph system.</li>
+</ul>
+<h1 id="Background"><a href="#Background" class="headerlink" title="Background"></a>Background</h1><ul>
+<li>Facebook’s replicated storage<ul>
+<li>Data model is directed graph.</li>
+<li>User data is persistent in relational database, which is sharded, geo-replicated.</li>
+<li>Each shard has a single maser region. Replication to slave region is async.</li>
+<li>Database is cached (two-level) for the full replica per region. Root / leaf caches. Reads served by leaf cache.</li>
+<li>Write path to cache: invalidation is async.</li>
+</ul>
+</li>
+<li>Consistency models:<ul>
+<li>The usual ones, mentioned again (linearizability, sequential, per object sequential, read-after-write, eventual.)</li>
+<li>Facebook’s consistency: per-object sequential consistency and read-after-write consistency within a cache, and eventual consistency across caches.</li>
+<li>When user session spreads across multiple leaf caches (e.g. load balanced, or leaf cache failed): eventual consistency.</li>
+</ul>
+</li>
+</ul>
+<h1 id="Principled-Consistency-Analysis"><a href="#Principled-Consistency-Analysis" class="headerlink" title="Principled Consistency Analysis"></a>Principled Consistency Analysis</h1><ul>
+<li>Trace<ul>
+<li>Collect trace to identify violation of consistency models.</li>
+<li>Trace only requests to a subset of vertices / edges stored in system for practical feasibility / avoid overhead.</li>
+<li>Requests are logged on the web server that issuing the requests.</li>
+</ul>
+</li>
+<li>Deal with clock skew<ul>
+<li>Solved by adding offsets (We account for this clock skew by expanding the invocation time and response time, i.e., we subtract 35 ms from all invocation times and add 35 ms to all response times.)</li>
+</ul>
+</li>
+<li>Deal with losing logs<ul>
+<li>Use a secondary trace from Wormhole system which is lossy as well but combined with the writes from both trace has good coverage.</li>
+</ul>
+</li>
+<li>The checker<ul>
+<li>Anomaly Checkers<ul>
+<li>Maintaining a directed graph.</li>
+<li>Vertices represent the state of an object.</li>
+<li>Edges represent the constraints on the ordering.</li>
+<li>Check state transition order observed by reads is consistent with these constraints.</li>
+</ul>
+</li>
+<li>Linearizability Checker<ul>
+<li>Model operation as vertices, edges as constraints.</li>
+<li>Check cycles.</li>
+<li>Linearizability requires that there exists a total order that is legal.</li>
+<li>Merging read vertices into the write vertices they observe requires matching reads to write.</li>
+</ul>
+</li>
+<li>Per-Object Sequential and Read-After-Write Checkers<ul>
+<li>As an add on of linearlizability checker which is superset of sequential / RAW consistency.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Directions on future research into systems with stronger consistency<ul>
+<li>Build system were non-anomalous types have negligible overhead or</li>
+<li>Provide stronger consistency for a small subset of a larger system. </li>
+<li>While the latter would not prevent all anomalies, it would allow incremental deployment of these systems and significantly reduce the rate of anomalies. </li>
+<li>Interestingly, such a subsystem that does provide linearizability is used within Facebook for a small set of object types, e.g., passwords.</li>
+</ul>
+</li>
+</ul>
+<h1 id="Practical-Consistency-Analysis"><a href="#Practical-Consistency-Analysis" class="headerlink" title="Practical Consistency Analysis"></a>Practical Consistency Analysis</h1><ul>
+<li>Why - need real time (for monitoring) instead of principal analysis (can be only done offline).</li>
+<li>φ-consistency</li>
+</ul>
+<h1 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h1><ul>
+<li>TAO is highly consistent.</li>
+<li>There were anomalies under all of the consistency models we studied. </li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2017/03/27/2017-03-27-Existential Consistency/" data-id="ck3253i97002d4fxgi656fwce" data-title="Existential Consistency - Measuring and Understanding Consistency at Facebook" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2017/03/27/2017-03-27-Existential Consistency/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Distributed-System/">Distributed System</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Paper-Digest/">Paper Digest</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-2017-03-25-USACO-MusicalTheme" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/03/25/2017-03-25-USACO-MusicalTheme/" class="article-date">
@@ -112,7 +244,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/03/25/2017-03-25-USACO-MusicalTheme/" data-id="ck30oqoei00293lxg0on3gpic" data-title="USACO 5.1 Musical Theme" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2017/03/25/2017-03-25-USACO-MusicalTheme/" data-id="ck3253i9400294fxg7v97b163" data-title="USACO 5.1 Musical Theme" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2017/03/25/2017-03-25-USACO-MusicalTheme/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -174,68 +306,13 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/03/17/2017-03-17-USACO-StarryNight/" data-id="ck30oqoek002c3lxgy21ejg2n" data-title="USACO 5.1 Starry Night" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2017/03/17/2017-03-17-USACO-StarryNight/" data-id="ck3253i96002c4fxgv7ltuw5x" data-title="USACO 5.1 Starry Night" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2017/03/17/2017-03-17-USACO-StarryNight/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Flood-Fill/">Flood Fill</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2017-03-05-USACO-FencingTheCows" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/03/05/2017-03-05-USACO-FencingTheCows/" class="article-date">
-  <time datetime="2017-03-06T01:53:31.000Z" itemprop="datePublished">2017-03-05</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/USACO/">USACO</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/03/05/2017-03-05-USACO-FencingTheCows/">USACO 5.1 Fencing The Cows</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>The answer is the perimeter of the convex hull of all the grazing points. Use <a href>Graham Scan</a> to calculate the convex hull, because it’s efficient and easy to implement:</p>
-<ul>
-<li>First, pick a point that has smallest x coordinate. Use y coordinate to break ties if necessary. Let’s call this point the base point.</li>
-<li>Then iterate for the rest of the points, calculate the polar angle between the current point and the base point. </li>
-<li>Now we get all points and their polar angles with respect to the base point, sort these points based on polar angle.</li>
-<li>Walk through the sorted points and make sure a new point only appear in the counter clock wise direction (turn left) of the current point. Add the new point to the result, and drop old points if necessary.</li>
-<li>We should now have a convex hull point sets available. Calculate the perimeter is now trivial.</li>
-</ul>
-<p>This implementation also dealt with degenerated case where the points are co-linear. </p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;limits&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cmath&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stack&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iomanip&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> N;</span><br><span class="line"><span class="keyword">struct</span> Point &#123;</span><br><span class="line">    <span class="keyword">double</span> x; <span class="keyword">double</span> y; <span class="keyword">double</span> pa <span class="comment">/* Polar Angle with reference point. */</span>;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="built_in">vector</span>&lt;Point&gt; points;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">double</span> <span class="title">dist</span><span class="params">(Point &amp;a, Point &amp;b)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">sqrt</span>(<span class="built_in">pow</span>(a.x - b.x, <span class="number">2</span>) + <span class="built_in">pow</span>(a.y - b.y, <span class="number">2</span>));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">ccw</span><span class="params">(Point &amp;a, Point &amp;b, Point &amp;c)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">double</span> area = (b.x - a.x) * (c.y - a.y) - (c.x - a.x) * (b.y - a.y);</span><br><span class="line">    <span class="keyword">if</span> (area &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">double</span> <span class="title">graham_scan</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">double</span> ans = <span class="number">0</span>;</span><br><span class="line">    <span class="built_in">stack</span>&lt;Point&gt; <span class="built_in">stack</span>;</span><br><span class="line">    <span class="built_in">stack</span>.push(points[<span class="number">0</span>]);</span><br><span class="line">    <span class="built_in">stack</span>.push(points[<span class="number">1</span>]);</span><br><span class="line">    <span class="built_in">stack</span>.push(points[<span class="number">2</span>]);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">3</span>; i &lt; N; i++) &#123;</span><br><span class="line">        Point top = <span class="built_in">stack</span>.top();</span><br><span class="line">        <span class="built_in">stack</span>.pop();</span><br><span class="line">        <span class="keyword">while</span> (!ccw(<span class="built_in">stack</span>.top(), top, points[i]))   &#123;</span><br><span class="line">            top = <span class="built_in">stack</span>.top();</span><br><span class="line">            <span class="built_in">stack</span>.pop();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">stack</span>.push(top);</span><br><span class="line">        <span class="built_in">stack</span>.push(points[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// Save the last point to close the hull with p0.</span></span><br><span class="line">    Point p1 = <span class="built_in">stack</span>.top(); <span class="built_in">stack</span>.pop();</span><br><span class="line">    Point cur = p1;</span><br><span class="line">    <span class="keyword">while</span> (!<span class="built_in">stack</span>.empty()) &#123;</span><br><span class="line">        ans += dist(cur, <span class="built_in">stack</span>.top());</span><br><span class="line">        cur = <span class="built_in">stack</span>.top(); <span class="built_in">stack</span>.pop();</span><br><span class="line">    &#125;</span><br><span class="line">    ans += dist(cur, p1);</span><br><span class="line">    <span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"fc.in"</span>)</span></span>;</span><br><span class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"fc.out"</span>)</span></span>;</span><br><span class="line">    fin &gt;&gt; N;</span><br><span class="line">    points = <span class="built_in">vector</span>&lt;Point&gt;(N);</span><br><span class="line">    <span class="keyword">int</span> idx = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">        fin &gt;&gt; points[i].x &gt;&gt; points[i].y;</span><br><span class="line">        <span class="keyword">if</span> (points[i].x &lt; points[idx].x) &#123;</span><br><span class="line">            idx = i;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="built_in">abs</span>(points[i].x - points[idx].x) &lt;</span><br><span class="line">                   <span class="built_in">std</span>::numeric_limits&lt;<span class="keyword">double</span>&gt;::epsilon() &amp;&amp;</span><br><span class="line">                   points[i].y &lt; points[idx].y) &#123;</span><br><span class="line">            idx = i;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">std</span>::swap(points[idx], points[<span class="number">0</span>]);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; N; ++i) &#123;</span><br><span class="line">        points[i].pa = (points[i].y - points[<span class="number">0</span>].y) / dist(points[i], points[<span class="number">0</span>]);</span><br><span class="line">    &#125;</span><br><span class="line">    sort(points.begin() + <span class="number">1</span>, points.end(), [] (<span class="keyword">const</span> Point &amp;a, <span class="keyword">const</span> Point &amp;b) &#123;</span><br><span class="line">        <span class="keyword">return</span> a.pa &lt; b.pa;</span><br><span class="line">    &#125;);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">double</span> ret = graham_scan();</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="built_in">std</span>::fixed &lt;&lt; <span class="built_in">std</span>::setprecision(<span class="number">2</span>) &lt;&lt; ret &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    fout &lt;&lt; <span class="built_in">std</span>::fixed &lt;&lt; <span class="built_in">std</span>::setprecision(<span class="number">2</span>) &lt;&lt; ret &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/03/05/2017-03-05-USACO-FencingTheCows/" data-id="ck30oqoef00273lxg5hbbnlt8" data-title="USACO 5.1 Fencing The Cows" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2017/03/05/2017-03-05-USACO-FencingTheCows/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Convex-Hull/">Convex Hull</a></li></ul>
 
     </footer>
   </div>
@@ -280,7 +357,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Algorithm/" style="font-size: 20px;">Algorithm</a> <a href="/tags/BFS/" style="font-size: 15.83px;">BFS</a> <a href="/tags/BFT/" style="font-size: 10px;">BFT</a> <a href="/tags/Backtrack/" style="font-size: 10.83px;">Backtrack</a> <a href="/tags/Base-Conversion/" style="font-size: 10px;">Base Conversion</a> <a href="/tags/Big-Integer/" style="font-size: 10px;">Big Integer</a> <a href="/tags/Bipartite-Match/" style="font-size: 10px;">Bipartite Match</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10px;">Bit Manipulation</a> <a href="/tags/Brutal-Force/" style="font-size: 15px;">Brutal Force</a> <a href="/tags/Combination/" style="font-size: 10.83px;">Combination</a> <a href="/tags/Computation-Geometry/" style="font-size: 10px;">Computation Geometry</a> <a href="/tags/Consensus-Protocol/" style="font-size: 11.67px;">Consensus Protocol</a> <a href="/tags/Convex-Hull/" style="font-size: 10px;">Convex Hull</a> <a href="/tags/Counting/" style="font-size: 10px;">Counting</a> <a href="/tags/DFS/" style="font-size: 16.67px;">DFS</a> <a href="/tags/Dijkstra/" style="font-size: 12.5px;">Dijkstra</a> <a href="/tags/Distributed-System/" style="font-size: 11.67px;">Distributed System</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.17px;">Dynamic Programming</a> <a href="/tags/Enumeration/" style="font-size: 10px;">Enumeration</a> <a href="/tags/Euler-Path/" style="font-size: 10px;">Euler Path</a> <a href="/tags/Flood-Fill/" style="font-size: 11.67px;">Flood Fill</a> <a href="/tags/Floyd/" style="font-size: 10.83px;">Floyd</a> <a href="/tags/Ford-Fulkerson/" style="font-size: 10.83px;">Ford-Fulkerson</a> <a href="/tags/Gauss-Elimination/" style="font-size: 10px;">Gauss Elimination</a> <a href="/tags/Graph/" style="font-size: 15px;">Graph</a> <a href="/tags/Graph-Theory/" style="font-size: 14.17px;">Graph Theory</a> <a href="/tags/Greedy/" style="font-size: 10px;">Greedy</a> <a href="/tags/Hashing/" style="font-size: 10px;">Hashing</a> <a href="/tags/Hungarian-Algorithm/" style="font-size: 10px;">Hungarian Algorithm</a> <a href="/tags/KMP/" style="font-size: 10px;">KMP</a> <a href="/tags/Knapsack/" style="font-size: 10px;">Knapsack</a> <a href="/tags/LeetCode/" style="font-size: 17.5px;">LeetCode</a> <a href="/tags/MEMORIZED-SEARCH/" style="font-size: 10px;">MEMORIZED SEARCH</a> <a href="/tags/Math/" style="font-size: 10px;">Math</a> <a href="/tags/Minimum-Spanning-Tree/" style="font-size: 10px;">Minimum Spanning Tree</a> <a href="/tags/Network-Flow/" style="font-size: 10.83px;">Network Flow</a> <a href="/tags/NewSQL/" style="font-size: 10px;">NewSQL</a> <a href="/tags/Number-Theory/" style="font-size: 13.33px;">Number Theory</a> <a href="/tags/Paper-Digest/" style="font-size: 14.17px;">Paper Digest</a> <a href="/tags/Paxos/" style="font-size: 11.67px;">Paxos</a> <a href="/tags/Permutation/" style="font-size: 10px;">Permutation</a> <a href="/tags/Prim/" style="font-size: 10px;">Prim</a> <a href="/tags/Rolling-Array/" style="font-size: 10px;">Rolling Array</a> <a href="/tags/Rust/" style="font-size: 17.5px;">Rust</a> <a href="/tags/Search/" style="font-size: 18.33px;">Search</a> <a href="/tags/Shortest-Path/" style="font-size: 11.67px;">Shortest Path</a> <a href="/tags/Simulation/" style="font-size: 12.5px;">Simulation</a> <a href="/tags/String/" style="font-size: 10px;">String</a> <a href="/tags/String-Algorithm/" style="font-size: 10px;">String Algorithm</a> <a href="/tags/String-Manipulation/" style="font-size: 10px;">String Manipulation</a> <a href="/tags/Strongly-Connected-Components/" style="font-size: 10px;">Strongly Connected Components</a> <a href="/tags/TopCoder/" style="font-size: 11.67px;">TopCoder</a> <a href="/tags/Topological-Sort/" style="font-size: 10px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 10px;">Tree</a> <a href="/tags/UnionFind/" style="font-size: 10px;">UnionFind</a> <a href="/tags/ZooKeeper/" style="font-size: 10px;">ZooKeeper</a>
+      <a href="/tags/Algorithm/" style="font-size: 20px;">Algorithm</a> <a href="/tags/BFS/" style="font-size: 16.36px;">BFS</a> <a href="/tags/BFT/" style="font-size: 10px;">BFT</a> <a href="/tags/Backtrack/" style="font-size: 10.91px;">Backtrack</a> <a href="/tags/Base-Conversion/" style="font-size: 10px;">Base Conversion</a> <a href="/tags/Big-Integer/" style="font-size: 10px;">Big Integer</a> <a href="/tags/Bipartite-Match/" style="font-size: 10px;">Bipartite Match</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10px;">Bit Manipulation</a> <a href="/tags/Brutal-Force/" style="font-size: 15.45px;">Brutal Force</a> <a href="/tags/Combination/" style="font-size: 10.91px;">Combination</a> <a href="/tags/Computation-Geometry/" style="font-size: 10px;">Computation Geometry</a> <a href="/tags/Consensus-Protocol/" style="font-size: 11.82px;">Consensus Protocol</a> <a href="/tags/Convex-Hull/" style="font-size: 10px;">Convex Hull</a> <a href="/tags/Counting/" style="font-size: 10px;">Counting</a> <a href="/tags/DFS/" style="font-size: 17.27px;">DFS</a> <a href="/tags/Dijkstra/" style="font-size: 12.73px;">Dijkstra</a> <a href="/tags/Distributed-System/" style="font-size: 11.82px;">Distributed System</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.09px;">Dynamic Programming</a> <a href="/tags/Enumeration/" style="font-size: 10px;">Enumeration</a> <a href="/tags/Euler-Path/" style="font-size: 10px;">Euler Path</a> <a href="/tags/Flood-Fill/" style="font-size: 11.82px;">Flood Fill</a> <a href="/tags/Floyd/" style="font-size: 10.91px;">Floyd</a> <a href="/tags/Ford-Fulkerson/" style="font-size: 10.91px;">Ford-Fulkerson</a> <a href="/tags/Gauss-Elimination/" style="font-size: 10px;">Gauss Elimination</a> <a href="/tags/Graph/" style="font-size: 15.45px;">Graph</a> <a href="/tags/Graph-Theory/" style="font-size: 14.55px;">Graph Theory</a> <a href="/tags/Greedy/" style="font-size: 10px;">Greedy</a> <a href="/tags/Hashing/" style="font-size: 10px;">Hashing</a> <a href="/tags/Hungarian-Algorithm/" style="font-size: 10px;">Hungarian Algorithm</a> <a href="/tags/KMP/" style="font-size: 10px;">KMP</a> <a href="/tags/Knapsack/" style="font-size: 10px;">Knapsack</a> <a href="/tags/LeetCode/" style="font-size: 18.18px;">LeetCode</a> <a href="/tags/MEMORIZED-SEARCH/" style="font-size: 10px;">MEMORIZED SEARCH</a> <a href="/tags/Math/" style="font-size: 10px;">Math</a> <a href="/tags/Minimum-Spanning-Tree/" style="font-size: 10px;">Minimum Spanning Tree</a> <a href="/tags/Network-Flow/" style="font-size: 10.91px;">Network Flow</a> <a href="/tags/NewSQL/" style="font-size: 10px;">NewSQL</a> <a href="/tags/Number-Theory/" style="font-size: 13.64px;">Number Theory</a> <a href="/tags/Paper-Digest/" style="font-size: 14.55px;">Paper Digest</a> <a href="/tags/Paxos/" style="font-size: 11.82px;">Paxos</a> <a href="/tags/Permutation/" style="font-size: 10px;">Permutation</a> <a href="/tags/Prim/" style="font-size: 10px;">Prim</a> <a href="/tags/Rolling-Array/" style="font-size: 10px;">Rolling Array</a> <a href="/tags/Rust/" style="font-size: 18.18px;">Rust</a> <a href="/tags/Search/" style="font-size: 18.18px;">Search</a> <a href="/tags/Shortest-Path/" style="font-size: 11.82px;">Shortest Path</a> <a href="/tags/Simulation/" style="font-size: 12.73px;">Simulation</a> <a href="/tags/String/" style="font-size: 10px;">String</a> <a href="/tags/String-Algorithm/" style="font-size: 10px;">String Algorithm</a> <a href="/tags/String-Manipulation/" style="font-size: 10px;">String Manipulation</a> <a href="/tags/Strongly-Connected-Components/" style="font-size: 10px;">Strongly Connected Components</a> <a href="/tags/TopCoder/" style="font-size: 11.82px;">TopCoder</a> <a href="/tags/Topological-Sort/" style="font-size: 10px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 10px;">Tree</a> <a href="/tags/UnionFind/" style="font-size: 10px;">UnionFind</a> <a href="/tags/ZooKeeper/" style="font-size: 10px;">ZooKeeper</a>
     </div>
   </div>
 
@@ -306,11 +383,11 @@
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1197/">1197. Minimum Knight Moves</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1218/">1218. Longest Arithmetic Subsequence of Given Difference</a>
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1020/">LeetCode 1020. Number of Enclaves</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1197/">1197. Minimum Knight Moves</a>
           </li>
         
           <li>

@@ -75,6 +75,168 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-2017-05-08-MegaStore" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/05/08/2017-05-08-MegaStore/" class="article-date">
+  <time datetime="2017-05-09T04:00:31.000Z" itemprop="datePublished">2017-05-08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Distributed-System/">Distributed System</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/05/08/2017-05-08-MegaStore/">Paper Digest - Megastore, Providing Scalable, Highly Available Storage for Interactive Services</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Paper digest - <a href="https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/36971.pdf" target="_blank" rel="noopener">Megastore: Providing Scalable, Highly Available Storage for Interactive Services</a></p>
+<h1 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h1><ul>
+<li>Blends the scalability of a NoSQL datastore with the convenience of a traditional RDBMS.</li>
+<li>Provides both strong consistency guarantees and high availability.</li>
+<li>Provides fully serializable ACID semantics within fine-grained partitions of data.</li>
+</ul>
+<h1 id="Motivation"><a href="#Motivation" class="headerlink" title="Motivation"></a>Motivation</h1><ul>
+<li>Online services are forcing the storage community to meet new demands. <ul>
+<li>Highly scalable.</li>
+<li>Rapid development.</li>
+<li>Low latency.</li>
+<li>Consistent view of data.</li>
+<li>Highly available.</li>
+</ul>
+</li>
+</ul>
+<h1 id="Design-Highlights"><a href="#Design-Highlights" class="headerlink" title="Design Highlights"></a>Design Highlights</h1><ul>
+<li>Partition data. Replicate unit is a partition.</li>
+<li>Full ACID semantics within partitions only.</li>
+<li>Across partitions, limited consistency guarantees (later spanner improves this)</li>
+<li>Provide database features (2nd indexes), but does not provide scalability guarantees (can only scale within user-tolerable latency limits.)</li>
+<li>Innovative usage of Paxos: use it for replication instead of traditional usage (locking, leader election, replicate config data - e.g. ZooKeeper/ZAB)</li>
+</ul>
+<h1 id="Availability-with-Scalability"><a href="#Availability-with-Scalability" class="headerlink" title="Availability with Scalability"></a>Availability with Scalability</h1><ul>
+<li>Replication<ul>
+<li>Replicate a write-ahead log over a group of symmetric peers.</li>
+<li>Any node can initiate reads and writes.</li>
+<li>Each log append blocks on acknowledgments from a majority of replicas.</li>
+<li>Optimizations on Paxos<ul>
+<li>Allow local reads.</li>
+<li>Single roundtrip writes.</li>
+</ul>
+</li>
+<li>Multiple replicated logs instead of single log for better availability.</li>
+</ul>
+</li>
+<li>Key Concept - <strong>Entity Groups</strong><ul>
+<li>Entity group is a collection of data and unit of replication.</li>
+<li>Within a single entity group: ACID semantic.</li>
+<li>Across entity groups:<ul>
+<li>Two phased commit (strong consistency)</li>
+<li>Or async communications through message queues.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Physical Layout of data<ul>
+<li>Use BigTable for data storage.</li>
+<li>Letting applications control the placement of data.<ul>
+<li>Applications try to keep data near users and replicas near each other.</li>
+<li>The data for an entity group are held in contiguous ranges of Bigtable rows.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="API-Design"><a href="#API-Design" class="headerlink" title="API Design"></a>API Design</h1><ul>
+<li><strong>Cost-transparent APIs</strong>: runtime costs that match application developers’ intuitions.</li>
+<li>Eliminate needs for joins:  offer fine-grained control over physical locality.</li>
+<li>Joins when required is implemented in application code.</li>
+</ul>
+<h1 id="Data-Model"><a href="#Data-Model" class="headerlink" title="Data Model"></a>Data Model</h1><ul>
+<li>Lies between the abstract tuples of an RDBMS and the concrete row-column storage of NoSQL.</li>
+<li>Data model is declared in a schema and is strongly typed.</li>
+</ul>
+<h1 id="Transactions-and-Concurrency-Control"><a href="#Transactions-and-Concurrency-Control" class="headerlink" title="Transactions and Concurrency Control"></a>Transactions and Concurrency Control</h1><ul>
+<li>Use MVCC. Readers and writers don’t block each other, and reads are isolated from writes for the duration of a transaction.</li>
+<li>Read semantics<ul>
+<li>current (single entity group)</li>
+<li>snapshot (single entity group)</li>
+<li>inconsistent (ignore state of log)</li>
+</ul>
+</li>
+<li>Queues<ul>
+<li>Cross group batch operation deliver.</li>
+</ul>
+</li>
+<li>2 Phased Commit for atomic update across entity groups.</li>
+</ul>
+<h1 id="Paxos-based-Replication-key-innovations"><a href="#Paxos-based-Replication-key-innovations" class="headerlink" title="Paxos based Replication (key innovations)"></a>Paxos based Replication <strong>(key innovations)</strong></h1><ul>
+<li>Pitfall of master-slave based Paxos<ul>
+<li>Master failover can require a complicated state machine.</li>
+<li>A series of timers must elapse before service is restored. </li>
+<li>It is difficult to avoid user-visible outages.</li>
+</ul>
+</li>
+<li>Fast Reads<ul>
+<li>Local read.</li>
+<li>Coordinator tracks if a specific replica has observed the full state of writes so it can serve local reads.</li>
+</ul>
+</li>
+<li>Fast Writes<ul>
+<li>Single round trip writes.</li>
+<li>Pre-preparing optimization: each successful write includes an implied prepare message granting the master the right to issue accept messages for the next log position.</li>
+<li>If the write succeeds, the prepares are honored, and the next write skips directly to the accept phase. </li>
+<li>Multi-Paxos: independent instance of the Paxos algorithm for each log position. T</li>
+</ul>
+</li>
+<li>Replica Types<ul>
+<li>Full Replica: contain all entity and index and able to serve current reads.</li>
+<li>Witness Replica: vote and store WAL, but does not apply the WAL (kind like observer in ZooKeeper but not strictly the same - observer in ZK does not vote.)</li>
+<li>Read Only Replica: does not vote but contain full data of a point of time in the past (more like ZK observer but ZK observer is more up to date WRT its state.)</li>
+</ul>
+</li>
+</ul>
+<h1 id="Coordinator"><a href="#Coordinator" class="headerlink" title="Coordinator"></a>Coordinator</h1><ul>
+<li>The coordinator is a simple process with no external dependencies and no persistent storage.</li>
+<li>Failure Detection<ul>
+<li>Use an out of band protocol to identify when other coordinators are up, healthy, and generally reachable.</li>
+<li>Coordinators obtain specific Chubby locks in remote datacenters at startup.</li>
+<li>Revert its state to a conservative default when loses majority of locks and / or parititons.</li>
+<li>Brief and rare outage risk..</li>
+<li>Liveness protocol is vulnerable to asymmetric network partitions.</li>
+</ul>
+</li>
+</ul>
+<h1 id="Operation-Metrics-Experience-ommitted"><a href="#Operation-Metrics-Experience-ommitted" class="headerlink" title="Operation / Metrics / Experience - ommitted."></a>Operation / Metrics / Experience - ommitted.</h1>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2017/05/08/2017-05-08-MegaStore/" data-id="ck3253i99002f4fxgavyrzkrq" data-title="Paper Digest - Megastore, Providing Scalable, Highly Available Storage for Interactive Services" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2017/05/08/2017-05-08-MegaStore/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/NewSQL/">NewSQL</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Paper-Digest/">Paper Digest</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-2017-05-01-Paxos" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/05/01/2017-05-01-Paxos/" class="article-date">
@@ -240,7 +402,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/05/01/2017-05-01-Paxos/" data-id="ck30oqoem002e3lxgtyqua3ib" data-title="Paper Digest - Paxos Made Simple" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2017/05/01/2017-05-01-Paxos/" data-id="ck3253i98002e4fxg65a0khnl" data-title="Paper Digest - Paxos Made Simple" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2017/05/01/2017-05-01-Paxos/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -287,145 +449,13 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/04/21/2017-04-21-USACO-SnailTrail/" data-id="ck30oqoej002b3lxgcyb0pr58" data-title="USACO 5.2 Snail Trail" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2017/04/21/2017-04-21-USACO-SnailTrail/" data-id="ck3253i95002b4fxg9rbbrrdp" data-title="USACO 5.2 Snail Trail" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2017/04/21/2017-04-21-USACO-SnailTrail/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DFS/">DFS</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2017-03-27-Existential Consistency" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/03/27/2017-03-27-Existential Consistency/" class="article-date">
-  <time datetime="2017-03-27T23:26:31.000Z" itemprop="datePublished">2017-03-27</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Distributed-System/">Distributed System</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/03/27/2017-03-27-Existential Consistency/">Existential Consistency - Measuring and Understanding Consistency at Facebook</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Paper digest - <a href="http://sigops.org/sosp/sosp15/current/2015-Monterey/240-lu-online.pdf" target="_blank" rel="noopener">Existential Consistency: Measuring and Understanding Consistency at Facebook </a></p>
-<h1 id="Motivation"><a href="#Motivation" class="headerlink" title="Motivation"></a>Motivation</h1><ul>
-<li>Provides real world insights on how to quantify trade offs between performance and consistency wrt replicated storage systems.</li>
-<li>Describes a practical consistency monitoring system that tracks a new consistency metric ideally suited for health monitoring.</li>
-</ul>
-<h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><ul>
-<li>Stronger consistency implementation increases latency and/or decrease throughput.</li>
-<li>Eventual consistency (usually) provides good latency and/or throughput at larger scale. However there are drawbacks:<ul>
-<li>User visible anomalies: e.g. out order comments on social network post.</li>
-<li>Programming complexity: complicated cases to reason about on weaker consistency model.</li>
-</ul>
-</li>
-<li>So lots of recent work focus on providing stronger consistency models to overcome drawbacks of a weaker consistency model.</li>
-<li>But, not much work is done to quantify the trade offs, which this paper addresses.</li>
-<li>Within a cluster, per-object sequential and read-afterwrite consistency are provided. </li>
-<li>Across the entire system, eventual consistency is provided.</li>
-<li>Consistency is measured by running offline consistency checker (that checks various consistency models) on a logs that gathers random samples of social graph system.</li>
-</ul>
-<h1 id="Background"><a href="#Background" class="headerlink" title="Background"></a>Background</h1><ul>
-<li>Facebook’s replicated storage<ul>
-<li>Data model is directed graph.</li>
-<li>User data is persistent in relational database, which is sharded, geo-replicated.</li>
-<li>Each shard has a single maser region. Replication to slave region is async.</li>
-<li>Database is cached (two-level) for the full replica per region. Root / leaf caches. Reads served by leaf cache.</li>
-<li>Write path to cache: invalidation is async.</li>
-</ul>
-</li>
-<li>Consistency models:<ul>
-<li>The usual ones, mentioned again (linearizability, sequential, per object sequential, read-after-write, eventual.)</li>
-<li>Facebook’s consistency: per-object sequential consistency and read-after-write consistency within a cache, and eventual consistency across caches.</li>
-<li>When user session spreads across multiple leaf caches (e.g. load balanced, or leaf cache failed): eventual consistency.</li>
-</ul>
-</li>
-</ul>
-<h1 id="Principled-Consistency-Analysis"><a href="#Principled-Consistency-Analysis" class="headerlink" title="Principled Consistency Analysis"></a>Principled Consistency Analysis</h1><ul>
-<li>Trace<ul>
-<li>Collect trace to identify violation of consistency models.</li>
-<li>Trace only requests to a subset of vertices / edges stored in system for practical feasibility / avoid overhead.</li>
-<li>Requests are logged on the web server that issuing the requests.</li>
-</ul>
-</li>
-<li>Deal with clock skew<ul>
-<li>Solved by adding offsets (We account for this clock skew by expanding the invocation time and response time, i.e., we subtract 35 ms from all invocation times and add 35 ms to all response times.)</li>
-</ul>
-</li>
-<li>Deal with losing logs<ul>
-<li>Use a secondary trace from Wormhole system which is lossy as well but combined with the writes from both trace has good coverage.</li>
-</ul>
-</li>
-<li>The checker<ul>
-<li>Anomaly Checkers<ul>
-<li>Maintaining a directed graph.</li>
-<li>Vertices represent the state of an object.</li>
-<li>Edges represent the constraints on the ordering.</li>
-<li>Check state transition order observed by reads is consistent with these constraints.</li>
-</ul>
-</li>
-<li>Linearizability Checker<ul>
-<li>Model operation as vertices, edges as constraints.</li>
-<li>Check cycles.</li>
-<li>Linearizability requires that there exists a total order that is legal.</li>
-<li>Merging read vertices into the write vertices they observe requires matching reads to write.</li>
-</ul>
-</li>
-<li>Per-Object Sequential and Read-After-Write Checkers<ul>
-<li>As an add on of linearlizability checker which is superset of sequential / RAW consistency.</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>Directions on future research into systems with stronger consistency<ul>
-<li>Build system were non-anomalous types have negligible overhead or</li>
-<li>Provide stronger consistency for a small subset of a larger system. </li>
-<li>While the latter would not prevent all anomalies, it would allow incremental deployment of these systems and significantly reduce the rate of anomalies. </li>
-<li>Interestingly, such a subsystem that does provide linearizability is used within Facebook for a small set of object types, e.g., passwords.</li>
-</ul>
-</li>
-</ul>
-<h1 id="Practical-Consistency-Analysis"><a href="#Practical-Consistency-Analysis" class="headerlink" title="Practical Consistency Analysis"></a>Practical Consistency Analysis</h1><ul>
-<li>Why - need real time (for monitoring) instead of principal analysis (can be only done offline).</li>
-<li>φ-consistency</li>
-</ul>
-<h1 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h1><ul>
-<li>TAO is highly consistent.</li>
-<li>There were anomalies under all of the consistency models we studied. </li>
-</ul>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/03/27/2017-03-27-Existential Consistency/" data-id="ck30oqoel002d3lxgpno3sxk5" data-title="Existential Consistency - Measuring and Understanding Consistency at Facebook" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2017/03/27/2017-03-27-Existential Consistency/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Distributed-System/">Distributed System</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Paper-Digest/">Paper Digest</a></li></ul>
 
     </footer>
   </div>
@@ -470,7 +500,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Algorithm/" style="font-size: 20px;">Algorithm</a> <a href="/tags/BFS/" style="font-size: 15.83px;">BFS</a> <a href="/tags/BFT/" style="font-size: 10px;">BFT</a> <a href="/tags/Backtrack/" style="font-size: 10.83px;">Backtrack</a> <a href="/tags/Base-Conversion/" style="font-size: 10px;">Base Conversion</a> <a href="/tags/Big-Integer/" style="font-size: 10px;">Big Integer</a> <a href="/tags/Bipartite-Match/" style="font-size: 10px;">Bipartite Match</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10px;">Bit Manipulation</a> <a href="/tags/Brutal-Force/" style="font-size: 15px;">Brutal Force</a> <a href="/tags/Combination/" style="font-size: 10.83px;">Combination</a> <a href="/tags/Computation-Geometry/" style="font-size: 10px;">Computation Geometry</a> <a href="/tags/Consensus-Protocol/" style="font-size: 11.67px;">Consensus Protocol</a> <a href="/tags/Convex-Hull/" style="font-size: 10px;">Convex Hull</a> <a href="/tags/Counting/" style="font-size: 10px;">Counting</a> <a href="/tags/DFS/" style="font-size: 16.67px;">DFS</a> <a href="/tags/Dijkstra/" style="font-size: 12.5px;">Dijkstra</a> <a href="/tags/Distributed-System/" style="font-size: 11.67px;">Distributed System</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.17px;">Dynamic Programming</a> <a href="/tags/Enumeration/" style="font-size: 10px;">Enumeration</a> <a href="/tags/Euler-Path/" style="font-size: 10px;">Euler Path</a> <a href="/tags/Flood-Fill/" style="font-size: 11.67px;">Flood Fill</a> <a href="/tags/Floyd/" style="font-size: 10.83px;">Floyd</a> <a href="/tags/Ford-Fulkerson/" style="font-size: 10.83px;">Ford-Fulkerson</a> <a href="/tags/Gauss-Elimination/" style="font-size: 10px;">Gauss Elimination</a> <a href="/tags/Graph/" style="font-size: 15px;">Graph</a> <a href="/tags/Graph-Theory/" style="font-size: 14.17px;">Graph Theory</a> <a href="/tags/Greedy/" style="font-size: 10px;">Greedy</a> <a href="/tags/Hashing/" style="font-size: 10px;">Hashing</a> <a href="/tags/Hungarian-Algorithm/" style="font-size: 10px;">Hungarian Algorithm</a> <a href="/tags/KMP/" style="font-size: 10px;">KMP</a> <a href="/tags/Knapsack/" style="font-size: 10px;">Knapsack</a> <a href="/tags/LeetCode/" style="font-size: 17.5px;">LeetCode</a> <a href="/tags/MEMORIZED-SEARCH/" style="font-size: 10px;">MEMORIZED SEARCH</a> <a href="/tags/Math/" style="font-size: 10px;">Math</a> <a href="/tags/Minimum-Spanning-Tree/" style="font-size: 10px;">Minimum Spanning Tree</a> <a href="/tags/Network-Flow/" style="font-size: 10.83px;">Network Flow</a> <a href="/tags/NewSQL/" style="font-size: 10px;">NewSQL</a> <a href="/tags/Number-Theory/" style="font-size: 13.33px;">Number Theory</a> <a href="/tags/Paper-Digest/" style="font-size: 14.17px;">Paper Digest</a> <a href="/tags/Paxos/" style="font-size: 11.67px;">Paxos</a> <a href="/tags/Permutation/" style="font-size: 10px;">Permutation</a> <a href="/tags/Prim/" style="font-size: 10px;">Prim</a> <a href="/tags/Rolling-Array/" style="font-size: 10px;">Rolling Array</a> <a href="/tags/Rust/" style="font-size: 17.5px;">Rust</a> <a href="/tags/Search/" style="font-size: 18.33px;">Search</a> <a href="/tags/Shortest-Path/" style="font-size: 11.67px;">Shortest Path</a> <a href="/tags/Simulation/" style="font-size: 12.5px;">Simulation</a> <a href="/tags/String/" style="font-size: 10px;">String</a> <a href="/tags/String-Algorithm/" style="font-size: 10px;">String Algorithm</a> <a href="/tags/String-Manipulation/" style="font-size: 10px;">String Manipulation</a> <a href="/tags/Strongly-Connected-Components/" style="font-size: 10px;">Strongly Connected Components</a> <a href="/tags/TopCoder/" style="font-size: 11.67px;">TopCoder</a> <a href="/tags/Topological-Sort/" style="font-size: 10px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 10px;">Tree</a> <a href="/tags/UnionFind/" style="font-size: 10px;">UnionFind</a> <a href="/tags/ZooKeeper/" style="font-size: 10px;">ZooKeeper</a>
+      <a href="/tags/Algorithm/" style="font-size: 20px;">Algorithm</a> <a href="/tags/BFS/" style="font-size: 16.36px;">BFS</a> <a href="/tags/BFT/" style="font-size: 10px;">BFT</a> <a href="/tags/Backtrack/" style="font-size: 10.91px;">Backtrack</a> <a href="/tags/Base-Conversion/" style="font-size: 10px;">Base Conversion</a> <a href="/tags/Big-Integer/" style="font-size: 10px;">Big Integer</a> <a href="/tags/Bipartite-Match/" style="font-size: 10px;">Bipartite Match</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10px;">Bit Manipulation</a> <a href="/tags/Brutal-Force/" style="font-size: 15.45px;">Brutal Force</a> <a href="/tags/Combination/" style="font-size: 10.91px;">Combination</a> <a href="/tags/Computation-Geometry/" style="font-size: 10px;">Computation Geometry</a> <a href="/tags/Consensus-Protocol/" style="font-size: 11.82px;">Consensus Protocol</a> <a href="/tags/Convex-Hull/" style="font-size: 10px;">Convex Hull</a> <a href="/tags/Counting/" style="font-size: 10px;">Counting</a> <a href="/tags/DFS/" style="font-size: 17.27px;">DFS</a> <a href="/tags/Dijkstra/" style="font-size: 12.73px;">Dijkstra</a> <a href="/tags/Distributed-System/" style="font-size: 11.82px;">Distributed System</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.09px;">Dynamic Programming</a> <a href="/tags/Enumeration/" style="font-size: 10px;">Enumeration</a> <a href="/tags/Euler-Path/" style="font-size: 10px;">Euler Path</a> <a href="/tags/Flood-Fill/" style="font-size: 11.82px;">Flood Fill</a> <a href="/tags/Floyd/" style="font-size: 10.91px;">Floyd</a> <a href="/tags/Ford-Fulkerson/" style="font-size: 10.91px;">Ford-Fulkerson</a> <a href="/tags/Gauss-Elimination/" style="font-size: 10px;">Gauss Elimination</a> <a href="/tags/Graph/" style="font-size: 15.45px;">Graph</a> <a href="/tags/Graph-Theory/" style="font-size: 14.55px;">Graph Theory</a> <a href="/tags/Greedy/" style="font-size: 10px;">Greedy</a> <a href="/tags/Hashing/" style="font-size: 10px;">Hashing</a> <a href="/tags/Hungarian-Algorithm/" style="font-size: 10px;">Hungarian Algorithm</a> <a href="/tags/KMP/" style="font-size: 10px;">KMP</a> <a href="/tags/Knapsack/" style="font-size: 10px;">Knapsack</a> <a href="/tags/LeetCode/" style="font-size: 18.18px;">LeetCode</a> <a href="/tags/MEMORIZED-SEARCH/" style="font-size: 10px;">MEMORIZED SEARCH</a> <a href="/tags/Math/" style="font-size: 10px;">Math</a> <a href="/tags/Minimum-Spanning-Tree/" style="font-size: 10px;">Minimum Spanning Tree</a> <a href="/tags/Network-Flow/" style="font-size: 10.91px;">Network Flow</a> <a href="/tags/NewSQL/" style="font-size: 10px;">NewSQL</a> <a href="/tags/Number-Theory/" style="font-size: 13.64px;">Number Theory</a> <a href="/tags/Paper-Digest/" style="font-size: 14.55px;">Paper Digest</a> <a href="/tags/Paxos/" style="font-size: 11.82px;">Paxos</a> <a href="/tags/Permutation/" style="font-size: 10px;">Permutation</a> <a href="/tags/Prim/" style="font-size: 10px;">Prim</a> <a href="/tags/Rolling-Array/" style="font-size: 10px;">Rolling Array</a> <a href="/tags/Rust/" style="font-size: 18.18px;">Rust</a> <a href="/tags/Search/" style="font-size: 18.18px;">Search</a> <a href="/tags/Shortest-Path/" style="font-size: 11.82px;">Shortest Path</a> <a href="/tags/Simulation/" style="font-size: 12.73px;">Simulation</a> <a href="/tags/String/" style="font-size: 10px;">String</a> <a href="/tags/String-Algorithm/" style="font-size: 10px;">String Algorithm</a> <a href="/tags/String-Manipulation/" style="font-size: 10px;">String Manipulation</a> <a href="/tags/Strongly-Connected-Components/" style="font-size: 10px;">Strongly Connected Components</a> <a href="/tags/TopCoder/" style="font-size: 11.82px;">TopCoder</a> <a href="/tags/Topological-Sort/" style="font-size: 10px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 10px;">Tree</a> <a href="/tags/UnionFind/" style="font-size: 10px;">UnionFind</a> <a href="/tags/ZooKeeper/" style="font-size: 10px;">ZooKeeper</a>
     </div>
   </div>
 
@@ -496,11 +526,11 @@
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1197/">1197. Minimum Knight Moves</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1218/">1218. Longest Arithmetic Subsequence of Given Difference</a>
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1020/">LeetCode 1020. Number of Enclaves</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1197/">1197. Minimum Knight Moves</a>
           </li>
         
           <li>
