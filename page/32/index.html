@@ -75,6 +75,53 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-2016-08-20-USACO-Mother&#39;s Milk" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/08/20/2016-08-20-USACO-Mother's Milk/" class="article-date">
+  <time datetime="2016-08-20T21:39:31.000Z" itemprop="datePublished">2016-08-20</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/USACO/">USACO</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/08/20/2016-08-20-USACO-Mother's Milk/">USACO 1.4 Mother&#39;s Milk</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>This is a search problem and the search space is the set of states of the bucket which can be encoded as a three dimensional array. The idea is to do an exhaustive search on all valid states by starting from the initial state, and this algorithm will at some point converge and reach a fixed point where all states are visited. Use the three dimensional array to store the state might be a little bit waste considering the state can be abstracted by the values in bucket B and C, so the state encoding can be optimized.</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stack&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> capacity[<span class="number">3</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line"><span class="keyword">struct</span> State &#123;</span><br><span class="line">  <span class="keyword">int</span> water[<span class="number">3</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function">State <span class="title">pour</span><span class="params">(State state, <span class="keyword">int</span> from, <span class="keyword">int</span> to)</span> </span>&#123;</span><br><span class="line">  State next = state;</span><br><span class="line">  <span class="keyword">int</span> water = min(state.water[from], capacity[to] - state.water[to]);</span><br><span class="line">  next.water[from] -= water;</span><br><span class="line">  next.water[to] += water;</span><br><span class="line">  <span class="keyword">return</span> next;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">satisfy</span><span class="params">(State &amp;state)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (state.water[<span class="number">0</span>] == <span class="number">0</span>) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">  <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"milk3.in"</span>)</span></span>;</span><br><span class="line">  <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"milk3.out"</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">  fin &gt;&gt; capacity[<span class="number">0</span>] &gt;&gt; capacity[<span class="number">1</span>] &gt;&gt; capacity[<span class="number">2</span>];</span><br><span class="line"></span><br><span class="line">  State state;</span><br><span class="line">  state.water[<span class="number">0</span>] = <span class="number">0</span>; state.water[<span class="number">1</span>] = <span class="number">0</span>; state.water[<span class="number">2</span>] = capacity[<span class="number">2</span>];</span><br><span class="line"></span><br><span class="line">  <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt;&gt;&gt; visited(capacity[<span class="number">0</span>] + <span class="number">1</span>,</span><br><span class="line">                                       <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt;&gt;(capacity[<span class="number">1</span>] + <span class="number">1</span>,</span><br><span class="line">                                                            <span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt;(capacity[<span class="number">2</span>] + <span class="number">1</span>, <span class="literal">false</span>)));</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">auto</span> i = <span class="number">0</span>; i &lt;= capacity[<span class="number">0</span>]; ++i)</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> j = <span class="number">0</span>; j &lt;= capacity[<span class="number">1</span>]; ++j)</span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">auto</span> k = <span class="number">0</span>; k &lt;= capacity[<span class="number">2</span>]; ++k)</span><br><span class="line">        visited[i][j][k] = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; result;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">stack</span>&lt;State&gt; <span class="built_in">stack</span>;</span><br><span class="line">  <span class="built_in">stack</span>.emplace(state);</span><br><span class="line">  visited[state.water[<span class="number">0</span>]][state.water[<span class="number">1</span>]][state.water[<span class="number">2</span>]] = <span class="literal">true</span>;</span><br><span class="line">  <span class="keyword">if</span> (satisfy(state))</span><br><span class="line">    result.push_back(state.water[<span class="number">2</span>]);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">while</span> (!<span class="built_in">stack</span>.empty()) &#123;</span><br><span class="line">    <span class="keyword">auto</span> s = <span class="built_in">stack</span>.top();</span><br><span class="line">    <span class="built_in">stack</span>.pop();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">3</span>; ++i) &#123;</span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; <span class="number">3</span>; ++j) &#123;</span><br><span class="line">        <span class="keyword">if</span> (i == j) <span class="keyword">continue</span>;</span><br><span class="line"></span><br><span class="line">        State next = pour(s, i, j);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (visited[next.water[<span class="number">0</span>]][next.water[<span class="number">1</span>]][next.water[<span class="number">2</span>]]) &#123;</span><br><span class="line">          <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (satisfy(next))</span><br><span class="line">          result.push_back(next.water[<span class="number">2</span>]);</span><br><span class="line">        <span class="built_in">stack</span>.emplace(next);</span><br><span class="line">        visited[next.water[<span class="number">0</span>]][next.water[<span class="number">1</span>]][next.water[<span class="number">2</span>]] = <span class="literal">true</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  sort(result.begin(), result.end());</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">auto</span> i  = <span class="number">0</span>; i &lt; result.size() - <span class="number">1</span>; ++i)</span><br><span class="line">    fout &lt;&lt; result[i] &lt;&lt; <span class="string">" "</span>;</span><br><span class="line">  fout &lt;&lt; result[result.size() - <span class="number">1</span>] &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2016/08/20/2016-08-20-USACO-Mother's Milk/" data-id="ck32hupey000d6txg0r36c8dc" data-title="USACO 1.4 Mother&#39;s Milk" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2016/08/20/2016-08-20-USACO-Mother's Milk/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/BFS/">BFS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DFS/">DFS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Search/">Search</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-2016-08-18-USACO-ArithmeticProgression" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/08/18/2016-08-18-USACO-ArithmeticProgression/" class="article-date">
@@ -106,7 +153,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/18/2016-08-18-USACO-ArithmeticProgression/" data-id="ck326hl7b000dofxgv8gck85q" data-title="USACO 1.4 Arithmetic Progression" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/08/18/2016-08-18-USACO-ArithmeticProgression/" data-id="ck32hupez000e6txgaozswvet" data-title="USACO 1.4 Arithmetic Progression" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2016/08/18/2016-08-18-USACO-ArithmeticProgression/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -153,7 +200,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/17/2016-8-17-USACO-SkiCourseDesign/" data-id="ck326hl8o001rofxgvq49kjx5" data-title="USACO 1.3 Ski Course Design" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/08/17/2016-8-17-USACO-SkiCourseDesign/" data-id="ck32hupie002q6txgvzaoqfsr" data-title="USACO 1.3 Ski Course Design" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2016/08/17/2016-8-17-USACO-SkiCourseDesign/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -169,62 +216,11 @@
 
 
   
-    <article id="post-2016-08-17-USACO-WormHoles" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/08/17/2016-08-17-USACO-WormHoles/" class="article-date">
-  <time datetime="2016-08-17T16:11:31.000Z" itemprop="datePublished">2016-08-17</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/USACO/">USACO</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/08/17/2016-08-17-USACO-WormHoles/">USACO 1.3 Wormholes</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>The problem can be reduced to two sub problems:</p>
-<ul>
-<li>Generate all combinations of pairs. This can be solved using backtrack.</li>
-<li>For each combination test if there is a cycle. This can be solved by exhaustive search: starting from each wormhole, and try move the number of total wormholes, and repeat, until all wormholes are tested.</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;climits&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> kMaxHoles = <span class="number">12</span>;</span><br><span class="line"><span class="keyword">int</span> total;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; vx(kMaxHoles + <span class="number">1</span>, <span class="number">0</span>);</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; vy(kMaxHoles + <span class="number">1</span>, <span class="number">0</span>);</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; nextWormhole(kMaxHoles + <span class="number">1</span>, <span class="number">0</span>);</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; vpair(kMaxHoles + <span class="number">1</span>, <span class="number">0</span>);</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt; visited(kMaxHoles + <span class="number">1</span>, <span class="literal">false</span>);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">hasCycle</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> start = <span class="number">1</span>; start &lt;= total; ++start)&#123;</span><br><span class="line">    <span class="keyword">int</span> current = start;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> move = <span class="number">1</span>; move &lt;= total; ++move)</span><br><span class="line">      current = nextWormhole[vpair[current]];</span><br><span class="line">    <span class="keyword">if</span> (current != <span class="number">0</span>)</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">backtrack</span><span class="params">()</span></span>&#123;</span><br><span class="line">  <span class="keyword">int</span> unpaired = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= total; ++i) &#123;</span><br><span class="line">    <span class="keyword">if</span> (vpair[i] == <span class="number">0</span>)&#123;</span><br><span class="line">      unpaired = i;</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (unpaired == <span class="number">0</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> hasCycle();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">int</span> result = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> topair = unpaired + <span class="number">1</span>; topair &lt;= total; ++topair)</span><br><span class="line">    <span class="keyword">if</span> (vpair[topair]  == <span class="number">0</span>)&#123;</span><br><span class="line">      vpair[unpaired] = topair;</span><br><span class="line">      vpair[topair] = unpaired;</span><br><span class="line">      result += backtrack();</span><br><span class="line">      vpair[unpaired] = <span class="number">0</span>;</span><br><span class="line">      vpair[topair] = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">  <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"wormhole.in"</span>)</span></span>;</span><br><span class="line">  <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"wormhole.out"</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">  fin &gt;&gt; total;</span><br><span class="line">  <span class="built_in">cout</span> &lt;&lt; total &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= total; ++i) &#123;</span><br><span class="line">    fin &gt;&gt; vx[i] &gt;&gt; vy[i];</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; vx[i] &lt;&lt; <span class="string">" "</span> &lt;&lt; vy[i] &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">int</span> current, next;</span><br><span class="line">  <span class="keyword">for</span> (current = <span class="number">1</span>; current &lt;= total; ++current) &#123;</span><br><span class="line">    <span class="keyword">for</span> (next = <span class="number">1</span>; next &lt;= total; ++next)&#123;</span><br><span class="line">      <span class="keyword">if</span> (vy[current] != vy[next] || vx[next] &lt;= vx[current]) &#123;</span><br><span class="line">        <span class="keyword">continue</span>;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">if</span> (nextWormhole[current] == <span class="number">0</span> || vx[next] &lt; vx[nextWormhole[current]]) &#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">"current : "</span> &lt;&lt; current &lt;&lt; <span class="string">"; next : "</span> &lt;&lt; next &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">        nextWormhole[current] = next;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= <span class="number">12</span>; ++i) &#123;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; nextWormhole[i] &lt;&lt; <span class="string">";"</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  fout &lt;&lt; backtrack() &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/17/2016-08-17-USACO-WormHoles/" data-id="ck326hl7a000cofxgmbfcldzf" data-title="USACO 1.3 Wormholes" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2016/08/17/2016-08-17-USACO-WormHoles/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Graph/">Graph</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Search/">Search</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
 
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/page/31/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/30/">30</a><a class="page-number" href="/page/31/">31</a><span class="page-number current">32</span><a class="page-number" href="/page/33/">33</a><a class="page-number" href="/page/34/">34</a><span class="space">&hellip;</span><a class="page-number" href="/page/37/">37</a><a class="extend next" rel="next" href="/page/33/">Next &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/31/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/30/">30</a><a class="page-number" href="/page/31/">31</a><span class="page-number current">32</span><a class="page-number" href="/page/33/">33</a><a class="page-number" href="/page/34/">34</a><span class="space">&hellip;</span><a class="page-number" href="/page/38/">38</a><a class="extend next" rel="next" href="/page/33/">Next &raquo;</a>
   </nav>
 
 </section>
@@ -281,11 +277,11 @@
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1219/">LeetCode 1219. Path with Maximum Gold</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1031/">LeetCode 1031 Maximum Sum of Two Non-Overlapping Subarrays</a>
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1031/">LeetCode 1031 Maximum Sum of Two Non-Overlapping Subarrays</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1233/">LeetCode 1233. Remove Sub-Folders from the Filesystem</a>
           </li>
         
           <li>
@@ -293,7 +289,7 @@
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1218/">1218. Longest Arithmetic Subsequence of Given Difference</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1219/">LeetCode 1219. Path with Maximum Gold</a>
           </li>
         
       </ul>

@@ -15,20 +15,20 @@
 <!-- End Google Analytics -->
 
   
-  <title>USACO 3.2 Spinning Wheels | Quantum Field</title>
+  <title>LeetCode 1233. Remove Sub-Folders from the Filesystem | Quantum Field</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="This problem can be treated as a search problem. The search space is the set of states of all wedges of all wheels. The match criteria is at any give second, each wheel out of five wheels should have">
-<meta name="keywords" content="Search,Simulation">
+  <meta name="description" content="Problem Statement impl Solution &amp;#123;    pub fn remove_subfolders(folder: Vec&amp;lt;String&amp;gt;) -&amp;gt; Vec&amp;lt;String&amp;gt; &amp;#123;        let (mut f, mut ans) = (folder, vec![]);        if f.is_empty() &amp;#12">
+<meta name="keywords" content="Algorithm,LeetCode,Rust">
 <meta property="og:type" content="article">
-<meta property="og:title" content="USACO 3.2 Spinning Wheels">
-<meta property="og:url" content="http://lianghan.org/2016/11/06/2016-11-06-USACO-SpinningWheels/index.html">
+<meta property="og:title" content="LeetCode 1233. Remove Sub-Folders from the Filesystem">
+<meta property="og:url" content="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1233/index.html">
 <meta property="og:site_name" content="Quantum Field">
-<meta property="og:description" content="This problem can be treated as a search problem. The search space is the set of states of all wedges of all wheels. The match criteria is at any give second, each wheel out of five wheels should have">
+<meta property="og:description" content="Problem Statement impl Solution &amp;#123;    pub fn remove_subfolders(folder: Vec&amp;lt;String&amp;gt;) -&amp;gt; Vec&amp;lt;String&amp;gt; &amp;#123;        let (mut f, mut ans) = (folder, vec![]);        if f.is_empty() &amp;#12">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2019-09-23T16:26:32.935Z">
+<meta property="og:updated_time" content="2019-11-17T04:21:58.868Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="USACO 3.2 Spinning Wheels">
-<meta name="twitter:description" content="This problem can be treated as a search problem. The search space is the set of states of all wedges of all wheels. The match criteria is at any give second, each wheel out of five wheels should have">
+<meta name="twitter:title" content="LeetCode 1233. Remove Sub-Folders from the Filesystem">
+<meta name="twitter:description" content="Problem Statement impl Solution &amp;#123;    pub fn remove_subfolders(folder: Vec&amp;lt;String&amp;gt;) -&amp;gt; Vec&amp;lt;String&amp;gt; &amp;#123;        let (mut f, mut ans) = (folder, vec![]);        if f.is_empty() &amp;#12">
   
     <link rel="alternate" href="/atom.xml" title="Quantum Field" type="application/atom+xml">
   
@@ -78,14 +78,14 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="post-2016-11-06-USACO-SpinningWheels" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-2019-11-11-LeetCode1233" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2016/11/06/2016-11-06-USACO-SpinningWheels/" class="article-date">
-  <time datetime="2016-11-06T22:59:31.000Z" itemprop="datePublished">2016-11-06</time>
+    <a href="/2019/11/11/2019-11-11-LeetCode1233/" class="article-date">
+  <time datetime="2019-11-11T19:11:11.000Z" itemprop="datePublished">2019-11-11</time>
 </a>
     
   <div class="article-category">
-    <a class="article-category-link" href="/categories/USACO/">USACO</a>
+    <a class="article-category-link" href="/categories/LeetCode-in-Rust/">LeetCode in Rust</a>
   </div>
 
   </div>
@@ -96,7 +96,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      USACO 3.2 Spinning Wheels
+      LeetCode 1233. Remove Sub-Folders from the Filesystem
     </h1>
   
 
@@ -104,18 +104,18 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>This problem can be treated as a search problem. The search space is the set of states of all wedges of all wheels. The match criteria is at any give second, each wheel out of five wheels should have at least one wedge whose angle and ‘covers’ (the extent) that overlaps with (again, at least one) wedges from other wheels.<br>The catch is we only need to examine the first 360 second and bail out as soon as we have a match, because the state of the wheel and wedges will be reset to the same original state after 360 sec (a cycle).</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;utility&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cmath&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;map&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unordered_map&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;climits&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sstream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> wheel &#123;</span><br><span class="line">    <span class="keyword">int</span> speed;</span><br><span class="line">    <span class="keyword">int</span> wedgeCnt;</span><br><span class="line">    <span class="keyword">int</span> start[<span class="number">5</span>];</span><br><span class="line">    <span class="keyword">int</span> angle[<span class="number">5</span>];</span><br><span class="line">&#125; tWheel;</span><br><span class="line"></span><br><span class="line">tWheel wheels[<span class="number">5</span>];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"spin.in"</span>)</span></span>;</span><br><span class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"spin.out"</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; ++i) &#123;</span><br><span class="line">        fin &gt;&gt; wheels[i].speed &gt;&gt; wheels[i].wedgeCnt;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; wheels[i].wedgeCnt; ++j) &#123;</span><br><span class="line">            fin &gt;&gt; wheels[i].start[j] &gt;&gt; wheels[i].angle[j];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> m = <span class="number">0</span>; m &lt;= <span class="number">360</span>; ++m) &#123;</span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; align(<span class="number">360</span>, <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; ++i) &#123;</span><br><span class="line">            tWheel wheel = wheels[i];</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; wheel.wedgeCnt; ++j) &#123;</span><br><span class="line">                <span class="keyword">int</span> start = (wheel.start[j] + wheel.speed * m) % <span class="number">360</span>;</span><br><span class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> k = start; k &lt;= start + wheel.angle[j]; ++k) &#123;</span><br><span class="line">                    align[k % <span class="number">360</span>]++;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">360</span>; ++i) &#123;</span><br><span class="line">            <span class="keyword">if</span> (align[i] == <span class="number">5</span>) &#123;</span><br><span class="line">                <span class="built_in">cout</span> &lt;&lt; m &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">                fout &lt;&lt; m &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">                <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"none"</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    fout &lt;&lt; <span class="string">"none"</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        <p><a href="https://leetcode.com/problems/remove-sub-folders-from-the-filesystem/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">remove_subfolders</span></span>(folder: <span class="built_in">Vec</span>&lt;<span class="built_in">String</span>&gt;) -&gt; <span class="built_in">Vec</span>&lt;<span class="built_in">String</span>&gt; &#123;</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> f, <span class="keyword">mut</span> ans) = (folder, <span class="built_in">vec!</span>[]);</span><br><span class="line">        <span class="keyword">if</span> f.is_empty() &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">vec!</span>[];</span><br><span class="line">        &#125;</span><br><span class="line">        f.sort();</span><br><span class="line">        ans.push(f[<span class="number">0</span>].clone());</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">1</span>..f.len() &#123;</span><br><span class="line">            <span class="keyword">let</span> <span class="keyword">mut</span> prefix = ans.last().unwrap().clone();</span><br><span class="line">            prefix.push(<span class="string">'/'</span>);</span><br><span class="line">            <span class="keyword">let</span> cur = f[i].clone();</span><br><span class="line">            <span class="keyword">if</span> cur.len() &lt; prefix.len() || cur[..prefix.len()].to_string() != prefix  &#123;</span><br><span class="line">                ans.push(cur);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/11/06/2016-11-06-USACO-SpinningWheels/" data-id="ck32huphj001q6txghkvtqc70" data-title="USACO 3.2 Spinning Wheels" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1233/" data-id="ck32hupk2004q6txgwlwb1ku7" data-title="LeetCode 1233. Remove Sub-Folders from the Filesystem" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2016/11/06/2016-11-06-USACO-SpinningWheels/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1233/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Search/">Search</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Simulation/">Simulation</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LeetCode/">LeetCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Rust/">Rust</a></li></ul>
 
     </footer>
   </div>
@@ -123,19 +123,19 @@
     
 <nav id="article-nav">
   
-    <a href="/2016/11/08/2016-11-08-USACO-FeedRatios/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2019/11/11/2019-11-11-LeetCode1031/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Newer</strong>
       <div class="article-nav-title">
         
-          USACO 3.2 Feed Ratios
+          LeetCode 1031 Maximum Sum of Two Non-Overlapping Subarrays
         
       </div>
     </a>
   
   
-    <a href="/2016/11/01/2016-11-01-USACO-StringsOrbits.h/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2019/11/11/2019-11-11-LeetCode1197/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">USACO 3.2 Stringsorbits</div>
+      <div class="article-nav-title">1197. Minimum Knight Moves</div>
     </a>
   
 </nav>
@@ -269,7 +269,7 @@
 <script>
   var disqus_shortname = 'quantumfield';
   
-  var disqus_url = 'http://lianghan.org/2016/11/06/2016-11-06-USACO-SpinningWheels/';
+  var disqus_url = 'http://lianghan.org/2019/11/11/2019-11-11-LeetCode1233/';
   
   (function(){
     var dsq = document.createElement('script');

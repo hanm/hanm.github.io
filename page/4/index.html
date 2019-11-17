@@ -75,6 +75,54 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-2019-11-11-LeetCode935" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/11/11/2019-11-11-LeetCode935/" class="article-date">
+  <time datetime="2019-11-11T19:11:11.000Z" itemprop="datePublished">2019-11-11</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/LeetCode-in-Rust/">LeetCode in Rust</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/11/11/2019-11-11-LeetCode935/">LeetCode 935. Knight Dialer</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><a href="https://leetcode.com/problems/knight-dialer/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<p>Dynamic Programming</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">knight_dialer</span></span>(n: <span class="keyword">i32</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">const</span> MOD : <span class="keyword">u64</span> = <span class="number">1e9</span> <span class="keyword">as</span> <span class="keyword">u64</span> + <span class="number">7</span>;</span><br><span class="line">        <span class="keyword">const</span> dirs: [(<span class="keyword">i32</span>, <span class="keyword">i32</span>); <span class="number">8</span>] = [(-<span class="number">2</span>, -<span class="number">1</span>), (-<span class="number">2</span>, <span class="number">1</span>), (-<span class="number">1</span>, -<span class="number">2</span>), (-<span class="number">1</span>, <span class="number">2</span>),</span><br><span class="line">            (<span class="number">1</span>, -<span class="number">2</span>), (<span class="number">1</span>, <span class="number">2</span>), (<span class="number">2</span>, -<span class="number">1</span>), (<span class="number">2</span>, <span class="number">1</span>)];</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> dp = [[<span class="number">1</span>; <span class="number">3</span>] ; <span class="number">4</span>];</span><br><span class="line">        dp[<span class="number">3</span>][<span class="number">0</span>] = <span class="number">0</span>; dp[<span class="number">3</span>][<span class="number">2</span>] = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> k <span class="keyword">in</span> <span class="number">1</span>..n &#123;</span><br><span class="line">            <span class="keyword">let</span> <span class="keyword">mut</span> tmp = [[<span class="number">0</span>; <span class="number">3</span>] ; <span class="number">4</span>];</span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..<span class="number">4</span> &#123;</span><br><span class="line">                <span class="keyword">for</span> j <span class="keyword">in</span> <span class="number">0</span>..<span class="number">3</span> &#123;</span><br><span class="line">                    <span class="keyword">if</span> i == <span class="number">3</span> &amp;&amp; j != <span class="number">1</span> &#123;</span><br><span class="line">                        <span class="keyword">continue</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">for</span> d <span class="keyword">in</span> <span class="number">0</span>..<span class="number">8</span> &#123;</span><br><span class="line">                        <span class="keyword">let</span> (xx, yy) = (j + dirs[d].<span class="number">0</span>, i + dirs[d].<span class="number">1</span>);</span><br><span class="line">                        <span class="keyword">if</span> xx &lt; <span class="number">0</span> || yy &lt; <span class="number">0</span> || xx &gt;= <span class="number">3</span> || yy &gt;= <span class="number">4</span> &#123;</span><br><span class="line">                            <span class="keyword">continue</span>;</span><br><span class="line">                        &#125;</span><br><span class="line">                        tmp[i <span class="keyword">as</span> <span class="keyword">usize</span>][j <span class="keyword">as</span> <span class="keyword">usize</span>] = (tmp[i <span class="keyword">as</span> <span class="keyword">usize</span>][j <span class="keyword">as</span> <span class="keyword">usize</span>] +</span><br><span class="line">                            dp[yy <span class="keyword">as</span> <span class="keyword">usize</span>][xx <span class="keyword">as</span> <span class="keyword">usize</span>]) % MOD;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            dp.swap_with_slice(&amp;<span class="keyword">mut</span> tmp[<span class="number">0</span>..]);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> ans : <span class="keyword">i32</span> = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..<span class="number">4</span> &#123;</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> <span class="number">0</span>..<span class="number">3</span> &#123;</span><br><span class="line">                ans = ((ans <span class="keyword">as</span> <span class="keyword">u64</span> + dp[i][j]) % MOD) <span class="keyword">as</span> <span class="keyword">i32</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2019/11/11/2019-11-11-LeetCode935/" data-id="ck32hupka00526txg0xrxt0d1" data-title="LeetCode 935. Knight Dialer" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode935/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LeetCode/">LeetCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Rust/">Rust</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-2019-10-15-LeetCode1145" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2019/10/15/2019-10-15-LeetCode1145/" class="article-date">
@@ -106,7 +154,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/10/15/2019-10-15-LeetCode1145/" data-id="ck326hl9r002tofxgy9l3llgq" data-title="LeetCode 1145 Binary Tree Coloring Game" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/10/15/2019-10-15-LeetCode1145/" data-id="ck32hupjz004m6txgiqdoqt3u" data-title="LeetCode 1145 Binary Tree Coloring Game" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2019/10/15/2019-10-15-LeetCode1145/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -153,56 +201,9 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/09/23/2019-09-23-LeetCode1123/" data-id="ck326hl9q002sofxgk0xs9quz" data-title="LeetCode 1123 Lowest Common Ancestor of Deepest Leaves" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/09/23/2019-09-23-LeetCode1123/" data-id="ck32hupjy004l6txgumjmrtu6" data-title="LeetCode 1123 Lowest Common Ancestor of Deepest Leaves" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2019/09/23/2019-09-23-LeetCode1123/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LeetCode/">LeetCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Rust/">Rust</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2019-09-19-LeetCode641" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/09/19/2019-09-19-LeetCode641/" class="article-date">
-  <time datetime="2019-09-19T17:39:31.000Z" itemprop="datePublished">2019-09-19</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/LeetCode-in-Rust/">LeetCode in Rust</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/09/19/2019-09-19-LeetCode641/">LeetCode 641 Design Circular Deque</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><a href="https://leetcode.com/problems/design-circular-deque/description/" target="_blank" rel="noopener">Problem Statement</a></p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">use</span> std::vec::<span class="built_in">Vec</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">MyCircularDeque</span></span> &#123;</span><br><span class="line">    v: <span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;,</span><br><span class="line">    head : <span class="keyword">usize</span>,</span><br><span class="line">    tail : <span class="keyword">usize</span>,</span><br><span class="line">    count : <span class="keyword">usize</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * `&amp;self` means the method takes an immutable reference.</span></span><br><span class="line"><span class="comment"> * If you need a mutable reference, change it to `&amp;mut self` instead.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">impl</span> MyCircularDeque &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Initialize your data structure here. Set the size of the deque to be k. */</span></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">new</span></span>(k: <span class="keyword">i32</span>) -&gt; <span class="keyword">Self</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> vec = <span class="built_in">Vec</span>::with_capacity(k.clone() <span class="keyword">as</span> <span class="keyword">usize</span>);</span><br><span class="line">        vec.resize(k.clone() <span class="keyword">as</span> <span class="keyword">usize</span>, <span class="number">0</span>);</span><br><span class="line">        MyCircularDeque &#123;</span><br><span class="line">            v : vec,</span><br><span class="line">            head : k <span class="keyword">as</span> <span class="keyword">usize</span> - <span class="number">1</span>, tail : <span class="number">0</span>, count : <span class="number">0</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Adds an item at the front of Deque. Return true if the operation is successful. */</span></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">insert_front</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>, value: <span class="keyword">i32</span>) -&gt; <span class="keyword">bool</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">self</span>.is_full() &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">self</span>.v[<span class="keyword">self</span>.head.clone()] = value;</span><br><span class="line">        <span class="keyword">self</span>.head = (<span class="keyword">self</span>.head + <span class="keyword">self</span>.v.len() - <span class="number">1</span>) % <span class="keyword">self</span>.v.len();</span><br><span class="line">        <span class="keyword">self</span>.count += <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Adds an item at the rear of Deque. Return true if the operation is successful. */</span></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">insert_last</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>, value: <span class="keyword">i32</span>) -&gt; <span class="keyword">bool</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">self</span>.is_full() &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">self</span>.v[<span class="keyword">self</span>.tail.clone()] = value;</span><br><span class="line">        <span class="keyword">self</span>.tail = (<span class="keyword">self</span>.tail + <span class="number">1</span>) % <span class="keyword">self</span>.v.len();</span><br><span class="line">        <span class="keyword">self</span>.count += <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Deletes an item from the front of Deque. Return true if the operation is successful. */</span></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">delete_front</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>) -&gt; <span class="keyword">bool</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">self</span>.is_empty() &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">self</span>.head = (<span class="keyword">self</span>.head + <span class="number">1</span>) % <span class="keyword">self</span>.v.len();</span><br><span class="line">        <span class="keyword">self</span>.count -= <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Deletes an item from the rear of Deque. Return true if the operation is successful. */</span></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">delete_last</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>) -&gt; <span class="keyword">bool</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">self</span>.is_empty() &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">self</span>.tail = (<span class="keyword">self</span>.tail + <span class="keyword">self</span>.v.len() - <span class="number">1</span>) % <span class="keyword">self</span>.v.len();</span><br><span class="line">        <span class="keyword">self</span>.count -= <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Get the front item from the deque. */</span></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">get_front</span></span>(&amp;<span class="keyword">self</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">self</span>.is_empty() &#123;</span><br><span class="line">            <span class="keyword">return</span> - <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">self</span>.v[(<span class="keyword">self</span>.head.clone() + <span class="number">1</span>) % <span class="keyword">self</span>.v.len()];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Get the last item from the deque. */</span></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">get_rear</span></span>(&amp;<span class="keyword">self</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">self</span>.is_empty() &#123;</span><br><span class="line">            <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">self</span>.v[(<span class="keyword">self</span>.tail - <span class="number">1</span> + <span class="keyword">self</span>.v.len()) % <span class="keyword">self</span>.v.len()];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Checks whether the circular deque is empty or not. */</span></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">is_empty</span></span>(&amp;<span class="keyword">self</span>) -&gt; <span class="keyword">bool</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">self</span>.count == <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Checks whether the circular deque is full or not. */</span></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">is_full</span></span>(&amp;<span class="keyword">self</span>) -&gt; <span class="keyword">bool</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">self</span>.count == <span class="keyword">self</span>.v.len();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/09/19/2019-09-19-LeetCode641/" data-id="ck326hl9p002rofxg9vxbrqr5" data-title="LeetCode 641 Design Circular Deque" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2019/09/19/2019-09-19-LeetCode641/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
@@ -220,7 +221,7 @@
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/page/3/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/37/">37</a><a class="extend next" rel="next" href="/page/5/">Next &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/3/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/38/">38</a><a class="extend next" rel="next" href="/page/5/">Next &raquo;</a>
   </nav>
 
 </section>
@@ -277,11 +278,11 @@
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1219/">LeetCode 1219. Path with Maximum Gold</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1031/">LeetCode 1031 Maximum Sum of Two Non-Overlapping Subarrays</a>
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1031/">LeetCode 1031 Maximum Sum of Two Non-Overlapping Subarrays</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1233/">LeetCode 1233. Remove Sub-Folders from the Filesystem</a>
           </li>
         
           <li>
@@ -289,7 +290,7 @@
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1218/">1218. Longest Arithmetic Subsequence of Given Difference</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1219/">LeetCode 1219. Path with Maximum Gold</a>
           </li>
         
       </ul>
