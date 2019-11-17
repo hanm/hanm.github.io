@@ -106,36 +106,6 @@
   </entry>
   
   <entry>
-    <title>LeetCode 1219. Path with Maximum Gold</title>
-    <link href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1219/"/>
-    <id>http://lianghan.org/2019/11/11/2019-11-11-LeetCode1219/</id>
-    <published>2019-11-11T19:11:11.000Z</published>
-    <updated>2019-11-16T23:04:06.482Z</updated>
-    
-    <content type="html"><![CDATA[<p><a href="https://leetcode.com/problems/path-with-maximum-gold/description/" target="_blank" rel="noopener">Problem Statement</a></p><p>BFS.</p><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::collections::VecDeque;</span><br><span class="line"><span class="keyword">use</span> std::cmp;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">get_maximum_gold</span></span>(grid: <span class="built_in">Vec</span>&lt;<span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;&gt;) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> (m, n, <span class="keyword">mut</span> ans, <span class="keyword">mut</span> id) = (grid.len(), grid[<span class="number">0</span>].len(), <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">let</span> (dx, dy) : ([<span class="keyword">i32</span>; <span class="number">4</span>], [<span class="keyword">i32</span>; <span class="number">4</span>]) = ([<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, -<span class="number">1</span>], [<span class="number">1</span>, -<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>]);</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> visited = <span class="built_in">vec!</span>[<span class="built_in">vec!</span>[<span class="number">0</span>; n]; m];</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> q = VecDeque::new();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..m &#123;</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> <span class="number">0</span>..n &#123;</span><br><span class="line">                <span class="keyword">if</span> grid[i][j] == <span class="number">0</span> &#123;</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                id += <span class="number">1</span>;</span><br><span class="line">                visited[i][j] = <span class="number">1</span> &lt;&lt; id;</span><br><span class="line">                q.push_back((i, j, grid[i][j], visited[i][j]));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> !q.is_empty() &#123;</span><br><span class="line">            <span class="keyword">let</span> cur = q.pop_front().unwrap();</span><br><span class="line">            <span class="keyword">let</span> (x, y, sum, state) = (cur.<span class="number">0</span> <span class="keyword">as</span> <span class="keyword">i32</span>, cur.<span class="number">1</span> <span class="keyword">as</span> <span class="keyword">i32</span>, cur.<span class="number">2</span>, cur.<span class="number">3</span>);</span><br><span class="line">            ans = cmp::max(ans, sum);</span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..<span class="number">4</span> &#123;</span><br><span class="line">                <span class="keyword">let</span> (xx, yy) = (x + dx[i], y + dy[i]);</span><br><span class="line">                <span class="keyword">if</span> xx &lt; <span class="number">0</span> || xx == m <span class="keyword">as</span> <span class="keyword">i32</span> || yy &lt; <span class="number">0</span> || yy == n <span class="keyword">as</span> <span class="keyword">i32</span> ||</span><br><span class="line">                    grid[xx <span class="keyword">as</span> <span class="keyword">usize</span>][yy <span class="keyword">as</span> <span class="keyword">usize</span>] == <span class="number">0</span> || (state &amp; visited[xx <span class="keyword">as</span> <span class="keyword">usize</span>][yy <span class="keyword">as</span> <span class="keyword">usize</span>] != <span class="number">0</span>) &#123;</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">let</span> (nx, ny) = (xx <span class="keyword">as</span> <span class="keyword">usize</span>, yy <span class="keyword">as</span> <span class="keyword">usize</span>);</span><br><span class="line">                q.push_back((nx, ny, sum + grid[nx][ny], state | visited[nx][ny]));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;&lt;a href=&quot;https://leetcode.com/problems/path-with-maximum-gold/description/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Problem Statement&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;B
-      
-    
-    </summary>
-    
-      <category term="LeetCode in Rust" scheme="http://lianghan.org/categories/LeetCode-in-Rust/"/>
-    
-    
-      <category term="Algorithm" scheme="http://lianghan.org/tags/Algorithm/"/>
-    
-      <category term="LeetCode" scheme="http://lianghan.org/tags/LeetCode/"/>
-    
-      <category term="Rust" scheme="http://lianghan.org/tags/Rust/"/>
-    
-  </entry>
-  
-  <entry>
     <title>1197. Minimum Knight Moves</title>
     <link href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1197/"/>
     <id>http://lianghan.org/2019/11/11/2019-11-11-LeetCode1197/</id>
@@ -179,6 +149,36 @@
       
       
         &lt;p&gt;&lt;a href=&quot;https://leetcode.com/problems/longest-arithmetic-subsequence-of-given-difference/description/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Pr
+      
+    
+    </summary>
+    
+      <category term="LeetCode in Rust" scheme="http://lianghan.org/categories/LeetCode-in-Rust/"/>
+    
+    
+      <category term="Algorithm" scheme="http://lianghan.org/tags/Algorithm/"/>
+    
+      <category term="LeetCode" scheme="http://lianghan.org/tags/LeetCode/"/>
+    
+      <category term="Rust" scheme="http://lianghan.org/tags/Rust/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>LeetCode 1219. Path with Maximum Gold</title>
+    <link href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1219/"/>
+    <id>http://lianghan.org/2019/11/11/2019-11-11-LeetCode1219/</id>
+    <published>2019-11-11T19:11:11.000Z</published>
+    <updated>2019-11-16T23:04:06.482Z</updated>
+    
+    <content type="html"><![CDATA[<p><a href="https://leetcode.com/problems/path-with-maximum-gold/description/" target="_blank" rel="noopener">Problem Statement</a></p><p>BFS.</p><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::collections::VecDeque;</span><br><span class="line"><span class="keyword">use</span> std::cmp;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">get_maximum_gold</span></span>(grid: <span class="built_in">Vec</span>&lt;<span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;&gt;) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> (m, n, <span class="keyword">mut</span> ans, <span class="keyword">mut</span> id) = (grid.len(), grid[<span class="number">0</span>].len(), <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">let</span> (dx, dy) : ([<span class="keyword">i32</span>; <span class="number">4</span>], [<span class="keyword">i32</span>; <span class="number">4</span>]) = ([<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, -<span class="number">1</span>], [<span class="number">1</span>, -<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>]);</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> visited = <span class="built_in">vec!</span>[<span class="built_in">vec!</span>[<span class="number">0</span>; n]; m];</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> q = VecDeque::new();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..m &#123;</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> <span class="number">0</span>..n &#123;</span><br><span class="line">                <span class="keyword">if</span> grid[i][j] == <span class="number">0</span> &#123;</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                id += <span class="number">1</span>;</span><br><span class="line">                visited[i][j] = <span class="number">1</span> &lt;&lt; id;</span><br><span class="line">                q.push_back((i, j, grid[i][j], visited[i][j]));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> !q.is_empty() &#123;</span><br><span class="line">            <span class="keyword">let</span> cur = q.pop_front().unwrap();</span><br><span class="line">            <span class="keyword">let</span> (x, y, sum, state) = (cur.<span class="number">0</span> <span class="keyword">as</span> <span class="keyword">i32</span>, cur.<span class="number">1</span> <span class="keyword">as</span> <span class="keyword">i32</span>, cur.<span class="number">2</span>, cur.<span class="number">3</span>);</span><br><span class="line">            ans = cmp::max(ans, sum);</span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..<span class="number">4</span> &#123;</span><br><span class="line">                <span class="keyword">let</span> (xx, yy) = (x + dx[i], y + dy[i]);</span><br><span class="line">                <span class="keyword">if</span> xx &lt; <span class="number">0</span> || xx == m <span class="keyword">as</span> <span class="keyword">i32</span> || yy &lt; <span class="number">0</span> || yy == n <span class="keyword">as</span> <span class="keyword">i32</span> ||</span><br><span class="line">                    grid[xx <span class="keyword">as</span> <span class="keyword">usize</span>][yy <span class="keyword">as</span> <span class="keyword">usize</span>] == <span class="number">0</span> || (state &amp; visited[xx <span class="keyword">as</span> <span class="keyword">usize</span>][yy <span class="keyword">as</span> <span class="keyword">usize</span>] != <span class="number">0</span>) &#123;</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">let</span> (nx, ny) = (xx <span class="keyword">as</span> <span class="keyword">usize</span>, yy <span class="keyword">as</span> <span class="keyword">usize</span>);</span><br><span class="line">                q.push_back((nx, ny, sum + grid[nx][ny], state | visited[nx][ny]));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;&lt;a href=&quot;https://leetcode.com/problems/path-with-maximum-gold/description/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Problem Statement&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;B
       
     
     </summary>
@@ -357,6 +357,35 @@
       
         &lt;p&gt;&lt;a href=&quot;https://leetcode.com/problems/knight-dialer/description/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Problem Statement&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;Dynamic Pr
+      
+    
+    </summary>
+    
+      <category term="LeetCode in Rust" scheme="http://lianghan.org/categories/LeetCode-in-Rust/"/>
+    
+    
+      <category term="Algorithm" scheme="http://lianghan.org/tags/Algorithm/"/>
+    
+      <category term="LeetCode" scheme="http://lianghan.org/tags/LeetCode/"/>
+    
+      <category term="Rust" scheme="http://lianghan.org/tags/Rust/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>LeetCode 1155. Number of Dice Rolls With Target Sum</title>
+    <link href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1155/"/>
+    <id>http://lianghan.org/2019/11/11/2019-11-11-LeetCode1155/</id>
+    <published>2019-11-11T19:11:11.000Z</published>
+    <updated>2019-11-17T18:03:58.312Z</updated>
+    
+    <content type="html"><![CDATA[<p><a href="https://leetcode.com/problems/number-of-dice-rolls-with-target-sum/description/" target="_blank" rel="noopener">Problem Statement</a></p><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">num_rolls_to_target</span></span>(d: <span class="keyword">i32</span>, f: <span class="keyword">i32</span>, target: <span class="keyword">i32</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">const</span> MOD : <span class="keyword">u64</span> = <span class="number">1e9</span> <span class="keyword">as</span> <span class="keyword">u64</span> + <span class="number">7</span>;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> dp = <span class="built_in">vec!</span>[<span class="built_in">vec!</span>[<span class="number">0</span>; target <span class="keyword">as</span> <span class="keyword">usize</span> + <span class="number">1</span>]; d <span class="keyword">as</span> <span class="keyword">usize</span> + <span class="number">1</span>];</span><br><span class="line">        dp[<span class="number">0</span>][<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">1</span>..d <span class="keyword">as</span> <span class="keyword">usize</span> + <span class="number">1</span> &#123;</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> <span class="number">1</span>..f <span class="keyword">as</span> <span class="keyword">usize</span> + <span class="number">1</span> &#123;</span><br><span class="line">                <span class="keyword">for</span> k <span class="keyword">in</span> j..target <span class="keyword">as</span> <span class="keyword">usize</span> + <span class="number">1</span> &#123;</span><br><span class="line">                    dp[i][k] = (dp[i][k] + dp[i - <span class="number">1</span>][k - j]) % MOD;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> dp[d <span class="keyword">as</span> <span class="keyword">usize</span>][target <span class="keyword">as</span> <span class="keyword">usize</span>] <span class="keyword">as</span> <span class="keyword">i32</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;&lt;a href=&quot;https://leetcode.com/problems/number-of-dice-rolls-with-target-sum/description/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Problem Statemen
       
     
     </summary>
@@ -564,33 +593,6 @@
     
       <category term="TopCoder" scheme="http://lianghan.org/categories/TopCoder/"/>
     
-    
-  </entry>
-  
-  <entry>
-    <title>Paxos Retrospective</title>
-    <link href="http://lianghan.org/2017/09/13/2017-09-13-Paxos/"/>
-    <id>http://lianghan.org/2017/09/13/2017-09-13-Paxos/</id>
-    <published>2017-09-14T05:03:31.000Z</published>
-    <updated>2019-09-23T16:26:32.978Z</updated>
-    
-    <content type="html"><![CDATA[<p>Recently I looked through Lamport’s Paxos papers again and in retrospective, I feel Paxos as an algorithm is very elegant and easy to understand. In this post I’ll try to summary the core concepts and key steps of the single decree Paxos protocol. In future posts, I’ll write more about multi-paxos, and compare multi-paxos with similar protocols such as ZAB and Raft.</p><h1 id="Terminology"><a href="#Terminology" class="headerlink" title="Terminology"></a>Terminology</h1><p>This post will use the usual terminologies for the protocol entities from the Paxos Made Simple paper, such as Proposer, Acceptor, Learner, Leader, etc.</p><h1 id="The-Problem"><a href="#The-Problem" class="headerlink" title="The Problem"></a>The Problem</h1><p>Paxos is used to solve consensus problem. A consensus is about reaching agreement on a single value, among a set of values. Each value in the set is proposed by a proposer.</p><h1 id="Assumptions-Use-Case-Constraints"><a href="#Assumptions-Use-Case-Constraints" class="headerlink" title="Assumptions / Use Case Constraints"></a>Assumptions / Use Case Constraints</h1><p>Paxos can solve consensus problem under a set of constraints, and these constraints happen to reflect real world use case constraints for distributed systems, thus it’s very practical and applicable. In particular:</p><ul><li>Fail-Recovery: each participant can fail. Failed participants can recover.</li><li>Asynchronous: participants communicate with each other through async messages.</li><li>None Byzantine Faults: These messages can be delayed, or lost, but will never be forged.</li></ul><p>It’s also worth noting that to reach consensus, a set of additional protocol level constraints have to be exposed on participants. One example is each participant can’t just insist on the value from its own, because if everyone does that, it’s possible no consensus could ever be made. In other words, participants are more interested on reach consensus on something, but they are not interested on what exactly the value of that agreement is.</p><h1 id="Safety-and-Liveness"><a href="#Safety-and-Liveness" class="headerlink" title="Safety and Liveness"></a>Safety and Liveness</h1><p>Because of FLP impossibility, it’s not possible to reach consensus with the constraints Paxos protocol is exposed to, yet maintain both safety and liveness properties. Paxos chooses safety over liveness.</p><p>The safety properties Paxos guarantees:</p><ul><li>Only a value that has been proposed may be chosen,</li><li>Only a single value is chosen, and</li><li>A process never learns that a value has been chosen unless it actually has been.</li></ul><p>Paxos does not guarantee liveness, in other words it does not guarantee making progress, or terminate.<br>For making progress, it’s possible to have live lock (which can be fixed easily through backoffs and randomization).<br>For termination, it could never terminate if not enough number of participants (the quorum) are live.</p><h1 id="Protocol-Constraints"><a href="#Protocol-Constraints" class="headerlink" title="Protocol Constraints"></a>Protocol Constraints</h1><p>I feel it’s easier to understand the protocol by understanding the protocol constraints exposed to participants. There are two key constraints, one on the proposer, one on the acceptor.</p><p>Proposer: a proposer must be willing to change the value it proposes, by using the value it acquires from the prepare phase. A proposer can propose any value though, if in prepare phase the queries on a quorum of acceptors returns null value (meaning those acceptors haven’t accepted anything.).</p><p>Acceptor: an acceptor must be willing to reject the proposals it receives, unless the proposal it receives has a proposal number that’s equal or greater than the maximum of all proposal numbers that the acceptor ever see during the prepare phase. In other words, acceptor has to make a promise upon receiving a proposal with a bigger proposal number than it ever sees, and the promise is to not accept any future proposals with smaller proposal number.</p><h1 id="Phases"><a href="#Phases" class="headerlink" title="Phases"></a>Phases</h1><p>Paxos is a two phased protocol. There are prepare phase, and accept phase. Prepare phase is used for proposer to get an updated view of the quorum and decide what to propose (e.g. update the proposal value from the response of the acceptor in prepare request if the proposal was rejected due to a smaller proposer number). Accept phase is to finish the protocol by having acceptors record the consensus and responds to proposer.</p><p>To Be Continued…</p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;Recently I looked through Lamport’s Paxos papers again and in retrospective, I feel Paxos as an algorithm is very elegant and easy to und
-      
-    
-    </summary>
-    
-      <category term="Distributed System" scheme="http://lianghan.org/categories/Distributed-System/"/>
-    
-    
-      <category term="Consensus Protocol" scheme="http://lianghan.org/tags/Consensus-Protocol/"/>
-    
-      <category term="Paxos" scheme="http://lianghan.org/tags/Paxos/"/>
     
   </entry>
   
