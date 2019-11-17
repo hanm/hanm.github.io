@@ -107,6 +107,31 @@
     </entry>
     
     <entry>
+      <title><![CDATA[LeetCode 1147. Longest Chunked Palindrome Decomposition]]></title>
+      <url>http://lianghan.org/2019/11/11/2019-11-11-LeetCode1147/</url>
+      <content type="html"><![CDATA[<p><a href="https://leetcode.com/problems/longest-chunked-palindrome-decomposition/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">longest_decomposition</span></span>(text: <span class="built_in">String</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> ans, n) = (<span class="number">0</span>, text.len());</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> l, <span class="keyword">mut</span> r) = (<span class="built_in">String</span>::from(<span class="string">""</span>), <span class="built_in">String</span>::from(<span class="string">""</span>));</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..n &#123;</span><br><span class="line">            l.push(text.chars().nth(i).unwrap());</span><br><span class="line">            r.insert(<span class="number">0</span>, text.chars().nth(n - i - <span class="number">1</span>).unwrap());</span><br><span class="line">            <span class="keyword">if</span> l == r &#123;</span><br><span class="line">                ans += <span class="number">1</span>;</span><br><span class="line">                l.clear(); r.clear();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
+      
+        <categories>
+            
+            <category> LeetCode in Rust </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Algorithm </tag>
+            
+            <tag> LeetCode </tag>
+            
+            <tag> Rust </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
       <title><![CDATA[1218. Longest Arithmetic Subsequence of Given Difference]]></title>
       <url>http://lianghan.org/2019/11/11/2019-11-11-LeetCode1218/</url>
       <content type="html"><![CDATA[<p><a href="https://leetcode.com/problems/longest-arithmetic-subsequence-of-given-difference/description/" target="_blank" rel="noopener">Problem Statement</a></p>
@@ -163,6 +188,31 @@
       <content type="html"><![CDATA[<p><a href="https://leetcode.com/problems/divide-chocolate/description/" target="_blank" rel="noopener">Problem Statement</a></p>
 <p>Binary Search</p>
 <figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">maximize_sweetness</span></span>(sweetness: <span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;, k: <span class="keyword">i32</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> l = sweetness.clone().into_iter().fold(<span class="literal">None</span>, |min, x| <span class="keyword">match</span> min &#123;</span><br><span class="line">            <span class="literal">None</span> =&gt; <span class="literal">Some</span>(x),</span><br><span class="line">            <span class="literal">Some</span>(y) =&gt; <span class="literal">Some</span>(<span class="keyword">if</span> x &lt; y &#123; x &#125; <span class="keyword">else</span> &#123; y &#125;),</span><br><span class="line">        &#125;).unwrap();</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> r = sweetness.clone().iter().fold(<span class="number">0</span>, |<span class="keyword">mut</span> r, &amp;val| &#123;r += val; r&#125;);</span><br><span class="line">        <span class="keyword">while</span> l &lt; r &#123;</span><br><span class="line">            <span class="keyword">let</span> (mid, <span class="keyword">mut</span> sum, <span class="keyword">mut</span> cut) = ((l + r + <span class="number">1</span>) / <span class="number">2</span>, <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">            <span class="keyword">for</span> val <span class="keyword">in</span> sweetness.clone() &#123;</span><br><span class="line">                sum += val;</span><br><span class="line">                <span class="keyword">if</span> sum &gt;= mid &#123;</span><br><span class="line">                    sum = <span class="number">0</span>; cut += <span class="number">1</span>;</span><br><span class="line">                    <span class="keyword">if</span> cut &gt; k &#123;</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> cut &gt; k &#123;</span><br><span class="line">                l = mid;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                r = mid - <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> l;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
+      
+        <categories>
+            
+            <category> LeetCode in Rust </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Algorithm </tag>
+            
+            <tag> LeetCode </tag>
+            
+            <tag> Rust </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[LeetCode 1155. Number of Dice Rolls With Target Sum]]></title>
+      <url>http://lianghan.org/2019/11/11/2019-11-11-LeetCode1155/</url>
+      <content type="html"><![CDATA[<p><a href="https://leetcode.com/problems/number-of-dice-rolls-with-target-sum/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">num_rolls_to_target</span></span>(d: <span class="keyword">i32</span>, f: <span class="keyword">i32</span>, target: <span class="keyword">i32</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">const</span> MOD : <span class="keyword">u64</span> = <span class="number">1e9</span> <span class="keyword">as</span> <span class="keyword">u64</span> + <span class="number">7</span>;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> dp = <span class="built_in">vec!</span>[<span class="built_in">vec!</span>[<span class="number">0</span>; target <span class="keyword">as</span> <span class="keyword">usize</span> + <span class="number">1</span>]; d <span class="keyword">as</span> <span class="keyword">usize</span> + <span class="number">1</span>];</span><br><span class="line">        dp[<span class="number">0</span>][<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">1</span>..d <span class="keyword">as</span> <span class="keyword">usize</span> + <span class="number">1</span> &#123;</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> <span class="number">1</span>..f <span class="keyword">as</span> <span class="keyword">usize</span> + <span class="number">1</span> &#123;</span><br><span class="line">                <span class="keyword">for</span> k <span class="keyword">in</span> j..target <span class="keyword">as</span> <span class="keyword">usize</span> + <span class="number">1</span> &#123;</span><br><span class="line">                    dp[i][k] = (dp[i][k] + dp[i - <span class="number">1</span>][k - j]) % MOD;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> dp[d <span class="keyword">as</span> <span class="keyword">usize</span>][target <span class="keyword">as</span> <span class="keyword">usize</span>] <span class="keyword">as</span> <span class="keyword">i32</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
       
         <categories>
             
@@ -292,31 +342,6 @@
       <content type="html"><![CDATA[<p><a href="https://leetcode.com/problems/knight-dialer/description/" target="_blank" rel="noopener">Problem Statement</a></p>
 <p>Dynamic Programming</p>
 <figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">knight_dialer</span></span>(n: <span class="keyword">i32</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">const</span> MOD : <span class="keyword">u64</span> = <span class="number">1e9</span> <span class="keyword">as</span> <span class="keyword">u64</span> + <span class="number">7</span>;</span><br><span class="line">        <span class="keyword">const</span> dirs: [(<span class="keyword">i32</span>, <span class="keyword">i32</span>); <span class="number">8</span>] = [(-<span class="number">2</span>, -<span class="number">1</span>), (-<span class="number">2</span>, <span class="number">1</span>), (-<span class="number">1</span>, -<span class="number">2</span>), (-<span class="number">1</span>, <span class="number">2</span>),</span><br><span class="line">            (<span class="number">1</span>, -<span class="number">2</span>), (<span class="number">1</span>, <span class="number">2</span>), (<span class="number">2</span>, -<span class="number">1</span>), (<span class="number">2</span>, <span class="number">1</span>)];</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> dp = [[<span class="number">1</span>; <span class="number">3</span>] ; <span class="number">4</span>];</span><br><span class="line">        dp[<span class="number">3</span>][<span class="number">0</span>] = <span class="number">0</span>; dp[<span class="number">3</span>][<span class="number">2</span>] = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> k <span class="keyword">in</span> <span class="number">1</span>..n &#123;</span><br><span class="line">            <span class="keyword">let</span> <span class="keyword">mut</span> tmp = [[<span class="number">0</span>; <span class="number">3</span>] ; <span class="number">4</span>];</span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..<span class="number">4</span> &#123;</span><br><span class="line">                <span class="keyword">for</span> j <span class="keyword">in</span> <span class="number">0</span>..<span class="number">3</span> &#123;</span><br><span class="line">                    <span class="keyword">if</span> i == <span class="number">3</span> &amp;&amp; j != <span class="number">1</span> &#123;</span><br><span class="line">                        <span class="keyword">continue</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">for</span> d <span class="keyword">in</span> <span class="number">0</span>..<span class="number">8</span> &#123;</span><br><span class="line">                        <span class="keyword">let</span> (xx, yy) = (j + dirs[d].<span class="number">0</span>, i + dirs[d].<span class="number">1</span>);</span><br><span class="line">                        <span class="keyword">if</span> xx &lt; <span class="number">0</span> || yy &lt; <span class="number">0</span> || xx &gt;= <span class="number">3</span> || yy &gt;= <span class="number">4</span> &#123;</span><br><span class="line">                            <span class="keyword">continue</span>;</span><br><span class="line">                        &#125;</span><br><span class="line">                        tmp[i <span class="keyword">as</span> <span class="keyword">usize</span>][j <span class="keyword">as</span> <span class="keyword">usize</span>] = (tmp[i <span class="keyword">as</span> <span class="keyword">usize</span>][j <span class="keyword">as</span> <span class="keyword">usize</span>] +</span><br><span class="line">                            dp[yy <span class="keyword">as</span> <span class="keyword">usize</span>][xx <span class="keyword">as</span> <span class="keyword">usize</span>]) % MOD;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            dp.swap_with_slice(&amp;<span class="keyword">mut</span> tmp[<span class="number">0</span>..]);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> ans : <span class="keyword">i32</span> = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..<span class="number">4</span> &#123;</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> <span class="number">0</span>..<span class="number">3</span> &#123;</span><br><span class="line">                ans = ((ans <span class="keyword">as</span> <span class="keyword">u64</span> + dp[i][j]) % MOD) <span class="keyword">as</span> <span class="keyword">i32</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
-      
-        <categories>
-            
-            <category> LeetCode in Rust </category>
-            
-        </categories>
-        
-        
-        <tags>
-            
-            <tag> Algorithm </tag>
-            
-            <tag> LeetCode </tag>
-            
-            <tag> Rust </tag>
-            
-        </tags>
-        
-    </entry>
-    
-    <entry>
-      <title><![CDATA[LeetCode 1155. Number of Dice Rolls With Target Sum]]></title>
-      <url>http://lianghan.org/2019/11/11/2019-11-11-LeetCode1155/</url>
-      <content type="html"><![CDATA[<p><a href="https://leetcode.com/problems/number-of-dice-rolls-with-target-sum/description/" target="_blank" rel="noopener">Problem Statement</a></p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">num_rolls_to_target</span></span>(d: <span class="keyword">i32</span>, f: <span class="keyword">i32</span>, target: <span class="keyword">i32</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">const</span> MOD : <span class="keyword">u64</span> = <span class="number">1e9</span> <span class="keyword">as</span> <span class="keyword">u64</span> + <span class="number">7</span>;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> dp = <span class="built_in">vec!</span>[<span class="built_in">vec!</span>[<span class="number">0</span>; target <span class="keyword">as</span> <span class="keyword">usize</span> + <span class="number">1</span>]; d <span class="keyword">as</span> <span class="keyword">usize</span> + <span class="number">1</span>];</span><br><span class="line">        dp[<span class="number">0</span>][<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">1</span>..d <span class="keyword">as</span> <span class="keyword">usize</span> + <span class="number">1</span> &#123;</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> <span class="number">1</span>..f <span class="keyword">as</span> <span class="keyword">usize</span> + <span class="number">1</span> &#123;</span><br><span class="line">                <span class="keyword">for</span> k <span class="keyword">in</span> j..target <span class="keyword">as</span> <span class="keyword">usize</span> + <span class="number">1</span> &#123;</span><br><span class="line">                    dp[i][k] = (dp[i][k] + dp[i - <span class="number">1</span>][k - j]) % MOD;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> dp[d <span class="keyword">as</span> <span class="keyword">usize</span>][target <span class="keyword">as</span> <span class="keyword">usize</span>] <span class="keyword">as</span> <span class="keyword">i32</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
       
         <categories>
             
@@ -2145,9 +2170,9 @@
         
         <tags>
             
-            <tag> Dijkstra </tag>
-            
             <tag> Search </tag>
+            
+            <tag> Dijkstra </tag>
             
             <tag> Graph </tag>
             
