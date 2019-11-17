@@ -75,6 +75,53 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-2016-08-09-PalindromeSquare" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/08/09/2016-08-09-PalindromeSquare/" class="article-date">
+  <time datetime="2016-08-10T05:22:31.000Z" itemprop="datePublished">2016-08-09</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/USACO/">USACO</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/08/09/2016-08-09-PalindromeSquare/">USACO 1.2 Palindrome Square</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>This problem is very straightforward to solve, just pay attention to implementation details.</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">isPalindrome</span><span class="params">(<span class="built_in">string</span> str)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>, j = str.size() - <span class="number">1</span>; i &lt; j; ++i, --j) &#123;</span><br><span class="line">    <span class="keyword">if</span> (str[i] != str[j]) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="built_in">string</span> <span class="title">getNumber</span><span class="params">(<span class="keyword">int</span> number, <span class="keyword">int</span> BASE, <span class="keyword">const</span> <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;table)</span> </span>&#123;</span><br><span class="line">  <span class="built_in">string</span> str;</span><br><span class="line">  <span class="keyword">int</span> base = BASE;</span><br><span class="line">  <span class="keyword">while</span> (number) &#123;</span><br><span class="line">    <span class="keyword">int</span> digit = number % base;</span><br><span class="line">    <span class="keyword">int</span> factor = base / BASE;</span><br><span class="line">    digit /= factor;</span><br><span class="line">    str.push_back(table[digit]);</span><br><span class="line">    number -= digit * factor;</span><br><span class="line">    base *= BASE;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  reverse(str.begin(), str.end());</span><br><span class="line">  <span class="keyword">return</span> str;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; table = &#123; <span class="string">'0'</span> , <span class="string">'1'</span> , <span class="string">'2'</span> , <span class="string">'3'</span> , <span class="string">'4'</span> , <span class="string">'5'</span> , <span class="string">'6'</span> , <span class="string">'7'</span> , <span class="string">'8'</span> , <span class="string">'9'</span> ,</span><br><span class="line">    <span class="string">'A'</span> , <span class="string">'B'</span> , <span class="string">'C'</span> , <span class="string">'D'</span> , <span class="string">'E'</span> , <span class="string">'F'</span> , <span class="string">'G'</span> , <span class="string">'H'</span> , <span class="string">'I'</span> , <span class="string">'J'</span> &#125; ;</span><br><span class="line"></span><br><span class="line">  <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"palsquare.in"</span>)</span></span>;</span><br><span class="line">  <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"palsquare.out"</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">int</span> BASE;</span><br><span class="line">  fin &gt;&gt; BASE;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= <span class="number">300</span>; ++i) &#123;</span><br><span class="line">    <span class="built_in">string</span> num = getNumber(i * i, BASE, table);</span><br><span class="line">    <span class="keyword">if</span> (isPalindrome(num)) &#123;</span><br><span class="line">      fout &lt;&lt; getNumber(i, BASE, table) &lt;&lt; <span class="string">" "</span>;</span><br><span class="line">      fout &lt;&lt; num &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2016/08/09/2016-08-09-PalindromeSquare/" data-id="ck33971yt000ayqxg7haia56i" data-title="USACO 1.2 Palindrome Square" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2016/08/09/2016-08-09-PalindromeSquare/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Search/">Search</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-2016-08-08-NameThatNumber" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/08/08/2016-08-08-NameThatNumber/" class="article-date">
@@ -106,7 +153,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/08/2016-08-08-NameThatNumber/" data-id="ck32jow950007s5xglarn7ui8" data-title="USACO 1.2 Name That Number" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/08/08/2016-08-08-NameThatNumber/" data-id="ck33971yq0009yqxg3ts0i8tp" data-title="USACO 1.2 Name That Number" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2016/08/08/2016-08-08-NameThatNumber/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -153,56 +200,9 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/08/ 2016-08-08-Transformation/" data-id="ck32jow8x0001s5xgmmfrmz1k" data-title="USACO 1.2 Transformation" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/08/08/ 2016-08-08-Transformation/" data-id="ck33971yc0002yqxgbhnmpgf0" data-title="USACO 1.2 Transformation" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2016/08/08/ 2016-08-08-Transformation/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Search/">Search</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2016-08-08-MilkingCows" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/08/08/2016-08-08-MilkingCows/" class="article-date">
-  <time datetime="2016-08-09T04:31:31.000Z" itemprop="datePublished">2016-08-08</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/USACO/">USACO</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/08/08/2016-08-08-MilkingCows/">USACO 1.2 Milking Cows</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Simple brutal force search with intervals.</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> Interval &#123;</span><br><span class="line">  <span class="keyword">int</span> start, end;</span><br><span class="line">  Interval(<span class="keyword">int</span> start, <span class="keyword">int</span> end) : start(start), end(end) &#123;&#125;</span><br><span class="line">  <span class="keyword">bool</span> <span class="keyword">operator</span> &lt; (<span class="keyword">const</span> Interval&amp; interval) <span class="keyword">const</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> start &lt; interval.start;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span> <span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="built_in">string</span> str;</span><br><span class="line">  <span class="function">ifstream <span class="title">fin</span> <span class="params">(<span class="string">"milk2.in"</span>)</span></span>;</span><br><span class="line">  <span class="function">ofstream <span class="title">fout</span> <span class="params">(<span class="string">"milk2.out"</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">vector</span>&lt;Interval&gt; intervals;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">int</span> farmers;</span><br><span class="line">  fin &gt;&gt; farmers;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; farmers; ++i) &#123;</span><br><span class="line">    <span class="keyword">int</span> start, end;</span><br><span class="line">    fin &gt;&gt; start &gt;&gt; end;</span><br><span class="line">    intervals.emplace_back(Interval(start, end));</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">std</span>::sort(intervals.begin(), intervals.end());</span><br><span class="line"></span><br><span class="line">  <span class="keyword">int</span> maxOverlap = <span class="number">0</span>, maxGap = <span class="number">0</span>;</span><br><span class="line">  Interval it = intervals[<span class="number">0</span>];</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; intervals.size(); ++i) &#123;</span><br><span class="line">    <span class="keyword">if</span> (intervals[i].start &gt; it.end) &#123;</span><br><span class="line">      <span class="comment">// none overlap</span></span><br><span class="line">      maxOverlap = <span class="built_in">std</span>::max(maxOverlap, it.end - it.start);</span><br><span class="line">      maxGap = <span class="built_in">std</span>::max(maxGap, intervals[i].start - it.end);</span><br><span class="line">      it = intervals[i];</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      it.end = <span class="built_in">std</span>::max(it.end, intervals[i].end);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  maxOverlap = <span class="built_in">std</span>::max(maxOverlap, it.end - it.start);</span><br><span class="line"></span><br><span class="line">  fout &lt;&lt; maxOverlap &lt;&lt; <span class="string">" "</span> &lt;&lt; maxGap &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/08/2016-08-08-MilkingCows/" data-id="ck32jow940006s5xgl446xp91" data-title="USACO 1.2 Milking Cows" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2016/08/08/2016-08-08-MilkingCows/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
@@ -273,7 +273,7 @@
       <ul>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1197/">1197. Minimum Knight Moves</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1020/">LeetCode 1020. Number of Enclaves</a>
           </li>
         
           <li>
@@ -281,15 +281,15 @@
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1020/">LeetCode 1020. Number of Enclaves</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1066/">LeetCode 1066. Campus Bikes II</a>
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1231/">LeetCode 1231. Divide Chocolate</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1219/">LeetCode 1219. Path with Maximum Gold</a>
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1218/">1218. Longest Arithmetic Subsequence of Given Difference</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1197/">1197. Minimum Knight Moves</a>
           </li>
         
       </ul>
@@ -363,6 +363,6 @@
 
 
 
-  </div>
-<script src="https://cdn.jsdelivr.net/npm/live2d-widget@3.x/lib/L2Dwidget.min.js"></script><script>L2Dwidget.init({"tagMode":false,"debug":false,"model":{"jsonPath":"https://cdn.jsdelivr.net/npm/live2d-widget-model-haruto@1.x/assets/haruto.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/"});</script><!-- hexo-inject:begin --><!-- hexo-inject:end --></body>
+  </div><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+<script src="https://cdn.jsdelivr.net/npm/live2d-widget@3.x/lib/L2Dwidget.min.js"></script><script>L2Dwidget.init({"tagMode":false,"debug":false,"model":{"jsonPath":"https://cdn.jsdelivr.net/npm/live2d-widget-model-haruto@1.x/assets/haruto.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/"});</script></body>
 </html>

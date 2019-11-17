@@ -75,9 +75,9 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-2019-11-11-LeetCode1231" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2019-11-11-LeetCode1219" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2019/11/11/2019-11-11-LeetCode1231/" class="article-date">
+    <a href="/2019/11/11/2019-11-11-LeetCode1219/" class="article-date">
   <time datetime="2019-11-11T19:11:11.000Z" itemprop="datePublished">2019-11-11</time>
 </a>
     
@@ -93,7 +93,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/11/2019-11-11-LeetCode1231/">LeetCode 1231. Divide Chocolate</a>
+      <a class="article-title" href="/2019/11/11/2019-11-11-LeetCode1219/">LeetCode 1219. Path with Maximum Gold</a>
     </h1>
   
 
@@ -101,15 +101,62 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><a href="https://leetcode.com/problems/divide-chocolate/description/" target="_blank" rel="noopener">Problem Statement</a></p>
-<p>Binary Search</p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">maximize_sweetness</span></span>(sweetness: <span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;, k: <span class="keyword">i32</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> l = sweetness.clone().into_iter().fold(<span class="literal">None</span>, |min, x| <span class="keyword">match</span> min &#123;</span><br><span class="line">            <span class="literal">None</span> =&gt; <span class="literal">Some</span>(x),</span><br><span class="line">            <span class="literal">Some</span>(y) =&gt; <span class="literal">Some</span>(<span class="keyword">if</span> x &lt; y &#123; x &#125; <span class="keyword">else</span> &#123; y &#125;),</span><br><span class="line">        &#125;).unwrap();</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> r = sweetness.clone().iter().fold(<span class="number">0</span>, |<span class="keyword">mut</span> r, &amp;val| &#123;r += val; r&#125;);</span><br><span class="line">        <span class="keyword">while</span> l &lt; r &#123;</span><br><span class="line">            <span class="keyword">let</span> (mid, <span class="keyword">mut</span> sum, <span class="keyword">mut</span> cut) = ((l + r + <span class="number">1</span>) / <span class="number">2</span>, <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">            <span class="keyword">for</span> val <span class="keyword">in</span> sweetness.clone() &#123;</span><br><span class="line">                sum += val;</span><br><span class="line">                <span class="keyword">if</span> sum &gt;= mid &#123;</span><br><span class="line">                    sum = <span class="number">0</span>; cut += <span class="number">1</span>;</span><br><span class="line">                    <span class="keyword">if</span> cut &gt; k &#123;</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> cut &gt; k &#123;</span><br><span class="line">                l = mid;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                r = mid - <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> l;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+        <p><a href="https://leetcode.com/problems/path-with-maximum-gold/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<p>BFS.</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::collections::VecDeque;</span><br><span class="line"><span class="keyword">use</span> std::cmp;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">get_maximum_gold</span></span>(grid: <span class="built_in">Vec</span>&lt;<span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;&gt;) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> (m, n, <span class="keyword">mut</span> ans, <span class="keyword">mut</span> id) = (grid.len(), grid[<span class="number">0</span>].len(), <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">let</span> (dx, dy) : ([<span class="keyword">i32</span>; <span class="number">4</span>], [<span class="keyword">i32</span>; <span class="number">4</span>]) = ([<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, -<span class="number">1</span>], [<span class="number">1</span>, -<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>]);</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> visited = <span class="built_in">vec!</span>[<span class="built_in">vec!</span>[<span class="number">0</span>; n]; m];</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> q = VecDeque::new();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..m &#123;</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> <span class="number">0</span>..n &#123;</span><br><span class="line">                <span class="keyword">if</span> grid[i][j] == <span class="number">0</span> &#123;</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                id += <span class="number">1</span>;</span><br><span class="line">                visited[i][j] = <span class="number">1</span> &lt;&lt; id;</span><br><span class="line">                q.push_back((i, j, grid[i][j], visited[i][j]));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> !q.is_empty() &#123;</span><br><span class="line">            <span class="keyword">let</span> cur = q.pop_front().unwrap();</span><br><span class="line">            <span class="keyword">let</span> (x, y, sum, state) = (cur.<span class="number">0</span> <span class="keyword">as</span> <span class="keyword">i32</span>, cur.<span class="number">1</span> <span class="keyword">as</span> <span class="keyword">i32</span>, cur.<span class="number">2</span>, cur.<span class="number">3</span>);</span><br><span class="line">            ans = cmp::max(ans, sum);</span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..<span class="number">4</span> &#123;</span><br><span class="line">                <span class="keyword">let</span> (xx, yy) = (x + dx[i], y + dy[i]);</span><br><span class="line">                <span class="keyword">if</span> xx &lt; <span class="number">0</span> || xx == m <span class="keyword">as</span> <span class="keyword">i32</span> || yy &lt; <span class="number">0</span> || yy == n <span class="keyword">as</span> <span class="keyword">i32</span> ||</span><br><span class="line">                    grid[xx <span class="keyword">as</span> <span class="keyword">usize</span>][yy <span class="keyword">as</span> <span class="keyword">usize</span>] == <span class="number">0</span> || (state &amp; visited[xx <span class="keyword">as</span> <span class="keyword">usize</span>][yy <span class="keyword">as</span> <span class="keyword">usize</span>] != <span class="number">0</span>) &#123;</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">let</span> (nx, ny) = (xx <span class="keyword">as</span> <span class="keyword">usize</span>, yy <span class="keyword">as</span> <span class="keyword">usize</span>);</span><br><span class="line">                q.push_back((nx, ny, sum + grid[nx][ny], state | visited[nx][ny]));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1231/" data-id="ck32jowek004os5xgrgjspo1e" data-title="LeetCode 1231. Divide Chocolate" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1219/" data-id="ck339721p002zyqxg9qdls1vb" data-title="LeetCode 1219. Path with Maximum Gold" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1231/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1219/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LeetCode/">LeetCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Rust/">Rust</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-2019-11-11-LeetCode1197" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/11/11/2019-11-11-LeetCode1197/" class="article-date">
+  <time datetime="2019-11-11T19:11:11.000Z" itemprop="datePublished">2019-11-11</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/LeetCode-in-Rust/">LeetCode in Rust</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/11/11/2019-11-11-LeetCode1197/">1197. Minimum Knight Moves</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><a href="https://leetcode.com/problems/minimum-knight-moves/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::collections::VecDeque;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">min_knight_moves</span></span>(x: <span class="keyword">i32</span>, y: <span class="keyword">i32</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> (dx, dy) : ([<span class="keyword">i32</span>; <span class="number">8</span>], [<span class="keyword">i32</span>; <span class="number">8</span>]) = (</span><br><span class="line">            [-<span class="number">2</span>, -<span class="number">2</span>, -<span class="number">1</span>, -<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>],</span><br><span class="line">            [-<span class="number">1</span>, <span class="number">1</span>, -<span class="number">2</span>, <span class="number">2</span>, -<span class="number">2</span>, <span class="number">2</span>, -<span class="number">1</span>, <span class="number">1</span>]);</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> grid = [[-<span class="number">1</span>; <span class="number">888</span>] ; <span class="number">888</span>];</span><br><span class="line">        <span class="keyword">let</span> (ax, ay) = (x.abs() <span class="keyword">as</span> <span class="keyword">usize</span>, y.abs() <span class="keyword">as</span> <span class="keyword">usize</span>);</span><br><span class="line">        grid[<span class="number">400</span>][<span class="number">400</span>] = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> q : VecDeque&lt;(<span class="keyword">usize</span>, <span class="keyword">usize</span>)&gt; = VecDeque::new();</span><br><span class="line">        q.push_back((<span class="number">0</span>, <span class="number">0</span>));</span><br><span class="line">        <span class="keyword">while</span> !q.is_empty() &#123;</span><br><span class="line">            <span class="keyword">let</span> (cx, cy) = q.pop_front().unwrap();</span><br><span class="line">            <span class="keyword">if</span> cx == ax &amp;&amp; cy == ay &#123;</span><br><span class="line">                <span class="keyword">return</span> grid[cx + <span class="number">400</span>][cy + <span class="number">400</span>];</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">for</span> k <span class="keyword">in</span> <span class="number">0</span>..<span class="number">8</span> &#123;</span><br><span class="line">                <span class="keyword">let</span> (xx, yy) = (cx <span class="keyword">as</span> <span class="keyword">i32</span> + dx[k] , cy <span class="keyword">as</span> <span class="keyword">i32</span> + dy[k]);</span><br><span class="line">                <span class="keyword">let</span> (nx, ny) = ((xx + <span class="number">400</span>) <span class="keyword">as</span> <span class="keyword">usize</span>, (yy + <span class="number">400</span>) <span class="keyword">as</span> <span class="keyword">usize</span>);</span><br><span class="line">                <span class="keyword">if</span> grid[nx][ny] != -<span class="number">1</span> &#123;</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                grid[nx][ny] = grid[cx + <span class="number">400</span>][cy + <span class="number">400</span>] + <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">if</span> xx <span class="keyword">as</span> <span class="keyword">usize</span> == ax &amp;&amp; yy <span class="keyword">as</span> <span class="keyword">usize</span> == ay &#123;</span><br><span class="line">                    <span class="keyword">return</span> grid[nx][ny];</span><br><span class="line">                &#125;</span><br><span class="line">                q.push_back((xx <span class="keyword">as</span> <span class="keyword">usize</span>, yy <span class="keyword">as</span> <span class="keyword">usize</span>));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1197/" data-id="ck339721q0030yqxg425iseco" data-title="1197. Minimum Knight Moves" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1197/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
@@ -154,57 +201,9 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1218/" data-id="ck32jowel004rs5xg3kznqrfm" data-title="1218. Longest Arithmetic Subsequence of Given Difference" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1218/" data-id="ck339721r0031yqxgwj4we8o2" data-title="1218. Longest Arithmetic Subsequence of Given Difference" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1218/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LeetCode/">LeetCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Rust/">Rust</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2019-11-11-LeetCode1219" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/11/11/2019-11-11-LeetCode1219/" class="article-date">
-  <time datetime="2019-11-11T19:11:11.000Z" itemprop="datePublished">2019-11-11</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/LeetCode-in-Rust/">LeetCode in Rust</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/11/2019-11-11-LeetCode1219/">LeetCode 1219. Path with Maximum Gold</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><a href="https://leetcode.com/problems/path-with-maximum-gold/description/" target="_blank" rel="noopener">Problem Statement</a></p>
-<p>BFS.</p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::collections::VecDeque;</span><br><span class="line"><span class="keyword">use</span> std::cmp;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">get_maximum_gold</span></span>(grid: <span class="built_in">Vec</span>&lt;<span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;&gt;) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> (m, n, <span class="keyword">mut</span> ans, <span class="keyword">mut</span> id) = (grid.len(), grid[<span class="number">0</span>].len(), <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">let</span> (dx, dy) : ([<span class="keyword">i32</span>; <span class="number">4</span>], [<span class="keyword">i32</span>; <span class="number">4</span>]) = ([<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, -<span class="number">1</span>], [<span class="number">1</span>, -<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>]);</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> visited = <span class="built_in">vec!</span>[<span class="built_in">vec!</span>[<span class="number">0</span>; n]; m];</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> q = VecDeque::new();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..m &#123;</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> <span class="number">0</span>..n &#123;</span><br><span class="line">                <span class="keyword">if</span> grid[i][j] == <span class="number">0</span> &#123;</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                id += <span class="number">1</span>;</span><br><span class="line">                visited[i][j] = <span class="number">1</span> &lt;&lt; id;</span><br><span class="line">                q.push_back((i, j, grid[i][j], visited[i][j]));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> !q.is_empty() &#123;</span><br><span class="line">            <span class="keyword">let</span> cur = q.pop_front().unwrap();</span><br><span class="line">            <span class="keyword">let</span> (x, y, sum, state) = (cur.<span class="number">0</span> <span class="keyword">as</span> <span class="keyword">i32</span>, cur.<span class="number">1</span> <span class="keyword">as</span> <span class="keyword">i32</span>, cur.<span class="number">2</span>, cur.<span class="number">3</span>);</span><br><span class="line">            ans = cmp::max(ans, sum);</span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..<span class="number">4</span> &#123;</span><br><span class="line">                <span class="keyword">let</span> (xx, yy) = (x + dx[i], y + dy[i]);</span><br><span class="line">                <span class="keyword">if</span> xx &lt; <span class="number">0</span> || xx == m <span class="keyword">as</span> <span class="keyword">i32</span> || yy &lt; <span class="number">0</span> || yy == n <span class="keyword">as</span> <span class="keyword">i32</span> ||</span><br><span class="line">                    grid[xx <span class="keyword">as</span> <span class="keyword">usize</span>][yy <span class="keyword">as</span> <span class="keyword">usize</span>] == <span class="number">0</span> || (state &amp; visited[xx <span class="keyword">as</span> <span class="keyword">usize</span>][yy <span class="keyword">as</span> <span class="keyword">usize</span>] != <span class="number">0</span>) &#123;</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">let</span> (nx, ny) = (xx <span class="keyword">as</span> <span class="keyword">usize</span>, yy <span class="keyword">as</span> <span class="keyword">usize</span>);</span><br><span class="line">                q.push_back((nx, ny, sum + grid[nx][ny], state | visited[nx][ny]));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1219/" data-id="ck32jowen004ts5xg52k1ie90" data-title="LeetCode 1219. Path with Maximum Gold" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1219/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
@@ -275,7 +274,7 @@
       <ul>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1197/">1197. Minimum Knight Moves</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1020/">LeetCode 1020. Number of Enclaves</a>
           </li>
         
           <li>
@@ -283,15 +282,15 @@
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1020/">LeetCode 1020. Number of Enclaves</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1066/">LeetCode 1066. Campus Bikes II</a>
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1231/">LeetCode 1231. Divide Chocolate</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1219/">LeetCode 1219. Path with Maximum Gold</a>
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1218/">1218. Longest Arithmetic Subsequence of Given Difference</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1197/">1197. Minimum Knight Moves</a>
           </li>
         
       </ul>
@@ -365,6 +364,6 @@
 
 
 
-  </div>
-<script src="https://cdn.jsdelivr.net/npm/live2d-widget@3.x/lib/L2Dwidget.min.js"></script><script>L2Dwidget.init({"tagMode":false,"debug":false,"model":{"jsonPath":"https://cdn.jsdelivr.net/npm/live2d-widget-model-haruto@1.x/assets/haruto.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/"});</script><!-- hexo-inject:begin --><!-- hexo-inject:end --></body>
+  </div><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+<script src="https://cdn.jsdelivr.net/npm/live2d-widget@3.x/lib/L2Dwidget.min.js"></script><script>L2Dwidget.init({"tagMode":false,"debug":false,"model":{"jsonPath":"https://cdn.jsdelivr.net/npm/live2d-widget-model-haruto@1.x/assets/haruto.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/"});</script></body>
 </html>

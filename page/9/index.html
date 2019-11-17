@@ -75,6 +75,54 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-2017-07-22-USACO-WindowArea" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/07/22/2017-07-22-USACO-WindowArea/" class="article-date">
+  <time datetime="2017-07-22T16:41:31.000Z" itemprop="datePublished">2017-07-22</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/USACO/">USACO</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/07/22/2017-07-22-USACO-WindowArea/">USACO 5.3 Window Area</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Maintain an array of windows and an array of levels maps to each window. Bring a window top / down is easy, just change the levels. Destroy a window is also easy. To draw the visible surface of window, consider the drawing process a series of culling with the windows with a higher level than it. At each step, there are several cases: not culling, partial culling, or completely culling. After each step we either get the end result or in case of partial culling, we repeat same step again until we hit the top level window. DFS is a natural fit here.</p>
+<p>One note is the input data has to be normalized first (the corners of the window could be top-left/bottom-right or bottom-left/top-right).</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iomanip&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">70</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> M = <span class="number">500</span>;</span><br><span class="line"><span class="keyword">int</span> total = <span class="number">-1</span>, ans = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> window &#123;</span><br><span class="line">    <span class="keyword">int</span> u, d, l, r;</span><br><span class="line">&#125; tWindow;</span><br><span class="line"></span><br><span class="line"><span class="built_in">vector</span>&lt;tWindow&gt; windows(M);</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt; order(N);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> u <span class="comment">/*up*/</span>, <span class="keyword">int</span> l <span class="comment">/*left*/</span>, <span class="keyword">int</span> d <span class="comment">/*down*/</span>, <span class="keyword">int</span> r <span class="comment">/*right*/</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">         <span class="keyword">int</span> level)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(level &gt; total) &#123;</span><br><span class="line">        ans += (u - d) * (r - l);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> i = order[level];</span><br><span class="line">    tWindow w = windows[i];</span><br><span class="line">    <span class="keyword">if</span>(u &lt;= w.d || d &gt;= w.u || l &gt;= w.r || r &lt;= w.l ) &#123;</span><br><span class="line">        dfs(u, l, d , r, level + <span class="number">1</span>); <span class="comment">/* no intersection */</span></span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span>(u &lt;= w.u &amp;&amp; d &gt;= w.d &amp;&amp; l &gt;= w.l &amp;&amp; r &lt;= w.r ) &#123;</span><br><span class="line">        <span class="keyword">return</span>; <span class="comment">/* absorbed */</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (d &lt; w.u &amp;&amp; w.u &lt; u) &#123;</span><br><span class="line">            dfs(u, l, w.u, r, level + <span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (d &lt; w.d &amp;&amp; w.d &lt; u) &#123;</span><br><span class="line">            dfs(w.d, l, d, r, level + <span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// avoid duplicate compute</span></span><br><span class="line">        u = <span class="built_in">std</span>::min(u, w.u);</span><br><span class="line">        d = <span class="built_in">std</span>::max(d, w.d);</span><br><span class="line">        <span class="keyword">if</span>(w.l &gt; l &amp;&amp; w.l &lt; r) &#123;</span><br><span class="line">           dfs(u, l, d, w.l, level + <span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(w.r &gt; l &amp;&amp; w.r &lt; r) &#123;</span><br><span class="line">           dfs(u, w.r, d, r, level + <span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"window.in"</span>)</span></span>;</span><br><span class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"window.out"</span>)</span></span>;</span><br><span class="line">    <span class="keyword">char</span> op, id, s;</span><br><span class="line">    <span class="keyword">int</span> i, u, d, l, r;</span><br><span class="line">    <span class="keyword">while</span>(fin &gt;&gt; op) &#123;</span><br><span class="line">        <span class="keyword">if</span>(op == <span class="string">'w'</span>) &#123;</span><br><span class="line">            fin &gt;&gt; s &gt;&gt; id &gt;&gt; s &gt;&gt; l &gt;&gt; s &gt;&gt; u &gt;&gt; s &gt;&gt; r &gt;&gt; s &gt;&gt; d &gt;&gt; s;</span><br><span class="line">            <span class="keyword">if</span>(d &gt; u) swap(d,u);</span><br><span class="line">            <span class="keyword">if</span>(l &gt; r) swap(l,r);</span><br><span class="line">            windows[id].u = u; windows[id].d=d;</span><br><span class="line">            windows[id].l=l; windows[id].r=r;</span><br><span class="line">            total++;</span><br><span class="line">            order[total] = id;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span>(op == <span class="string">'t'</span>|| op == <span class="string">'d'</span>) &#123;</span><br><span class="line">            fin &gt;&gt; s &gt;&gt; id &gt;&gt; s;</span><br><span class="line">            <span class="keyword">for</span>(i = <span class="number">0</span>; i &lt; total; ++i) &#123;</span><br><span class="line">                <span class="keyword">if</span>(order[i] == id) swap(order[i],order[i + <span class="number">1</span>]);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span>(op == <span class="string">'d'</span>) total--;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>(op == <span class="string">'b'</span>) &#123;</span><br><span class="line">            fin &gt;&gt; s &gt;&gt; id &gt;&gt; s;</span><br><span class="line">            <span class="keyword">for</span>(i = total; i &gt; <span class="number">0</span>; --i) &#123;</span><br><span class="line">                <span class="keyword">if</span>(order[i] == id) swap(order[i],order[i - <span class="number">1</span>]);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            fin &gt;&gt; s &gt;&gt; id &gt;&gt; s;</span><br><span class="line">            <span class="keyword">for</span>(i = <span class="number">0</span>; i &lt;= total; ++i) &#123;</span><br><span class="line">                <span class="keyword">if</span>(order[i] == id) &#123;</span><br><span class="line">                    ans = <span class="number">0</span>;</span><br><span class="line">                    tWindow w = windows[id];</span><br><span class="line">                    u = (w.u - w.d) * (w.r - w.l);</span><br><span class="line">                    dfs(w.u, w.l, w.d, w.r, i + <span class="number">1</span>);</span><br><span class="line">                    fout &lt;&lt; <span class="built_in">std</span>::fixed &lt;&lt; <span class="built_in">std</span>::setprecision(<span class="number">3</span>)</span><br><span class="line">                         &lt;&lt; <span class="number">100.0</span> * ans / u &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2017/07/22/2017-07-22-USACO-WindowArea/" data-id="ck339721c002jyqxg9zre9bf4" data-title="USACO 5.3 Window Area" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2017/07/22/2017-07-22-USACO-WindowArea/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DFS/">DFS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Simulation/">Simulation</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-2017-07-01-ConsensusInTheCloud" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/07/03/2017-07-01-ConsensusInTheCloud/" class="article-date">
@@ -222,7 +270,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/07/03/2017-07-01-ConsensusInTheCloud/" data-id="ck32jowe30041s5xgyt4hanyr" data-title="Paper Digest - Consensus in the Cloud - Paxos Systems Demystified" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2017/07/03/2017-07-01-ConsensusInTheCloud/" data-id="ck339721b002hyqxgf330ansd" data-title="Paper Digest - Consensus in the Cloud - Paxos Systems Demystified" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2017/07/03/2017-07-01-ConsensusInTheCloud/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -268,59 +316,12 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/07/03/2017-07-01-TopCoder-SRM716DivI/" data-id="ck32jowe2003zs5xgzqpwjcqj" data-title="SRM 716 DIV II" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2017/07/03/2017-07-01-TopCoder-SRM716DivI/" data-id="ck339721c002iyqxgq3hd614v" data-title="SRM 716 DIV II" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2017/07/03/2017-07-01-TopCoder-SRM716DivI/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2017-06-24-USACO-MilkMeasuring" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/06/25/2017-06-24-USACO-MilkMeasuring/" class="article-date">
-  <time datetime="2017-06-25T18:12:31.000Z" itemprop="datePublished">2017-06-25</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/USACO/">USACO</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/25/2017-06-24-USACO-MilkMeasuring/">USACO 5.3 Milk Measuring</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Brutal force DFS search with a lot of pruning. The search has N passes, and it starts from 1 pail, then 2 pails, etc and up to N pails. For each pass, use memorization and pruning to avoid hitting unnecessary search space. The passes are deepened via DFS, and we return once we gets a hit in a given pass as the question was asking the smallest set of pails.<br><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> Q, N, total;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; pails, ans, cur;</span><br><span class="line"><span class="keyword">bool</span> found = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> depth, <span class="keyword">int</span> index, <span class="keyword">int</span> left)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (depth == total) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!left) &#123;</span><br><span class="line">            found = <span class="literal">true</span>;</span><br><span class="line">            <span class="comment">// dfs does not guarantee smallest order, so</span></span><br><span class="line">            <span class="comment">// keep this and compare with a future solution.</span></span><br><span class="line">            ans = cur;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> current = pails[index];</span><br><span class="line">    <span class="comment">// not feasible.</span></span><br><span class="line">    <span class="keyword">if</span> (index &gt;= N || left &lt; current) <span class="keyword">return</span>;</span><br><span class="line">    <span class="comment">// current search is no smaller than existing solution.</span></span><br><span class="line">    <span class="keyword">if</span> (found &amp;&amp; current &gt; ans[depth]) <span class="keyword">return</span>;</span><br><span class="line">    cur[depth] = current;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= left / current; i++) &#123;</span><br><span class="line">        dfs(depth + <span class="number">1</span>, index + <span class="number">1</span>, left - i * current);</span><br><span class="line">    &#125;</span><br><span class="line">    dfs(depth, index + <span class="number">1</span>, left);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"milk4.in"</span>)</span></span>;</span><br><span class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"milk4.out"</span>)</span></span>;</span><br><span class="line">    fin &gt;&gt; Q &gt;&gt; N;</span><br><span class="line">    </span><br><span class="line">    pails = cur = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; i++) &#123;</span><br><span class="line">        fin &gt;&gt; pails[i];</span><br><span class="line">    &#125;</span><br><span class="line">    sort(pails.begin(), pails.end());</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (total = <span class="number">1</span>; total &lt;= N; ++total) &#123;</span><br><span class="line">        dfs(<span class="number">0</span>, <span class="number">0</span>, Q);</span><br><span class="line">        <span class="keyword">if</span> (found) <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    fout &lt;&lt; total; <span class="built_in">cout</span> &lt;&lt; total;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; total; i++) &#123;</span><br><span class="line">        fout &lt;&lt; <span class="string">" "</span> &lt;&lt; ans[i]; <span class="built_in">cout</span> &lt;&lt; <span class="string">" "</span> &lt;&lt; ans[i];</span><br><span class="line">    &#125;</span><br><span class="line">    fout &lt;&lt; <span class="built_in">endl</span>;<span class="built_in">cout</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/06/25/2017-06-24-USACO-MilkMeasuring/" data-id="ck32jowe1003ys5xg01b6z7xc" data-title="USACO 5.3 Milk Measuring" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2017/06/25/2017-06-24-USACO-MilkMeasuring/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DFS/">DFS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MEMORIZED-SEARCH/">MEMORIZED SEARCH</a></li></ul>
-
     </footer>
   </div>
   
@@ -386,7 +387,7 @@
       <ul>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1197/">1197. Minimum Knight Moves</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1020/">LeetCode 1020. Number of Enclaves</a>
           </li>
         
           <li>
@@ -394,15 +395,15 @@
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1020/">LeetCode 1020. Number of Enclaves</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1066/">LeetCode 1066. Campus Bikes II</a>
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1231/">LeetCode 1231. Divide Chocolate</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1219/">LeetCode 1219. Path with Maximum Gold</a>
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1218/">1218. Longest Arithmetic Subsequence of Given Difference</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1197/">1197. Minimum Knight Moves</a>
           </li>
         
       </ul>
@@ -476,6 +477,6 @@
 
 
 
-  </div>
-<script src="https://cdn.jsdelivr.net/npm/live2d-widget@3.x/lib/L2Dwidget.min.js"></script><script>L2Dwidget.init({"tagMode":false,"debug":false,"model":{"jsonPath":"https://cdn.jsdelivr.net/npm/live2d-widget-model-haruto@1.x/assets/haruto.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/"});</script><!-- hexo-inject:begin --><!-- hexo-inject:end --></body>
+  </div><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+<script src="https://cdn.jsdelivr.net/npm/live2d-widget@3.x/lib/L2Dwidget.min.js"></script><script>L2Dwidget.init({"tagMode":false,"debug":false,"model":{"jsonPath":"https://cdn.jsdelivr.net/npm/live2d-widget-model-haruto@1.x/assets/haruto.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/"});</script></body>
 </html>

@@ -75,6 +75,60 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-2016-10-21-USACO-HumbleNumbers" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/10/21/2016-10-21-USACO-HumbleNumbers/" class="article-date">
+  <time datetime="2016-10-22T02:51:31.000Z" itemprop="datePublished">2016-10-21</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/USACO/">USACO</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/10/21/2016-10-21-USACO-HumbleNumbers/">USACO 3.1 Humble Numbers</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>The idea is to generate and maintain a sorted list of humble numbers:</p>
+<ul>
+<li>Each humble number can be generated together with this sorted list, and with one of the seed prime numbers.</li>
+<li>For each humble number, there is one and only one way of generating the number - in other words the prime factors are fixed for a given humble number.</li>
+<li>For each prime factor number, maintain an index into the humble number sorted list. The indexed number in the humble number list would be the next number that this prime factor should multiply.</li>
+<li>The invariant is, at each iteration, the smallest possible humble number is generated, and each index associated with each prime factor is incremented by one, if the prime factor contributes to the generation (num % prime == 0).</li>
+</ul>
+<p>Following this idea, the humble numbers can be generated systematically without duplicates, and we only need maintain a single sorted list of humble numbers.</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;utility&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cmath&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unordered_map&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;climits&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sstream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> N, K;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"humble.in"</span>)</span></span>;</span><br><span class="line">  <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"humble.out"</span>)</span></span>;</span><br><span class="line">  </span><br><span class="line">  fin &gt;&gt; K &gt;&gt; N;</span><br><span class="line">  <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; dp(N + <span class="number">1</span>, INT_MAX);</span><br><span class="line">  <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; num(K, <span class="number">0</span>);</span><br><span class="line">  <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; indices(K, <span class="number">0</span>);</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; K; ++i) &#123;</span><br><span class="line">    fin &gt;&gt; num[i];</span><br><span class="line">  &#125;</span><br><span class="line">  dp[<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= N; ++i) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; K; ++j) &#123;</span><br><span class="line">      dp[i] = <span class="built_in">std</span>::min(dp[i], dp[indices[j]] * num[j]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; K; ++j) &#123;</span><br><span class="line">      <span class="keyword">if</span> (dp[i] % num[j] == <span class="number">0</span>) &#123;</span><br><span class="line">        ++indices[j];</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  fout &lt;&lt; dp[N] &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">  <span class="built_in">cout</span> &lt;&lt; dp[N] &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2016/10/21/2016-10-21-USACO-HumbleNumbers/" data-id="ck33971zu0016yqxgzw9nujeh" data-title="USACO 3.1 Humble Numbers" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2016/10/21/2016-10-21-USACO-HumbleNumbers/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dynamic-Programming/">Dynamic Programming</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-2016-10-18-USACO-Inflation" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/10/18/2016-10-18-USACO-Inflation/" class="article-date">
@@ -108,7 +162,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/10/18/2016-10-18-USACO-Inflation/" data-id="ck32jowbz001is5xgnzvvgquu" data-title="USACO 3.1 Inflation" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/10/18/2016-10-18-USACO-Inflation/" data-id="ck33971zt0015yqxgoermdmra" data-title="USACO 3.1 Inflation" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2016/10/18/2016-10-18-USACO-Inflation/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -155,62 +209,13 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/10/14/2016-10-14-USACO-AgriNet/" data-id="ck32jowby001hs5xginsoz84c" data-title="USACO 3.1 AgriNet" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/10/14/2016-10-14-USACO-AgriNet/" data-id="ck33971zs0014yqxgfaqon5xq" data-title="USACO 3.1 AgriNet" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2016/10/14/2016-10-14-USACO-AgriNet/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Graph/">Graph</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Minimum-Spanning-Tree/">Minimum Spanning Tree</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Prim/">Prim</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2016-10-11-TopCoder-SRM700" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/10/13/2016-10-11-TopCoder-SRM700/" class="article-date">
-  <time datetime="2016-10-13T20:29:31.000Z" itemprop="datePublished">2016-10-13</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/TopCoder/">TopCoder</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/10/13/2016-10-11-TopCoder-SRM700/">SRM 700 DIV II 450</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>My DFS solution during contest, which passed all system tests except TLE for one. As a result, I received zero points.<br>This is not the first time that I am tempted to use a brutal force solution for a 450 / 500 problem that seemingly work but<br>ultimately fail due to inefficiency.</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> XMarksTheSpot &#123;</span><br><span class="line">    <span class="keyword">int</span> result;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">dfs</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; board, <span class="keyword">int</span> i, <span class="keyword">int</span> j, <span class="keyword">int</span> rs, <span class="keyword">int</span> cs)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (i == rs - <span class="number">1</span> &amp;&amp; j == cs - <span class="number">1</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (board[i][j] == <span class="string">'?'</span>) &#123;</span><br><span class="line">                board[i][j] = <span class="string">'O'</span>;</span><br><span class="line">                compute(board);</span><br><span class="line">                board[i][j] = <span class="string">'.'</span>;</span><br><span class="line">                compute(board);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                compute(board);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> ni, nj;</span><br><span class="line">        <span class="keyword">if</span> (j + <span class="number">1</span> &lt; cs) &#123;</span><br><span class="line">            ni = i;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            ni = i + <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        nj = (j + <span class="number">1</span>) % cs;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> (board[i][j] == <span class="string">'.'</span> || board[i][j] == <span class="string">'O'</span>) &#123;</span><br><span class="line">            dfs(board, ni, nj, rs, cs);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            board[i][j] = <span class="string">'.'</span>;</span><br><span class="line">            dfs(board, ni, nj, rs, cs);</span><br><span class="line">            board[i][j] = <span class="string">'O'</span>;</span><br><span class="line">            dfs(board, ni, nj, rs, cs);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">compute</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; board)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> rs = (<span class="keyword">int</span>)board.size();</span><br><span class="line">        <span class="keyword">int</span> cs = (<span class="keyword">int</span>)board[<span class="number">0</span>].size();</span><br><span class="line">        <span class="keyword">int</span> t = INT_MAX, b = INT_MIN, l = INT_MAX, r = INT_MIN;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; rs; ++i) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; cs; ++j) &#123;</span><br><span class="line">                <span class="keyword">if</span> (board[i][j] == <span class="string">'.'</span>) <span class="keyword">continue</span>;</span><br><span class="line">                t = <span class="built_in">std</span>::min(i, t);</span><br><span class="line">                b = <span class="built_in">std</span>::max(i, b);</span><br><span class="line">                l = <span class="built_in">std</span>::min(j, l);</span><br><span class="line">                r = <span class="built_in">std</span>::max(j, r);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = t; i &lt;= b; ++i) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = l; j &lt;= r; ++j) &#123;</span><br><span class="line">                ++result;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">countArea</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; board)</span> </span>&#123;</span><br><span class="line">        result = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span> rs = (<span class="keyword">int</span>)board.size();</span><br><span class="line">        <span class="keyword">int</span> cs = (<span class="keyword">int</span>)board[<span class="number">0</span>].size();</span><br><span class="line">        dfs(board, <span class="number">0</span>, <span class="number">0</span>, rs, cs);</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>Actually even with brutal force, there is better approaches without recursing (which is the root of many evils of time outs during contest).<br>We can just iterate through all the states explicitly and calculate the results at higher level while iterating. <a href="https://community.topcoder.com/stat?c=problem_solution&amp;cr=40494659&amp;rd=16821&amp;pm=14416" target="_blank" rel="noopener">Here</a> is a good example on how to do so.</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/10/13/2016-10-11-TopCoder-SRM700/" data-id="ck32jowbt001as5xg20v5cy92" data-title="SRM 700 DIV II 450" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2016/10/13/2016-10-11-TopCoder-SRM700/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Counting/">Counting</a></li></ul>
 
     </footer>
   </div>
@@ -277,7 +282,7 @@
       <ul>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1197/">1197. Minimum Knight Moves</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1020/">LeetCode 1020. Number of Enclaves</a>
           </li>
         
           <li>
@@ -285,15 +290,15 @@
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1020/">LeetCode 1020. Number of Enclaves</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1066/">LeetCode 1066. Campus Bikes II</a>
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1231/">LeetCode 1231. Divide Chocolate</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1219/">LeetCode 1219. Path with Maximum Gold</a>
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1218/">1218. Longest Arithmetic Subsequence of Given Difference</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1197/">1197. Minimum Knight Moves</a>
           </li>
         
       </ul>
@@ -367,6 +372,6 @@
 
 
 
-  </div>
-<script src="https://cdn.jsdelivr.net/npm/live2d-widget@3.x/lib/L2Dwidget.min.js"></script><script>L2Dwidget.init({"tagMode":false,"debug":false,"model":{"jsonPath":"https://cdn.jsdelivr.net/npm/live2d-widget-model-haruto@1.x/assets/haruto.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/"});</script><!-- hexo-inject:begin --><!-- hexo-inject:end --></body>
+  </div><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+<script src="https://cdn.jsdelivr.net/npm/live2d-widget@3.x/lib/L2Dwidget.min.js"></script><script>L2Dwidget.init({"tagMode":false,"debug":false,"model":{"jsonPath":"https://cdn.jsdelivr.net/npm/live2d-widget-model-haruto@1.x/assets/haruto.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/"});</script></body>
 </html>

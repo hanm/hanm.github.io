@@ -75,6 +75,54 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-2019-11-11-LeetCode688" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/11/11/2019-11-11-LeetCode688/" class="article-date">
+  <time datetime="2019-11-11T19:11:11.000Z" itemprop="datePublished">2019-11-11</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/LeetCode-in-Rust/">LeetCode in Rust</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/11/11/2019-11-11-LeetCode688/">688. Knight Probability in Chessboard</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><a href="https://leetcode.com/problems/knight-probability-in-chessboard/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<p>DP, be careful about pow overflow.</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">knight_probability</span></span>(n: <span class="keyword">i32</span>, k: <span class="keyword">i32</span>, r: <span class="keyword">i32</span>, c: <span class="keyword">i32</span>) -&gt; <span class="keyword">f64</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> k == <span class="number">0</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span> <span class="keyword">as</span> <span class="keyword">f64</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> (dx, dy) : ([<span class="keyword">i32</span>; <span class="number">8</span>], [<span class="keyword">i32</span>; <span class="number">8</span>]) = (</span><br><span class="line">            [-<span class="number">1</span>, -<span class="number">2</span>, -<span class="number">2</span>, -<span class="number">1</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">1</span>],</span><br><span class="line">            [-<span class="number">2</span>, -<span class="number">1</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">1</span>, -<span class="number">1</span>, -<span class="number">2</span>]);</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> dp = <span class="built_in">vec!</span>[<span class="built_in">vec!</span>[<span class="number">1</span> <span class="keyword">as</span> <span class="keyword">f64</span>; n <span class="keyword">as</span> <span class="keyword">usize</span>]; n <span class="keyword">as</span> <span class="keyword">usize</span>];</span><br><span class="line">        <span class="keyword">for</span> _m <span class="keyword">in</span> <span class="number">0</span>..k &#123;</span><br><span class="line">            <span class="keyword">let</span> <span class="keyword">mut</span> tmp = <span class="built_in">vec!</span>[<span class="built_in">vec!</span>[<span class="number">0</span> <span class="keyword">as</span> <span class="keyword">f64</span>; n <span class="keyword">as</span> <span class="keyword">usize</span>]; n <span class="keyword">as</span> <span class="keyword">usize</span>];</span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..n &#123;</span><br><span class="line">                <span class="keyword">for</span> j <span class="keyword">in</span> <span class="number">0</span>..n &#123;</span><br><span class="line">                    <span class="keyword">for</span> k <span class="keyword">in</span> <span class="number">0</span>..<span class="number">8</span> &#123;</span><br><span class="line">                        <span class="keyword">let</span> (xx, yy) = (i + dx[k], j + dy[k]);</span><br><span class="line">                        <span class="keyword">if</span> xx &lt; <span class="number">0</span> || yy &lt; <span class="number">0</span> || xx &gt;= n || yy &gt;= n &#123;</span><br><span class="line">                            <span class="keyword">continue</span>;</span><br><span class="line">                        &#125;</span><br><span class="line">                        tmp[i <span class="keyword">as</span> <span class="keyword">usize</span>][j <span class="keyword">as</span> <span class="keyword">usize</span>] += dp[xx <span class="keyword">as</span> <span class="keyword">usize</span>][yy <span class="keyword">as</span> <span class="keyword">usize</span>];</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            dp.swap_with_slice(&amp;<span class="keyword">mut</span> tmp[<span class="number">0</span>..]);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> dp[r <span class="keyword">as</span> <span class="keyword">usize</span>][c <span class="keyword">as</span> <span class="keyword">usize</span>] / <span class="number">8_f64</span>.powf(k <span class="keyword">as</span> <span class="keyword">f64</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2019/11/11/2019-11-11-LeetCode688/" data-id="ck339721t0035yqxgz9g3g1f0" data-title="688. Knight Probability in Chessboard" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode688/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LeetCode/">LeetCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Rust/">Rust</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-2019-11-11-LeetCode924" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2019/11/11/2019-11-11-LeetCode924/" class="article-date">
@@ -107,7 +155,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/11/2019-11-11-LeetCode924/" data-id="ck32jower004zs5xg2ogdjnqg" data-title="LeetCode 924 Minimize Malware Spread" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/11/2019-11-11-LeetCode924/" data-id="ck339721u0036yqxgml1ju72i" data-title="LeetCode 924 Minimize Malware Spread" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode924/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -123,9 +171,9 @@
 
 
   
-    <article id="post-2019-11-11-LeetCode1233" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2019-11-11-LeetCode935" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2019/11/11/2019-11-11-LeetCode1233/" class="article-date">
+    <a href="/2019/11/11/2019-11-11-LeetCode935/" class="article-date">
   <time datetime="2019-11-11T19:11:11.000Z" itemprop="datePublished">2019-11-11</time>
 </a>
     
@@ -141,7 +189,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/11/2019-11-11-LeetCode1233/">LeetCode 1233. Remove Sub-Folders from the Filesystem</a>
+      <a class="article-title" href="/2019/11/11/2019-11-11-LeetCode935/">LeetCode 935. Knight Dialer</a>
     </h1>
   
 
@@ -149,61 +197,15 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><a href="https://leetcode.com/problems/remove-sub-folders-from-the-filesystem/description/" target="_blank" rel="noopener">Problem Statement</a></p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">remove_subfolders</span></span>(folder: <span class="built_in">Vec</span>&lt;<span class="built_in">String</span>&gt;) -&gt; <span class="built_in">Vec</span>&lt;<span class="built_in">String</span>&gt; &#123;</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> f, <span class="keyword">mut</span> ans) = (folder, <span class="built_in">vec!</span>[]);</span><br><span class="line">        <span class="keyword">if</span> f.is_empty() &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">vec!</span>[];</span><br><span class="line">        &#125;</span><br><span class="line">        f.sort();</span><br><span class="line">        ans.push(f[<span class="number">0</span>].clone());</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">1</span>..f.len() &#123;</span><br><span class="line">            <span class="keyword">let</span> <span class="keyword">mut</span> prefix = ans.last().unwrap().clone();</span><br><span class="line">            prefix.push(<span class="string">'/'</span>);</span><br><span class="line">            <span class="keyword">let</span> cur = f[i].clone();</span><br><span class="line">            <span class="keyword">if</span> cur.len() &lt; prefix.len() || cur[..prefix.len()].to_string() != prefix  &#123;</span><br><span class="line">                ans.push(cur);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+        <p><a href="https://leetcode.com/problems/knight-dialer/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<p>Dynamic Programming</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">knight_dialer</span></span>(n: <span class="keyword">i32</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">const</span> MOD : <span class="keyword">u64</span> = <span class="number">1e9</span> <span class="keyword">as</span> <span class="keyword">u64</span> + <span class="number">7</span>;</span><br><span class="line">        <span class="keyword">const</span> dirs: [(<span class="keyword">i32</span>, <span class="keyword">i32</span>); <span class="number">8</span>] = [(-<span class="number">2</span>, -<span class="number">1</span>), (-<span class="number">2</span>, <span class="number">1</span>), (-<span class="number">1</span>, -<span class="number">2</span>), (-<span class="number">1</span>, <span class="number">2</span>),</span><br><span class="line">            (<span class="number">1</span>, -<span class="number">2</span>), (<span class="number">1</span>, <span class="number">2</span>), (<span class="number">2</span>, -<span class="number">1</span>), (<span class="number">2</span>, <span class="number">1</span>)];</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> dp = [[<span class="number">1</span>; <span class="number">3</span>] ; <span class="number">4</span>];</span><br><span class="line">        dp[<span class="number">3</span>][<span class="number">0</span>] = <span class="number">0</span>; dp[<span class="number">3</span>][<span class="number">2</span>] = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> k <span class="keyword">in</span> <span class="number">1</span>..n &#123;</span><br><span class="line">            <span class="keyword">let</span> <span class="keyword">mut</span> tmp = [[<span class="number">0</span>; <span class="number">3</span>] ; <span class="number">4</span>];</span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..<span class="number">4</span> &#123;</span><br><span class="line">                <span class="keyword">for</span> j <span class="keyword">in</span> <span class="number">0</span>..<span class="number">3</span> &#123;</span><br><span class="line">                    <span class="keyword">if</span> i == <span class="number">3</span> &amp;&amp; j != <span class="number">1</span> &#123;</span><br><span class="line">                        <span class="keyword">continue</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">for</span> d <span class="keyword">in</span> <span class="number">0</span>..<span class="number">8</span> &#123;</span><br><span class="line">                        <span class="keyword">let</span> (xx, yy) = (j + dirs[d].<span class="number">0</span>, i + dirs[d].<span class="number">1</span>);</span><br><span class="line">                        <span class="keyword">if</span> xx &lt; <span class="number">0</span> || yy &lt; <span class="number">0</span> || xx &gt;= <span class="number">3</span> || yy &gt;= <span class="number">4</span> &#123;</span><br><span class="line">                            <span class="keyword">continue</span>;</span><br><span class="line">                        &#125;</span><br><span class="line">                        tmp[i <span class="keyword">as</span> <span class="keyword">usize</span>][j <span class="keyword">as</span> <span class="keyword">usize</span>] = (tmp[i <span class="keyword">as</span> <span class="keyword">usize</span>][j <span class="keyword">as</span> <span class="keyword">usize</span>] +</span><br><span class="line">                            dp[yy <span class="keyword">as</span> <span class="keyword">usize</span>][xx <span class="keyword">as</span> <span class="keyword">usize</span>]) % MOD;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            dp.swap_with_slice(&amp;<span class="keyword">mut</span> tmp[<span class="number">0</span>..]);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> ans : <span class="keyword">i32</span> = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..<span class="number">4</span> &#123;</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> <span class="number">0</span>..<span class="number">3</span> &#123;</span><br><span class="line">                ans = ((ans <span class="keyword">as</span> <span class="keyword">u64</span> + dp[i][j]) % MOD) <span class="keyword">as</span> <span class="keyword">i32</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1233/" data-id="ck32jowes0050s5xgk3wpmxym" data-title="LeetCode 1233. Remove Sub-Folders from the Filesystem" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/11/2019-11-11-LeetCode935/" data-id="ck339721u0037yqxgn535s60x" data-title="LeetCode 935. Knight Dialer" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1233/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LeetCode/">LeetCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Rust/">Rust</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2019-10-15-LeetCode1145" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/10/15/2019-10-15-LeetCode1145/" class="article-date">
-  <time datetime="2019-10-15T17:39:31.000Z" itemprop="datePublished">2019-10-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/LeetCode-in-Rust/">LeetCode in Rust</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/10/15/2019-10-15-LeetCode1145/">LeetCode 1145 Binary Tree Coloring Game</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><a href="https://leetcode.com/problems/binary-tree-coloring-game/description/" target="_blank" rel="noopener">Problem Statement</a></p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::rc::Rc;</span><br><span class="line"><span class="keyword">use</span> std::cell::RefCell;</span><br><span class="line"><span class="keyword">use</span> std::cmp::max;</span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">btree_game_winning_move</span></span>(root: <span class="built_in">Option</span>&lt;Rc&lt;RefCell&lt;TreeNode&gt;&gt;&gt;, n: <span class="keyword">i32</span>, x: <span class="keyword">i32</span>) -&gt; <span class="keyword">bool</span> &#123;</span><br><span class="line">        <span class="function"><span class="keyword">fn</span> <span class="title">count_sub_tree_nodes</span></span>(node: <span class="built_in">Option</span>&lt;&amp;Rc&lt;RefCell&lt;TreeNode&gt;&gt;&gt;, x : <span class="keyword">i32</span>,</span><br><span class="line">                                left : &amp;<span class="keyword">mut</span> <span class="keyword">i32</span>, right : &amp;<span class="keyword">mut</span> <span class="keyword">i32</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">let</span> <span class="literal">Some</span>(n) = node &#123;</span><br><span class="line">                <span class="keyword">let</span> l = count_sub_tree_nodes(n.borrow().left.as_ref(), x, left, right);</span><br><span class="line">                <span class="keyword">let</span> r = count_sub_tree_nodes(n.borrow().right.as_ref(), x, left, right);</span><br><span class="line">                <span class="keyword">if</span> x == n.borrow().val &#123;</span><br><span class="line">                    *left = l; *right = r;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">return</span> l + r + <span class="number">1</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> left = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> right = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">let</span> count = count_sub_tree_nodes(root.as_ref(), x, &amp;<span class="keyword">mut</span> left, &amp;<span class="keyword">mut</span> right);</span><br><span class="line">        <span class="keyword">return</span> max(max(left, right), n - left - right - <span class="number">1</span>) &gt; n / <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/10/15/2019-10-15-LeetCode1145/" data-id="ck32joweg004is5xgeox7hv9h" data-title="LeetCode 1145 Binary Tree Coloring Game" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2019/10/15/2019-10-15-LeetCode1145/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode935/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
@@ -274,7 +276,7 @@
       <ul>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1197/">1197. Minimum Knight Moves</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1020/">LeetCode 1020. Number of Enclaves</a>
           </li>
         
           <li>
@@ -282,15 +284,15 @@
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1020/">LeetCode 1020. Number of Enclaves</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1066/">LeetCode 1066. Campus Bikes II</a>
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1231/">LeetCode 1231. Divide Chocolate</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1219/">LeetCode 1219. Path with Maximum Gold</a>
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1218/">1218. Longest Arithmetic Subsequence of Given Difference</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1197/">1197. Minimum Knight Moves</a>
           </li>
         
       </ul>
@@ -364,6 +366,6 @@
 
 
 
-  </div>
-<script src="https://cdn.jsdelivr.net/npm/live2d-widget@3.x/lib/L2Dwidget.min.js"></script><script>L2Dwidget.init({"tagMode":false,"debug":false,"model":{"jsonPath":"https://cdn.jsdelivr.net/npm/live2d-widget-model-haruto@1.x/assets/haruto.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/"});</script><!-- hexo-inject:begin --><!-- hexo-inject:end --></body>
+  </div><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+<script src="https://cdn.jsdelivr.net/npm/live2d-widget@3.x/lib/L2Dwidget.min.js"></script><script>L2Dwidget.init({"tagMode":false,"debug":false,"model":{"jsonPath":"https://cdn.jsdelivr.net/npm/live2d-widget-model-haruto@1.x/assets/haruto.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/"});</script></body>
 </html>
