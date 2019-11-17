@@ -75,6 +75,62 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-2016-7-31-KiloManX" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/07/31/2016-7-31-KiloManX/" class="article-date">
+  <time datetime="2016-08-01T04:57:31.000Z" itemprop="datePublished">2016-07-31</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/TopCoder/">TopCoder</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/07/31/2016-7-31-KiloManX/">SRM 181 DIV-1 1000 KiloManX</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><a href="https://community.topcoder.com/stat?c=problem_statement&amp;pm=2288&amp;rd=4725" target="_blank" rel="noopener">Problem Statement</a></p>
+<p>This is another very interesting problem that can be solved using graph search. The problem itself looks<br>like an optimization problem and should be solvable using ‘traditional’ dynamic programming technique (which<br>is true), but with some observations we can turn this into a graph search problem:</p>
+<ul>
+<li>The problem can be reduced to a search problem.</li>
+<li>The search space is the set of states where each state is a combination of ‘boss defeated so far’ and ‘shots used’.</li>
+<li>For each boss, the state of ‘defeated’ equals to the presence of its weapon.</li>
+<li>The state transfer function looks like: given the set of boss defeated and the shots taken, what would be the set of bosses<br>that we could defeat next and the corresponding shots we would use to defeat those boss?</li>
+<li>So we represent each state as a node in a graph and the state transfer function as edges between graph nodes.</li>
+<li>The problem now is reduced to find shortest path between two nodes: the start node where no boss is defeated and the end<br>node where all bosses have been defeated.</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> GNode &#123;</span><br><span class="line">    <span class="keyword">int</span> weapon;</span><br><span class="line">    <span class="keyword">int</span> shot;</span><br><span class="line">    GNode() : weapon(<span class="number">0</span>), shot(<span class="number">0</span>) &#123;&#125;</span><br><span class="line">&#125; node;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> Compare &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">operator</span><span class="params">()</span> <span class="params">(<span class="keyword">const</span> GNode &amp;n1, <span class="keyword">const</span> GNode &amp;n2)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> n1.shot &gt; n2.shot;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> KiloManX &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">leastShots</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; damageChart, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; bossHealth)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> N = (<span class="keyword">int</span>)damageChart.size();</span><br><span class="line">        <span class="keyword">const</span> <span class="keyword">int</span> CAP = <span class="number">1</span> &lt;&lt; N;</span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt; visited(CAP, <span class="literal">false</span>);</span><br><span class="line">        GNode node;</span><br><span class="line">        priority_queue&lt;GNode, <span class="built_in">vector</span>&lt;GNode&gt;, Compare&gt; pq;</span><br><span class="line">        pq.push(node);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> ret = INT_MAX;</span><br><span class="line">        <span class="keyword">while</span> (!pq.empty()) &#123;</span><br><span class="line">            <span class="keyword">auto</span> node = pq.top();</span><br><span class="line">            pq.pop();</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (visited[node.weapon])</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            visited[node.weapon] = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (node.weapon == CAP - <span class="number">1</span>) &#123;</span><br><span class="line">                ret = min(ret, node.shot);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">                <span class="keyword">if</span> ((node.weapon &gt;&gt; i) &amp; <span class="number">1</span>)</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                <span class="keyword">int</span> best = bossHealth[i];</span><br><span class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; N; ++j) &#123;</span><br><span class="line">                    <span class="keyword">if</span> (i == j) <span class="keyword">continue</span>;</span><br><span class="line">                    <span class="keyword">if</span> (((node.weapon &gt;&gt; j) &amp; <span class="number">1</span>) &amp;&amp; damageChart[j][i] != <span class="string">'0'</span>) &#123;</span><br><span class="line">                        <span class="keyword">int</span> damage = damageChart[j][i] - <span class="string">'0'</span>;</span><br><span class="line">                        <span class="keyword">int</span> shot = bossHealth[i] / damage;</span><br><span class="line">                        <span class="keyword">if</span> (bossHealth[i] % damage)</span><br><span class="line">                            ++shot;</span><br><span class="line">                        best = min(best, shot);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                GNode newNode;</span><br><span class="line">                newNode.shot = best + node.shot;</span><br><span class="line">                newNode.weapon = (node.weapon | (<span class="number">1</span> &lt;&lt; i));</span><br><span class="line">                pq.push(newNode);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ret;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2016/07/31/2016-7-31-KiloManX/" data-id="ck33ka8tu001pd1xgmc84t144" data-title="SRM 181 DIV-1 1000 KiloManX" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2016/07/31/2016-7-31-KiloManX/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/BFS/">BFS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dijkstra/">Dijkstra</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Graph/">Graph</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TopCoder/">TopCoder</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-2016-7-23-GrafixMask" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/07/23/2016-7-23-GrafixMask/" class="article-date">
@@ -108,7 +164,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/07/23/2016-7-23-GrafixMask/" data-id="ck33jr0l0001r1dxgqaees49z" data-title="SRM 211 DIV-1 500 grafixMask" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/07/23/2016-7-23-GrafixMask/" data-id="ck33ka8tv001qd1xgoiluc4ze" data-title="SRM 211 DIV-1 500 grafixMask" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2016/07/23/2016-7-23-GrafixMask/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -155,7 +211,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/07/20/2016-7-20-PathFinding/" data-id="ck33jr0kz001q1dxgza3exsau" data-title="SRM 156 DIV-1 1000 Path Finding" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/07/20/2016-7-20-PathFinding/" data-id="ck33ka8tt001od1xgwca7ydce" data-title="SRM 156 DIV-1 1000 Path Finding" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2016/07/20/2016-7-20-PathFinding/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -232,19 +288,19 @@
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1031/">LeetCode 1031 Maximum Sum of Two Non-Overlapping Subarrays</a>
-          </li>
-        
-          <li>
             <a href="/2019/11/11/2019-11-11-LeetCode1066/">LeetCode 1066. Campus Bikes II</a>
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1197/">1197. Minimum Knight Moves</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1153/">LeetCode 1153. String Transforms Into Another String</a>
           </li>
         
           <li>
             <a href="/2019/11/11/2019-11-11-LeetCode1147/">LeetCode 1147. Longest Chunked Palindrome Decomposition</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/11/2019-11-11-LeetCode1031/">LeetCode 1031 Maximum Sum of Two Non-Overlapping Subarrays</a>
           </li>
         
       </ul>
@@ -318,6 +374,6 @@
 
 
 
-  </div><!-- hexo-inject:begin --><!-- hexo-inject:end -->
-<script src="https://cdn.jsdelivr.net/npm/live2d-widget@3.x/lib/L2Dwidget.min.js"></script><script>L2Dwidget.init({"tagMode":false,"debug":false,"model":{"jsonPath":"https://cdn.jsdelivr.net/npm/live2d-widget-model-haruto@1.x/assets/haruto.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/"});</script></body>
+  </div>
+<script src="https://cdn.jsdelivr.net/npm/live2d-widget@3.x/lib/L2Dwidget.min.js"></script><script>L2Dwidget.init({"tagMode":false,"debug":false,"model":{"jsonPath":"https://cdn.jsdelivr.net/npm/live2d-widget-model-haruto@1.x/assets/haruto.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/"});</script><!-- hexo-inject:begin --><!-- hexo-inject:end --></body>
 </html>

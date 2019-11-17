@@ -75,6 +75,58 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-2016-11-25-USACO-RidingTheFence" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/11/25/2016-11-25-USACO-RidingTheFence/" class="article-date">
+  <time datetime="2016-11-26T07:04:31.000Z" itemprop="datePublished">2016-11-25</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/USACO/">USACO</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/11/25/2016-11-25-USACO-RidingTheFence/">UASCO 3.3 Riding The Fence</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>This is a problem to find Euler Path of the graph. As this is an undirected graph, the Euler Path exists iff:</p>
+<ul>
+<li>All graph vertices have even degree. Or,</li>
+<li>All graph vertices have even degree, except two vertices have odd degree. And these two vertices will be start / end of the Euler Path.</li>
+</ul>
+<p>This problem explicitly stated that the Euler Path existing, so no need to do the test to find out if the path exists or not. Instead, the job is to find out the exact path with the constraint that vertices should be sequenced in ascending order. There are a couple of well studied algorithm can solve the Euler Path finding problem, however for this test data set I find that we can just use DFS - which is not strictly a Euler Path finding solution because the DFS solution here alone can’t decide if an edge we are going to remove is a ‘bridge edge’ (which, if removed will never makes us traverse back to the graph). I think the solution here is not sound to cover any type of Euler Path, but is just lucky enough to pass the existing test data set.</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stack&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> LIMIT = <span class="number">501</span>;</span><br><span class="line"><span class="keyword">int</span> F;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; degree(LIMIT, <span class="number">0</span>);</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; adj(LIMIT, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(LIMIT, <span class="number">0</span>));</span><br><span class="line"><span class="built_in">stack</span>&lt;<span class="keyword">int</span>&gt; path;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> idx)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!degree[idx]) &#123;</span><br><span class="line">        path.push(idx);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; LIMIT; ++i) &#123;</span><br><span class="line">        <span class="keyword">if</span> (adj[idx][i] &lt;= <span class="number">0</span>) <span class="keyword">continue</span>;</span><br><span class="line">        --adj[idx][i]; --adj[i][idx]; --degree[idx]; --degree[i];</span><br><span class="line">        dfs(i);</span><br><span class="line">    &#125;</span><br><span class="line">    path.push(idx);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"fence.in"</span>)</span></span>;</span><br><span class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"fence.out"</span>)</span></span>;</span><br><span class="line">    fin &gt;&gt; F;</span><br><span class="line">    <span class="keyword">int</span> v1, v2;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; F; ++i) &#123;</span><br><span class="line">        fin &gt;&gt; v1 &gt;&gt; v2;</span><br><span class="line">        adj[v1][v2]++; adj[v2][v1]++;</span><br><span class="line">        degree[v1]++; degree[v2]++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> start = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; LIMIT; ++i)&#123;</span><br><span class="line">        <span class="keyword">if</span>(degree[i] % <span class="number">2</span>)&#123;</span><br><span class="line">            start = i;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    dfs(start);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span> (!path.empty()) &#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; path.top() &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">        fout &lt;&lt; path.top() &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">        path.pop();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2016/11/25/2016-11-25-USACO-RidingTheFence/" data-id="ck33ka8tl001dd1xgt1y5q4ob" data-title="UASCO 3.3 Riding The Fence" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2016/11/25/2016-11-25-USACO-RidingTheFence/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DFS/">DFS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Euler-Path/">Euler Path</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Graph/">Graph</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-2016-11-23-USACO-SweetButter" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/11/23/2016-11-23-USACO-SweetButter/" class="article-date">
@@ -107,7 +159,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/11/23/2016-11-23-USACO-SweetButter/" data-id="ck33jr0kq001e1dxgy46ip83i" data-title="USACO 3.2 Sweet Butter" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/11/23/2016-11-23-USACO-SweetButter/" data-id="ck33ka8ti001ad1xg1zpuhpgv" data-title="USACO 3.2 Sweet Butter" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2016/11/23/2016-11-23-USACO-SweetButter/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -166,60 +218,13 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/11/19/2016-11-19-USACO-MagicSquares/" data-id="ck33jr0kp001d1dxgp1u5lsyh" data-title="USACO 3.2 Magic Squares" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/11/19/2016-11-19-USACO-MagicSquares/" data-id="ck33ka8tk001cd1xgqtant4rw" data-title="USACO 3.2 Magic Squares" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2016/11/19/2016-11-19-USACO-MagicSquares/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/BFS/">BFS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Search/">Search</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2016-11-08-USACO-FeedRatios" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/11/08/2016-11-08-USACO-FeedRatios/" class="article-date">
-  <time datetime="2016-11-08T18:45:31.000Z" itemprop="datePublished">2016-11-08</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/USACO/">USACO</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/11/08/2016-11-08-USACO-FeedRatios/">USACO 3.2 Feed Ratios</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Could be solved using Gauss Elimination, but there is a constraint on the mixture upper bound (less than 100), so a brutal force search could do it.</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;numeric&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;utility&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cmath&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;map&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unordered_map&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;climits&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sstream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; goal(<span class="number">3</span>, <span class="number">0</span>);</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; source(<span class="number">3</span>, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(<span class="number">3</span>, <span class="number">0</span>));</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; anws(<span class="number">4</span>, <span class="number">0</span>);</span><br><span class="line"><span class="keyword">int</span> total = INT_MAX;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">judge</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;sum)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (sum[<span class="number">0</span>] &lt; goal[<span class="number">0</span>] || sum[<span class="number">1</span>] &lt; goal[<span class="number">1</span>] || sum[<span class="number">2</span>] &lt; goal[<span class="number">2</span>]) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">  <span class="keyword">if</span> (sum[<span class="number">0</span>] * goal[<span class="number">1</span>] != sum[<span class="number">1</span>] * goal[<span class="number">0</span>]) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">  <span class="keyword">if</span> (sum[<span class="number">1</span>] * goal[<span class="number">2</span>] != sum[<span class="number">2</span>] * goal[<span class="number">1</span>]) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">  <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">fillSum</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;sum, <span class="keyword">int</span> i, <span class="keyword">int</span> j, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> idx = <span class="number">0</span>; idx &lt; <span class="number">3</span>; ++idx) &#123;</span><br><span class="line">    sum[idx] = source[<span class="number">0</span>][idx] * i + source[<span class="number">1</span>][idx] * j + source[<span class="number">2</span>][idx] * k;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"ratios.in"</span>)</span></span>;</span><br><span class="line">  <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"ratios.out"</span>)</span></span>;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">3</span>; ++i) &#123;</span><br><span class="line">    fin &gt;&gt; goal[i];</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">3</span>; ++i) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; <span class="number">3</span>; ++j) &#123;</span><br><span class="line">      fin &gt;&gt; source[i][j];</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">auto</span> gSum = <span class="built_in">std</span>::accumulate(goal.begin(), goal.end(), <span class="number">0</span>);</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">100</span>; ++i) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; <span class="number">100</span>; ++j) &#123;</span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; <span class="number">100</span>; ++k) &#123;</span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; sum(<span class="number">3</span>, <span class="number">0</span>);</span><br><span class="line">        fillSum(sum, i, j, k);</span><br><span class="line">        <span class="keyword">if</span> (!judge(sum)) <span class="keyword">continue</span>;</span><br><span class="line">        <span class="keyword">if</span> (i + j + k &gt; total) <span class="keyword">continue</span>;</span><br><span class="line">        total = i + j + k;</span><br><span class="line">        anws[<span class="number">0</span>] = i; anws[<span class="number">1</span>] = j; anws[<span class="number">2</span>] = k;</span><br><span class="line">        anws[<span class="number">3</span>] = <span class="built_in">std</span>::accumulate(sum.begin(), sum.end(), <span class="number">0</span>) / gSum;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">if</span> (anws[<span class="number">3</span>] == INT_MAX || (anws[<span class="number">3</span>] == <span class="number">0</span> &amp;&amp; gSum != <span class="number">0</span>)) &#123;</span><br><span class="line">    fout &lt;&lt; <span class="string">"NONE"</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">3</span>; ++i) &#123;</span><br><span class="line">      fout &lt;&lt; anws[i] &lt;&lt; <span class="string">" "</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    fout &lt;&lt; anws[<span class="number">3</span>] &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/11/08/2016-11-08-USACO-FeedRatios/" data-id="ck33jr0ko001c1dxg3dn8ea2z" data-title="USACO 3.2 Feed Ratios" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2016/11/08/2016-11-08-USACO-FeedRatios/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Gauss-Elimination/">Gauss Elimination</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Search/">Search</a></li></ul>
 
     </footer>
   </div>
@@ -290,19 +295,19 @@
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1031/">LeetCode 1031 Maximum Sum of Two Non-Overlapping Subarrays</a>
-          </li>
-        
-          <li>
             <a href="/2019/11/11/2019-11-11-LeetCode1066/">LeetCode 1066. Campus Bikes II</a>
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1197/">1197. Minimum Knight Moves</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1153/">LeetCode 1153. String Transforms Into Another String</a>
           </li>
         
           <li>
             <a href="/2019/11/11/2019-11-11-LeetCode1147/">LeetCode 1147. Longest Chunked Palindrome Decomposition</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/11/2019-11-11-LeetCode1031/">LeetCode 1031 Maximum Sum of Two Non-Overlapping Subarrays</a>
           </li>
         
       </ul>
@@ -376,6 +381,6 @@
 
 
 
-  </div><!-- hexo-inject:begin --><!-- hexo-inject:end -->
-<script src="https://cdn.jsdelivr.net/npm/live2d-widget@3.x/lib/L2Dwidget.min.js"></script><script>L2Dwidget.init({"tagMode":false,"debug":false,"model":{"jsonPath":"https://cdn.jsdelivr.net/npm/live2d-widget-model-haruto@1.x/assets/haruto.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/"});</script></body>
+  </div>
+<script src="https://cdn.jsdelivr.net/npm/live2d-widget@3.x/lib/L2Dwidget.min.js"></script><script>L2Dwidget.init({"tagMode":false,"debug":false,"model":{"jsonPath":"https://cdn.jsdelivr.net/npm/live2d-widget-model-haruto@1.x/assets/haruto.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/"});</script><!-- hexo-inject:begin --><!-- hexo-inject:end --></body>
 </html>
