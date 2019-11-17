@@ -15,20 +15,20 @@
 <!-- End Google Analytics -->
 
   
-  <title>USACO 3.4 Raucous Rockers | Quantum Field</title>
+  <title>LeetCode 1016. Binary String With Substrings Representing 1 To N | Quantum Field</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="Typical BackPack problem but with the limited scale of test data, a straight forward brutal force search could do it. The search space is the permutation of subsets of all songs, for each song we have">
-<meta name="keywords" content="Search,Brutal Force,Dynamic Programming">
+  <meta name="description" content="Problem Statement Typical BFS. use std::collections::HashSet;impl Solution &amp;#123;    pub fn query_string(s: String, n: i32) -&amp;gt; bool &amp;#123;        let mut set = HashSet::new();        for i in 0..s.">
+<meta name="keywords" content="Algorithm,LeetCode,Rust">
 <meta property="og:type" content="article">
-<meta property="og:title" content="USACO 3.4 Raucous Rockers">
-<meta property="og:url" content="http://lianghan.org/2016/12/16/2016-12-16-USACO-RaucousRockers/index.html">
+<meta property="og:title" content="LeetCode 1016. Binary String With Substrings Representing 1 To N">
+<meta property="og:url" content="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1016/index.html">
 <meta property="og:site_name" content="Quantum Field">
-<meta property="og:description" content="Typical BackPack problem but with the limited scale of test data, a straight forward brutal force search could do it. The search space is the permutation of subsets of all songs, for each song we have">
+<meta property="og:description" content="Problem Statement Typical BFS. use std::collections::HashSet;impl Solution &amp;#123;    pub fn query_string(s: String, n: i32) -&amp;gt; bool &amp;#123;        let mut set = HashSet::new();        for i in 0..s.">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2019-09-23T16:26:32.947Z">
+<meta property="og:updated_time" content="2019-11-17T23:43:09.354Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="USACO 3.4 Raucous Rockers">
-<meta name="twitter:description" content="Typical BackPack problem but with the limited scale of test data, a straight forward brutal force search could do it. The search space is the permutation of subsets of all songs, for each song we have">
+<meta name="twitter:title" content="LeetCode 1016. Binary String With Substrings Representing 1 To N">
+<meta name="twitter:description" content="Problem Statement Typical BFS. use std::collections::HashSet;impl Solution &amp;#123;    pub fn query_string(s: String, n: i32) -&amp;gt; bool &amp;#123;        let mut set = HashSet::new();        for i in 0..s.">
   
     <link rel="alternate" href="/atom.xml" title="Quantum Field" type="application/atom+xml">
   
@@ -78,14 +78,14 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="post-2016-12-16-USACO-RaucousRockers" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-2019-11-11-LeetCode1016" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2016/12/16/2016-12-16-USACO-RaucousRockers/" class="article-date">
-  <time datetime="2016-12-17T01:09:31.000Z" itemprop="datePublished">2016-12-16</time>
+    <a href="/2019/11/11/2019-11-11-LeetCode1016/" class="article-date">
+  <time datetime="2019-11-11T19:11:11.000Z" itemprop="datePublished">2019-11-11</time>
 </a>
     
   <div class="article-category">
-    <a class="article-category-link" href="/categories/USACO/">USACO</a>
+    <a class="article-category-link" href="/categories/LeetCode-in-Rust/">LeetCode in Rust</a>
   </div>
 
   </div>
@@ -96,7 +96,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      USACO 3.4 Raucous Rockers
+      LeetCode 1016. Binary String With Substrings Representing 1 To N
     </h1>
   
 
@@ -104,18 +104,19 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Typical BackPack problem but with the limited scale of test data, a straight forward brutal force search could do it. The search space is the permutation of subsets of all songs, for each song we have two choice - choose or not choose. Iterate the sequence under the constraint of ordering.</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;climits&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> N <span class="comment">/* songs */</span>, M <span class="comment">/* disks */</span>, T <span class="comment">/* disk capacity */</span>;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; songs;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; disks;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"rockers.in"</span>)</span></span>;</span><br><span class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"rockers.out"</span>)</span></span>;</span><br><span class="line">    fin &gt;&gt; N &gt;&gt; T &gt;&gt; M;</span><br><span class="line">    songs = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">        fin &gt;&gt; songs[i];</span><br><span class="line">    &#125;</span><br><span class="line">    disks = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(M, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">int</span> ans = INT_MIN;</span><br><span class="line">    <span class="keyword">int</span> upper = <span class="number">1</span> &lt;&lt; N;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= upper; ++i) &#123;</span><br><span class="line">        <span class="built_in">std</span>::fill(disks.begin(), disks.end(), <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">int</span> idx = <span class="number">0</span>, sum = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; N; ++j) &#123;</span><br><span class="line">            <span class="keyword">bool</span> pick = (<span class="number">1</span> &lt;&lt; j) &amp; i;</span><br><span class="line">            <span class="keyword">if</span> (!pick) <span class="keyword">continue</span>;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> k = idx; k &lt; M; ++k, ++idx)&#123;</span><br><span class="line">                <span class="keyword">if</span>(disks[k] + songs[j] &lt;= T)&#123;</span><br><span class="line">                    disks[k] += songs[j];</span><br><span class="line">                    ++sum;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        ans = <span class="built_in">std</span>::max(ans, sum);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; ans &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    fout &lt;&lt; ans &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        <p><a href="https://leetcode.com/problems/binary-string-with-substrings-representing-1-to-n/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<p>Typical BFS.</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::collections::HashSet;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">query_string</span></span>(s: <span class="built_in">String</span>, n: <span class="keyword">i32</span>) -&gt; <span class="keyword">bool</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> set = HashSet::new();</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..s.len() &#123;</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> i..s.len() &#123;</span><br><span class="line">                <span class="keyword">let</span> <span class="keyword">str</span> = <span class="built_in">String</span>::from(&amp;s[i..j + <span class="number">1</span>]);</span><br><span class="line">                <span class="keyword">let</span> num = i32::from_str_radix(&amp;<span class="keyword">str</span>, <span class="number">2</span>).unwrap();</span><br><span class="line">                <span class="keyword">if</span> num &gt; n &#123;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                set.insert(num);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">1</span>..n + <span class="number">1</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> !set.contains(&amp;i) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/12/16/2016-12-16-USACO-RaucousRockers/" data-id="ck33nbpyq001ml5xg8rrk26lu" data-title="USACO 3.4 Raucous Rockers" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1016/" data-id="ck33nbq26003rl5xg6abeq9de" data-title="LeetCode 1016. Binary String With Substrings Representing 1 To N" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2016/12/16/2016-12-16-USACO-RaucousRockers/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1016/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Brutal-Force/">Brutal Force</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dynamic-Programming/">Dynamic Programming</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Search/">Search</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LeetCode/">LeetCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Rust/">Rust</a></li></ul>
 
     </footer>
   </div>
@@ -123,19 +124,19 @@
     
 <nav id="article-nav">
   
-    <a href="/2016/12/23/2016-12-23-USACO-BeefMcNuggets/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2019/11/11/2019-11-11-LeetCode1015/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Newer</strong>
       <div class="article-nav-title">
         
-          USACO 4.1 Beef McNuggests
+          LeetCode 1015. Smallest Integer Divisible by K
         
       </div>
     </a>
   
   
-    <a href="/2016/12/14/2016-12-14-USACO-ElectricFence/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2019/11/11/2019-11-11-LeetCode1020/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">USACO 3.4 Electric Fence</div>
+      <div class="article-nav-title">LeetCode 1020. Number of Enclaves</div>
     </a>
   
 </nav>
@@ -269,7 +270,7 @@
 <script>
   var disqus_shortname = 'quantumfield';
   
-  var disqus_url = 'http://lianghan.org/2016/12/16/2016-12-16-USACO-RaucousRockers/';
+  var disqus_url = 'http://lianghan.org/2019/11/11/2019-11-11-LeetCode1016/';
   
   (function(){
     var dsq = document.createElement('script');

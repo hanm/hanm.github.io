@@ -75,6 +75,58 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-2016-10-07-USACO-Overfencing" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/10/07/2016-10-07-USACO-Overfencing/" class="article-date">
+  <time datetime="2016-10-07T21:59:31.000Z" itemprop="datePublished">2016-10-07</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/USACO/">USACO</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/10/07/2016-10-07-USACO-Overfencing/">USACO 2.4 Overfencing</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>The basic idea is for each starting position, find the shortest path from the starting position to one of the exists. Then, among all these shortest paths, find the longest one.<br>The shortest path problem typically can be solved using either BFS, or, by superimposing the grid into some sort of graph and then applying graph shortest path algorithms (Dijkstra or<br> Floyd-Warshall). Here I am using simple BFS which is easier to implement with hands tied.</p>
+<p>Two catches for this problem:</p>
+<ul>
+<li>Be careful with parse of input. For example ifstream in C++ by default will skip white space charaters, this is obviously what we don’t want here because white space char is legitimate input char. Hopefully the behavior is tunable through std::noskipws.</li>
+<li>The number of steps need to be encoded in each state.</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;utility&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;queue&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> W, H;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt;&gt; grid;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> state &#123;</span><br><span class="line">    <span class="keyword">int</span> x; <span class="keyword">int</span> y; <span class="keyword">int</span> s;</span><br><span class="line">    state(<span class="keyword">int</span> x, <span class="keyword">int</span> y, <span class="keyword">int</span> s) : x(x), y(y), s(s) &#123;&#125;</span><br><span class="line">&#125; tState;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">ongrid</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (x &lt; <span class="number">0</span> || x &gt;= <span class="number">2</span> * H + <span class="number">1</span> || y &lt; <span class="number">0</span> || y &gt;= <span class="number">2</span> * W + <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// All possible start positions.</span></span><br><span class="line"><span class="built_in">vector</span>&lt;tState&gt; pos;</span><br><span class="line"><span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"maze1.in"</span>)</span></span>;</span><br><span class="line"><span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"maze1.out"</span>)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">parseGrid</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    fin &gt;&gt; W &gt;&gt; H;</span><br><span class="line">    </span><br><span class="line">    grid = <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt;&gt;(<span class="number">2</span> * H + <span class="number">1</span>, <span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt;(<span class="number">2</span> * W + <span class="number">1</span>));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">2</span> * H + <span class="number">1</span>; ++i) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; <span class="number">2</span> * W + <span class="number">1</span>; ++j) &#123;</span><br><span class="line">            <span class="keyword">char</span> c;</span><br><span class="line">            fin &gt;&gt; <span class="built_in">std</span>::noskipws &gt;&gt; c;</span><br><span class="line">            <span class="keyword">if</span> (c == <span class="string">'\n'</span>) &#123;</span><br><span class="line">                fin &gt;&gt; <span class="built_in">std</span>::noskipws &gt;&gt; c;</span><br><span class="line">            &#125;</span><br><span class="line">            grid[i][j] = c;</span><br><span class="line">            <span class="built_in">cout</span> &lt;&lt; c;</span><br><span class="line">            <span class="keyword">if</span> (c == <span class="string">' '</span> &amp;&amp; i % <span class="number">2</span> &amp;&amp; j % <span class="number">2</span>) &#123;</span><br><span class="line">                pos.emplace_back(tState(i, j, <span class="number">0</span>));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    parseGrid();</span><br><span class="line">    <span class="keyword">int</span> res = <span class="number">-1</span>;</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt;&gt; visited(<span class="number">2</span> * H + <span class="number">1</span>, <span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt;(<span class="number">2</span> * W + <span class="number">1</span>, <span class="literal">false</span>));</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;position : pos) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">2</span> * H + <span class="number">1</span>; ++i) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; <span class="number">2</span> *W + <span class="number">1</span>; ++j) &#123;</span><br><span class="line">                visited[i][j] = <span class="literal">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">int</span> step = <span class="number">0</span>;</span><br><span class="line">        <span class="built_in">queue</span>&lt;tState&gt; q;</span><br><span class="line">        q.push(position);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">bool</span> find = <span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">while</span> (!q.empty() &amp;&amp; !find) &#123;</span><br><span class="line">            <span class="keyword">auto</span> p = q.front();</span><br><span class="line">            q.pop();</span><br><span class="line">            <span class="keyword">if</span> (visited[p.x][p.y])</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            <span class="keyword">int</span> dx[] = &#123;<span class="number">1</span>, <span class="number">-1</span>, <span class="number">0</span>, <span class="number">0</span>&#125;;</span><br><span class="line">            <span class="keyword">int</span> dy[] = &#123;<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">-1</span>&#125;;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span>; ++i) &#123;</span><br><span class="line">                <span class="keyword">int</span> x = p.x, y = p.y;</span><br><span class="line">                <span class="keyword">int</span> xx = x + dx[i], yy = y + dy[i];</span><br><span class="line">                <span class="keyword">if</span> (!ongrid(xx, yy))</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                <span class="keyword">if</span> (grid[xx][yy] == <span class="string">'|'</span> || grid[xx][yy] == <span class="string">'-'</span>) <span class="keyword">continue</span>;</span><br><span class="line">                xx = xx + dx[i]; yy = yy + dy[i];</span><br><span class="line">                <span class="function">tState <span class="title">next</span><span class="params">(xx, yy, p.s + <span class="number">1</span>)</span></span>;</span><br><span class="line">                <span class="keyword">if</span> (!ongrid(xx, yy)) &#123;</span><br><span class="line">                    step = next.s;</span><br><span class="line">                    find = <span class="literal">true</span>;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span> (!visited[next.x][next.y]) &#123;</span><br><span class="line">                    q.push(next);</span><br><span class="line">                &#125;</span><br><span class="line">                visited[p.x][p.y] = <span class="literal">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        res = <span class="built_in">std</span>::max(res, step);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    fout &lt;&lt; res&lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; res &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2016/10/07/2016-10-07-USACO-Overfencing/" data-id="ck33nbpy7000zl5xgztj4ygjr" data-title="USACO 2.4 Overfencing" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2016/10/07/2016-10-07-USACO-Overfencing/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/BFS/">BFS</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-2016-10-06-USACO-TheTamWorthTwo" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/10/06/2016-10-06-USACO-TheTamWorthTwo/" class="article-date">
@@ -106,7 +158,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/10/06/2016-10-06-USACO-TheTamWorthTwo/" data-id="ck33l1q6j000wphxgbsj4gh87" data-title="USACO 2.4 The Tamworth Two" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/10/06/2016-10-06-USACO-TheTamWorthTwo/" data-id="ck33nbpy6000yl5xglempxzap" data-title="USACO 2.4 The Tamworth Two" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2016/10/06/2016-10-06-USACO-TheTamWorthTwo/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -153,60 +205,13 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/10/05/2016-10-05-USACO-ControllingCompanies/" data-id="ck33l1q6i000vphxg1qk3ny2i" data-title="USACO 2.3 Controlling Companies" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/10/05/2016-10-05-USACO-ControllingCompanies/" data-id="ck33nbpy6000xl5xg3old1qlz" data-title="USACO 2.3 Controlling Companies" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2016/10/05/2016-10-05-USACO-ControllingCompanies/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DFS/">DFS</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2016-09-26-USACO-MoneySystem" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/09/26/2016-09-26-USACO-MoneySystem/" class="article-date">
-  <time datetime="2016-09-27T06:07:31.000Z" itemprop="datePublished">2016-09-26</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/USACO/">USACO</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/09/26/2016-09-26-USACO-MoneySystem/">USACO 2.3 Money System</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Very classic DP problem.</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> N;</span><br><span class="line"><span class="keyword">int</span> COINS;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">long</span> <span class="keyword">long</span>&gt; dp(<span class="number">100001</span>, <span class="number">0</span>);</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">long</span>&gt; coins;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">compute</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    dp[<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; COINS; ++i) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = coins[i]; j &lt;= N; ++j) &#123;</span><br><span class="line">            dp[j] += dp[j - coins[i]];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"money.in"</span>)</span></span>;</span><br><span class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"money.out"</span>)</span></span>;</span><br><span class="line">    fin &gt;&gt; COINS &gt;&gt; N;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; COINS; ++i) &#123;</span><br><span class="line">        <span class="keyword">int</span> c; fin &gt;&gt; c; coins.emplace_back(c);</span><br><span class="line">    &#125;</span><br><span class="line">    compute();</span><br><span class="line">    fout &lt;&lt; dp[N] &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/09/26/2016-09-26-USACO-MoneySystem/" data-id="ck33l1q6h000uphxgw4dmqhnx" data-title="USACO 2.3 Money System" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2016/09/26/2016-09-26-USACO-MoneySystem/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dynamic-Programming/">Dynamic Programming</a></li></ul>
 
     </footer>
   </div>
@@ -277,11 +282,11 @@
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1020/">LeetCode 1020. Number of Enclaves</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1016/">LeetCode 1016. Binary String With Substrings Representing 1 To N</a>
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1153/">LeetCode 1153. String Transforms Into Another String</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1020/">LeetCode 1020. Number of Enclaves</a>
           </li>
         
           <li>
