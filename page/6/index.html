@@ -75,6 +75,54 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-2019-09-11-LeetCode301" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/09/11/2019-09-11-LeetCode301/" class="article-date">
+  <time datetime="2019-09-11T17:39:31.000Z" itemprop="datePublished">2019-09-11</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/LeetCode-in-Rust/">LeetCode in Rust</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/09/11/2019-09-11-LeetCode301/">LeetCode 301 Remove Invalid Parentheses</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><a href="https://leetcode.com/problems/remove-invalid-parentheses/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<p>First attempt on implementing solutions for leetcode problems using Rust. For someone like me with a C++ background,<br>coding in Rust requires a paradigm change. Move semantics are everywhere, everything has to be explicit, and there are<br>really not so many similarities of standard libraries between Rust and C++. In any cases, it’s fun to code in Rust,<br>and I am sure this code can be more Rustified.</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">use</span> std::collections::HashSet;</span><br><span class="line"><span class="keyword">use</span> std::collections::VecDeque;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">remove_invalid_parentheses</span></span>(s: <span class="built_in">String</span>) -&gt; <span class="built_in">Vec</span>&lt;<span class="built_in">String</span>&gt; &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> result = <span class="built_in">Vec</span>::new();</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> visited = HashSet::new();</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> queue = VecDeque::new();</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">fn</span> <span class="title">isParenBalanced</span></span>(s : &amp;<span class="built_in">String</span>) -&gt; <span class="keyword">bool</span> &#123;</span><br><span class="line">            <span class="keyword">let</span> (<span class="keyword">mut</span> left, <span class="keyword">mut</span> right) = (<span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">            <span class="keyword">for</span> c <span class="keyword">in</span> s.chars() &#123;</span><br><span class="line">                <span class="keyword">if</span> c == <span class="string">'('</span> &#123;</span><br><span class="line">                    left = left + <span class="number">1</span>;</span><br><span class="line">                &#125; <span class="keyword">else</span> <span class="keyword">if</span> c == <span class="string">')'</span> &#123;</span><br><span class="line">                    <span class="keyword">if</span> left == <span class="number">0</span> &#123;</span><br><span class="line">                        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                    left = left - <span class="number">1</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> left == <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        visited.insert(s.clone());</span><br><span class="line">        queue.push_back(s.clone());</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> stop = <span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">while</span> !queue.is_empty() &#123;</span><br><span class="line">            <span class="keyword">let</span> <span class="keyword">str</span> = queue.pop_front().unwrap();</span><br><span class="line">            <span class="keyword">if</span> isParenBalanced(&amp;<span class="keyword">str</span>) &#123;</span><br><span class="line">                result.push(<span class="keyword">str</span>.clone());</span><br><span class="line">                stop = <span class="literal">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> stop &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">for</span> it <span class="keyword">in</span> <span class="keyword">str</span>.char_indices() &#123;</span><br><span class="line">                <span class="keyword">if</span> it.<span class="number">1</span> != <span class="string">'('</span> &amp;&amp; it.<span class="number">1</span> != <span class="string">')'</span> &#123;</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">let</span> <span class="keyword">mut</span> next = <span class="keyword">str</span>.clone();</span><br><span class="line">                next.remove(it.<span class="number">0</span>);</span><br><span class="line">                <span class="keyword">if</span> visited.contains(&amp;next) &#123;</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                queue.push_back(next.clone());</span><br><span class="line">                visited.insert(next.clone());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2019/09/11/2019-09-11-LeetCode301/" data-id="ck32jowed004fs5xgnjpfmu0e" data-title="LeetCode 301 Remove Invalid Parentheses" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2019/09/11/2019-09-11-LeetCode301/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LeetCode/">LeetCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Rust/">Rust</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-2019-01-26-SRM748" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2019/01/27/2019-01-26-SRM748/" class="article-date">
@@ -105,7 +153,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/01/27/2019-01-26-SRM748/" data-id="ck32hupjs004d6txgil1k2br8" data-title="SRM 748 DIV II 500" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/01/27/2019-01-26-SRM748/" data-id="ck32jowec004es5xgym3413gz" data-title="SRM 748 DIV II 500" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2019/01/27/2019-01-26-SRM748/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -150,81 +198,12 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2018/10/20/2018-10-20-SRM740/" data-id="ck32hupju004f6txgyjtmjsjn" data-title="SRM 740 DIV II 500" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2018/10/20/2018-10-20-SRM740/" data-id="ck32jowe9004as5xgb9224g9e" data-title="SRM 740 DIV II 500" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2018/10/20/2018-10-20-SRM740/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2017-09-13-Paxos" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/09/13/2017-09-13-Paxos/" class="article-date">
-  <time datetime="2017-09-14T05:03:31.000Z" itemprop="datePublished">2017-09-13</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Distributed-System/">Distributed System</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/09/13/2017-09-13-Paxos/">Paxos Retrospective</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Recently I looked through Lamport’s Paxos papers again and in retrospective, I feel Paxos as an algorithm is very elegant and easy to understand. In this post I’ll try to summary the core concepts and key steps of the single decree Paxos protocol. In future posts, I’ll write more about multi-paxos, and compare multi-paxos with similar protocols such as ZAB and Raft.</p>
-<h1 id="Terminology"><a href="#Terminology" class="headerlink" title="Terminology"></a>Terminology</h1><p>This post will use the usual terminologies for the protocol entities from the Paxos Made Simple paper, such as Proposer, Acceptor, Learner, Leader, etc.</p>
-<h1 id="The-Problem"><a href="#The-Problem" class="headerlink" title="The Problem"></a>The Problem</h1><p>Paxos is used to solve consensus problem. A consensus is about reaching agreement on a single value, among a set of values. Each value in the set is proposed by a proposer.</p>
-<h1 id="Assumptions-Use-Case-Constraints"><a href="#Assumptions-Use-Case-Constraints" class="headerlink" title="Assumptions / Use Case Constraints"></a>Assumptions / Use Case Constraints</h1><p>Paxos can solve consensus problem under a set of constraints, and these constraints happen to reflect real world use case constraints for distributed systems, thus it’s very practical and applicable. In particular:</p>
-<ul>
-<li>Fail-Recovery: each participant can fail. Failed participants can recover.</li>
-<li>Asynchronous: participants communicate with each other through async messages.</li>
-<li>None Byzantine Faults: These messages can be delayed, or lost, but will never be forged.</li>
-</ul>
-<p>It’s also worth noting that to reach consensus, a set of additional protocol level constraints have to be exposed on participants. One example is each participant can’t just insist on the value from its own, because if everyone does that, it’s possible no consensus could ever be made. In other words, participants are more interested on reach consensus on something, but they are not interested on what exactly the value of that agreement is.</p>
-<h1 id="Safety-and-Liveness"><a href="#Safety-and-Liveness" class="headerlink" title="Safety and Liveness"></a>Safety and Liveness</h1><p>Because of FLP impossibility, it’s not possible to reach consensus with the constraints Paxos protocol is exposed to, yet maintain both safety and liveness properties. Paxos chooses safety over liveness.</p>
-<p>The safety properties Paxos guarantees:</p>
-<ul>
-<li>Only a value that has been proposed may be chosen,</li>
-<li>Only a single value is chosen, and</li>
-<li>A process never learns that a value has been chosen unless it actually has been.</li>
-</ul>
-<p>Paxos does not guarantee liveness, in other words it does not guarantee making progress, or terminate.<br>For making progress, it’s possible to have live lock (which can be fixed easily through backoffs and randomization).<br>For termination, it could never terminate if not enough number of participants (the quorum) are live.</p>
-<h1 id="Protocol-Constraints"><a href="#Protocol-Constraints" class="headerlink" title="Protocol Constraints"></a>Protocol Constraints</h1><p>I feel it’s easier to understand the protocol by understanding the protocol constraints exposed to participants. There are two key constraints, one on the proposer, one on the acceptor.</p>
-<p>Proposer: a proposer must be willing to change the value it proposes, by using the value it acquires from the prepare phase. A proposer can propose any value though, if in prepare phase the queries on a quorum of acceptors returns null value (meaning those acceptors haven’t accepted anything.).</p>
-<p>Acceptor: an acceptor must be willing to reject the proposals it receives, unless the proposal it receives has a proposal number that’s equal or greater than the maximum of all proposal numbers that the acceptor ever see during the prepare phase. In other words, acceptor has to make a promise upon receiving a proposal with a bigger proposal number than it ever sees, and the promise is to not accept any future proposals with smaller proposal number.</p>
-<h1 id="Phases"><a href="#Phases" class="headerlink" title="Phases"></a>Phases</h1><p>Paxos is a two phased protocol. There are prepare phase, and accept phase. Prepare phase is used for proposer to get an updated view of the quorum and decide what to propose (e.g. update the proposal value from the response of the acceptor in prepare request if the proposal was rejected due to a smaller proposer number). Accept phase is to finish the protocol by having acceptors record the consensus and responds to proposer.</p>
-<p>To Be Continued…</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/09/13/2017-09-13-Paxos/" data-id="ck32hupjp004a6txgti4u567q" data-title="Paxos Retrospective" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2017/09/13/2017-09-13-Paxos/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Consensus-Protocol/">Consensus Protocol</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Paxos/">Paxos</a></li></ul>
-
     </footer>
   </div>
   
@@ -290,7 +269,7 @@
       <ul>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1020/">LeetCode 1020. Number of Enclaves</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1197/">1197. Minimum Knight Moves</a>
           </li>
         
           <li>
@@ -298,15 +277,15 @@
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1233/">LeetCode 1233. Remove Sub-Folders from the Filesystem</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1020/">LeetCode 1020. Number of Enclaves</a>
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1197/">1197. Minimum Knight Moves</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1231/">LeetCode 1231. Divide Chocolate</a>
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1219/">LeetCode 1219. Path with Maximum Gold</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1218/">1218. Longest Arithmetic Subsequence of Given Difference</a>
           </li>
         
       </ul>

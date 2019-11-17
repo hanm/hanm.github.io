@@ -75,6 +75,68 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-2017-02-19-USACO-PollutantControl" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/02/19/2017-02-19-USACO-PollutantControl/" class="article-date">
+  <time datetime="2017-02-19T18:34:31.000Z" itemprop="datePublished">2017-02-19</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/USACO/">USACO</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/02/19/2017-02-19-USACO-PollutantControl/">USACO 4.4 Pollutant Control</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>It is an obvious max flow min cut problem. The nasty part of this problems is:</p>
+<ul>
+<li>There might be multiple routes between same warehouses, so the graph might contain multiple edges between two vertices.</li>
+<li>The output requires to print the routes under certain constraints, instead of just asking about the min cut cost.</li>
+</ul>
+<p>The idea is:</p>
+<ul>
+<li>Find the max flow first. The cost of the max flow must be min cut.</li>
+<li>Sort all edges in cost descending order. Then iterate through the sorted edges, do two things:<ul>
+<li>Remove this edge from the graph temporarily, calculate the maximum flow value. If the diff between the calculated maximum flow value and the original max flow value (the value calculated without removing the edge from the graph) is the capacity of the edge, then this edge must be in the min cut.</li>
+<li>If an edge is in a min cut, remove this edge from the graph, and repeat, until we get all edges.</li>
+</ul>
+</li>
+</ul>
+<p>This code is a simple modification of the <a href="http://lianghan.org/2017/01/04/2017-01-04-USACO-DrainageDitches.h/">Drainage Ditches Problem Solution</a> that fits this problem, however it does not pass all test data because it does not deal with multiple edges connecting same two vertices. Will post another solution soon. </p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;climits&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;functional&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;numeric&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> N, M, Si, Ei, Ci;</span><br><span class="line"><span class="keyword">struct</span> Edge &#123;</span><br><span class="line">    <span class="keyword">int</span> to, cap, rev, index;</span><br><span class="line">    Edge(<span class="keyword">int</span> to, <span class="keyword">int</span> cap, <span class="keyword">int</span> rev, <span class="keyword">int</span> index) :</span><br><span class="line">    to(to), cap(cap), rev(rev), index(index) &#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;Edge&gt;&gt; graph;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;Edge&gt;&gt; graphCopy;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt; visited;</span><br><span class="line"><span class="built_in">vector</span>&lt;Edge*&gt; edges;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">addEdge</span><span class="params">(<span class="keyword">int</span> from, <span class="keyword">int</span> to, <span class="keyword">int</span> cap, <span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    graph[from].emplace_back(Edge(to, cap, (<span class="keyword">int</span>)graph[to].size(), index));</span><br><span class="line">    graph[to].emplace_back(Edge(from, <span class="number">0</span>, (<span class="keyword">int</span>)graph[from].size() - <span class="number">1</span>, index));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Ford–Fulkerson</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> v, <span class="keyword">int</span> t, <span class="keyword">int</span> f)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (v == t)</span><br><span class="line">    <span class="keyword">return</span> f;</span><br><span class="line">    visited[v] = <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">int</span> size = (<span class="keyword">int</span>)graph[v].size();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; size; ++i) &#123;</span><br><span class="line">        <span class="keyword">auto</span> &amp;e = graph[v][i];</span><br><span class="line">        <span class="keyword">if</span> (visited[e.to] || e.cap &lt;= <span class="number">0</span>) <span class="keyword">continue</span>;</span><br><span class="line">        <span class="keyword">int</span> d = dfs(e.to, t, <span class="built_in">std</span>::min(f, e.cap));</span><br><span class="line">        <span class="keyword">if</span> (d &lt;= <span class="number">0</span>) <span class="keyword">continue</span>;</span><br><span class="line">        e.cap -= d;</span><br><span class="line">        graph[e.to][e.rev].cap += d;</span><br><span class="line">        <span class="keyword">return</span> d;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">maxFlow</span><span class="params">(<span class="keyword">int</span> s, <span class="keyword">int</span> t)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> flow = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">        <span class="built_in">std</span>::fill(visited.begin(), visited.end(), <span class="literal">false</span>);</span><br><span class="line">        <span class="keyword">int</span> f = dfs(s, t, INT_MAX);</span><br><span class="line">        <span class="keyword">if</span> (f == <span class="number">0</span>) <span class="keyword">return</span> flow;</span><br><span class="line">        flow += f;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"milk6.in"</span>)</span></span>;</span><br><span class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"milk6.out"</span>)</span></span>;</span><br><span class="line">    </span><br><span class="line">    fin &gt;&gt; N <span class="comment">/* warehouses - vertices */</span> &gt;&gt; M <span class="comment">/* trucks - edges */</span>;</span><br><span class="line">    graph = <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;Edge&gt;&gt;(N + <span class="number">1</span>, <span class="built_in">vector</span>&lt;Edge&gt;());</span><br><span class="line">    </span><br><span class="line">    visited = <span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt;(N + <span class="number">1</span>, <span class="literal">false</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; M; ++i) &#123;</span><br><span class="line">        fin &gt;&gt; Si &gt;&gt; Ei &gt;&gt; Ci;</span><br><span class="line">        addEdge(Si, Ei, Ci, i);</span><br><span class="line">        <span class="comment">//cout &lt;&lt; Si &lt;&lt; " " &lt;&lt; Ei &lt;&lt; " " &lt;&lt; Ci &lt;&lt; " " &lt;&lt; i &lt;&lt; endl;</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;edge : graph[i]) &#123;</span><br><span class="line">            <span class="keyword">if</span> (edge.cap == <span class="number">0</span>) <span class="keyword">continue</span>;</span><br><span class="line">            edges.emplace_back(&amp;edge);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    sort(edges.begin(), edges.end(), [] (Edge *e1, <span class="keyword">const</span> Edge *e2) &#123;</span><br><span class="line">        <span class="keyword">return</span> e1-&gt;cap &gt; e2-&gt;cap;</span><br><span class="line">    &#125;);</span><br><span class="line">    </span><br><span class="line">    graphCopy = graph;</span><br><span class="line">    <span class="keyword">int</span> ans = maxFlow(<span class="number">1</span>, N);</span><br><span class="line">    graph = graphCopy;</span><br><span class="line">    <span class="keyword">int</span> total = ans;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; ret;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; edges.size(); ++i) &#123;</span><br><span class="line">        <span class="comment">//cout &lt;&lt; "cap : " &lt;&lt; edges[i]-&gt;cap &lt;&lt; "; index : " &lt;&lt; edges[i]-&gt;index &lt;&lt; endl;</span></span><br><span class="line">        graphCopy = graph;</span><br><span class="line">        <span class="keyword">int</span> cap = edges[i]-&gt;cap;</span><br><span class="line">        edges[i]-&gt;cap -= cap;</span><br><span class="line">        <span class="keyword">int</span> flow = maxFlow(<span class="number">1</span>, N);</span><br><span class="line">        <span class="keyword">if</span> (ans - flow == cap) &#123;</span><br><span class="line">            ret.push_back(edges[i]-&gt;index);</span><br><span class="line">            graph = graphCopy;</span><br><span class="line">            ans = flow;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            graph = graphCopy;</span><br><span class="line">            edges[i]-&gt;cap += cap;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    fout &lt;&lt; total - ans &lt;&lt; <span class="string">" "</span> &lt;&lt; ret.size() &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> val : ret) &#123;</span><br><span class="line">        fout &lt;&lt; val + <span class="number">1</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2017/02/19/2017-02-19-USACO-PollutantControl/" data-id="ck32jowdu003os5xg4vh8mi2k" data-title="USACO 4.4 Pollutant Control" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2017/02/19/2017-02-19-USACO-PollutantControl/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Ford-Fulkerson/">Ford-Fulkerson</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Graph-Theory/">Graph Theory</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Network-Flow/">Network Flow</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-2017-02-11-DynamoPaper" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/02/11/2017-02-11-DynamoPaper/" class="article-date">
@@ -161,7 +223,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/02/11/2017-02-11-DynamoPaper/" data-id="ck32hupj2003e6txgizufk82x" data-title="Dynamo, Amazon’s Highly Available Key-value Store" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2017/02/11/2017-02-11-DynamoPaper/" data-id="ck32jowdo003is5xgjftknfjd" data-title="Dynamo, Amazon’s Highly Available Key-value Store" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2017/02/11/2017-02-11-DynamoPaper/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -208,61 +270,13 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/02/03/2017-02-03-USACO-ShuttlePuzzle/" data-id="ck32hupj0003c6txg47e8z1u3" data-title="USACO 4.4 Shuttle Puzzle" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2017/02/03/2017-02-03-USACO-ShuttlePuzzle/" data-id="ck32jowdn003gs5xga3mtbv34" data-title="USACO 4.4 Shuttle Puzzle" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2017/02/03/2017-02-03-USACO-ShuttlePuzzle/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/BFS/">BFS</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2017-02-01-ByzantineFaultTolerance" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/02/01/2017-02-01-ByzantineFaultTolerance/" class="article-date">
-  <time datetime="2017-02-01T18:32:31.000Z" itemprop="datePublished">2017-02-01</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Distributed-System/">Distributed System</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/02/01/2017-02-01-ByzantineFaultTolerance/">Why we need n &gt;= 3f + 1 in Byzantine Fault Tolerance</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>In distributed systems where messages are asynchronous and failures can be Byzantine, we have to use at least n = 3f + 1 replicas in total to tolerate f faulty replicas. But why?</p>
-<p>Consider this scenario: a client sends the same command to each of n servers and then waits for servers to execute the command and send back the result. If we have f byzantine servers, then up to f messages could not be trusted, or up to f servers could not responding. So the client must be able to function with n - f responses. In addition, as the messages are asynchronous, these messages could be delayed for an indefinite amount of time. So if there are f messages not received by client, then it could be also be that these f messages are not from faulty servers, but instead caused by networking partition or slow responding non-faulty servers. In this case, where the f messages are from slow but non-faulty servers, we will have n - f messages remaining and out of these n - f messages, there could be at most f faulty messages again from byzantine servers, so the worst case we will have n - 2f correct message. For the system to function properly, the correct messages must out number faulty messages for client to identify which is which, which implies we should have n - 2f &gt; f, so n &gt; 3f where f is the number of byzantine servers.</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/02/01/2017-02-01-ByzantineFaultTolerance/" data-id="ck32hupiy003a6txg9e6zxn9z" data-title="Why we need n &gt;= 3f + 1 in Byzantine Fault Tolerance" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2017/02/01/2017-02-01-ByzantineFaultTolerance/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/BFT/">BFT</a></li></ul>
 
     </footer>
   </div>
@@ -329,7 +343,7 @@
       <ul>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1020/">LeetCode 1020. Number of Enclaves</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1197/">1197. Minimum Knight Moves</a>
           </li>
         
           <li>
@@ -337,15 +351,15 @@
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1233/">LeetCode 1233. Remove Sub-Folders from the Filesystem</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1020/">LeetCode 1020. Number of Enclaves</a>
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1197/">1197. Minimum Knight Moves</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1231/">LeetCode 1231. Divide Chocolate</a>
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1219/">LeetCode 1219. Path with Maximum Gold</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1218/">1218. Longest Arithmetic Subsequence of Given Difference</a>
           </li>
         
       </ul>

@@ -75,6 +75,53 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-2016-08-08-NameThatNumber" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/08/08/2016-08-08-NameThatNumber/" class="article-date">
+  <time datetime="2016-08-09T05:06:31.000Z" itemprop="datePublished">2016-08-08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/USACO/">USACO</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/08/08/2016-08-08-NameThatNumber/">USACO 1.2 Name That Number</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>This is a search problem and the key is to figure out the search space. Given the input number, we can generate all possible combinations of the valid words and use these words as search space. The other approach is to generate all possible numbers from the input dictionary and then use these numbers as search space. Obviously, given the input constraints (a list of fewer than 5,000 acceptable cattle names), the number search space is more practical.<br><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sstream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="built_in">string</span> <span class="title">name2number</span><span class="params">(<span class="built_in">string</span> name)</span></span>&#123;</span><br><span class="line">  <span class="keyword">char</span> c = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">int</span> value = <span class="number">0</span>;</span><br><span class="line">  <span class="built_in">ostringstream</span> buf;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span>(<span class="keyword">auto</span> c : name)&#123;</span><br><span class="line">    <span class="keyword">if</span>(c &gt; <span class="string">'Q'</span>)</span><br><span class="line">      value = (c - <span class="number">1</span> - <span class="string">'A'</span>) / <span class="number">3</span> + <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">      value = (c - <span class="string">'A'</span>) / <span class="number">3</span> + <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line">    buf &lt;&lt; value;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> buf.str();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"namenum.out"</span>)</span></span>;</span><br><span class="line">  <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"namenum.in"</span>)</span></span>;</span><br><span class="line">  <span class="function">ifstream <span class="title">dict_fin</span><span class="params">(<span class="string">"dict.txt"</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">string</span> value;</span><br><span class="line">  fin &gt;&gt; value;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">string</span> name;</span><br><span class="line">  <span class="keyword">bool</span> not_found = <span class="literal">true</span>;</span><br><span class="line">  <span class="keyword">while</span>(dict_fin &gt;&gt; name)&#123;</span><br><span class="line">    <span class="built_in">string</span> number = name2number(name);</span><br><span class="line">    <span class="keyword">if</span>(number != value)</span><br><span class="line">      <span class="keyword">continue</span>;</span><br><span class="line">    fout &lt;&lt; name &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    not_found = <span class="literal">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span>(not_found)</span><br><span class="line">    fout&lt;&lt;<span class="string">"NONE"</span>&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">  dict_fin.close();</span><br><span class="line">  fin.close();</span><br><span class="line">  fout.close();</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2016/08/08/2016-08-08-NameThatNumber/" data-id="ck32jow950007s5xglarn7ui8" data-title="USACO 1.2 Name That Number" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2016/08/08/2016-08-08-NameThatNumber/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Search/">Search</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post- 2016-08-08-Transformation" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/08/08/ 2016-08-08-Transformation/" class="article-date">
@@ -106,7 +153,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/08/ 2016-08-08-Transformation/" data-id="ck32hupeb00006txgq6g0zgxv" data-title="USACO 1.2 Transformation" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/08/08/ 2016-08-08-Transformation/" data-id="ck32jow8x0001s5xgmmfrmz1k" data-title="USACO 1.2 Transformation" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2016/08/08/ 2016-08-08-Transformation/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -153,60 +200,13 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/08/2016-08-08-MilkingCows/" data-id="ck32hupen00066txgqhr55zxz" data-title="USACO 1.2 Milking Cows" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/08/08/2016-08-08-MilkingCows/" data-id="ck32jow940006s5xgl446xp91" data-title="USACO 1.2 Milking Cows" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2016/08/08/2016-08-08-MilkingCows/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Search/">Search</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2016-08-06－USACO-BrokenNecklace" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/08/06/2016-08-06－USACO-BrokenNecklace/" class="article-date">
-  <time datetime="2016-08-07T01:25:31.000Z" itemprop="datePublished">2016-08-06</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/USACO/">USACO</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/08/06/2016-08-06－USACO-BrokenNecklace/">USACO 1.1 Broken Necklace</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Brutal force O(N^2) solution.</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span> <span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="built_in">string</span> str;</span><br><span class="line">  <span class="keyword">int</span> n, i, l, r, mx = <span class="number">0</span>;</span><br><span class="line">  <span class="function">ifstream <span class="title">fin</span> <span class="params">(<span class="string">"beads.in"</span>)</span></span>;</span><br><span class="line">  <span class="function">ofstream <span class="title">fout</span> <span class="params">(<span class="string">"beads.out"</span>)</span></span>;</span><br><span class="line">  fin &gt;&gt; n;</span><br><span class="line">  fin &gt;&gt; str;</span><br><span class="line">  str += str;</span><br><span class="line">  <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">    l = r = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">int</span> k = i + <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">char</span> flag;</span><br><span class="line">    <span class="keyword">while</span>(l &lt; n) &#123;</span><br><span class="line">      <span class="keyword">int</span> j = i;</span><br><span class="line">      <span class="keyword">while</span>(str[j] == <span class="string">'w'</span>)</span><br><span class="line">        j++;</span><br><span class="line">      flag = str[j];</span><br><span class="line">      <span class="keyword">if</span> (str[k] == flag || str[k] == <span class="string">'w'</span>)</span><br><span class="line">        k++, l++;</span><br><span class="line">      <span class="keyword">else</span> <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    k = i + n - <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">while</span>(r &lt; n) &#123;</span><br><span class="line">      <span class="keyword">int</span> j = i;</span><br><span class="line">      <span class="keyword">while</span>(str[j] == <span class="string">'w'</span>)</span><br><span class="line">        j--;</span><br><span class="line">      <span class="keyword">if</span> (str[k] == str[i + n - <span class="number">1</span>] || str[k] == <span class="string">'w'</span>)</span><br><span class="line">        k--, r++;</span><br><span class="line">      <span class="keyword">else</span> <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (l + r &gt; mx) mx = l + r;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (mx &gt; n) mx = n;</span><br><span class="line">  fout &lt;&lt; mx &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/06/2016-08-06－USACO-BrokenNecklace/" data-id="ck32hupel00056txgn11z3jhj" data-title="USACO 1.1 Broken Necklace" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2016/08/06/2016-08-06－USACO-BrokenNecklace/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li></ul>
 
     </footer>
   </div>
@@ -273,7 +273,7 @@
       <ul>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1020/">LeetCode 1020. Number of Enclaves</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1197/">1197. Minimum Knight Moves</a>
           </li>
         
           <li>
@@ -281,15 +281,15 @@
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1233/">LeetCode 1233. Remove Sub-Folders from the Filesystem</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1020/">LeetCode 1020. Number of Enclaves</a>
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1197/">1197. Minimum Knight Moves</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1231/">LeetCode 1231. Divide Chocolate</a>
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1219/">LeetCode 1219. Path with Maximum Gold</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1218/">1218. Longest Arithmetic Subsequence of Given Difference</a>
           </li>
         
       </ul>

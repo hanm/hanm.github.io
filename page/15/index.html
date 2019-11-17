@@ -75,6 +75,128 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-2017-01-21-Google-File-System" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/01/21/2017-01-21-Google-File-System/" class="article-date">
+  <time datetime="2017-01-22T00:14:31.000Z" itemprop="datePublished">2017-01-21</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Distributed-System/">Distributed System</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/01/21/2017-01-21-Google-File-System/">The Google File System</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Paper digest - <a href="https://static.googleusercontent.com/media/research.google.com/en//archive/gfs-sosp2003.pdf" target="_blank" rel="noopener">The Google File System</a></p>
+<h1 id="Motivation"><a href="#Motivation" class="headerlink" title="Motivation"></a>Motivation</h1><ul>
+<li>Scalable distributed file system for large distributed data-intensive applications driven by observations of application workloads and technological environment, both current and anticipated:<ul>
+<li>Component failures are the norm rather than the exception.</li>
+<li>Files are huge by traditional standards. Multi-GB files are common.</li>
+<li>Workloads: large streaming reads and small random reads; many large, sequential writes.</li>
+</ul>
+</li>
+</ul>
+<h1 id="Goals"><a href="#Goals" class="headerlink" title="Goals"></a>Goals</h1><ul>
+<li><p>Provides fault tolerance while running on inexpensive commodity hardware.</p>
+</li>
+<li><p>Delivers high aggregate performance to a large number of clients.</p>
+</li>
+<li><p>Must efficiently implement well-defined semantics for multiple clients that concurrently append to the same file. Atomicity with minimal synchronization overhead is essential. </p>
+</li>
+<li><p>Prefer bandwidth over latency (batch processing, not real time.).</p>
+</li>
+<li><p>Consistency Model : co-designing the applications and the file system for flexibility (in other words, push hard problem to other places.).</p>
+</li>
+</ul>
+<h1 id="System-Design"><a href="#System-Design" class="headerlink" title="System Design"></a>System Design</h1><ul>
+<li><p>Master-Slave architecture.</p>
+<ul>
+<li>GFS Master:<ul>
+<li>Management data storage: metadata, namespace, access control, mappings from files to chunks, current location of chunk.</li>
+<li>System wide activities: chunk lease management, garbage collect of orphaned chunks, chunk migration.</li>
+<li>System is designed to minimize master’s involvement since master is SPOF.</li>
+</ul>
+</li>
+<li>GFS Slave (aka chunk server):<ul>
+<li>Chunk with 64 bit globally uniquely chunk handle. Stored on linux FS. Replicated (3 copies by default.).</li>
+<li>Does not cache files (rely on Linux’s buffer cache.).</li>
+</ul>
+</li>
+<li>GFS Client:<ul>
+<li>Interact with master for metadata operations.</li>
+<li>Actual data IO does not go through master; go through between client and chunk server.</li>
+<li>Does not cache files (infeasible to cache - too large; hard problem to solve for cache coherence, so don’t solve it.).</li>
+<li>Does not cache files - continued: GFS applications, MapReduce and BigTable. MapReduce - sequential read, no need to cache. Bigtable has its own cache management.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Lease Management</p>
+<ul>
+<li>Lease is used to maintain a consistent mutation order across replicas. </li>
+<li>Master grants chunk lease to one replica (primary).</li>
+<li>The primary picks a serial order for all mutations to the chunk. All replicas follow this order when applying mutations.</li>
+<li>A lease has an initial timeout of 60 seconds. Can be extended at the request of primary chunk server, or can be revoked by master after lease expire.</li>
+</ul>
+</li>
+<li><p>Consistency Model</p>
+<ul>
+<li>Relaxed consistency model.</li>
+<li>File namespace mutations (e.g., file creation) are atomic, handled by master exclusively.</li>
+<li>Data mutation case: consistent but undefined (e.g., concurrent succeed mutation).</li>
+<li>Data mutation case: Inconsistent and undefined (e.g., failed mutation).</li>
+<li>Concurrent append: at least once semantic (implies that records could have paddings in between, that readers need to dealt with).</li>
+<li>Reader dealt with validating (through checksums) and identifying records.</li>
+<li>Overall - flexible consistency model (instead of strong consistency) makes application development a little bit difficult.</li>
+</ul>
+</li>
+<li><p>Append</p>
+<ul>
+<li>Pipeline</li>
+<li>Data flow and control flow decoupled.</li>
+</ul>
+</li>
+<li><p>Fault Tolerant</p>
+<ul>
+<li>Replicated master, check points and snapshots (**Q: how replication is done??)</li>
+<li>Replicated chunk servers (default 3). Erasure codes / parity.</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2017/01/21/2017-01-21-Google-File-System/" data-id="ck32jowdi003as5xgi46eli0q" data-title="The Google File System" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2017/01/21/2017-01-21-Google-File-System/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Distributed-System/">Distributed System</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Paper-Digest/">Paper Digest</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-2017-01-21-TopCoder-SRM706-DIV2-500" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/01/21/2017-01-21-TopCoder-SRM706-DIV2-500/" class="article-date">
@@ -105,7 +227,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/01/21/2017-01-21-TopCoder-SRM706-DIV2-500/" data-id="ck32hupis00346txgynpaglq7" data-title="SRM 706 DIV 2 500 Selling Fruits" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2017/01/21/2017-01-21-TopCoder-SRM706-DIV2-500/" data-id="ck32jowdh0038s5xgrsv11s8d" data-title="SRM 706 DIV 2 500 Selling Fruits" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2017/01/21/2017-01-21-TopCoder-SRM706-DIV2-500/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -154,60 +276,13 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/01/15/2017-01-15-USACO-StreetRace/" data-id="ck32hupio00306txguazfia7j" data-title="USACO 4.3 Street Race" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2017/01/15/2017-01-15-USACO-StreetRace/" data-id="ck32jowde0034s5xg7hi4bhv5" data-title="USACO 4.3 Street Race" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2017/01/15/2017-01-15-USACO-StreetRace/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DFS/">DFS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Graph-Theory/">Graph Theory</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Search/">Search</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2017-01-13-USACO-BuyLow" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/01/13/2017-01-13-USACO-BuyLow/" class="article-date">
-  <time datetime="2017-01-13T23:19:31.000Z" itemprop="datePublished">2017-01-13</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/USACO/">USACO</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/13/2017-01-13-USACO-BuyLow/">USACO 4.3 Buy Low</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Essentially a longest decreasing sequence problem that is easy to solve using typical DP approach. Counting the number of such sequences is also not hard, the real problem is that the counts could be too big to fit in 32 or 64 bit integers, so need to use big integers struct.</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;climits&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iomanip&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> base = <span class="number">1000000000</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> base_digits = <span class="number">9</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> BigInteger &#123;</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; a;</span><br><span class="line">    <span class="keyword">int</span> sign;</span><br><span class="line"></span><br><span class="line">    BigInteger() : sign(<span class="number">1</span>) &#123;&#125;</span><br><span class="line">    BigInteger(<span class="keyword">long</span> <span class="keyword">long</span> v) &#123;</span><br><span class="line">        *<span class="keyword">this</span> = v;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">void</span> <span class="keyword">operator</span>=(<span class="keyword">const</span> BigInteger &amp;v) &#123;</span><br><span class="line">        sign = v.sign;</span><br><span class="line">        a = v.a;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">void</span> <span class="keyword">operator</span>=(<span class="keyword">long</span> <span class="keyword">long</span> v) &#123;</span><br><span class="line">        sign = <span class="number">1</span>;</span><br><span class="line">        a.clear();</span><br><span class="line">        <span class="keyword">if</span> (v &lt; <span class="number">0</span>) &#123;</span><br><span class="line">            sign = <span class="number">-1</span>, v = -v;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (; v &gt; <span class="number">0</span>; v = v / base) &#123;</span><br><span class="line">            a.push_back(v % base);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    BigInteger <span class="keyword">operator</span>+(<span class="keyword">const</span> BigInteger &amp;v) <span class="keyword">const</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (sign != v.sign) <span class="keyword">return</span> *<span class="keyword">this</span> - (-v);</span><br><span class="line">        BigInteger res = v;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>, carry = <span class="number">0</span>;</span><br><span class="line">             i &lt; (<span class="keyword">int</span>) max(a.size(), v.a.size()) || carry; ++i) &#123;</span><br><span class="line">            <span class="keyword">if</span> (i == (<span class="keyword">int</span>) res.a.size())</span><br><span class="line">                res.a.push_back(<span class="number">0</span>);</span><br><span class="line">            res.a[i] += carry + (i &lt; (<span class="keyword">int</span>) a.size() ? a[i] : <span class="number">0</span>);</span><br><span class="line">            carry = res.a[i] &gt;= base;</span><br><span class="line">            <span class="keyword">if</span> (carry) res.a[i] -= base;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    BigInteger <span class="keyword">operator</span>-(<span class="keyword">const</span> BigInteger &amp;v) <span class="keyword">const</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (sign != v.sign) <span class="keyword">return</span> *<span class="keyword">this</span> + (-v);</span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">abs</span>() &lt; v.<span class="built_in">abs</span>()) <span class="keyword">return</span> -(v - *<span class="keyword">this</span>);</span><br><span class="line">        BigInteger res = *<span class="keyword">this</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>, carry = <span class="number">0</span>; i &lt; (<span class="keyword">int</span>) v.a.size() || carry; ++i) &#123;</span><br><span class="line">            res.a[i] -= carry + (i &lt; (<span class="keyword">int</span>) v.a.size() ? v.a[i] : <span class="number">0</span>);</span><br><span class="line">            carry = res.a[i] &lt; <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">if</span> (carry)</span><br><span class="line">                res.a[i] += base;</span><br><span class="line">        &#125;</span><br><span class="line">        res.trim();</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">void</span> <span class="keyword">operator</span>+=(<span class="keyword">const</span> BigInteger &amp;v) &#123;</span><br><span class="line">        *<span class="keyword">this</span> = *<span class="keyword">this</span> + v;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">void</span> <span class="keyword">operator</span>-=(<span class="keyword">const</span> BigInteger &amp;v) &#123;</span><br><span class="line">        *<span class="keyword">this</span> = *<span class="keyword">this</span> - v;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">bool</span> <span class="keyword">operator</span>&lt;(<span class="keyword">const</span> BigInteger &amp;v) <span class="keyword">const</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (sign != v.sign)</span><br><span class="line">            <span class="keyword">return</span> sign &lt; v.sign;</span><br><span class="line">        <span class="keyword">if</span> (a.size() != v.a.size())</span><br><span class="line">            <span class="keyword">return</span> a.size() * sign &lt; v.a.size() * v.sign;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = (<span class="keyword">int</span>)a.size() - <span class="number">1</span>; i &gt;= <span class="number">0</span>; i--)</span><br><span class="line">            <span class="keyword">if</span> (a[i] != v.a[i])</span><br><span class="line">                <span class="keyword">return</span> a[i] * sign &lt; v.a[i] * sign;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">bool</span> <span class="keyword">operator</span>&gt;(<span class="keyword">const</span> BigInteger &amp;v) <span class="keyword">const</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> v &lt; *<span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">bool</span> <span class="keyword">operator</span> &lt;= (<span class="keyword">const</span> BigInteger &amp;v) <span class="keyword">const</span> &#123; <span class="keyword">return</span> !(v &lt; *<span class="keyword">this</span>); &#125;</span><br><span class="line">    <span class="keyword">bool</span> <span class="keyword">operator</span> &gt;= (<span class="keyword">const</span> BigInteger &amp;v) <span class="keyword">const</span> &#123; <span class="keyword">return</span> !(*<span class="keyword">this</span> &lt; v); &#125;</span><br><span class="line">    <span class="keyword">bool</span> <span class="keyword">operator</span> == (<span class="keyword">const</span> BigInteger &amp;v) <span class="keyword">const</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> !(*<span class="keyword">this</span> &lt; v) &amp;&amp; !(v &lt; *<span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">bool</span> <span class="keyword">operator</span> != (<span class="keyword">const</span> BigInteger &amp;v) <span class="keyword">const</span> &#123; <span class="keyword">return</span> *<span class="keyword">this</span> &lt; v || v &lt; *<span class="keyword">this</span>; &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">trim</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">while</span> (!a.empty() &amp;&amp; !a.back())</span><br><span class="line">            a.pop_back();</span><br><span class="line">        <span class="keyword">if</span> (a.empty())</span><br><span class="line">            sign = <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    BigInteger <span class="keyword">operator</span>-() <span class="keyword">const</span> &#123;</span><br><span class="line">        BigInteger res = *<span class="keyword">this</span>;</span><br><span class="line">        res.sign = -sign;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function">BigInteger <span class="title">abs</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123;</span><br><span class="line">        BigInteger res = *<span class="keyword">this</span>;</span><br><span class="line">        res.sign *= res.sign;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">friend</span> ostream&amp; <span class="keyword">operator</span>&lt;&lt;(ostream &amp;stream, <span class="keyword">const</span> BigInteger &amp;v) &#123;</span><br><span class="line">        <span class="keyword">if</span> (v.sign == <span class="number">-1</span>)</span><br><span class="line">            stream &lt;&lt; <span class="string">'-'</span>;</span><br><span class="line">        stream &lt;&lt; (v.a.empty() ? <span class="number">0</span> : v.a.back());</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = (<span class="keyword">int</span>) v.a.size() - <span class="number">2</span>; i &gt;= <span class="number">0</span>; --i)</span><br><span class="line">            stream &lt;&lt; setw(base_digits) &lt;&lt; setfill(<span class="string">'0'</span>) &lt;&lt; v.a[i];</span><br><span class="line">        <span class="keyword">return</span> stream;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> N;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; num, dp;</span><br><span class="line"><span class="built_in">vector</span>&lt;BigInteger&gt; cnt;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"buylow.in"</span>)</span></span>;</span><br><span class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"buylow.out"</span>)</span></span>;</span><br><span class="line">    fin &gt;&gt; N;</span><br><span class="line">    num = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N, <span class="number">0</span>);</span><br><span class="line">    dp = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N, <span class="number">0</span>);</span><br><span class="line">    cnt = <span class="built_in">vector</span>&lt;BigInteger&gt;(N, BigInteger(<span class="number">0</span>));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">        fin &gt;&gt; num[i];</span><br><span class="line">    &#125;</span><br><span class="line">    dp[<span class="number">0</span>] = <span class="number">1</span>; cnt[<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">        dp[i] = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; i; ++j) &#123;</span><br><span class="line">            <span class="keyword">if</span> (num[j] &gt; num[i]) &#123;</span><br><span class="line">                dp[i] = <span class="built_in">std</span>::max(dp[i], dp[j] + <span class="number">1</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; i; ++j) &#123;</span><br><span class="line">            <span class="keyword">if</span> (num[j] &gt; num[i] &amp;&amp; dp[i] == dp[j] + <span class="number">1</span>) &#123;</span><br><span class="line">                cnt[i] += cnt[j];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (cnt[i] == <span class="number">0</span>) cnt[i] = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; i; ++j) &#123;</span><br><span class="line">            <span class="keyword">if</span> (num[j] == num[i] &amp;&amp; dp[j] == dp[i]) &#123;</span><br><span class="line">                cnt[i] -= cnt[j]; <span class="comment">// remove duplicates.</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> maxLen = *<span class="built_in">std</span>::minmax_element(dp.begin(), dp.end()).second;</span><br><span class="line">    BigInteger finalCnt = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">        <span class="keyword">if</span> (maxLen == dp[i]) &#123;</span><br><span class="line">            finalCnt += cnt[i];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; maxLen &lt;&lt; <span class="string">" "</span> &lt;&lt; finalCnt &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    fout &lt;&lt; maxLen &lt;&lt; <span class="string">" "</span> &lt;&lt; finalCnt &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/01/13/2017-01-13-USACO-BuyLow/" data-id="ck32hupin002y6txgx0f2ipnl" data-title="USACO 4.3 Buy Low" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2017/01/13/2017-01-13-USACO-BuyLow/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Big-Integer/">Big Integer</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dynamic-Programming/">Dynamic Programming</a></li></ul>
 
     </footer>
   </div>
@@ -274,7 +349,7 @@
       <ul>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1020/">LeetCode 1020. Number of Enclaves</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1197/">1197. Minimum Knight Moves</a>
           </li>
         
           <li>
@@ -282,15 +357,15 @@
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1233/">LeetCode 1233. Remove Sub-Folders from the Filesystem</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1020/">LeetCode 1020. Number of Enclaves</a>
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1197/">1197. Minimum Knight Moves</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1231/">LeetCode 1231. Divide Chocolate</a>
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1219/">LeetCode 1219. Path with Maximum Gold</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1218/">1218. Longest Arithmetic Subsequence of Given Difference</a>
           </li>
         
       </ul>
