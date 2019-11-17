@@ -75,6 +75,56 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-2016-09-08-USACO-SubsetSum" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/09/08/2016-09-08-USACO-SubsetSum/" class="article-date">
+  <time datetime="2016-09-08T21:07:31.000Z" itemprop="datePublished">2016-09-08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/USACO/">USACO</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/09/08/2016-09-08-USACO-SubsetSum/">USACO 2.2 Subset Sum</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>It’s tempting to solve this using brutal force search like dfs:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;bitset&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;set&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> result;</span><br><span class="line"><span class="keyword">int</span> expected;</span><br><span class="line"><span class="keyword">int</span> N;</span><br><span class="line"><span class="built_in">set</span>&lt;<span class="keyword">unsigned</span> <span class="keyword">long</span>&gt; st;</span><br><span class="line"><span class="built_in">bitset</span>&lt;32&gt; bset;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> sum, <span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (sum == expected &amp;&amp; !st.count(bset.to_ulong())) &#123;</span><br><span class="line">        st.insert(bset.to_ulong());</span><br><span class="line">        ++result;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (sum &gt; expected) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = index; i &lt;= N ; ++i) &#123;</span><br><span class="line">        bset.<span class="built_in">set</span>(i);</span><br><span class="line">        dfs(sum + i, i + <span class="number">1</span>);</span><br><span class="line">        bset.flip(i);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"subset.in"</span>)</span></span>;</span><br><span class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"subset.out"</span>)</span></span>;</span><br><span class="line">    bset.reset();</span><br><span class="line">    fin &gt;&gt; N;</span><br><span class="line">    expected = (N + <span class="number">1</span>) * N / <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">if</span> (expected % <span class="number">2</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    expected /= <span class="number">2</span>;</span><br><span class="line">    dfs(<span class="number">0</span>, <span class="number">1</span>);</span><br><span class="line">    fout &lt;&lt; result / <span class="number">2</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>This solution however does not pass all tests, which has a time limit of 1 sec and a space limit of 16MB. The reason is the simple search will yield an exponential algorithm, given the state that we are about to explore is as much as 2^N, where N could be as large as 39. That said, it might be possible to optimize the search based algorithm using data structures that provides very optimized memory foot print with fast lookup, but I’ve not yet found such a data structure that satisfy the constraints.</p>
+<p>Thinking from another perspective, the set / sum exhibits recursive nature and there are sub problems when solving each set partition, so dynamic programming is here for rescue:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> N;</span><br><span class="line"><span class="keyword">int</span> expected;</span><br><span class="line"><span class="keyword">int</span> result;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"subset.in"</span>)</span></span>;</span><br><span class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"subset.out"</span>)</span></span>;</span><br><span class="line">    fin &gt;&gt; N;</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">unsigned</span> <span class="keyword">long</span> <span class="keyword">long</span>&gt;&gt; dp(<span class="number">40</span>, <span class="built_in">vector</span>&lt;<span class="keyword">unsigned</span> <span class="keyword">long</span> <span class="keyword">long</span>&gt;(<span class="number">800</span>, <span class="number">0</span>));</span><br><span class="line">    expected = (N + <span class="number">1</span>) * N / <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">if</span> (expected % <span class="number">2</span>) &#123;</span><br><span class="line">        fout &lt;&lt; <span class="number">0</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    expected /= <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"expected :"</span> &lt;&lt; expected &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= N; ++i) &#123;</span><br><span class="line">        dp[i][<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; N &lt;&lt; <span class="string">" "</span> &lt;&lt; expected &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= N; ++i) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">1</span>; j &lt;= expected; ++j) &#123;</span><br><span class="line">            dp[i][j] += dp[i - <span class="number">1</span>][j];</span><br><span class="line">            <span class="keyword">if</span> (i &lt;= j) &#123;</span><br><span class="line">                dp[i][j] += dp[i - <span class="number">1</span>][j - i];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    fout &lt;&lt; dp[N][expected] / <span class="number">2</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2016/09/08/2016-09-08-USACO-SubsetSum/" data-id="ck33l1q6b000nphxgti0vc13c" data-title="USACO 2.2 Subset Sum" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2016/09/08/2016-09-08-USACO-SubsetSum/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dynamic-Programming/">Dynamic Programming</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-2016-09-07-PrefaceNumbering" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/09/07/2016-09-07-PrefaceNumbering/" class="article-date">
@@ -106,7 +156,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/09/07/2016-09-07-PrefaceNumbering/" data-id="ck33ka8sx000md1xgwyqse2e2" data-title="USACO 2.2 Preface Numbering" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/09/07/2016-09-07-PrefaceNumbering/" data-id="ck33l1q6b000mphxgt58pgdto" data-title="USACO 2.2 Preface Numbering" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2016/09/07/2016-09-07-PrefaceNumbering/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -152,7 +202,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/09/02/2016-09-02-USACO-HammingCode/" data-id="ck33ka8sw000ld1xgl4qcwv99" data-title="USACO 2.1 Hamming Codes" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/09/02/2016-09-02-USACO-HammingCode/" data-id="ck33l1q6a000lphxgfpgwg21c" data-title="USACO 2.1 Hamming Codes" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2016/09/02/2016-09-02-USACO-HammingCode/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -168,58 +218,11 @@
 
 
   
-    <article id="post-2016-08-31-USACO-HealthyHolsteins" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/08/31/2016-08-31-USACO-HealthyHolsteins/" class="article-date">
-  <time datetime="2016-09-01T01:17:31.000Z" itemprop="datePublished">2016-08-31</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/USACO/">USACO</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/08/31/2016-08-31-USACO-HealthyHolsteins/">USACO 2.1 Healthy Holsteins</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Brutal force approach using bit set to speed up search.</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;bitset&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> V, vit[<span class="number">26</span>], G, feedType[<span class="number">16</span>][<span class="number">26</span>], vc;</span><br><span class="line"><span class="built_in">bitset</span>&lt;16&gt; minbit(<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"holstein.in"</span>)</span></span>;</span><br><span class="line">  <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"holstein.out"</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">  vc = <span class="number">16</span>;</span><br><span class="line">	fin &gt;&gt; V;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; V; ++i)</span><br><span class="line">		fin &gt;&gt; vit[i];</span><br><span class="line"></span><br><span class="line">  fin &gt;&gt; G;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; G; ++i)</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span> ; j &lt; V; ++j)</span><br><span class="line">      fin &gt;&gt; feedType[i][j];</span><br><span class="line"></span><br><span class="line">  <span class="keyword">auto</span> limit = <span class="number">1</span> &lt;&lt; G;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; limit; ++i) &#123;</span><br><span class="line">    <span class="keyword">int</span> v[<span class="number">26</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">		<span class="built_in">bitset</span>&lt;16&gt; bit(i);</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> b = <span class="number">0</span>; b != G; ++b) &#123;</span><br><span class="line">      <span class="keyword">if</span>(bit[b]) &#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>; j != V; ++j)</span><br><span class="line">          v[j] += feedType[b][j];</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">bool</span> satisfy = <span class="literal">true</span>;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; V; ++j) &#123;</span><br><span class="line">      <span class="keyword">if</span>(v[j] &lt; vit[j]) &#123;</span><br><span class="line">        satisfy = <span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span>(satisfy &amp;&amp; <span class="keyword">int</span>(bit.count()) &lt; vc &amp;&amp; bit.to_ulong() &gt; minbit.to_ulong()) &#123;</span><br><span class="line">			vc = <span class="keyword">static_cast</span>&lt;<span class="keyword">int</span>&gt;(bit.count());</span><br><span class="line">			minbit = bit;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	fout &lt;&lt; vc;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; G; ++i) &#123;</span><br><span class="line">    <span class="keyword">if</span>(minbit[i])</span><br><span class="line">      fout &lt;&lt; <span class="string">" "</span> &lt;&lt; i + <span class="number">1</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">	fout &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/31/2016-08-31-USACO-HealthyHolsteins/" data-id="ck33ka8su000jd1xgv2r4xawn" data-title="USACO 2.1 Healthy Holsteins" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2016/08/31/2016-08-31-USACO-HealthyHolsteins/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Brutal-Force/">Brutal Force</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
 
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/page/30/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/29/">29</a><a class="page-number" href="/page/30/">30</a><span class="page-number current">31</span><a class="page-number" href="/page/32/">32</a><a class="page-number" href="/page/33/">33</a><span class="space">&hellip;</span><a class="page-number" href="/page/39/">39</a><a class="extend next" rel="next" href="/page/32/">Next &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/30/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/29/">29</a><a class="page-number" href="/page/30/">30</a><span class="page-number current">31</span><a class="page-number" href="/page/32/">32</a><a class="page-number" href="/page/33/">33</a><span class="space">&hellip;</span><a class="page-number" href="/page/40/">40</a><a class="extend next" rel="next" href="/page/32/">Next &raquo;</a>
   </nav>
 
 </section>
@@ -272,11 +275,11 @@
       <ul>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1020/">LeetCode 1020. Number of Enclaves</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1015/">LeetCode 1015. Smallest Integer Divisible by K</a>
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1066/">LeetCode 1066. Campus Bikes II</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1020/">LeetCode 1020. Number of Enclaves</a>
           </li>
         
           <li>
@@ -284,11 +287,11 @@
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1147/">LeetCode 1147. Longest Chunked Palindrome Decomposition</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1031/">LeetCode 1031 Maximum Sum of Two Non-Overlapping Subarrays</a>
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1031/">LeetCode 1031 Maximum Sum of Two Non-Overlapping Subarrays</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1066/">LeetCode 1066. Campus Bikes II</a>
           </li>
         
       </ul>

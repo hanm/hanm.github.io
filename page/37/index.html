@@ -75,6 +75,53 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post- 2016-08-08-Transformation" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/08/08/ 2016-08-08-Transformation/" class="article-date">
+  <time datetime="2016-08-09T04:53:31.000Z" itemprop="datePublished">2016-08-08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/USACO/">USACO</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/08/08/ 2016-08-08-Transformation/">USACO 1.2 Transformation</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Brutal force search… and a Hexo bug that prevent syntax being highlighted!</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt; &gt; MATRIX;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">rotateMatrix90</span><span class="params">(MATRIX &amp;matrix)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">auto</span> size = matrix.size();</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; size; ++i) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = i + <span class="number">1</span>; j &lt; size; ++j) &#123;</span><br><span class="line">      swap(matrix[i][j], matrix[j][i]);</span><br><span class="line">    &#125;</span><br><span class="line">    reverse(matrix[i].begin(), matrix[i].end());</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">rotateMatrix180</span><span class="params">(MATRIX &amp;matrix)</span> </span>&#123;</span><br><span class="line">  rotateMatrix90(matrix);</span><br><span class="line">  rotateMatrix90(matrix);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">rotateMatrix270</span><span class="params">(MATRIX &amp;matrix)</span> </span>&#123;</span><br><span class="line">  rotateMatrix90(matrix);</span><br><span class="line">  rotateMatrix180(matrix);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">reflectMatrixHorizontal</span><span class="params">(MATRIX &amp;matrix)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> size = <span class="keyword">static_cast</span>&lt;<span class="keyword">int</span>&gt;(matrix.size());</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>, j = size - <span class="number">1</span>; i &lt; j; ++i, --j) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; size; ++k)</span><br><span class="line">      swap(matrix[k][i], matrix[k][j]);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">initializeMatrix</span><span class="params">(MATRIX &amp;matrix, ifstream &amp;fin)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">auto</span> demension = matrix.size();</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; demension; ++i) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; demension; ++j) &#123;</span><br><span class="line">      fin &gt;&gt; matrix[i][j];</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span> <span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="built_in">string</span> str;</span><br><span class="line">  <span class="function">ifstream <span class="title">fin</span> <span class="params">(<span class="string">"transform.in"</span>)</span></span>;</span><br><span class="line">  <span class="function">ofstream <span class="title">fout</span> <span class="params">(<span class="string">"transform.out"</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">int</span> demension;</span><br><span class="line">  fin &gt;&gt; demension;</span><br><span class="line">  MATRIX matrix(demension, vector&lt;char&gt;(demension, ' '));</span><br><span class="line">  initializeMatrix(matrix, fin);</span><br><span class="line"></span><br><span class="line">  MATRIX baseline(demension, vector&lt;char&gt;(demension, ' '));</span><br><span class="line">  initializeMatrix(baseline, fin);</span><br><span class="line"></span><br><span class="line">  MATRIX old = matrix;</span><br><span class="line"></span><br><span class="line">  rotateMatrix90(matrix);</span><br><span class="line">  <span class="keyword">if</span> (baseline == matrix) &#123;</span><br><span class="line">    fout &lt;&lt; <span class="number">1</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  matrix = old;</span><br><span class="line">  rotateMatrix180(matrix);</span><br><span class="line">  <span class="keyword">if</span> (baseline == matrix) &#123;</span><br><span class="line">    fout &lt;&lt; <span class="number">2</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  matrix = old;</span><br><span class="line">  rotateMatrix270(matrix);</span><br><span class="line">  <span class="keyword">if</span> (baseline == matrix) &#123;</span><br><span class="line">    fout &lt;&lt; <span class="number">3</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  matrix = old;</span><br><span class="line">  reflectMatrixHorizontal(matrix);</span><br><span class="line">  <span class="keyword">if</span> (baseline == matrix) &#123;</span><br><span class="line">    fout &lt;&lt; <span class="number">4</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  MATRIX reflected = matrix;</span><br><span class="line">  rotateMatrix90(matrix);</span><br><span class="line">  <span class="keyword">if</span> (matrix == baseline) &#123;</span><br><span class="line">    fout &lt;&lt; <span class="number">5</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  matrix = reflected;</span><br><span class="line">  rotateMatrix180(matrix);</span><br><span class="line">  <span class="keyword">if</span> (matrix == baseline) &#123;</span><br><span class="line">    fout &lt;&lt; <span class="number">5</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  matrix = reflected;</span><br><span class="line">  rotateMatrix270(matrix);</span><br><span class="line">  <span class="keyword">if</span> (matrix == baseline) &#123;</span><br><span class="line">    fout &lt;&lt; <span class="number">5</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  matrix = old;</span><br><span class="line">  <span class="keyword">if</span> (matrix == baseline) &#123;</span><br><span class="line">    fout &lt;&lt; <span class="number">6</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  fout &lt;&lt; <span class="number">7</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2016/08/08/ 2016-08-08-Transformation/" data-id="ck33l1q5g0000phxgwv70qc5g" data-title="USACO 1.2 Transformation" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2016/08/08/ 2016-08-08-Transformation/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Search/">Search</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-2016-08-08-MilkingCows" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/08/08/2016-08-08-MilkingCows/" class="article-date">
@@ -106,7 +153,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/08/2016-08-08-MilkingCows/" data-id="ck33ka8se0006d1xgarts1gpe" data-title="USACO 1.2 Milking Cows" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/08/08/2016-08-08-MilkingCows/" data-id="ck33l1q5r0006phxgmr1x7jez" data-title="USACO 1.2 Milking Cows" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2016/08/08/2016-08-08-MilkingCows/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -153,56 +200,9 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/06/2016-08-06－USACO-BrokenNecklace/" data-id="ck33ka8sc0005d1xge6fd9a9g" data-title="USACO 1.1 Broken Necklace" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/08/06/2016-08-06－USACO-BrokenNecklace/" data-id="ck33l1q5q0005phxgqe4kyfwd" data-title="USACO 1.1 Broken Necklace" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2016/08/06/2016-08-06－USACO-BrokenNecklace/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2016-08-06-USACO-Friday" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/08/06/2016-08-06-USACO-Friday/" class="article-date">
-  <time datetime="2016-08-07T00:16:31.000Z" itemprop="datePublished">2016-08-06</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/USACO/">USACO</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/08/06/2016-08-06-USACO-Friday/">USACO 1.1 Friday</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Straightforward brutal force implementation.</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> Checker &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="keyword">int</span> day, year, offset;</span><br><span class="line"></span><br><span class="line">  Checker() : day(<span class="number">1</span>), year(<span class="number">1900</span>), offset(<span class="number">1</span>) &#123;</span><br><span class="line">    frequentCounterList = &#123;<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span> , <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>&#125;;</span><br><span class="line">    month2days = &#123;<span class="number">0</span>, <span class="number">31</span>, <span class="number">28</span>, <span class="number">31</span>, <span class="number">30</span>, <span class="number">31</span>, <span class="number">30</span>, <span class="number">31</span>, <span class="number">31</span>, <span class="number">30</span>, <span class="number">31</span>, <span class="number">30</span>, <span class="number">31</span>&#125;;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">traverse</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; ++i) &#123;</span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">int</span> month = <span class="number">1</span>; month &lt;= <span class="number">12</span>; ++month) &#123;</span><br><span class="line">        day = offset + <span class="number">12</span>;</span><br><span class="line">        frequentCounterList[day % <span class="number">7</span> + <span class="number">1</span>]++;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (month == <span class="number">2</span>) &#123;</span><br><span class="line">          <span class="keyword">if</span> (isLeapYear(year))</span><br><span class="line">            offset += <span class="number">29</span>;</span><br><span class="line">          <span class="keyword">else</span></span><br><span class="line">            offset += <span class="number">28</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span></span><br><span class="line">          offset += month2days[month];</span><br><span class="line">      &#125;</span><br><span class="line">      ++year;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; getFrequency() <span class="keyword">const</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> frequentCounterList;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">  <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; frequentCounterList;</span><br><span class="line">  <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; month2days;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">  <span class="function"><span class="keyword">bool</span> <span class="title">isLeapYear</span><span class="params">(<span class="keyword">int</span> year)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (year % <span class="number">100</span> == <span class="number">0</span>)</span><br><span class="line">      <span class="keyword">return</span> year % <span class="number">400</span> == <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> year % <span class="number">4</span> == <span class="number">0</span>;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="function">ofstream <span class="title">fout</span> <span class="params">(<span class="string">"friday.out"</span>)</span></span>;</span><br><span class="line">  <span class="function">ifstream <span class="title">fin</span> <span class="params">(<span class="string">"friday.in"</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">string</span> years;</span><br><span class="line">  getline(fin, years);</span><br><span class="line">  Checker checker;</span><br><span class="line">  checker.traverse(stoi(years));</span><br><span class="line"></span><br><span class="line">  <span class="keyword">auto</span> <span class="built_in">list</span> = checker.getFrequency();</span><br><span class="line">  fout &lt;&lt; <span class="built_in">list</span>[<span class="number">7</span>] &lt;&lt; <span class="string">" "</span> &lt;&lt; <span class="built_in">list</span>[<span class="number">1</span>] &lt;&lt; <span class="string">" "</span> &lt;&lt;</span><br><span class="line">  <span class="built_in">list</span>[<span class="number">2</span>] &lt;&lt; <span class="string">" "</span> &lt;&lt; <span class="built_in">list</span>[<span class="number">3</span>] &lt;&lt; <span class="string">" "</span> &lt;&lt; <span class="built_in">list</span>[<span class="number">4</span>] &lt;&lt; <span class="string">" "</span> &lt;&lt; <span class="built_in">list</span>[<span class="number">5</span>] &lt;&lt; <span class="string">" "</span> &lt;&lt;</span><br><span class="line">  <span class="built_in">list</span>[<span class="number">6</span>] &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/06/2016-08-06-USACO-Friday/" data-id="ck33ka8s90003d1xglvv27nm1" data-title="USACO 1.1 Friday" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2016/08/06/2016-08-06-USACO-Friday/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
@@ -220,7 +220,7 @@
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/page/36/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/35/">35</a><a class="page-number" href="/page/36/">36</a><span class="page-number current">37</span><a class="page-number" href="/page/38/">38</a><a class="page-number" href="/page/39/">39</a><a class="extend next" rel="next" href="/page/38/">Next &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/36/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/35/">35</a><a class="page-number" href="/page/36/">36</a><span class="page-number current">37</span><a class="page-number" href="/page/38/">38</a><a class="page-number" href="/page/39/">39</a><a class="page-number" href="/page/40/">40</a><a class="extend next" rel="next" href="/page/38/">Next &raquo;</a>
   </nav>
 
 </section>
@@ -273,11 +273,11 @@
       <ul>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1020/">LeetCode 1020. Number of Enclaves</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1015/">LeetCode 1015. Smallest Integer Divisible by K</a>
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1066/">LeetCode 1066. Campus Bikes II</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1020/">LeetCode 1020. Number of Enclaves</a>
           </li>
         
           <li>
@@ -285,11 +285,11 @@
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1147/">LeetCode 1147. Longest Chunked Palindrome Decomposition</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1031/">LeetCode 1031 Maximum Sum of Two Non-Overlapping Subarrays</a>
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1031/">LeetCode 1031 Maximum Sum of Two Non-Overlapping Subarrays</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1066/">LeetCode 1066. Campus Bikes II</a>
           </li>
         
       </ul>

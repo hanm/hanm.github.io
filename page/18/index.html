@@ -75,6 +75,52 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-2017-01-08-USACO-JobProcessing" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/01/08/2017-01-08-USACO-JobProcessing/" class="article-date">
+  <time datetime="2017-01-09T06:26:31.000Z" itemprop="datePublished">2017-01-08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/USACO/">USACO</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/01/08/2017-01-08-USACO-JobProcessing/">USACO 4.2 Job Processing</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;climits&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> N, M1, M2;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; va, vb, cost, ta, tb;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">compute</span><span class="params">(<span class="keyword">const</span> <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;vec, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;table)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> size = (<span class="keyword">int</span>)vec.size();</span><br><span class="line">    cost = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(size, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">        <span class="keyword">int</span> min = INT_MAX, index;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; size; ++j) &#123;</span><br><span class="line">            <span class="keyword">int</span> delay = cost[j] + vec[j];</span><br><span class="line">            <span class="keyword">if</span> (min &lt;= delay) <span class="keyword">continue</span>;</span><br><span class="line">            min = delay; index = j;</span><br><span class="line">        &#125;</span><br><span class="line">        cost[index] = min;</span><br><span class="line">        table[i] = min;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"job.in"</span>)</span></span>;</span><br><span class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"job.out"</span>)</span></span>;</span><br><span class="line">    <span class="keyword">int</span> ansA, ansB = INT_MIN;</span><br><span class="line">    fin &gt;&gt; N &gt;&gt; M1 &gt;&gt; M2;</span><br><span class="line">    va = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(M1, <span class="number">0</span>), vb = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(M2, <span class="number">0</span>);</span><br><span class="line">    ta = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N, <span class="number">0</span>), tb = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; M1; ++i) fin &gt;&gt; va[i];</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; M2; ++i) fin &gt;&gt; vb[i];</span><br><span class="line">    compute(va, ta); compute(vb, tb);</span><br><span class="line">    sort(ta.begin(), ta.end());</span><br><span class="line">    sort(tb.begin(), tb.end(), [] (<span class="keyword">int</span> a, <span class="keyword">int</span> b) &#123; <span class="keyword">return</span> a &gt; b; &#125;);</span><br><span class="line">    ansA = ta[N - <span class="number">1</span>];</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">        ansB = <span class="built_in">std</span>::max(ta[i] + tb[i], ansB);</span><br><span class="line">    &#125;</span><br><span class="line">    fout &lt;&lt; ansA &lt;&lt; <span class="string">" "</span> &lt;&lt; ansB &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; ansA &lt;&lt; <span class="string">" "</span> &lt;&lt; ansB &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2017/01/08/2017-01-08-USACO-JobProcessing/" data-id="ck33l1q7f001uphxgjpsjeuyv" data-title="USACO 4.2 Job Processing" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2017/01/08/2017-01-08-USACO-JobProcessing/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Greedy/">Greedy</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-2017-01-04-USACO-ThePerfectStall" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/01/04/2017-01-04-USACO-ThePerfectStall/" class="article-date">
@@ -106,7 +152,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/01/04/2017-01-04-USACO-ThePerfectStall/" data-id="ck33ka8tz001td1xgkhhk03j6" data-title="USACO 4.2 The Pefect Stall" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2017/01/04/2017-01-04-USACO-ThePerfectStall/" data-id="ck33l1q7e001tphxgdu2psbug" data-title="USACO 4.2 The Pefect Stall" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2017/01/04/2017-01-04-USACO-ThePerfectStall/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -153,7 +199,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/01/04/2017-01-04-USACO-DrainageDitches.h/" data-id="ck33ka8tw001sd1xgr0p3zbdf" data-title="USACO 4.2 Drainage Ditches" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2017/01/04/2017-01-04-USACO-DrainageDitches.h/" data-id="ck33l1q7b001sphxgemfsg0ax" data-title="USACO 4.2 Drainage Ditches" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2017/01/04/2017-01-04-USACO-DrainageDitches.h/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -169,59 +215,11 @@
 
 
   
-    <article id="post-2016-12-27-USACO-FenceLoops" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/12/27/2016-12-27-USACO-FenceLoops/" class="article-date">
-  <time datetime="2016-12-27T22:34:31.000Z" itemprop="datePublished">2016-12-27</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/USACO/">USACO</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/12/27/2016-12-27-USACO-FenceLoops/">USACO 4.1 Fence Loops</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>The problem is to find smallest loops in a DAG. The idea is simple: each loop must have a start vertex and an end vertex. Since no loop connects to itself as the problem stated, the start and end vertex must be different. Also, the smallest perimeter of such a loop is the shortest path between the start vertex and end vertex, plus the length of the edge between two vertices. So to find the loop with smallest perimeter, we can iterate through each edge, calculate the shortest distance between two vertices that connect the edge (without considering the edge itself, of course, otherwise the shortest distance between two vertices would be the edge itself.), then add length of the edge. Do this for all possible edge and we get the result. The shortest distance between two vertices can be calculated using <a href="http://lianghan.org/2016/08/03/2016-08-03-DijKstra/">Dijkstra algorithm I posted earlier</a>.</p>
-<p>The pain point here is to properly transfer the source data to the graph representation. Here the transformation is done through state encoding (each vertex can be uniquely identified by the edge id it connects to). The overall code is a little bit bloated due to this.</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;queue&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;map&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;set&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;climits&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// [to node index, edge weight] pair.</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="built_in">std</span>::pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; edge;</span><br><span class="line"><span class="comment">// [node index, distance to source] pair.</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="built_in">std</span>::pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; element;</span><br><span class="line"></span><br><span class="line"><span class="built_in">map</span>&lt;<span class="built_in">set</span>&lt;<span class="keyword">int</span>&gt;, <span class="keyword">int</span>&gt; vxts;</span><br><span class="line"><span class="keyword">int</span> vxtCnt = <span class="number">0</span>;</span><br><span class="line"><span class="built_in">set</span>&lt;<span class="keyword">int</span>&gt; vs;</span><br><span class="line"><span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"fence6.in"</span>)</span></span>;</span><br><span class="line"><span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"fence6.out"</span>)</span></span>;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;edge&gt;&gt; graph;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> N, s, Ls, N1s, N2s;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">getVertexId</span><span class="params">(<span class="keyword">int</span> Ns)</span> </span>&#123;</span><br><span class="line">    vs.clear(); vs.insert(s);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; Ns; ++j) &#123;</span><br><span class="line">        <span class="keyword">int</span> sn; fin &gt;&gt; sn;</span><br><span class="line">        vs.insert(sn);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">auto</span> iter = vxts.find(vs);</span><br><span class="line">    <span class="keyword">if</span> (iter == vxts.end()) &#123;</span><br><span class="line">        vxts[vs] = vxtCnt++;</span><br><span class="line">        <span class="keyword">return</span> vxts[vs];</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> iter-&gt;second;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">genGraph</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    fin &gt;&gt; N;</span><br><span class="line">    <span class="built_in">map</span>&lt;<span class="keyword">int</span>, <span class="built_in">vector</span>&lt;edge&gt;&gt; g;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">        fin &gt;&gt; s &gt;&gt; Ls &gt;&gt; N1s &gt;&gt; N2s;</span><br><span class="line">        <span class="keyword">int</span> vtx1 = getVertexId(N1s);</span><br><span class="line">        <span class="keyword">int</span> vtx2 = getVertexId(N2s);</span><br><span class="line">        g[vtx1].emplace_back(make_pair(vtx2, Ls));</span><br><span class="line">        g[vtx2].emplace_back(make_pair(vtx1, Ls));</span><br><span class="line">    &#125;</span><br><span class="line">    graph = <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;edge&gt;&gt;(vxtCnt, <span class="built_in">vector</span>&lt;edge&gt;());</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; vxtCnt; ++i) &#123;</span><br><span class="line">        graph[i] = g[i];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> compare &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">operator</span><span class="params">()</span><span class="params">(<span class="keyword">const</span> element&amp;a, <span class="keyword">const</span> element &amp;b)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> a.second &gt; b.second;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">dijkstra</span><span class="params">(<span class="keyword">const</span> <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;edge&gt;&gt; &amp;graph, <span class="keyword">int</span> source, <span class="keyword">int</span> target)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> size = (<span class="keyword">int</span>)graph.size();</span><br><span class="line">    <span class="keyword">if</span> (!size) <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">if</span> (source &lt; <span class="number">0</span> || source &gt;= size || target &lt; <span class="number">0</span> || target &gt;= size)</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt; visited(size, <span class="literal">false</span>);</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; distance(size, INT_MAX);</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; prev(size, <span class="number">-1</span>);</span><br><span class="line">    distance[source] = <span class="number">0</span>;</span><br><span class="line">    priority_queue&lt;element, <span class="built_in">vector</span>&lt;element&gt;, compare&gt; pq;</span><br><span class="line">    pq.emplace(make_pair(source, <span class="number">0</span>));</span><br><span class="line">    <span class="keyword">while</span> (!pq.empty()) &#123;</span><br><span class="line">        <span class="keyword">int</span> v = pq.top().first;</span><br><span class="line">        pq.pop();</span><br><span class="line">        <span class="keyword">if</span> (v == target) <span class="keyword">return</span> distance[v];</span><br><span class="line">        <span class="keyword">if</span> (visited[v]) <span class="keyword">continue</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;edge : graph[v]) &#123;</span><br><span class="line">            <span class="keyword">int</span> u = edge.first; <span class="comment">// vertice u that connects to v.</span></span><br><span class="line">            <span class="keyword">int</span> w = edge.second; <span class="comment">// weight of edge that connects u and v.</span></span><br><span class="line">            <span class="keyword">if</span> (visited[u]) <span class="keyword">continue</span>;</span><br><span class="line">            <span class="keyword">if</span> (distance[v] &lt; distance[u] - w) &#123;</span><br><span class="line">                distance[u] = distance[v] + w;</span><br><span class="line">                pq.emplace(make_pair(u, distance[u]));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        visited[v] = <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    genGraph();</span><br><span class="line">    <span class="keyword">int</span> ans = INT_MAX;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; vxtCnt; ++i) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;e1 : graph[i]) &#123;</span><br><span class="line">            <span class="keyword">int</span> w = e1.second;</span><br><span class="line">            <span class="keyword">int</span> to = e1.first;</span><br><span class="line">            edge *e2;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; graph[to].size(); ++j) &#123;</span><br><span class="line">                <span class="keyword">if</span> (graph[to][j].first == i) &#123;</span><br><span class="line">                    e2 = &amp;graph[to][j];</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            e1.second = INT_MAX;</span><br><span class="line">            e2-&gt;second = INT_MAX;</span><br><span class="line">            <span class="keyword">int</span> p = dijkstra(graph, i, to);</span><br><span class="line">            <span class="keyword">if</span> (p != <span class="number">-1</span> &amp;&amp; p + w &lt; ans) &#123;</span><br><span class="line">                ans = p + w;</span><br><span class="line">            &#125;</span><br><span class="line">            e1.second = w;</span><br><span class="line">            e2-&gt;second = INT_MAX;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; ans &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    fout &lt;&lt; ans &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/12/27/2016-12-27-USACO-FenceLoops/" data-id="ck33ka8tt001nd1xgxl3rvh8x" data-title="USACO 4.1 Fence Loops" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2016/12/27/2016-12-27-USACO-FenceLoops/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dijkstra/">Dijkstra</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Graph-Theory/">Graph Theory</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
 
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/page/17/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/16/">16</a><a class="page-number" href="/page/17/">17</a><span class="page-number current">18</span><a class="page-number" href="/page/19/">19</a><a class="page-number" href="/page/20/">20</a><span class="space">&hellip;</span><a class="page-number" href="/page/39/">39</a><a class="extend next" rel="next" href="/page/19/">Next &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/17/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/16/">16</a><a class="page-number" href="/page/17/">17</a><span class="page-number current">18</span><a class="page-number" href="/page/19/">19</a><a class="page-number" href="/page/20/">20</a><span class="space">&hellip;</span><a class="page-number" href="/page/40/">40</a><a class="extend next" rel="next" href="/page/19/">Next &raquo;</a>
   </nav>
 
 </section>
@@ -274,11 +272,11 @@
       <ul>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1020/">LeetCode 1020. Number of Enclaves</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1015/">LeetCode 1015. Smallest Integer Divisible by K</a>
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1066/">LeetCode 1066. Campus Bikes II</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1020/">LeetCode 1020. Number of Enclaves</a>
           </li>
         
           <li>
@@ -286,11 +284,11 @@
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1147/">LeetCode 1147. Longest Chunked Palindrome Decomposition</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1031/">LeetCode 1031 Maximum Sum of Two Non-Overlapping Subarrays</a>
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1031/">LeetCode 1031 Maximum Sum of Two Non-Overlapping Subarrays</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1066/">LeetCode 1066. Campus Bikes II</a>
           </li>
         
       </ul>
