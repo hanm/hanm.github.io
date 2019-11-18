@@ -75,6 +75,53 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-2019-09-23-LeetCode1123" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/09/23/2019-09-23-LeetCode1123/" class="article-date">
+  <time datetime="2019-09-23T17:39:31.000Z" itemprop="datePublished">2019-09-23</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/LeetCode-in-Rust/">LeetCode in Rust</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/09/23/2019-09-23-LeetCode1123/">LeetCode 1123 Lowest Common Ancestor of Deepest Leaves</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><a href="https://leetcode.com/problems/lowest-common-ancestor-of-deepest-leaves/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::rc::Rc;</span><br><span class="line"><span class="keyword">use</span> std::cell::RefCell;</span><br><span class="line"><span class="keyword">use</span> std::cmp::max;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">compute_depth</span></span>(node : <span class="built_in">Option</span>&lt;&amp;Rc&lt;RefCell&lt;TreeNode&gt;&gt;&gt;) -&gt; <span class="keyword">u32</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">let</span> <span class="literal">Some</span>(n) = node &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span> + max(Solution::compute_depth(n.borrow().left.as_ref()),</span><br><span class="line">                           Solution::compute_depth(n.borrow().right.as_ref()));</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">lca_deepest_leaves</span></span>(root: <span class="built_in">Option</span>&lt;Rc&lt;RefCell&lt;TreeNode&gt;&gt;&gt;) -&gt; <span class="built_in">Option</span>&lt;Rc&lt;RefCell&lt;TreeNode&gt;&gt;&gt; &#123;</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">let</span> <span class="literal">Some</span>(node) = root.clone() &#123;</span><br><span class="line">            <span class="keyword">let</span> (l, r) = (Solution::compute_depth(node.borrow().left.as_ref()),</span><br><span class="line">                          Solution::compute_depth(node.borrow().right.as_ref()));</span><br><span class="line">            <span class="keyword">if</span> l == r &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">Some</span>(node);</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> l &lt; r &#123;</span><br><span class="line">                <span class="keyword">return</span> Solution::lca_deepest_leaves(node.borrow().right.clone());</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">return</span> Solution::lca_deepest_leaves(node.borrow().left.clone());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">None</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2019/09/23/2019-09-23-LeetCode1123/" data-id="ck34sdmri002s7fxg3sfw86nz" data-title="LeetCode 1123 Lowest Common Ancestor of Deepest Leaves" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2019/09/23/2019-09-23-LeetCode1123/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LeetCode/">LeetCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Rust/">Rust</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-2019-09-19-LeetCode641" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2019/09/19/2019-09-19-LeetCode641/" class="article-date">
@@ -106,7 +153,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/09/19/2019-09-19-LeetCode641/" data-id="ck34sc79r009i6axga77pq67m" data-title="LeetCode 641 Design Circular Deque" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/09/19/2019-09-19-LeetCode641/" data-id="ck34sdmrl002v7fxgl2j1bw9h" data-title="LeetCode 641 Design Circular Deque" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2019/09/19/2019-09-19-LeetCode641/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -153,57 +200,9 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/09/15/2019-09-15-LeetCode622/" data-id="ck34sc79u009t6axgfyrhy1mw" data-title="LeetCode 622 Design Circular Queue" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/09/15/2019-09-15-LeetCode622/" data-id="ck34sdmrk002u7fxg0pprwaa8" data-title="LeetCode 622 Design Circular Queue" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2019/09/15/2019-09-15-LeetCode622/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LeetCode/">LeetCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Rust/">Rust</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2019-09-11-LeetCode301" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/09/11/2019-09-11-LeetCode301/" class="article-date">
-  <time datetime="2019-09-11T17:39:31.000Z" itemprop="datePublished">2019-09-11</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/LeetCode-in-Rust/">LeetCode in Rust</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/09/11/2019-09-11-LeetCode301/">LeetCode 301 Remove Invalid Parentheses</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><a href="https://leetcode.com/problems/remove-invalid-parentheses/description/" target="_blank" rel="noopener">Problem Statement</a></p>
-<p>First attempt on implementing solutions for leetcode problems using Rust. For someone like me with a C++ background,<br>coding in Rust requires a paradigm change. Move semantics are everywhere, everything has to be explicit, and there are<br>really not so many similarities of standard libraries between Rust and C++. In any cases, it’s fun to code in Rust,<br>and I am sure this code can be more Rustified.</p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">use</span> std::collections::HashSet;</span><br><span class="line"><span class="keyword">use</span> std::collections::VecDeque;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">remove_invalid_parentheses</span></span>(s: <span class="built_in">String</span>) -&gt; <span class="built_in">Vec</span>&lt;<span class="built_in">String</span>&gt; &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> result = <span class="built_in">Vec</span>::new();</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> visited = HashSet::new();</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> queue = VecDeque::new();</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">fn</span> <span class="title">isParenBalanced</span></span>(s : &amp;<span class="built_in">String</span>) -&gt; <span class="keyword">bool</span> &#123;</span><br><span class="line">            <span class="keyword">let</span> (<span class="keyword">mut</span> left, <span class="keyword">mut</span> right) = (<span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">            <span class="keyword">for</span> c <span class="keyword">in</span> s.chars() &#123;</span><br><span class="line">                <span class="keyword">if</span> c == <span class="string">'('</span> &#123;</span><br><span class="line">                    left = left + <span class="number">1</span>;</span><br><span class="line">                &#125; <span class="keyword">else</span> <span class="keyword">if</span> c == <span class="string">')'</span> &#123;</span><br><span class="line">                    <span class="keyword">if</span> left == <span class="number">0</span> &#123;</span><br><span class="line">                        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                    left = left - <span class="number">1</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> left == <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        visited.insert(s.clone());</span><br><span class="line">        queue.push_back(s.clone());</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> stop = <span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">while</span> !queue.is_empty() &#123;</span><br><span class="line">            <span class="keyword">let</span> <span class="keyword">str</span> = queue.pop_front().unwrap();</span><br><span class="line">            <span class="keyword">if</span> isParenBalanced(&amp;<span class="keyword">str</span>) &#123;</span><br><span class="line">                result.push(<span class="keyword">str</span>.clone());</span><br><span class="line">                stop = <span class="literal">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> stop &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">for</span> it <span class="keyword">in</span> <span class="keyword">str</span>.char_indices() &#123;</span><br><span class="line">                <span class="keyword">if</span> it.<span class="number">1</span> != <span class="string">'('</span> &amp;&amp; it.<span class="number">1</span> != <span class="string">')'</span> &#123;</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">let</span> <span class="keyword">mut</span> next = <span class="keyword">str</span>.clone();</span><br><span class="line">                next.remove(it.<span class="number">0</span>);</span><br><span class="line">                <span class="keyword">if</span> visited.contains(&amp;next) &#123;</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                queue.push_back(next.clone());</span><br><span class="line">                visited.insert(next.clone());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/09/11/2019-09-11-LeetCode301/" data-id="ck34sc79s009m6axgy5v4ix28" data-title="LeetCode 301 Remove Invalid Parentheses" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2019/09/11/2019-09-11-LeetCode301/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
@@ -274,15 +273,15 @@
       <ul>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1020/">LeetCode 1020. Number of Enclaves</a>
-          </li>
-        
-          <li>
             <a href="/2019/11/11/2019-11-11-LeetCode1015/">LeetCode 1015. Smallest Integer Divisible by K</a>
           </li>
         
           <li>
             <a href="/2019/11/11/2019-11-11-LeetCode1016/">LeetCode 1016. Binary String With Substrings Representing 1 To N</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/11/2019-11-11-LeetCode1020/">LeetCode 1020. Number of Enclaves</a>
           </li>
         
           <li>
@@ -364,6 +363,6 @@
 
 
 
-  </div><!-- hexo-inject:begin --><!-- hexo-inject:end -->
-<script src="https://cdn.jsdelivr.net/npm/live2d-widget@3.x/lib/L2Dwidget.min.js"></script><script>L2Dwidget.init({"tagMode":false,"debug":false,"model":{"jsonPath":"https://cdn.jsdelivr.net/npm/live2d-widget-model-haruto@1.x/assets/haruto.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/"});</script></body>
+  </div>
+<script src="https://cdn.jsdelivr.net/npm/live2d-widget@3.x/lib/L2Dwidget.min.js"></script><script>L2Dwidget.init({"tagMode":false,"debug":false,"model":{"jsonPath":"https://cdn.jsdelivr.net/npm/live2d-widget-model-haruto@1.x/assets/haruto.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/"});</script><!-- hexo-inject:begin --><!-- hexo-inject:end --></body>
 </html>

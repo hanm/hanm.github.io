@@ -75,6 +75,53 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-2016-12-12-USACO-AmericanHeritage" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/12/12/2016-12-12-USACO-AmericanHeritage/" class="article-date">
+  <time datetime="2016-12-13T00:17:31.000Z" itemprop="datePublished">2016-12-12</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/USACO/">USACO</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/12/12/2016-12-12-USACO-AmericanHeritage/">USACO 3.4 American Heritage</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Probably the most easiest problem solved on USACO so far?</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">string</span> preorder;</span><br><span class="line"><span class="built_in">string</span> inorder;</span><br><span class="line"><span class="built_in">string</span> postorder;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> TreeNode &#123;</span><br><span class="line">    <span class="keyword">char</span> c;</span><br><span class="line">    TreeNode *left;</span><br><span class="line">    TreeNode *right;</span><br><span class="line">    TreeNode(<span class="keyword">char</span> c) : left(<span class="literal">nullptr</span>), right(<span class="literal">nullptr</span>), c(c) &#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function">TreeNode *<span class="title">construct</span><span class="params">(<span class="keyword">int</span> preStart, <span class="keyword">int</span> preEnd, <span class="keyword">int</span> inStart, <span class="keyword">int</span> inEnd)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (preStart &gt; preEnd || inStart &gt; inEnd) <span class="keyword">return</span> <span class="literal">nullptr</span>;</span><br><span class="line">    <span class="keyword">auto</span> root = <span class="keyword">new</span> TreeNode(preorder[preStart]);</span><br><span class="line">    <span class="keyword">int</span> index = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = inStart; i &lt;= inEnd; ++i) &#123;</span><br><span class="line">        <span class="keyword">if</span> (inorder[i] == preorder[preStart]) &#123;</span><br><span class="line">            index = i; <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    root-&gt;left = construct(preStart + <span class="number">1</span>, preStart + index - inStart,</span><br><span class="line">                           inStart, index - <span class="number">1</span>);</span><br><span class="line">    root-&gt;right = construct(preStart + index - inStart + <span class="number">1</span>, preEnd,</span><br><span class="line">                            index + <span class="number">1</span>, inEnd);</span><br><span class="line">    <span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">postTraverse</span><span class="params">(TreeNode *root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!root) <span class="keyword">return</span>;</span><br><span class="line">    postTraverse(root-&gt;left);</span><br><span class="line">    postTraverse(root-&gt;right);</span><br><span class="line">    postorder += root-&gt;c;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"heritage.in"</span>)</span></span>;</span><br><span class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"heritage.out"</span>)</span></span>;</span><br><span class="line">    fin &gt;&gt; inorder &gt;&gt; preorder;</span><br><span class="line">    <span class="keyword">int</span> size = (<span class="keyword">int</span>)inorder.size();</span><br><span class="line">    postTraverse(construct(<span class="number">0</span>, size - <span class="number">1</span>, <span class="number">0</span>, size - <span class="number">1</span>));</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; postorder &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    fout &lt;&lt; postorder &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2016/12/12/2016-12-12-USACO-AmericanHeritage/" data-id="ck34sdmq1001j7fxgfkjmu52x" data-title="USACO 3.4 American Heritage" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2016/12/12/2016-12-12-USACO-AmericanHeritage/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DFS/">DFS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Tree/">Tree</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-2016-12-09-USACO-Camelot" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/12/09/2016-12-09-USACO-Camelot/" class="article-date">
@@ -112,7 +159,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/12/09/2016-12-09-USACO-Camelot/" data-id="ck34sc71v001h6axgm9m14ay5" data-title="USACO 3.3 Camelot" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/12/09/2016-12-09-USACO-Camelot/" data-id="ck34sdmq4001l7fxg4fzviiqf" data-title="USACO 3.3 Camelot" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2016/12/09/2016-12-09-USACO-Camelot/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -159,59 +206,9 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/12/07/2016-12-07-USACO-HomeOnRange/" data-id="ck34sc71u001g6axghcajzhzq" data-title="USACO 3.3 Home On The Range" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/12/07/2016-12-07-USACO-HomeOnRange/" data-id="ck34sdmq0001i7fxghnvnku6z" data-title="USACO 3.3 Home On The Range" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2016/12/07/2016-12-07-USACO-HomeOnRange/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dynamic-Programming/">Dynamic Programming</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2016-11-29-USACO-AGame" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/11/29/2016-11-29-USACO-AGame/" class="article-date">
-  <time datetime="2016-11-30T05:17:31.000Z" itemprop="datePublished">2016-11-29</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/USACO/">USACO</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/11/29/2016-11-29-USACO-AGame/">USACO 3.3 A Game</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Typical dynamic programming problem. The search space is the optimal value player A could get at a given play step. A play step can be identified by the current state of the board - namely the unused board which is marked by the starting (left) and ending (right) indices. Let’s denote the start index as a, end index as b, and denote dp[a][b] as the optimal value player A could get.</p>
-<p>Next we need find out the state transfer function. Since player B will also play optimally (that is, player B is as smart as player A, and both players will try use same optimal strategy to win the game), we can have the transfer function like this:</p>
-<p>$f(a, b) = \begin{cases}0 &amp; a &gt; b \\<br>max(f(a) + min(f(a + 2, b), f(a + 1, b - 1)), f(b) + min(f(a, b - 2), f(a + 1, b - 1) &amp; a \le b \\<br>\end{cases}$</p>
-<p>And this could be calculated recursively (from two ends of board to middle).</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;numeric&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> N;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; board;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; dp;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">compute</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (a &gt; b) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (dp[a][b] == <span class="number">-1</span>) &#123;</span><br><span class="line">        dp[a][b] = <span class="built_in">std</span>::max(board[a] + <span class="built_in">std</span>::min(compute(a + <span class="number">2</span>, b),</span><br><span class="line">                                                compute(a + <span class="number">1</span>, b - <span class="number">1</span>)),</span><br><span class="line">                            board[b] + <span class="built_in">std</span>::min(compute(a, b - <span class="number">2</span>),</span><br><span class="line">                                                compute(a + <span class="number">1</span>, b - <span class="number">1</span>)));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> dp[a][b];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"game1.in"</span>)</span></span>;</span><br><span class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"game1.out"</span>)</span></span>;</span><br><span class="line">    fin &gt;&gt; N;</span><br><span class="line">    board = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N, <span class="number">0</span>);</span><br><span class="line">    dp = <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt;(N, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N, <span class="number">-1</span>));</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">        fin &gt;&gt; board[i];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> sum = <span class="built_in">std</span>::accumulate(board.begin(), board.end(), <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">int</span> p1 = compute(<span class="number">0</span>, N - <span class="number">1</span>);</span><br><span class="line">    <span class="keyword">int</span> p2 = sum - p1;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; p1 &lt;&lt; <span class="string">" "</span> &lt;&lt; p2 &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    fout &lt;&lt; p1 &lt;&lt; <span class="string">" "</span> &lt;&lt; p2 &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/11/29/2016-11-29-USACO-AGame/" data-id="ck34sc71u001f6axgfy1e42an" data-title="USACO 3.3 A Game" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2016/11/29/2016-11-29-USACO-AGame/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
@@ -282,15 +279,15 @@
       <ul>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1020/">LeetCode 1020. Number of Enclaves</a>
-          </li>
-        
-          <li>
             <a href="/2019/11/11/2019-11-11-LeetCode1015/">LeetCode 1015. Smallest Integer Divisible by K</a>
           </li>
         
           <li>
             <a href="/2019/11/11/2019-11-11-LeetCode1016/">LeetCode 1016. Binary String With Substrings Representing 1 To N</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/11/2019-11-11-LeetCode1020/">LeetCode 1020. Number of Enclaves</a>
           </li>
         
           <li>
@@ -372,23 +369,6 @@
 
 
 
-  </div><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
-</script>
-
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i=0; i < all.length; i += 1) {
-      all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-  });
-</script>
-
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
-</script>
-<!-- End: Injected MathJax -->
-<!-- hexo-inject:end -->
-<script src="https://cdn.jsdelivr.net/npm/live2d-widget@3.x/lib/L2Dwidget.min.js"></script><script>L2Dwidget.init({"tagMode":false,"debug":false,"model":{"jsonPath":"https://cdn.jsdelivr.net/npm/live2d-widget-model-haruto@1.x/assets/haruto.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/"});</script></body>
+  </div>
+<script src="https://cdn.jsdelivr.net/npm/live2d-widget@3.x/lib/L2Dwidget.min.js"></script><script>L2Dwidget.init({"tagMode":false,"debug":false,"model":{"jsonPath":"https://cdn.jsdelivr.net/npm/live2d-widget-model-haruto@1.x/assets/haruto.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/"});</script><!-- hexo-inject:begin --><!-- hexo-inject:end --></body>
 </html>
