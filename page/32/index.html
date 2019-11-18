@@ -75,6 +75,53 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-2016-09-07-PrefaceNumbering" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/09/07/2016-09-07-PrefaceNumbering/" class="article-date">
+  <time datetime="2016-09-07T17:38:31.000Z" itemprop="datePublished">2016-09-07</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/USACO/">USACO</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/09/07/2016-09-07-PrefaceNumbering/">USACO 2.2 Preface Numbering</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Simple brutal force approach can pass the tests. We iterate through the numbers, for each number converting the numerical value of the number to Roman number representation and then counting.<br><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;map&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unordered_map&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> N;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="built_in">string</span> <span class="title">intToRoman</span><span class="params">(<span class="keyword">int</span> num)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> numbers[<span class="number">13</span>] = &#123;<span class="number">1000</span>, <span class="number">900</span>, <span class="number">500</span>, <span class="number">400</span>, <span class="number">100</span>, <span class="number">90</span>, <span class="number">50</span>, <span class="number">40</span>,</span><br><span class="line">        <span class="number">10</span>, <span class="number">9</span>, <span class="number">5</span>, <span class="number">4</span>, <span class="number">1</span>&#125;;</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *roman[<span class="number">13</span>] = &#123;<span class="string">"M"</span>, <span class="string">"CM"</span>, <span class="string">"D"</span>, <span class="string">"CD"</span>, <span class="string">"C"</span>, <span class="string">"XC"</span>,</span><br><span class="line">        <span class="string">"L"</span>, <span class="string">"XL"</span>, <span class="string">"X"</span>, <span class="string">"IX"</span>, <span class="string">"V"</span>, <span class="string">"IV"</span>, <span class="string">"I"</span>&#125;;</span><br><span class="line">    <span class="built_in">string</span> result = <span class="string">""</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">13</span>; ++i) &#123;</span><br><span class="line">        <span class="keyword">while</span> (num &gt;= numbers[i]) &#123;</span><br><span class="line">            num -= numbers[i];</span><br><span class="line">            result += roman[i];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> cmp &#123;</span><br><span class="line">    cmp() &#123;</span><br><span class="line">        <span class="keyword">char</span> nums[<span class="number">7</span>] = &#123;<span class="string">'I'</span>, <span class="string">'V'</span>, <span class="string">'X'</span>, <span class="string">'L'</span>, <span class="string">'C'</span>, <span class="string">'D'</span>, <span class="string">'M'</span>&#125;;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">7</span>; ++i) &#123;</span><br><span class="line">            <span class="built_in">map</span>[nums[i]] = i;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">operator</span><span class="params">()</span><span class="params">(<span class="keyword">char</span> a, <span class="keyword">char</span> b)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">map</span>[a] &lt; <span class="built_in">map</span>[b];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">unordered_map</span>&lt;<span class="keyword">char</span>, <span class="keyword">int</span>&gt; <span class="built_in">map</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"preface.in"</span>)</span></span>;</span><br><span class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"preface.out"</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">    fin &gt;&gt; N;</span><br><span class="line">    <span class="built_in">map</span>&lt;<span class="keyword">char</span>, <span class="keyword">int</span>, cmp&gt; mp;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= N; ++i) &#123;</span><br><span class="line">        <span class="built_in">string</span> num = intToRoman(i);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;c : num) &#123;</span><br><span class="line">            mp[c]++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="built_in">map</span>&lt;<span class="keyword">char</span>, <span class="keyword">int</span>&gt;::iterator iter = mp.begin(); iter != mp.end(); ++iter) &#123;</span><br><span class="line">        fout &lt;&lt; iter-&gt;first &lt;&lt; <span class="string">" "</span> &lt;&lt; iter-&gt;second &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2016/09/07/2016-09-07-PrefaceNumbering/" data-id="ck3405uz0000n9axgxfc6kpzy" data-title="USACO 2.2 Preface Numbering" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2016/09/07/2016-09-07-PrefaceNumbering/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Brutal-Force/">Brutal Force</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-2016-09-02-USACO-HammingCode" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/09/02/2016-09-02-USACO-HammingCode/" class="article-date">
@@ -105,7 +152,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/09/02/2016-09-02-USACO-HammingCode/" data-id="ck33nbpxw000ml5xgh4skrtjk" data-title="USACO 2.1 Hamming Codes" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/09/02/2016-09-02-USACO-HammingCode/" data-id="ck3405uyz000m9axg4i9k007u" data-title="USACO 2.1 Hamming Codes" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2016/09/02/2016-09-02-USACO-HammingCode/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -152,59 +199,13 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/31/2016-08-31-USACO-HealthyHolsteins/" data-id="ck33nbpxv000ll5xg3jjjjilb" data-title="USACO 2.1 Healthy Holsteins" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/08/31/2016-08-31-USACO-HealthyHolsteins/" data-id="ck3405uyx000k9axgr2fvpxd4" data-title="USACO 2.1 Healthy Holsteins" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2016/08/31/2016-08-31-USACO-HealthyHolsteins/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Brutal-Force/">Brutal Force</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2016-08-31-USACO-SortThreeValuedSequence" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/08/31/2016-08-31-USACO-SortThreeValuedSequence/" class="article-date">
-  <time datetime="2016-08-31T18:55:31.000Z" itemprop="datePublished">2016-08-31</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/USACO/">USACO</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/08/31/2016-08-31-USACO-SortThreeValuedSequence/">USACO 2.1 Sort Three Valued Sequence</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstring&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"sort3.in"</span>)</span></span>;</span><br><span class="line">  <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"sort3.out"</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">int</span> count[<span class="number">4</span>], a[<span class="number">4</span>], t[<span class="number">1001</span>], x, n, k = <span class="number">0</span>;</span><br><span class="line">  <span class="built_in">memset</span>(count, <span class="number">0</span>, <span class="keyword">sizeof</span>(count));</span><br><span class="line">  <span class="built_in">memset</span>(a, <span class="number">0</span>, <span class="keyword">sizeof</span>(a));</span><br><span class="line"></span><br><span class="line">  fin &gt;&gt; n;</span><br><span class="line">  <span class="keyword">while</span> (fin &gt;&gt; x) &#123;</span><br><span class="line">    count[x]++;</span><br><span class="line">    t[++k] = x;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= count[<span class="number">1</span>] + count[<span class="number">2</span>]; ++i)&#123;</span><br><span class="line">    <span class="keyword">if</span> (t[i] == <span class="number">3</span>)</span><br><span class="line">      a[<span class="number">3</span>]++;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (t[i] == <span class="number">2</span> &amp;&amp; i &lt;= count[<span class="number">1</span>])</span><br><span class="line">      a[<span class="number">1</span>]++;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (t[i] == <span class="number">1</span> &amp;&amp; i &gt; count[<span class="number">1</span>])</span><br><span class="line">      a[<span class="number">2</span>]++;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  fout &lt;&lt; a[<span class="number">3</span>] + (a[<span class="number">1</span>] &gt; a[<span class="number">2</span>] ? a[<span class="number">1</span>] : a[<span class="number">2</span>]) &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/31/2016-08-31-USACO-SortThreeValuedSequence/" data-id="ck33nbpxx000nl5xgy7qnnjtk" data-title="USACO 2.1 Sort Three Valued Sequence" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2016/08/31/2016-08-31-USACO-SortThreeValuedSequence/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li></ul>
 
     </footer>
   </div>
@@ -271,6 +272,10 @@
       <ul>
         
           <li>
+            <a href="/2019/11/11/2019-11-11-LeetCode1020/">LeetCode 1020. Number of Enclaves</a>
+          </li>
+        
+          <li>
             <a href="/2019/11/11/2019-11-11-LeetCode1015/">LeetCode 1015. Smallest Integer Divisible by K</a>
           </li>
         
@@ -279,11 +284,7 @@
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1020/">LeetCode 1020. Number of Enclaves</a>
-          </li>
-        
-          <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1031/">LeetCode 1031 Maximum Sum of Two Non-Overlapping Subarrays</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1121/">LeetCode 1121. Divide Array Into Increasing Sequences</a>
           </li>
         
           <li>

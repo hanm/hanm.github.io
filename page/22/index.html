@@ -75,6 +75,53 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-2016-12-07-USACO-HomeOnRange" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/12/07/2016-12-07-USACO-HomeOnRange/" class="article-date">
+  <time datetime="2016-12-07T18:44:31.000Z" itemprop="datePublished">2016-12-07</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/USACO/">USACO</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/12/07/2016-12-07-USACO-HomeOnRange/">USACO 3.3 Home On The Range</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Another relatively straightforward DP problem: the basic idea is to calculate the maximum possible squares (land segment that cows can graze on) that each land can expand to, if the given land is considered as the top-left most corner of the square land segment to be expanded. We calculate this information for each land, starting from the right-down most land (which is just itself), then iteratively repeat the calculation until we reach the top-left most corner. During the computation we can also calculate the final answer incrementally.</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> N;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; dp;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; ret;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"range.in"</span>)</span></span>;</span><br><span class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"range.out"</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">    fin &gt;&gt; N;</span><br><span class="line">    dp = <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt;(N, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N, <span class="number">0</span>));</span><br><span class="line">    ret = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N + <span class="number">1</span>, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">char</span> c;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; N; ++j) &#123;</span><br><span class="line">            fin &gt;&gt; c;</span><br><span class="line">            dp[i][j] = c - <span class="string">'0'</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = N - <span class="number">2</span>; i &gt;= <span class="number">0</span>; --i) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = N - <span class="number">2</span>; j &gt;= <span class="number">0</span>; --j) &#123;</span><br><span class="line">            <span class="keyword">if</span> (!dp[i][j]) <span class="keyword">continue</span>;</span><br><span class="line">            dp[i][j] = <span class="built_in">std</span>::min(<span class="built_in">std</span>::min(dp[i][j + <span class="number">1</span>], dp[i + <span class="number">1</span>][j]),</span><br><span class="line">                                dp[i + <span class="number">1</span>][j + <span class="number">1</span>]) + <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">2</span>; k &lt;= dp[i][j]; ++k) &#123;</span><br><span class="line">                ret[k]++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt; N + <span class="number">1</span>; ++i) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!ret[i]) <span class="keyword">continue</span>;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; i &lt;&lt; <span class="string">" "</span> &lt;&lt; ret[i] &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">        fout &lt;&lt; i &lt;&lt; <span class="string">" "</span> &lt;&lt; ret[i] &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2016/12/07/2016-12-07-USACO-HomeOnRange/" data-id="ck3405uzv001h9axg31obyjej" data-title="USACO 3.3 Home On The Range" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2016/12/07/2016-12-07-USACO-HomeOnRange/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dynamic-Programming/">Dynamic Programming</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-2016-11-29-USACO-AGame" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/11/29/2016-11-29-USACO-AGame/" class="article-date">
@@ -109,7 +156,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/11/29/2016-11-29-USACO-AGame/" data-id="ck33nbpyn001hl5xgbc9myh5c" data-title="USACO 3.3 A Game" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/11/29/2016-11-29-USACO-AGame/" data-id="ck3405uzu001g9axgkqt1i1zu" data-title="USACO 3.3 A Game" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2016/11/29/2016-11-29-USACO-AGame/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -155,65 +202,13 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/11/28/2016-11-28-USACO-ShoppingOffers/" data-id="ck33nbpyk001el5xgmneq4ahx" data-title="USACO 3.3 Shopping Offers" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/11/28/2016-11-28-USACO-ShoppingOffers/" data-id="ck3405uzs001f9axgag7obam3" data-title="USACO 3.3 Shopping Offers" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2016/11/28/2016-11-28-USACO-ShoppingOffers/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dynamic-Programming/">Dynamic Programming</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Graph/">Graph</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2016-11-25-USACO-RidingTheFence" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/11/25/2016-11-25-USACO-RidingTheFence/" class="article-date">
-  <time datetime="2016-11-26T07:04:31.000Z" itemprop="datePublished">2016-11-25</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/USACO/">USACO</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/11/25/2016-11-25-USACO-RidingTheFence/">UASCO 3.3 Riding The Fence</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>This is a problem to find Euler Path of the graph. As this is an undirected graph, the Euler Path exists iff:</p>
-<ul>
-<li>All graph vertices have even degree. Or,</li>
-<li>All graph vertices have even degree, except two vertices have odd degree. And these two vertices will be start / end of the Euler Path.</li>
-</ul>
-<p>This problem explicitly stated that the Euler Path existing, so no need to do the test to find out if the path exists or not. Instead, the job is to find out the exact path with the constraint that vertices should be sequenced in ascending order. There are a couple of well studied algorithm can solve the Euler Path finding problem, however for this test data set I find that we can just use DFS - which is not strictly a Euler Path finding solution because the DFS solution here alone can’t decide if an edge we are going to remove is a ‘bridge edge’ (which, if removed will never makes us traverse back to the graph). I think the solution here is not sound to cover any type of Euler Path, but is just lucky enough to pass the existing test data set.</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stack&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> LIMIT = <span class="number">501</span>;</span><br><span class="line"><span class="keyword">int</span> F;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; degree(LIMIT, <span class="number">0</span>);</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; adj(LIMIT, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(LIMIT, <span class="number">0</span>));</span><br><span class="line"><span class="built_in">stack</span>&lt;<span class="keyword">int</span>&gt; path;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> idx)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!degree[idx]) &#123;</span><br><span class="line">        path.push(idx);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; LIMIT; ++i) &#123;</span><br><span class="line">        <span class="keyword">if</span> (adj[idx][i] &lt;= <span class="number">0</span>) <span class="keyword">continue</span>;</span><br><span class="line">        --adj[idx][i]; --adj[i][idx]; --degree[idx]; --degree[i];</span><br><span class="line">        dfs(i);</span><br><span class="line">    &#125;</span><br><span class="line">    path.push(idx);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"fence.in"</span>)</span></span>;</span><br><span class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"fence.out"</span>)</span></span>;</span><br><span class="line">    fin &gt;&gt; F;</span><br><span class="line">    <span class="keyword">int</span> v1, v2;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; F; ++i) &#123;</span><br><span class="line">        fin &gt;&gt; v1 &gt;&gt; v2;</span><br><span class="line">        adj[v1][v2]++; adj[v2][v1]++;</span><br><span class="line">        degree[v1]++; degree[v2]++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> start = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; LIMIT; ++i)&#123;</span><br><span class="line">        <span class="keyword">if</span>(degree[i] % <span class="number">2</span>)&#123;</span><br><span class="line">            start = i;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    dfs(start);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span> (!path.empty()) &#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; path.top() &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">        fout &lt;&lt; path.top() &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">        path.pop();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/11/25/2016-11-25-USACO-RidingTheFence/" data-id="ck33nbpym001gl5xgwzxlkuj2" data-title="UASCO 3.3 Riding The Fence" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2016/11/25/2016-11-25-USACO-RidingTheFence/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DFS/">DFS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Euler-Path/">Euler Path</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Graph/">Graph</a></li></ul>
 
     </footer>
   </div>
@@ -280,6 +275,10 @@
       <ul>
         
           <li>
+            <a href="/2019/11/11/2019-11-11-LeetCode1020/">LeetCode 1020. Number of Enclaves</a>
+          </li>
+        
+          <li>
             <a href="/2019/11/11/2019-11-11-LeetCode1015/">LeetCode 1015. Smallest Integer Divisible by K</a>
           </li>
         
@@ -288,11 +287,7 @@
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1020/">LeetCode 1020. Number of Enclaves</a>
-          </li>
-        
-          <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1031/">LeetCode 1031 Maximum Sum of Two Non-Overlapping Subarrays</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1121/">LeetCode 1121. Divide Array Into Increasing Sequences</a>
           </li>
         
           <li>

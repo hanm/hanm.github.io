@@ -75,6 +75,53 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-2016-08-08-MilkingCows" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/08/08/2016-08-08-MilkingCows/" class="article-date">
+  <time datetime="2016-08-09T04:31:31.000Z" itemprop="datePublished">2016-08-08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/USACO/">USACO</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/08/08/2016-08-08-MilkingCows/">USACO 1.2 Milking Cows</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Simple brutal force search with intervals.</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> Interval &#123;</span><br><span class="line">  <span class="keyword">int</span> start, end;</span><br><span class="line">  Interval(<span class="keyword">int</span> start, <span class="keyword">int</span> end) : start(start), end(end) &#123;&#125;</span><br><span class="line">  <span class="keyword">bool</span> <span class="keyword">operator</span> &lt; (<span class="keyword">const</span> Interval&amp; interval) <span class="keyword">const</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> start &lt; interval.start;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span> <span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="built_in">string</span> str;</span><br><span class="line">  <span class="function">ifstream <span class="title">fin</span> <span class="params">(<span class="string">"milk2.in"</span>)</span></span>;</span><br><span class="line">  <span class="function">ofstream <span class="title">fout</span> <span class="params">(<span class="string">"milk2.out"</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">vector</span>&lt;Interval&gt; intervals;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">int</span> farmers;</span><br><span class="line">  fin &gt;&gt; farmers;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; farmers; ++i) &#123;</span><br><span class="line">    <span class="keyword">int</span> start, end;</span><br><span class="line">    fin &gt;&gt; start &gt;&gt; end;</span><br><span class="line">    intervals.emplace_back(Interval(start, end));</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">std</span>::sort(intervals.begin(), intervals.end());</span><br><span class="line"></span><br><span class="line">  <span class="keyword">int</span> maxOverlap = <span class="number">0</span>, maxGap = <span class="number">0</span>;</span><br><span class="line">  Interval it = intervals[<span class="number">0</span>];</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; intervals.size(); ++i) &#123;</span><br><span class="line">    <span class="keyword">if</span> (intervals[i].start &gt; it.end) &#123;</span><br><span class="line">      <span class="comment">// none overlap</span></span><br><span class="line">      maxOverlap = <span class="built_in">std</span>::max(maxOverlap, it.end - it.start);</span><br><span class="line">      maxGap = <span class="built_in">std</span>::max(maxGap, intervals[i].start - it.end);</span><br><span class="line">      it = intervals[i];</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      it.end = <span class="built_in">std</span>::max(it.end, intervals[i].end);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  maxOverlap = <span class="built_in">std</span>::max(maxOverlap, it.end - it.start);</span><br><span class="line"></span><br><span class="line">  fout &lt;&lt; maxOverlap &lt;&lt; <span class="string">" "</span> &lt;&lt; maxGap &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2016/08/08/2016-08-08-MilkingCows/" data-id="ck3405uyi00079axgna3dbu6e" data-title="USACO 1.2 Milking Cows" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2016/08/08/2016-08-08-MilkingCows/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Search/">Search</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-2016-08-06－USACO-BrokenNecklace" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/08/06/2016-08-06－USACO-BrokenNecklace/" class="article-date">
@@ -106,7 +153,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/06/2016-08-06－USACO-BrokenNecklace/" data-id="ck33nbpxe0006l5xgcnjmbhkc" data-title="USACO 1.1 Broken Necklace" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/08/06/2016-08-06－USACO-BrokenNecklace/" data-id="ck3405uyh00069axgub3k0lx8" data-title="USACO 1.1 Broken Necklace" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2016/08/06/2016-08-06－USACO-BrokenNecklace/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -153,56 +200,9 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/06/2016-08-06-USACO-Friday/" data-id="ck33nbpxb0004l5xgnfnhlesm" data-title="USACO 1.1 Friday" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/08/06/2016-08-06-USACO-Friday/" data-id="ck3405uyc00029axgex2vxta2" data-title="USACO 1.1 Friday" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2016/08/06/2016-08-06-USACO-Friday/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2016-08-06-USACO-Greedy-Gift-Givers" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/08/06/2016-08-06-USACO-Greedy-Gift-Givers/" class="article-date">
-  <time datetime="2016-08-06T22:04:31.000Z" itemprop="datePublished">2016-08-06</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/USACO/">USACO</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/08/06/2016-08-06-USACO-Greedy-Gift-Givers/">USACO 1.1 Greedy Gift Givers</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>The algorithm is simple but it is a pain in the ass to parse input and extract names.</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unordered_map&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> Person &#123;</span><br><span class="line">  <span class="keyword">int</span> size;</span><br><span class="line">  <span class="built_in">vector</span>&lt;Person*&gt; toList;</span><br><span class="line">  <span class="keyword">int</span> money;</span><br><span class="line">  <span class="keyword">int</span> left;</span><br><span class="line">  <span class="keyword">int</span> sum;</span><br><span class="line">  <span class="built_in">string</span> name;</span><br><span class="line"></span><br><span class="line">  Person(<span class="built_in">string</span> name) : size(<span class="number">0</span>), money(<span class="number">0</span>), left(<span class="number">0</span>), name(name) &#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="function">ofstream <span class="title">fout</span> <span class="params">(<span class="string">"gift1.out"</span>)</span></span>;</span><br><span class="line">  <span class="function">ifstream <span class="title">fin</span> <span class="params">(<span class="string">"gift1.in"</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">string</span> input;</span><br><span class="line">  getline(fin, input);</span><br><span class="line">  <span class="keyword">int</span> total = stoi(input);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Each line contains the name of a group member</span></span><br><span class="line">  <span class="built_in">unordered_map</span>&lt;<span class="built_in">string</span>, Person*&gt; hashmap;</span><br><span class="line">  <span class="built_in">vector</span>&lt;Person*&gt; personList;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; total; ++i) &#123;</span><br><span class="line">    <span class="built_in">string</span> name;</span><br><span class="line">    getline(fin, name);</span><br><span class="line">    <span class="keyword">auto</span> person = <span class="keyword">new</span> Person(name);</span><br><span class="line">    hashmap[name] = person;</span><br><span class="line">    personList.push_back(person);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/*</span></span><br><span class="line"><span class="comment">   The first line in the group tells the person's name who will be giving gifts.</span></span><br><span class="line"><span class="comment">   The second line in the group contains two numbers: The initial amount of money (in the range 0..2000) to be divided up into gifts by the giver and then the number of people to whom the giver will give gifts, NGi (0 ≤ NGi ≤ NP-1).</span></span><br><span class="line"><span class="comment">   If NGi is nonzero, each of the next NGi lines lists the the name of a recipient of a gift.</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; total; ++i) &#123;</span><br><span class="line">    <span class="built_in">string</span> name;</span><br><span class="line">    getline(fin, name);</span><br><span class="line">    <span class="keyword">auto</span> person = hashmap[name];</span><br><span class="line"></span><br><span class="line">    fin &gt;&gt; person-&gt;money &gt;&gt; person-&gt;size;</span><br><span class="line">    <span class="built_in">string</span> newline;</span><br><span class="line">    getline(fin, newline);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!person-&gt;size)</span><br><span class="line">      person-&gt;left = person-&gt;money;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (person-&gt;size == <span class="number">1</span>)</span><br><span class="line">      person-&gt;left = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">      person-&gt;left = person-&gt;money % person-&gt;size;</span><br><span class="line"></span><br><span class="line">    person-&gt;sum = person-&gt;left;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (person-&gt;size) &#123;</span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; person-&gt;size; ++j) &#123;</span><br><span class="line">        <span class="built_in">string</span> toName;</span><br><span class="line">        getline(fin, toName);</span><br><span class="line">        person-&gt;toList.push_back(hashmap[toName]);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;item : hashmap) &#123;</span><br><span class="line">    <span class="keyword">if</span> (!item.second-&gt;size) <span class="keyword">continue</span>;</span><br><span class="line">    <span class="keyword">int</span> money = (item.second-&gt;money - item.second-&gt;left) / item.second-&gt;size;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;toPerson : item.second-&gt;toList) &#123;</span><br><span class="line">      toPerson-&gt;sum += money;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;person : personList) &#123;</span><br><span class="line">    fout &lt;&lt; person-&gt;name &lt;&lt; <span class="string">" "</span> &lt;&lt; person-&gt;sum - person-&gt;money &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/06/2016-08-06-USACO-Greedy-Gift-Givers/" data-id="ck33nbpxf0007l5xgxw46gypw" data-title="USACO 1.1 Greedy Gift Givers" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2016/08/06/2016-08-06-USACO-Greedy-Gift-Givers/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
@@ -273,6 +273,10 @@
       <ul>
         
           <li>
+            <a href="/2019/11/11/2019-11-11-LeetCode1020/">LeetCode 1020. Number of Enclaves</a>
+          </li>
+        
+          <li>
             <a href="/2019/11/11/2019-11-11-LeetCode1015/">LeetCode 1015. Smallest Integer Divisible by K</a>
           </li>
         
@@ -281,11 +285,7 @@
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1020/">LeetCode 1020. Number of Enclaves</a>
-          </li>
-        
-          <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1031/">LeetCode 1031 Maximum Sum of Two Non-Overlapping Subarrays</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1121/">LeetCode 1121. Divide Array Into Increasing Sequences</a>
           </li>
         
           <li>

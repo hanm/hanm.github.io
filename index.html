@@ -75,6 +75,54 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-2019-11-11-LeetCode1020" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/11/11/2019-11-11-LeetCode1020/" class="article-date">
+  <time datetime="2019-11-11T19:11:11.000Z" itemprop="datePublished">2019-11-11</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/LeetCode-in-Rust/">LeetCode in Rust</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/11/11/2019-11-11-LeetCode1020/">LeetCode 1020. Number of Enclaves</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><a href="https://leetcode.com/problems/number-of-enclaves/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<p>Typical DFS. Similar to <a href="https://leetcode.com/problems/number-of-closed-islands/" target="_blank" rel="noopener">1254. Number of Closed Islands</a></p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">dfs</span></span>(a : &amp;<span class="keyword">mut</span> <span class="built_in">Vec</span>&lt;<span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;&gt;, x : <span class="keyword">usize</span>, y : <span class="keyword">usize</span>) -&gt; () &#123;</span><br><span class="line">        <span class="keyword">let</span> (m, n) = (a.len(), a[<span class="number">0</span>].len());</span><br><span class="line">        <span class="keyword">let</span> (dx, dy) : ([<span class="keyword">i32</span>; <span class="number">4</span>], [<span class="keyword">i32</span>; <span class="number">4</span>]) = ([<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, -<span class="number">1</span>], [<span class="number">1</span>, -<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>]);</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..<span class="number">4</span> &#123;</span><br><span class="line">            <span class="keyword">let</span> (xx, yy) : (<span class="keyword">i32</span>, <span class="keyword">i32</span>) = (x <span class="keyword">as</span> <span class="keyword">i32</span> + dx[i], y <span class="keyword">as</span> <span class="keyword">i32</span> + dy[i]);</span><br><span class="line">            <span class="keyword">if</span> xx &gt;= m <span class="keyword">as</span> <span class="keyword">i32</span> || xx &lt; <span class="number">0</span> || yy &gt;= n <span class="keyword">as</span> <span class="keyword">i32</span> || yy &lt; <span class="number">0</span> &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">let</span> (nx, ny) = (xx <span class="keyword">as</span> <span class="keyword">usize</span>, yy <span class="keyword">as</span> <span class="keyword">usize</span>);</span><br><span class="line">            <span class="keyword">if</span> a[nx][ny] == <span class="number">0</span> &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            a[nx][ny] = <span class="number">0</span>;</span><br><span class="line">            Self::dfs(a, nx, ny);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">num_enclaves</span></span>(a: <span class="built_in">Vec</span>&lt;<span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;&gt;) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> A = a;</span><br><span class="line">        <span class="keyword">let</span> (m, n, <span class="keyword">mut</span> ans) = (A.len(), A[<span class="number">0</span>].len(), <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..m &#123;</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> <span class="number">0</span>..n &#123;</span><br><span class="line">                <span class="keyword">if</span> i == <span class="number">0</span> || j == <span class="number">0</span> || i == m - <span class="number">1</span> || j == n - <span class="number">1</span> &#123;</span><br><span class="line">                    <span class="keyword">if</span> A[i][j] != <span class="number">0</span> &#123;</span><br><span class="line">                        A[i][j] = <span class="number">0</span>;</span><br><span class="line">                        Self::dfs(&amp;<span class="keyword">mut</span> A, i, j);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..m &#123;</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> <span class="number">0</span>..n &#123;</span><br><span class="line">                <span class="keyword">if</span> A[i][j] != <span class="number">0</span> &#123;</span><br><span class="line">                    ans += <span class="number">1</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1020/" data-id="ck3405v1q002v9axg35w6mbkd" data-title="LeetCode 1020. Number of Enclaves" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1020/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LeetCode/">LeetCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Rust/">Rust</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-2019-11-11-LeetCode1015" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2019/11/11/2019-11-11-LeetCode1015/" class="article-date">
@@ -106,7 +154,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1015/" data-id="ck33nbq25003pl5xglr3hqqey" data-title="LeetCode 1015. Smallest Integer Divisible by K" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1015/" data-id="ck3405v1r002w9axgeieer4lo" data-title="LeetCode 1015. Smallest Integer Divisible by K" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1015/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -154,57 +202,9 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1016/" data-id="ck33nbq26003rl5xg6abeq9de" data-title="LeetCode 1016. Binary String With Substrings Representing 1 To N" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1016/" data-id="ck3405v1s002x9axg06j6kwpi" data-title="LeetCode 1016. Binary String With Substrings Representing 1 To N" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1016/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LeetCode/">LeetCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Rust/">Rust</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2019-11-11-LeetCode1020" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/11/11/2019-11-11-LeetCode1020/" class="article-date">
-  <time datetime="2019-11-11T19:11:11.000Z" itemprop="datePublished">2019-11-11</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/LeetCode-in-Rust/">LeetCode in Rust</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/11/2019-11-11-LeetCode1020/">LeetCode 1020. Number of Enclaves</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><a href="https://leetcode.com/problems/number-of-enclaves/description/" target="_blank" rel="noopener">Problem Statement</a></p>
-<p>Typical DFS. Similar to <a href="https://leetcode.com/problems/number-of-closed-islands/" target="_blank" rel="noopener">1254. Number of Closed Islands</a></p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">dfs</span></span>(a : &amp;<span class="keyword">mut</span> <span class="built_in">Vec</span>&lt;<span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;&gt;, x : <span class="keyword">usize</span>, y : <span class="keyword">usize</span>) -&gt; () &#123;</span><br><span class="line">        <span class="keyword">let</span> (m, n) = (a.len(), a[<span class="number">0</span>].len());</span><br><span class="line">        <span class="keyword">let</span> (dx, dy) : ([<span class="keyword">i32</span>; <span class="number">4</span>], [<span class="keyword">i32</span>; <span class="number">4</span>]) = ([<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, -<span class="number">1</span>], [<span class="number">1</span>, -<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>]);</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..<span class="number">4</span> &#123;</span><br><span class="line">            <span class="keyword">let</span> (xx, yy) : (<span class="keyword">i32</span>, <span class="keyword">i32</span>) = (x <span class="keyword">as</span> <span class="keyword">i32</span> + dx[i], y <span class="keyword">as</span> <span class="keyword">i32</span> + dy[i]);</span><br><span class="line">            <span class="keyword">if</span> xx &gt;= m <span class="keyword">as</span> <span class="keyword">i32</span> || xx &lt; <span class="number">0</span> || yy &gt;= n <span class="keyword">as</span> <span class="keyword">i32</span> || yy &lt; <span class="number">0</span> &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">let</span> (nx, ny) = (xx <span class="keyword">as</span> <span class="keyword">usize</span>, yy <span class="keyword">as</span> <span class="keyword">usize</span>);</span><br><span class="line">            <span class="keyword">if</span> a[nx][ny] == <span class="number">0</span> &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            a[nx][ny] = <span class="number">0</span>;</span><br><span class="line">            Self::dfs(a, nx, ny);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">num_enclaves</span></span>(a: <span class="built_in">Vec</span>&lt;<span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;&gt;) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> A = a;</span><br><span class="line">        <span class="keyword">let</span> (m, n, <span class="keyword">mut</span> ans) = (A.len(), A[<span class="number">0</span>].len(), <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..m &#123;</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> <span class="number">0</span>..n &#123;</span><br><span class="line">                <span class="keyword">if</span> i == <span class="number">0</span> || j == <span class="number">0</span> || i == m - <span class="number">1</span> || j == n - <span class="number">1</span> &#123;</span><br><span class="line">                    <span class="keyword">if</span> A[i][j] != <span class="number">0</span> &#123;</span><br><span class="line">                        A[i][j] = <span class="number">0</span>;</span><br><span class="line">                        Self::dfs(&amp;<span class="keyword">mut</span> A, i, j);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..m &#123;</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> <span class="number">0</span>..n &#123;</span><br><span class="line">                <span class="keyword">if</span> A[i][j] != <span class="number">0</span> &#123;</span><br><span class="line">                    ans += <span class="number">1</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1020/" data-id="ck33nbq28003tl5xgjup4a8qx" data-title="LeetCode 1020. Number of Enclaves" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1020/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
@@ -275,6 +275,10 @@
       <ul>
         
           <li>
+            <a href="/2019/11/11/2019-11-11-LeetCode1020/">LeetCode 1020. Number of Enclaves</a>
+          </li>
+        
+          <li>
             <a href="/2019/11/11/2019-11-11-LeetCode1015/">LeetCode 1015. Smallest Integer Divisible by K</a>
           </li>
         
@@ -283,11 +287,7 @@
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1020/">LeetCode 1020. Number of Enclaves</a>
-          </li>
-        
-          <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1031/">LeetCode 1031 Maximum Sum of Two Non-Overlapping Subarrays</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1121/">LeetCode 1121. Divide Array Into Increasing Sequences</a>
           </li>
         
           <li>
