@@ -75,6 +75,52 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-2016-11-01-USACO-StringsOrbits.h" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/11/01/2016-11-01-USACO-StringsOrbits.h/" class="article-date">
+  <time datetime="2016-11-01T22:21:31.000Z" itemprop="datePublished">2016-11-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/USACO/">USACO</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/11/01/2016-11-01-USACO-StringsOrbits.h/">USACO 3.2 Stringsorbits</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;utility&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cmath&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;map&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unordered_map&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;climits&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sstream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> N<span class="comment">/* length of string*/</span>, L<span class="comment">/* max number of bits per string */</span>;</span><br><span class="line"><span class="keyword">long</span> <span class="keyword">long</span> I <span class="comment">/* the order */</span>;</span><br><span class="line"><span class="keyword">int</span> dp[<span class="number">32</span>][<span class="number">32</span>];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">compute</span><span class="params">(<span class="keyword">int</span> i, <span class="keyword">int</span> j)</span></span>&#123;</span><br><span class="line">  <span class="keyword">if</span>(dp[i][j] != <span class="number">0</span>)</span><br><span class="line">    <span class="keyword">return</span> dp[i][j];</span><br><span class="line">  <span class="keyword">else</span>&#123;</span><br><span class="line">    dp[i][j] = compute(i - <span class="number">1</span>, j) + compute(i - <span class="number">1</span>, j - <span class="number">1</span>);</span><br><span class="line">    <span class="keyword">return</span> dp[i][j];</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">  <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"kimbits.in"</span>)</span></span>;</span><br><span class="line">  <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"kimbits.out"</span>)</span></span>;</span><br><span class="line">  </span><br><span class="line">  fin &gt;&gt; N &gt;&gt; L &gt;&gt; I;</span><br><span class="line">  <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= N; i++)&#123;</span><br><span class="line">    dp[i][<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">1</span>; j &lt;= L; j++)&#123;</span><br><span class="line">    dp[<span class="number">0</span>][j] = <span class="number">1</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">for</span>(<span class="keyword">int</span> k = N - <span class="number">1</span>; k &gt;= <span class="number">0</span>; k--)&#123;</span><br><span class="line">    <span class="keyword">if</span>(compute(k, L) &lt; I)&#123;</span><br><span class="line">      <span class="built_in">cout</span> &lt;&lt; <span class="number">1</span>;</span><br><span class="line">      fout &lt;&lt; <span class="number">1</span>;</span><br><span class="line">      I -= compute(k,L);</span><br><span class="line">      L--;</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">      <span class="built_in">cout</span> &lt;&lt; <span class="number">0</span>;</span><br><span class="line">      fout &lt;&lt; <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="built_in">cout</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">  fout &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2016/11/01/2016-11-01-USACO-StringsOrbits.h/" data-id="ck34sc71o00196axgw4fhv6fd" data-title="USACO 3.2 Stringsorbits" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2016/11/01/2016-11-01-USACO-StringsOrbits.h/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Combination/">Combination</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dynamic-Programming/">Dynamic Programming</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-2016-10-27-Factorials" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/10/27/2016-10-27-Factorials/" class="article-date">
@@ -106,7 +152,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/10/27/2016-10-27-Factorials/" data-id="ck3405uzl00189axgo0zr4n91" data-title="USACO 3.2 Factorials" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/10/27/2016-10-27-Factorials/" data-id="ck34sc71m00176axgs5kjijgt" data-title="USACO 3.2 Factorials" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2016/10/27/2016-10-27-Factorials/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -153,7 +199,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/10/25/2016-10-25-USACO-Stamps/" data-id="ck3405uzk00179axg344wtul3" data-title="USACO 3.1 Stamps" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/10/25/2016-10-25-USACO-Stamps/" data-id="ck34sc71l00166axgbafucalm" data-title="USACO 3.1 Stamps" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2016/10/25/2016-10-25-USACO-Stamps/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -169,58 +215,11 @@
 
 
   
-    <article id="post-2016-10-23-USACO-Contact" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/10/23/2016-10-23-USACO-Contact/" class="article-date">
-  <time datetime="2016-10-23T22:43:31.000Z" itemprop="datePublished">2016-10-23</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/USACO/">USACO</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/10/23/2016-10-23-USACO-Contact/">USACO 3.1 Contact</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>The problem can be reduced to a string search and counting problem. The search space is any possible sub strings with size between A and B inclusive. Use a map to record the frequency of the occurrence of each bit pattern (string). Nothing dramatic, but the output formatting is quite nuisance. 输出坑爹!</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;utility&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cmath&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;map&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unordered_map&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;climits&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sstream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> A, B, N;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"contact.in"</span>)</span></span>;</span><br><span class="line">  <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"contact.out"</span>)</span></span>;</span><br><span class="line">  fin &gt;&gt; A &gt;&gt; B &gt;&gt; N;</span><br><span class="line">  <span class="built_in">string</span> s, t;</span><br><span class="line">  <span class="keyword">while</span> (fin &gt;&gt; t) &#123;</span><br><span class="line">    s += t;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="built_in">cout</span> &lt;&lt; s &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">  </span><br><span class="line">  <span class="built_in">map</span>&lt;<span class="built_in">string</span>, <span class="keyword">int</span>, <span class="built_in">std</span>::greater&lt;<span class="built_in">string</span>&gt;&gt; <span class="built_in">map</span>;</span><br><span class="line">  <span class="keyword">const</span> <span class="keyword">int</span> size = (<span class="keyword">int</span>)s.size();</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; size; ++i) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = A; j &lt;= B &amp;&amp; i + j &lt;= size; ++j) &#123;</span><br><span class="line">      <span class="built_in">string</span> sub = s.substr(i, j);</span><br><span class="line">      <span class="built_in">map</span>[sub]++;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;pair&lt;<span class="keyword">int</span>, <span class="built_in">string</span>&gt;&gt; v;</span><br><span class="line">  <span class="built_in">unordered_map</span>&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; cm; <span class="comment">// Key: frequence; Val: frequence count.</span></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">auto</span> iter = <span class="built_in">map</span>.begin(); iter != <span class="built_in">map</span>.end(); ++iter) &#123;</span><br><span class="line">    v.emplace_back(make_pair(iter-&gt;second, iter-&gt;first));</span><br><span class="line">    cm[iter-&gt;second]++;</span><br><span class="line">  &#125;</span><br><span class="line">  sort(v.begin(), v.end(), [] (<span class="keyword">const</span> pair&lt;<span class="keyword">int</span>, <span class="built_in">string</span>&gt; &amp;a,</span><br><span class="line">                               <span class="keyword">const</span> pair&lt;<span class="keyword">int</span>, <span class="built_in">string</span>&gt; &amp;b) &#123;</span><br><span class="line">    <span class="keyword">if</span> (a.first &gt; b.first) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">if</span> (a.first &lt; b.first) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">int</span> sa = (<span class="keyword">int</span>)a.second.size(), sb = (<span class="keyword">int</span>)b.second.size();</span><br><span class="line">    <span class="keyword">if</span> (sa &lt; sb) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">if</span> (sa &gt; sb) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">return</span> a.second &lt; b.second;</span><br><span class="line">  &#125;);</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>, count = <span class="number">0</span>; count &lt; N &amp;&amp; i &lt; v.size();) &#123;</span><br><span class="line">    <span class="keyword">int</span> cnt = cm[v[i].first];</span><br><span class="line">    fout &lt;&lt; v[i].first &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">if</span> (cnt &gt; <span class="number">1</span>) &#123;</span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; cnt; ++j) &#123;</span><br><span class="line">        <span class="keyword">if</span> ((j + <span class="number">1</span>) % <span class="number">6</span> == <span class="number">0</span> || j == cnt - <span class="number">1</span>) &#123;</span><br><span class="line">          fout &lt;&lt; v[i + j].second &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          fout &lt;&lt; v[i + j].second &lt;&lt; <span class="string">" "</span>;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      i += cnt;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      fout &lt;&lt; v[i].second &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">      ++i;</span><br><span class="line">    &#125;</span><br><span class="line">    ++count;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/10/23/2016-10-23-USACO-Contact/" data-id="ck3405uzj00169axg3osz7bsl" data-title="USACO 3.1 Contact" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2016/10/23/2016-10-23-USACO-Contact/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hashing/">Hashing</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/String-Manipulation/">String Manipulation</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
 
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/page/24/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/23/">23</a><a class="page-number" href="/page/24/">24</a><span class="page-number current">25</span><a class="page-number" href="/page/26/">26</a><a class="page-number" href="/page/27/">27</a><span class="space">&hellip;</span><a class="page-number" href="/page/40/">40</a><a class="extend next" rel="next" href="/page/26/">Next &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/24/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/23/">23</a><a class="page-number" href="/page/24/">24</a><span class="page-number current">25</span><a class="page-number" href="/page/26/">26</a><a class="page-number" href="/page/27/">27</a><span class="space">&hellip;</span><a class="page-number" href="/page/41/">41</a><a class="extend next" rel="next" href="/page/26/">Next &raquo;</a>
   </nav>
 
 </section>
@@ -285,7 +284,7 @@
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1121/">LeetCode 1121. Divide Array Into Increasing Sequences</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1031/">LeetCode 1031 Maximum Sum of Two Non-Overlapping Subarrays</a>
           </li>
         
           <li>
@@ -363,6 +362,6 @@
 
 
 
-  </div>
-<script src="https://cdn.jsdelivr.net/npm/live2d-widget@3.x/lib/L2Dwidget.min.js"></script><script>L2Dwidget.init({"tagMode":false,"debug":false,"model":{"jsonPath":"https://cdn.jsdelivr.net/npm/live2d-widget-model-haruto@1.x/assets/haruto.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/"});</script><!-- hexo-inject:begin --><!-- hexo-inject:end --></body>
+  </div><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+<script src="https://cdn.jsdelivr.net/npm/live2d-widget@3.x/lib/L2Dwidget.min.js"></script><script>L2Dwidget.init({"tagMode":false,"debug":false,"model":{"jsonPath":"https://cdn.jsdelivr.net/npm/live2d-widget-model-haruto@1.x/assets/haruto.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/"});</script></body>
 </html>

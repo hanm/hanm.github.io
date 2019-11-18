@@ -75,6 +75,53 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-2016-08-26-USACO-TheCarstle" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/08/26/2016-08-26-USACO-TheCarstle/" class="article-date">
+  <time datetime="2016-08-26T23:20:31.000Z" itemprop="datePublished">2016-08-26</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/USACO/">USACO</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/08/26/2016-08-26-USACO-TheCarstle/">USACO 2.1 The Carstle</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>This problem is a typical graph / grid search problem and the solution is also obvious (flood fill is your best friend.). The challenge is to properly transform the problem into right data structure.</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> maxn = <span class="number">55</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">char</span> dir;</span><br><span class="line"><span class="keyword">bool</span> visited[maxn][maxn] = &#123;<span class="literal">false</span>&#125;;</span><br><span class="line"><span class="keyword">int</span>  dx[] = &#123;<span class="number">1</span>, <span class="number">0</span>, <span class="number">-1</span>, <span class="number">0</span>&#125;;</span><br><span class="line"><span class="keyword">int</span>  dy[] = &#123;<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">-1</span>&#125;;</span><br><span class="line"><span class="keyword">int</span>  N, M, t, row, col, color = <span class="number">1</span>, rSize = <span class="number">-1</span>, maxSize = <span class="number">-1</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;  roomSize(maxn * maxn, <span class="number">0</span>);</span><br><span class="line"><span class="comment">// last dimension - Index 0/1/2/3 walls 4 color.</span></span><br><span class="line"><span class="keyword">int</span> castle[maxn][maxn][<span class="number">5</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">floodFill</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</span><br><span class="line">  visited[x][y] = <span class="literal">true</span>;</span><br><span class="line">  ++roomSize[color];</span><br><span class="line">  castle[x][y][<span class="number">4</span>] = color;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span>; ++i) &#123;</span><br><span class="line">    <span class="keyword">int</span> nx = x + dx[i];</span><br><span class="line">    <span class="keyword">int</span> ny = y + dy[i];</span><br><span class="line">    <span class="keyword">if</span> (nx &lt; <span class="number">0</span> || ny &lt; <span class="number">0</span> || nx &gt;= N || ny &gt;= M) <span class="keyword">continue</span>;</span><br><span class="line">    <span class="keyword">if</span> (visited[nx][ny] || castle[x][y][i]) <span class="keyword">continue</span>;</span><br><span class="line"></span><br><span class="line">    floodFill(nx, ny);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">merge</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> sum;</span><br><span class="line">  <span class="keyword">if</span> (x &gt;= <span class="number">1</span> &amp;&amp; castle[x - <span class="number">1</span>][y][<span class="number">4</span>] != castle[x][y][<span class="number">4</span>]) &#123;</span><br><span class="line">    sum = roomSize[castle[x - <span class="number">1</span>][y][<span class="number">4</span>]] + roomSize[castle[x][y][<span class="number">4</span>]];</span><br><span class="line">    <span class="keyword">if</span> (sum &gt; maxSize) &#123;</span><br><span class="line">      maxSize = sum;</span><br><span class="line">      row = x, col = y, dir = <span class="string">'N'</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (y &lt; M - <span class="number">1</span> &amp;&amp; castle[x][y + <span class="number">1</span>][<span class="number">4</span>] != castle[x][y][<span class="number">4</span>]) &#123;</span><br><span class="line">    sum = roomSize[castle[x][y + <span class="number">1</span>][<span class="number">4</span>]] + roomSize[castle[x][y][<span class="number">4</span>]];</span><br><span class="line">    <span class="keyword">if</span> (sum &gt; maxSize) &#123;</span><br><span class="line">      maxSize = sum;</span><br><span class="line">      row = x, col = y, dir = <span class="string">'E'</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"castle.in"</span>)</span></span>;</span><br><span class="line">  <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"castle.out"</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">  fin &gt;&gt; M &gt;&gt; N;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; M; ++j) &#123;</span><br><span class="line">      fin &gt;&gt; t;</span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">3</span>; k &gt;= <span class="number">0</span>; --k) &#123;</span><br><span class="line">        castle[i][j][k] = t%<span class="number">2</span>;</span><br><span class="line">        t &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">      &#125;</span><br><span class="line">      castle[i][j][<span class="number">4</span>] = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; M; ++j) &#123;</span><br><span class="line">      <span class="keyword">if</span> (!visited[i][j]) &#123;</span><br><span class="line">        floodFill(i, j);</span><br><span class="line">        ++color;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  rSize = *max_element(roomSize.begin(), roomSize.end());</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; M; ++i) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = N - <span class="number">1</span>; j &gt;= <span class="number">0</span>; --j)</span><br><span class="line">      merge(j, i);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  fout &lt;&lt; color - <span class="number">1</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">  fout &lt;&lt; rSize &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">  fout &lt;&lt; maxSize &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">  fout &lt;&lt; row + <span class="number">1</span> &lt;&lt; <span class="string">" "</span> &lt;&lt; col + <span class="number">1</span> &lt;&lt; <span class="string">" "</span> &lt;&lt; dir &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2016/08/26/2016-08-26-USACO-TheCarstle/" data-id="ck34sc70x000h6axgtvq1ya84" data-title="USACO 2.1 The Carstle" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2016/08/26/2016-08-26-USACO-TheCarstle/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Flood-Fill/">Flood Fill</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-2016-08-20-USACO-SuperPrimeRib" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/08/20/2016-08-20-USACO-SuperPrimeRib/" class="article-date">
@@ -106,7 +153,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/20/2016-08-20-USACO-SuperPrimeRib/" data-id="ck3405uyw000i9axgmsx7rwaf" data-title="USACO 1.5 SuperPrime Rib" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/08/20/2016-08-20-USACO-SuperPrimeRib/" data-id="ck34sc70w000g6axgchuahy4e" data-title="USACO 1.5 SuperPrime Rib" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2016/08/20/2016-08-20-USACO-SuperPrimeRib/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -153,7 +200,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/20/2016-08-20-USACO-NumberTriangles/" data-id="ck3405uyu000g9axg89der6pl" data-title="USACO 1.5 Number Triangles" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/08/20/2016-08-20-USACO-NumberTriangles/" data-id="ck34sc70v000f6axgd5edi9rg" data-title="USACO 1.5 Number Triangles" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2016/08/20/2016-08-20-USACO-NumberTriangles/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -169,58 +216,11 @@
 
 
   
-    <article id="post-2016-08-20-USACO-Mother&#39;s Milk" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/08/20/2016-08-20-USACO-Mother's Milk/" class="article-date">
-  <time datetime="2016-08-20T21:39:31.000Z" itemprop="datePublished">2016-08-20</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/USACO/">USACO</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/08/20/2016-08-20-USACO-Mother's Milk/">USACO 1.4 Mother&#39;s Milk</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>This is a search problem and the search space is the set of states of the bucket which can be encoded as a three dimensional array. The idea is to do an exhaustive search on all valid states by starting from the initial state, and this algorithm will at some point converge and reach a fixed point where all states are visited. Use the three dimensional array to store the state might be a little bit waste considering the state can be abstracted by the values in bucket B and C, so the state encoding can be optimized.</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stack&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> capacity[<span class="number">3</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line"><span class="keyword">struct</span> State &#123;</span><br><span class="line">  <span class="keyword">int</span> water[<span class="number">3</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function">State <span class="title">pour</span><span class="params">(State state, <span class="keyword">int</span> from, <span class="keyword">int</span> to)</span> </span>&#123;</span><br><span class="line">  State next = state;</span><br><span class="line">  <span class="keyword">int</span> water = min(state.water[from], capacity[to] - state.water[to]);</span><br><span class="line">  next.water[from] -= water;</span><br><span class="line">  next.water[to] += water;</span><br><span class="line">  <span class="keyword">return</span> next;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">satisfy</span><span class="params">(State &amp;state)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (state.water[<span class="number">0</span>] == <span class="number">0</span>) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">  <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"milk3.in"</span>)</span></span>;</span><br><span class="line">  <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"milk3.out"</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">  fin &gt;&gt; capacity[<span class="number">0</span>] &gt;&gt; capacity[<span class="number">1</span>] &gt;&gt; capacity[<span class="number">2</span>];</span><br><span class="line"></span><br><span class="line">  State state;</span><br><span class="line">  state.water[<span class="number">0</span>] = <span class="number">0</span>; state.water[<span class="number">1</span>] = <span class="number">0</span>; state.water[<span class="number">2</span>] = capacity[<span class="number">2</span>];</span><br><span class="line"></span><br><span class="line">  <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt;&gt;&gt; visited(capacity[<span class="number">0</span>] + <span class="number">1</span>,</span><br><span class="line">                                       <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt;&gt;(capacity[<span class="number">1</span>] + <span class="number">1</span>,</span><br><span class="line">                                                            <span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt;(capacity[<span class="number">2</span>] + <span class="number">1</span>, <span class="literal">false</span>)));</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">auto</span> i = <span class="number">0</span>; i &lt;= capacity[<span class="number">0</span>]; ++i)</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> j = <span class="number">0</span>; j &lt;= capacity[<span class="number">1</span>]; ++j)</span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">auto</span> k = <span class="number">0</span>; k &lt;= capacity[<span class="number">2</span>]; ++k)</span><br><span class="line">        visited[i][j][k] = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; result;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">stack</span>&lt;State&gt; <span class="built_in">stack</span>;</span><br><span class="line">  <span class="built_in">stack</span>.emplace(state);</span><br><span class="line">  visited[state.water[<span class="number">0</span>]][state.water[<span class="number">1</span>]][state.water[<span class="number">2</span>]] = <span class="literal">true</span>;</span><br><span class="line">  <span class="keyword">if</span> (satisfy(state))</span><br><span class="line">    result.push_back(state.water[<span class="number">2</span>]);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">while</span> (!<span class="built_in">stack</span>.empty()) &#123;</span><br><span class="line">    <span class="keyword">auto</span> s = <span class="built_in">stack</span>.top();</span><br><span class="line">    <span class="built_in">stack</span>.pop();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">3</span>; ++i) &#123;</span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; <span class="number">3</span>; ++j) &#123;</span><br><span class="line">        <span class="keyword">if</span> (i == j) <span class="keyword">continue</span>;</span><br><span class="line"></span><br><span class="line">        State next = pour(s, i, j);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (visited[next.water[<span class="number">0</span>]][next.water[<span class="number">1</span>]][next.water[<span class="number">2</span>]]) &#123;</span><br><span class="line">          <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (satisfy(next))</span><br><span class="line">          result.push_back(next.water[<span class="number">2</span>]);</span><br><span class="line">        <span class="built_in">stack</span>.emplace(next);</span><br><span class="line">        visited[next.water[<span class="number">0</span>]][next.water[<span class="number">1</span>]][next.water[<span class="number">2</span>]] = <span class="literal">true</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  sort(result.begin(), result.end());</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">auto</span> i  = <span class="number">0</span>; i &lt; result.size() - <span class="number">1</span>; ++i)</span><br><span class="line">    fout &lt;&lt; result[i] &lt;&lt; <span class="string">" "</span>;</span><br><span class="line">  fout &lt;&lt; result[result.size() - <span class="number">1</span>] &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/20/2016-08-20-USACO-Mother's Milk/" data-id="ck3405uyt000f9axgl1s8j8gm" data-title="USACO 1.4 Mother&#39;s Milk" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2016/08/20/2016-08-20-USACO-Mother's Milk/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/BFS/">BFS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DFS/">DFS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Search/">Search</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
 
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/page/33/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/32/">32</a><a class="page-number" href="/page/33/">33</a><span class="page-number current">34</span><a class="page-number" href="/page/35/">35</a><a class="page-number" href="/page/36/">36</a><span class="space">&hellip;</span><a class="page-number" href="/page/40/">40</a><a class="extend next" rel="next" href="/page/35/">Next &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/33/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/32/">32</a><a class="page-number" href="/page/33/">33</a><span class="page-number current">34</span><a class="page-number" href="/page/35/">35</a><a class="page-number" href="/page/36/">36</a><span class="space">&hellip;</span><a class="page-number" href="/page/41/">41</a><a class="extend next" rel="next" href="/page/35/">Next &raquo;</a>
   </nav>
 
 </section>
@@ -285,7 +285,7 @@
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1121/">LeetCode 1121. Divide Array Into Increasing Sequences</a>
+            <a href="/2019/11/11/2019-11-11-LeetCode1031/">LeetCode 1031 Maximum Sum of Two Non-Overlapping Subarrays</a>
           </li>
         
           <li>
@@ -363,6 +363,6 @@
 
 
 
-  </div>
-<script src="https://cdn.jsdelivr.net/npm/live2d-widget@3.x/lib/L2Dwidget.min.js"></script><script>L2Dwidget.init({"tagMode":false,"debug":false,"model":{"jsonPath":"https://cdn.jsdelivr.net/npm/live2d-widget-model-haruto@1.x/assets/haruto.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/"});</script><!-- hexo-inject:begin --><!-- hexo-inject:end --></body>
+  </div><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+<script src="https://cdn.jsdelivr.net/npm/live2d-widget@3.x/lib/L2Dwidget.min.js"></script><script>L2Dwidget.init({"tagMode":false,"debug":false,"model":{"jsonPath":"https://cdn.jsdelivr.net/npm/live2d-widget-model-haruto@1.x/assets/haruto.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/"});</script></body>
 </html>
