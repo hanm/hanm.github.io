@@ -75,54 +75,6 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-2019-11-10-LeetCode1168" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/11/10/2019-11-10-LeetCode1168/" class="article-date">
-  <time datetime="2019-11-10T19:11:11.000Z" itemprop="datePublished">2019-11-10</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/LeetCode-in-Rust/">LeetCode in Rust</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1168/">LeetCode 1168. Optimize Water Distribution in a Village</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><a href="https://leetcode.com/problems/optimize-water-distribution-in-a-village/description/" target="_blank" rel="noopener">Problem Statement</a></p>
-<p>Union Find on minimum spanning tree.</p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">find</span></span>(x : <span class="keyword">usize</span>, uf: &amp;<span class="keyword">mut</span> <span class="built_in">Vec</span>&lt;<span class="keyword">usize</span>&gt;) -&gt;<span class="keyword">usize</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> x == uf[x <span class="keyword">as</span> <span class="keyword">usize</span>] &#123;</span><br><span class="line">            <span class="keyword">return</span> x;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            uf[x] = Self::find(uf[x], uf);</span><br><span class="line">            <span class="keyword">return</span> uf[x];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">min_cost_to_supply_water</span></span>(n: <span class="keyword">i32</span>, wells: <span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;, pipes: <span class="built_in">Vec</span>&lt;<span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;&gt;) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> uf = <span class="built_in">vec!</span>[<span class="number">0</span>; n <span class="keyword">as</span> <span class="keyword">usize</span> + <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..n + <span class="number">1</span> &#123;</span><br><span class="line">            uf[i <span class="keyword">as</span> <span class="keyword">usize</span>] = i <span class="keyword">as</span> <span class="keyword">usize</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> p = pipes;</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..n &#123;</span><br><span class="line">            p.push(<span class="built_in">vec!</span>[<span class="number">0</span>, i + <span class="number">1</span>, wells[i <span class="keyword">as</span> <span class="keyword">usize</span>]]);</span><br><span class="line">        &#125;</span><br><span class="line">        p.sort_by_key(|x| x[<span class="number">2</span>]);</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> ans = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> pipe <span class="keyword">in</span> p &#123;</span><br><span class="line">            <span class="keyword">let</span> (fx, fy) = (Self::find(pipe[<span class="number">0</span>] <span class="keyword">as</span> <span class="keyword">usize</span>, &amp;<span class="keyword">mut</span> uf),</span><br><span class="line">                                        Self::find(pipe[<span class="number">1</span>] <span class="keyword">as</span> <span class="keyword">usize</span>, &amp;<span class="keyword">mut</span> uf));</span><br><span class="line">            <span class="keyword">if</span> fx == fy &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            ans += pipe[<span class="number">2</span>];</span><br><span class="line">            uf[fx] = fy;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1168/" data-id="ck34sdmrn002w7fxggxocc3tn" data-title="LeetCode 1168. Optimize Water Distribution in a Village" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1168/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LeetCode/">LeetCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Rust/">Rust</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
     <article id="post-2019-11-10-LeetCode1024" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2019/11/10/2019-11-10-LeetCode1024/" class="article-date">
@@ -155,7 +107,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1024/" data-id="ck34su11o0000gxxg5zp723bd" data-title="LeetCode 1024. Video Stitching" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1024/" data-id="ck34ujr5t002w7kxgvjj0ujl1" data-title="LeetCode 1024. Video Stitching" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1024/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -171,10 +123,10 @@
 
 
   
-    <article id="post-2019-10-15-LeetCode1145" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2019-11-10-LeetCode1087" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2019/10/15/2019-10-15-LeetCode1145/" class="article-date">
-  <time datetime="2019-10-15T17:39:31.000Z" itemprop="datePublished">2019-10-15</time>
+    <a href="/2019/11/10/2019-11-10-LeetCode1087/" class="article-date">
+  <time datetime="2019-11-10T19:11:11.000Z" itemprop="datePublished">2019-11-10</time>
 </a>
     
   <div class="article-category">
@@ -189,7 +141,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/10/15/2019-10-15-LeetCode1145/">LeetCode 1145 Binary Tree Coloring Game</a>
+      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1087/">LeetCode 1087. Brace Expansion</a>
     </h1>
   
 
@@ -197,14 +149,62 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><a href="https://leetcode.com/problems/binary-tree-coloring-game/description/" target="_blank" rel="noopener">Problem Statement</a></p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::rc::Rc;</span><br><span class="line"><span class="keyword">use</span> std::cell::RefCell;</span><br><span class="line"><span class="keyword">use</span> std::cmp::max;</span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">btree_game_winning_move</span></span>(root: <span class="built_in">Option</span>&lt;Rc&lt;RefCell&lt;TreeNode&gt;&gt;&gt;, n: <span class="keyword">i32</span>, x: <span class="keyword">i32</span>) -&gt; <span class="keyword">bool</span> &#123;</span><br><span class="line">        <span class="function"><span class="keyword">fn</span> <span class="title">count_sub_tree_nodes</span></span>(node: <span class="built_in">Option</span>&lt;&amp;Rc&lt;RefCell&lt;TreeNode&gt;&gt;&gt;, x : <span class="keyword">i32</span>,</span><br><span class="line">                                left : &amp;<span class="keyword">mut</span> <span class="keyword">i32</span>, right : &amp;<span class="keyword">mut</span> <span class="keyword">i32</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">let</span> <span class="literal">Some</span>(n) = node &#123;</span><br><span class="line">                <span class="keyword">let</span> l = count_sub_tree_nodes(n.borrow().left.as_ref(), x, left, right);</span><br><span class="line">                <span class="keyword">let</span> r = count_sub_tree_nodes(n.borrow().right.as_ref(), x, left, right);</span><br><span class="line">                <span class="keyword">if</span> x == n.borrow().val &#123;</span><br><span class="line">                    *left = l; *right = r;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">return</span> l + r + <span class="number">1</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> left = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> right = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">let</span> count = count_sub_tree_nodes(root.as_ref(), x, &amp;<span class="keyword">mut</span> left, &amp;<span class="keyword">mut</span> right);</span><br><span class="line">        <span class="keyword">return</span> max(max(left, right), n - left - right - <span class="number">1</span>) &gt; n / <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+        <p><a href="https://leetcode.com/problems/brace-expansion/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">expand</span></span>(s: <span class="built_in">String</span>) -&gt; <span class="built_in">Vec</span>&lt;<span class="built_in">String</span>&gt; &#123;</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> ans, <span class="keyword">mut</span> prev) : (<span class="built_in">Vec</span>&lt;<span class="built_in">String</span>&gt;, <span class="built_in">Vec</span>&lt;<span class="built_in">String</span>&gt;) = (<span class="built_in">vec!</span>[], <span class="built_in">vec!</span>[]);</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> in_brace, <span class="keyword">mut</span> initialized) = (<span class="literal">false</span>, <span class="literal">false</span>);</span><br><span class="line">        <span class="keyword">for</span> c <span class="keyword">in</span> s.chars() &#123;</span><br><span class="line">            <span class="keyword">if</span> c == <span class="string">'&#123;'</span> &#123;</span><br><span class="line">                prev = ans.clone(); ans.clear();</span><br><span class="line">                in_brace = <span class="literal">true</span>; <span class="keyword">continue</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> c == <span class="string">'&#125;'</span> &#123;</span><br><span class="line">                in_brace = <span class="literal">false</span>;</span><br><span class="line">                <span class="keyword">if</span> !initialized &#123;</span><br><span class="line">                    initialized = <span class="literal">true</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> c == <span class="string">','</span> &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> in_brace &#123;</span><br><span class="line">                <span class="keyword">if</span> !initialized &#123;</span><br><span class="line">                    ans.push(c.to_string());</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="keyword">let</span> <span class="keyword">mut</span> cur = prev.clone();</span><br><span class="line">                    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..cur.len() &#123;</span><br><span class="line">                        cur[i].push(c);</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">for</span> <span class="keyword">str</span> <span class="keyword">in</span> cur &#123;</span><br><span class="line">                        ans.push(<span class="keyword">str</span>);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">if</span> !initialized &#123;</span><br><span class="line">                    ans.push(c.to_string());</span><br><span class="line">                    initialized = <span class="literal">true</span>;</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..ans.len() &#123;</span><br><span class="line">                        ans[i].push(c);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        ans.sort();</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/10/15/2019-10-15-LeetCode1145/" data-id="ck34sdmrj002t7fxg9oraupe9" data-title="LeetCode 1145 Binary Tree Coloring Game" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1087/" data-id="ck34ujr5t002x7kxg98g26e12" data-title="LeetCode 1087. Brace Expansion" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2019/10/15/2019-10-15-LeetCode1145/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1087/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LeetCode/">LeetCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Rust/">Rust</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-2019-11-10-LeetCode1168" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/11/10/2019-11-10-LeetCode1168/" class="article-date">
+  <time datetime="2019-11-10T19:11:11.000Z" itemprop="datePublished">2019-11-10</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/LeetCode-in-Rust/">LeetCode in Rust</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1168/">LeetCode 1168. Optimize Water Distribution in a Village</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><a href="https://leetcode.com/problems/optimize-water-distribution-in-a-village/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<p>Union Find on minimum spanning tree.</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">find</span></span>(x : <span class="keyword">usize</span>, uf: &amp;<span class="keyword">mut</span> <span class="built_in">Vec</span>&lt;<span class="keyword">usize</span>&gt;) -&gt;<span class="keyword">usize</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> x == uf[x <span class="keyword">as</span> <span class="keyword">usize</span>] &#123;</span><br><span class="line">            <span class="keyword">return</span> x;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            uf[x] = Self::find(uf[x], uf);</span><br><span class="line">            <span class="keyword">return</span> uf[x];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">min_cost_to_supply_water</span></span>(n: <span class="keyword">i32</span>, wells: <span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;, pipes: <span class="built_in">Vec</span>&lt;<span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;&gt;) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> uf = <span class="built_in">vec!</span>[<span class="number">0</span>; n <span class="keyword">as</span> <span class="keyword">usize</span> + <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..n + <span class="number">1</span> &#123;</span><br><span class="line">            uf[i <span class="keyword">as</span> <span class="keyword">usize</span>] = i <span class="keyword">as</span> <span class="keyword">usize</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> p = pipes;</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..n &#123;</span><br><span class="line">            p.push(<span class="built_in">vec!</span>[<span class="number">0</span>, i + <span class="number">1</span>, wells[i <span class="keyword">as</span> <span class="keyword">usize</span>]]);</span><br><span class="line">        &#125;</span><br><span class="line">        p.sort_by_key(|x| x[<span class="number">2</span>]);</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> ans = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> pipe <span class="keyword">in</span> p &#123;</span><br><span class="line">            <span class="keyword">let</span> (fx, fy) = (Self::find(pipe[<span class="number">0</span>] <span class="keyword">as</span> <span class="keyword">usize</span>, &amp;<span class="keyword">mut</span> uf),</span><br><span class="line">                                        Self::find(pipe[<span class="number">1</span>] <span class="keyword">as</span> <span class="keyword">usize</span>, &amp;<span class="keyword">mut</span> uf));</span><br><span class="line">            <span class="keyword">if</span> fx == fy &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            ans += pipe[<span class="number">2</span>];</span><br><span class="line">            uf[fx] = fy;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1168/" data-id="ck34ujr5u002y7kxg8blooitr" data-title="LeetCode 1168. Optimize Water Distribution in a Village" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1168/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       

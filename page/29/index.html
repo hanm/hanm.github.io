@@ -75,6 +75,60 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-2016-10-09-USACO-Cowtours" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/10/09/2016-10-09-USACO-Cowtours/" class="article-date">
+  <time datetime="2016-10-10T05:15:31.000Z" itemprop="datePublished">2016-10-09</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/USACO/">USACO</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/10/09/2016-10-09-USACO-Cowtours/">USACO 2.4 Cow Tours</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>This problem asks about the longest paths among the shortest paths. The basic idea is to use a brutal force search against all pair shortest paths. There are two cases for the shortest paths:</p>
+<ul>
+<li>The shortest path is one of those that’s connecting two pastures that’s already connected. These paths are already available in original graph.</li>
+<li>The shortest path does not exist in original graph. Between two disconnected pastures, say pasture A and pasture B, we can have them connected by having a path go between A and B. Now before we connect A and B, there must exist pasture C and D, such that distance AC is the maximized possible distance between A and all other pastures A already connected in original graph, and similarly distance BD is maximized possible distance between B and all other pastures B already connected in original graph. The new possible longest path of all shortest path between pairs is now distance(AC) + distance(BD) + distance (AB). </li>
+<li>Combining two cases, we can do a brutal force search and find the maximum path.</li>
+<li>For all pastures that have already connected, use Floyd all pair shortest paths to calculate the path values. </li>
+<li>There is no need to explicitly calculate the strongly connected component that connected pastures form, because we would iterate through pair of pastures, rather than through pair of strongly connected components formed by pastures. And we can tell if two pastures needs to be checked because we will only check those that have initial distance value of infinite (meaning not connected initially.).</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;utility&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cmath&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;limits&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iomanip&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> DOUBLE_MAX std::numeric_limits<span class="meta-string">&lt;double&gt;</span>::max()</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> N;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> Point &#123;</span><br><span class="line">  <span class="keyword">int</span> x; <span class="keyword">int</span> y;</span><br><span class="line">&#125; tPoint;</span><br><span class="line"></span><br><span class="line"><span class="built_in">vector</span>&lt;tPoint&gt; points;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">double</span>&gt;&gt; dist;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">double</span>&gt; dmax;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">double</span> <span class="title">distance</span><span class="params">(<span class="keyword">int</span> x1, <span class="keyword">int</span> y1, <span class="keyword">int</span> x2, <span class="keyword">int</span> y2)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">sqrt</span>((<span class="keyword">double</span>)<span class="built_in">pow</span>(x1 - x2, <span class="number">2</span>) + (<span class="keyword">double</span>)<span class="built_in">pow</span>(y1 - y2, <span class="number">2</span>));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"cowtour.in"</span>)</span></span>;</span><br><span class="line">  <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"cowtour.out"</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">  fin &gt;&gt; N;</span><br><span class="line">  points = <span class="built_in">vector</span>&lt;tPoint&gt;(N, tPoint());</span><br><span class="line">  dist = <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">double</span>&gt;&gt;(N, <span class="built_in">vector</span>&lt;<span class="keyword">double</span>&gt;(N, <span class="number">0</span>));</span><br><span class="line">  dmax = <span class="built_in">vector</span>&lt;<span class="keyword">double</span>&gt;(N, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">    fin &gt;&gt; points[i].x;</span><br><span class="line">    fin &gt;&gt; points[i].y;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; N; ++j) &#123;</span><br><span class="line">      <span class="keyword">char</span> c;</span><br><span class="line">      fin &gt;&gt; c;</span><br><span class="line">      <span class="keyword">if</span> (c == <span class="string">'0'</span>) &#123;</span><br><span class="line">        dist[i][j] = DOUBLE_MAX;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        dist[i][j] = distance(points[i].x, points[i].y, points[j].x, points[j].y);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Flyod all pair shortest path.</span></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; N; ++k) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; N; ++j) &#123;</span><br><span class="line">        <span class="keyword">if</span> ((dist[i][k] + dist[k][j] &lt; dist[i][j]) &amp;&amp;</span><br><span class="line">             dist[i][k] != DOUBLE_MAX &amp;&amp;</span><br><span class="line">             dist[k][j] != DOUBLE_MAX) &#123;</span><br><span class="line">          dist[i][j] = dist[i][k] + dist[k][j];</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i)&#123;</span><br><span class="line">    dist[i][i] = DOUBLE_MAX;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">double</span> max_distance = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i)&#123;</span><br><span class="line">    <span class="keyword">double</span> cmax = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; N; ++j)&#123;</span><br><span class="line">      <span class="keyword">if</span> (dist[i][j] == DOUBLE_MAX)</span><br><span class="line">        <span class="keyword">continue</span>;</span><br><span class="line">      cmax = <span class="built_in">std</span>::max(cmax, dist[i][j]);</span><br><span class="line">    &#125;</span><br><span class="line">    dmax[i] = cmax;</span><br><span class="line">    max_distance = <span class="built_in">std</span>::max(max_distance, cmax);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  <span class="keyword">double</span> ret = DOUBLE_MAX;</span><br><span class="line">  <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N - <span class="number">1</span>; ++i)&#123;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> j = i + <span class="number">1</span>; j &lt; N; ++j)&#123;</span><br><span class="line">      <span class="keyword">if</span> (i != j &amp;&amp; dist[i][j] == DOUBLE_MAX) &#123;</span><br><span class="line">        <span class="keyword">double</span> d = distance(points[i].x, points[i].y,</span><br><span class="line">                            points[j].x, points[j].y);</span><br><span class="line">        ret = <span class="built_in">std</span>::min(ret, d + dmax[i] + dmax[j]);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  fout &lt;&lt; setiosflags(ios::fixed) &lt;&lt; setprecision(<span class="number">6</span>)</span><br><span class="line">    &lt;&lt; (max_distance &gt; ret ? max_distance : ret) &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">cout</span> &lt;&lt; setiosflags(ios::fixed) &lt;&lt; setprecision(<span class="number">6</span>)</span><br><span class="line">  &lt;&lt; (max_distance &gt; ret ? max_distance : ret) &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2016/10/09/2016-10-09-USACO-Cowtours/" data-id="ck34ujr3t00117kxgycsjauho" data-title="USACO 2.4 Cow Tours" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2016/10/09/2016-10-09-USACO-Cowtours/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Floyd/">Floyd</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Graph/">Graph</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Shortest-Path/">Shortest Path</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-2016-10-07-USACO-Overfencing" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/10/07/2016-10-07-USACO-Overfencing/" class="article-date">
@@ -111,7 +165,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/10/07/2016-10-07-USACO-Overfencing/" data-id="ck34sdmpj000y7fxg6i85gmt9" data-title="USACO 2.4 Overfencing" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/10/07/2016-10-07-USACO-Overfencing/" data-id="ck34ujr3r000z7kxge3o85m2c" data-title="USACO 2.4 Overfencing" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2016/10/07/2016-10-07-USACO-Overfencing/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -158,60 +212,13 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/10/06/2016-10-06-USACO-TheTamWorthTwo/" data-id="ck34sdmpk000z7fxgqawv0b39" data-title="USACO 2.4 The Tamworth Two" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/10/06/2016-10-06-USACO-TheTamWorthTwo/" data-id="ck34ujr3q000y7kxgiipycat7" data-title="USACO 2.4 The Tamworth Two" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2016/10/06/2016-10-06-USACO-TheTamWorthTwo/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Search/">Search</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Simulation/">Simulation</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2016-10-05-USACO-ControllingCompanies" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/10/05/2016-10-05-USACO-ControllingCompanies/" class="article-date">
-  <time datetime="2016-10-06T04:50:31.000Z" itemprop="datePublished">2016-10-05</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/USACO/">USACO</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/10/05/2016-10-05-USACO-ControllingCompanies/">USACO 2.3 Controlling Companies</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>This is a search problem that can be solved using brutal force DFS. We first have a pass to initialize the states of companies’ controlling states by bootstrapping controlling companies and controlled companies, and also gather company share statistics for each companies. Then we have a second pass to update the global control state where for each company A, if it controls company B (initialized in first pass by calculating if A has over 50% shares of B), then A should also have same number shares for each company C that company B has shares in. This process continues and the global state should converge and reach a fixed state, as for each company, we will do DFS for every other company only once.</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;utility&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unordered_map&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;set&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stack&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> N;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> C = <span class="number">100</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"concom.in"</span>)</span></span>;</span><br><span class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"concom.out"</span>)</span></span>;</span><br><span class="line">    fin &gt;&gt; N;</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt;&gt;&gt; nodes(C + <span class="number">1</span>, <span class="built_in">vector</span>&lt;pair&lt;<span class="keyword">int</span>,<span class="keyword">int</span>&gt;&gt;(<span class="number">0</span>));</span><br><span class="line">    <span class="keyword">int</span> f, c, p;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">        fin &gt;&gt; f &gt;&gt; c &gt;&gt; p;</span><br><span class="line">        nodes[f].push_back(make_pair(c, p));</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="built_in">unordered_map</span>&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt;&gt; <span class="built_in">map</span>(C + <span class="number">1</span>, <span class="built_in">unordered_map</span>&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt;());</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="built_in">set</span>&lt;<span class="keyword">int</span>&gt;&gt; result(C + <span class="number">1</span>, <span class="built_in">set</span>&lt;<span class="keyword">int</span>&gt;());</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt; visited(C + <span class="number">1</span>, <span class="literal">false</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= C; ++i) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;pair : nodes[i]) &#123;</span><br><span class="line">            <span class="built_in">map</span>[i][pair.first] += pair.second;</span><br><span class="line">            <span class="keyword">if</span> (pair.second &lt;= <span class="number">50</span>) &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            result[i].insert(pair.first);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= C; ++i) &#123;</span><br><span class="line">        <span class="built_in">std</span>::fill(visited.begin(), visited.end(), <span class="literal">false</span>);</span><br><span class="line">        <span class="built_in">stack</span>&lt;<span class="keyword">int</span>&gt; s;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;c : result[i]) &#123;</span><br><span class="line">            s.push(c);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">while</span> (!s.empty()) &#123;</span><br><span class="line">            <span class="keyword">int</span> c = s.top();</span><br><span class="line">            s.pop();</span><br><span class="line">            <span class="keyword">if</span> (visited[c]) <span class="keyword">continue</span>;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;cc : nodes[c]) &#123;</span><br><span class="line">                <span class="built_in">map</span>[i][cc.first] += cc.second;</span><br><span class="line">                <span class="keyword">if</span> (<span class="built_in">map</span>[i][cc.first] &gt; <span class="number">50</span>) &#123;</span><br><span class="line">                    result[i].insert(cc.first);</span><br><span class="line">                    s.push(cc.first);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            visited[c] = <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= C; ++i) &#123;</span><br><span class="line">        <span class="keyword">if</span> (result[i].empty()) <span class="keyword">continue</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> iter = result[i].begin(); iter != result[i].end(); ++iter) &#123;</span><br><span class="line">            <span class="keyword">if</span> (i == *iter) <span class="keyword">continue</span>;</span><br><span class="line">            fout &lt;&lt; i &lt;&lt; <span class="string">" "</span> &lt;&lt; *iter &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/10/05/2016-10-05-USACO-ControllingCompanies/" data-id="ck34sdmph000w7fxghmz05ae9" data-title="USACO 2.3 Controlling Companies" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2016/10/05/2016-10-05-USACO-ControllingCompanies/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DFS/">DFS</a></li></ul>
 
     </footer>
   </div>

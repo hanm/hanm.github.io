@@ -106,7 +106,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1153/" data-id="ck34sdmrt00337fxge0fi7i64" data-title="LeetCode 1153. String Transforms Into Another String" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1153/" data-id="ck34ujr5z00357kxg7bdr3l2k" data-title="LeetCode 1153. String Transforms Into Another String" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1153/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -153,7 +153,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1197/" data-id="ck34sdmru00347fxg9xoc2pom" data-title="1197. Minimum Knight Moves" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1197/" data-id="ck34ujr6000367kxgk6zpjd1s" data-title="1197. Minimum Knight Moves" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1197/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -169,9 +169,9 @@
 
 
   
-    <article id="post-2019-11-11-LeetCode1147" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2019-11-11-LeetCode1218" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2019/11/11/2019-11-11-LeetCode1147/" class="article-date">
+    <a href="/2019/11/11/2019-11-11-LeetCode1218/" class="article-date">
   <time datetime="2019-11-11T19:11:11.000Z" itemprop="datePublished">2019-11-11</time>
 </a>
     
@@ -187,7 +187,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/11/2019-11-11-LeetCode1147/">LeetCode 1147. Longest Chunked Palindrome Decomposition</a>
+      <a class="article-title" href="/2019/11/11/2019-11-11-LeetCode1218/">1218. Longest Arithmetic Subsequence of Given Difference</a>
     </h1>
   
 
@@ -195,14 +195,14 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><a href="https://leetcode.com/problems/longest-chunked-palindrome-decomposition/description/" target="_blank" rel="noopener">Problem Statement</a></p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">longest_decomposition</span></span>(text: <span class="built_in">String</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> ans, n) = (<span class="number">0</span>, text.len());</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> l, <span class="keyword">mut</span> r) = (<span class="built_in">String</span>::from(<span class="string">""</span>), <span class="built_in">String</span>::from(<span class="string">""</span>));</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..n &#123;</span><br><span class="line">            l.push(text.chars().nth(i).unwrap());</span><br><span class="line">            r.insert(<span class="number">0</span>, text.chars().nth(n - i - <span class="number">1</span>).unwrap());</span><br><span class="line">            <span class="keyword">if</span> l == r &#123;</span><br><span class="line">                ans += <span class="number">1</span>;</span><br><span class="line">                l.clear(); r.clear();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+        <p><a href="https://leetcode.com/problems/longest-arithmetic-subsequence-of-given-difference/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::collections::HashMap;</span><br><span class="line"><span class="keyword">use</span> std::cmp;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">longest_subsequence</span></span>(arr: <span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;, difference: <span class="keyword">i32</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> ans, <span class="keyword">mut</span> map) = (<span class="number">0</span>, HashMap::new());</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> arr &#123;</span><br><span class="line">            <span class="keyword">let</span> val = cmp::max(*map.entry(i).or_insert(<span class="number">0</span>),</span><br><span class="line">                               *map.entry(i - difference).or_insert(<span class="number">0</span>) + <span class="number">1</span>);</span><br><span class="line">            map.insert(i, val);</span><br><span class="line">            ans = cmp::max(ans, *map.entry(i).or_insert(<span class="number">0</span>));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1147/" data-id="ck34sdmru00357fxg27zvtvwp" data-title="LeetCode 1147. Longest Chunked Palindrome Decomposition" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1218/" data-id="ck34ujr6000377kxg00r2n658" data-title="1218. Longest Arithmetic Subsequence of Given Difference" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1147/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1218/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       

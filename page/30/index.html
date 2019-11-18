@@ -75,6 +75,53 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-2016-10-05-USACO-ControllingCompanies" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/10/05/2016-10-05-USACO-ControllingCompanies/" class="article-date">
+  <time datetime="2016-10-06T04:50:31.000Z" itemprop="datePublished">2016-10-05</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/USACO/">USACO</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/10/05/2016-10-05-USACO-ControllingCompanies/">USACO 2.3 Controlling Companies</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>This is a search problem that can be solved using brutal force DFS. We first have a pass to initialize the states of companies’ controlling states by bootstrapping controlling companies and controlled companies, and also gather company share statistics for each companies. Then we have a second pass to update the global control state where for each company A, if it controls company B (initialized in first pass by calculating if A has over 50% shares of B), then A should also have same number shares for each company C that company B has shares in. This process continues and the global state should converge and reach a fixed state, as for each company, we will do DFS for every other company only once.</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;utility&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unordered_map&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;set&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stack&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> N;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> C = <span class="number">100</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"concom.in"</span>)</span></span>;</span><br><span class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"concom.out"</span>)</span></span>;</span><br><span class="line">    fin &gt;&gt; N;</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt;&gt;&gt; nodes(C + <span class="number">1</span>, <span class="built_in">vector</span>&lt;pair&lt;<span class="keyword">int</span>,<span class="keyword">int</span>&gt;&gt;(<span class="number">0</span>));</span><br><span class="line">    <span class="keyword">int</span> f, c, p;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">        fin &gt;&gt; f &gt;&gt; c &gt;&gt; p;</span><br><span class="line">        nodes[f].push_back(make_pair(c, p));</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="built_in">unordered_map</span>&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt;&gt; <span class="built_in">map</span>(C + <span class="number">1</span>, <span class="built_in">unordered_map</span>&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt;());</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="built_in">set</span>&lt;<span class="keyword">int</span>&gt;&gt; result(C + <span class="number">1</span>, <span class="built_in">set</span>&lt;<span class="keyword">int</span>&gt;());</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt; visited(C + <span class="number">1</span>, <span class="literal">false</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= C; ++i) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;pair : nodes[i]) &#123;</span><br><span class="line">            <span class="built_in">map</span>[i][pair.first] += pair.second;</span><br><span class="line">            <span class="keyword">if</span> (pair.second &lt;= <span class="number">50</span>) &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            result[i].insert(pair.first);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= C; ++i) &#123;</span><br><span class="line">        <span class="built_in">std</span>::fill(visited.begin(), visited.end(), <span class="literal">false</span>);</span><br><span class="line">        <span class="built_in">stack</span>&lt;<span class="keyword">int</span>&gt; s;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;c : result[i]) &#123;</span><br><span class="line">            s.push(c);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">while</span> (!s.empty()) &#123;</span><br><span class="line">            <span class="keyword">int</span> c = s.top();</span><br><span class="line">            s.pop();</span><br><span class="line">            <span class="keyword">if</span> (visited[c]) <span class="keyword">continue</span>;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;cc : nodes[c]) &#123;</span><br><span class="line">                <span class="built_in">map</span>[i][cc.first] += cc.second;</span><br><span class="line">                <span class="keyword">if</span> (<span class="built_in">map</span>[i][cc.first] &gt; <span class="number">50</span>) &#123;</span><br><span class="line">                    result[i].insert(cc.first);</span><br><span class="line">                    s.push(cc.first);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            visited[c] = <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= C; ++i) &#123;</span><br><span class="line">        <span class="keyword">if</span> (result[i].empty()) <span class="keyword">continue</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> iter = result[i].begin(); iter != result[i].end(); ++iter) &#123;</span><br><span class="line">            <span class="keyword">if</span> (i == *iter) <span class="keyword">continue</span>;</span><br><span class="line">            fout &lt;&lt; i &lt;&lt; <span class="string">" "</span> &lt;&lt; *iter &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2016/10/05/2016-10-05-USACO-ControllingCompanies/" data-id="ck34ujr3o000w7kxg4psead60" data-title="USACO 2.3 Controlling Companies" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2016/10/05/2016-10-05-USACO-ControllingCompanies/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DFS/">DFS</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-2016-09-26-USACO-MoneySystem" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/09/26/2016-09-26-USACO-MoneySystem/" class="article-date">
@@ -106,7 +153,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/09/26/2016-09-26-USACO-MoneySystem/" data-id="ck34sdmpi000x7fxg70qjo220" data-title="USACO 2.3 Money System" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/09/26/2016-09-26-USACO-MoneySystem/" data-id="ck34ujr3p000x7kxg31tooerx" data-title="USACO 2.3 Money System" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2016/09/26/2016-09-26-USACO-MoneySystem/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -153,59 +200,13 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/09/25/2016-09-25-USACO-ZeroSum/" data-id="ck34sdmpg000v7fxgd514fg0l" data-title="USACO 2.3 Zero Sum" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/09/25/2016-09-25-USACO-ZeroSum/" data-id="ck34ujr3n000v7kxgmk9djgp0" data-title="USACO 2.3 Zero Sum" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2016/09/25/2016-09-25-USACO-ZeroSum/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DFS/">DFS</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2016-09-24-USACO-CowPedigrees" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/09/24/2016-09-24-USACO-CowPedigrees/" class="article-date">
-  <time datetime="2016-09-25T05:50:31.000Z" itemprop="datePublished">2016-09-24</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/USACO/">USACO</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/09/24/2016-09-24-USACO-CowPedigrees/">USACO 2.3 Cow Pedigrees</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unordered_set&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> N, K;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> MOD = <span class="number">9901</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"nocows.in"</span>)</span></span>;</span><br><span class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"nocows.out"</span>)</span></span>;</span><br><span class="line">    fin &gt;&gt; N &gt;&gt; K;</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; dp(K + <span class="number">1</span>, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N + <span class="number">1</span>, <span class="number">0</span>));</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= K; ++i) &#123;</span><br><span class="line">        dp[i][<span class="number">1</span>] = <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= K; ++i) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">1</span>; j &lt;= N; j+= <span class="number">2</span>) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">1</span>; k &lt;= j - <span class="number">2</span>; ++k) &#123;</span><br><span class="line">                dp[i][j] = (dp[i][j] +</span><br><span class="line">                            dp[i - <span class="number">1</span>][k] * dp[i - <span class="number">1</span>][j - k - <span class="number">1</span>]) % MOD;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> result = (dp[K][N] - dp[K - <span class="number">1</span>][N] + MOD) % MOD;</span><br><span class="line">    fout &lt;&lt; result &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/09/24/2016-09-24-USACO-CowPedigrees/" data-id="ck34sdmpd000s7fxguata8g2m" data-title="USACO 2.3 Cow Pedigrees" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2016/09/24/2016-09-24-USACO-CowPedigrees/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dynamic-Programming/">Dynamic Programming</a></li></ul>
 
     </footer>
   </div>

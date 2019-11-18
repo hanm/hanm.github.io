@@ -75,6 +75,57 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-2017-01-15-USACO-StreetRace" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/01/15/2017-01-15-USACO-StreetRace/" class="article-date">
+  <time datetime="2017-01-16T00:47:31.000Z" itemprop="datePublished">2017-01-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/USACO/">USACO</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/01/15/2017-01-15-USACO-StreetRace/">USACO 4.3 Street Race</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Use DFS to do brutal force search given the small data size. There are two problems:</p>
+<ul>
+<li>Decide the unavoidable points. This can be solved by iterating over each point (except the starting and ending point 0 and N, respectively) and assume the current point is being taken out of the graph. If in such a graph starting from 0 there is still a path to N then the current point being taken out is not an unavoidable point. Otherwise, the current point is an unavoidable point.</li>
+<li>Decide the splitting points. The splitting points must be a subset of unavoidable points. So iterating through all the unavoidable points figured out in first step, and do two search from 0 and the current iterating point respectively, and record the sets of point that two search could reach. If the two sets intersect, then the current point can’t be a splitting point by definition; otherwise the current point is a splitting point.</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;set&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstring&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> N;</span><br><span class="line"><span class="keyword">bool</span> graph[<span class="number">55</span>][<span class="number">55</span>];</span><br><span class="line"><span class="keyword">bool</span> visited[<span class="number">55</span>];</span><br><span class="line"><span class="built_in">set</span>&lt;<span class="keyword">int</span>&gt; st;</span><br><span class="line"><span class="keyword">int</span> split;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> v, <span class="keyword">int</span> j)</span> </span>&#123;</span><br><span class="line">    visited[v] = <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= N; ++i) &#123;</span><br><span class="line">        <span class="keyword">if</span> (visited[i] || !graph[v][i] || i == j || i == v) <span class="keyword">continue</span>;</span><br><span class="line">        <span class="keyword">if</span> ((i == N &amp;&amp; graph[v][i]) || dfs(i, j)) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> s)</span> </span>&#123;</span><br><span class="line">    st.insert(s);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= N; ++i) &#123;</span><br><span class="line">        <span class="keyword">if</span> (st.count(i) || !graph[s][i] || s == i || i == split) <span class="keyword">continue</span>;</span><br><span class="line">        dfs(i);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"race3.in"</span>)</span></span>;</span><br><span class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"race3.out"</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">memset</span>(graph, <span class="number">0</span>, <span class="keyword">sizeof</span>(graph));</span><br><span class="line">    <span class="keyword">int</span> n = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span>(!fin.eof()) &#123;</span><br><span class="line">        fin &gt;&gt; n;</span><br><span class="line">        <span class="keyword">if</span> (n == <span class="number">-2</span>) &#123;</span><br><span class="line">            ++N;</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (n == <span class="number">-1</span>) <span class="keyword">break</span>;</span><br><span class="line">        graph[N][n] = <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    --N;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; r1, r2;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= N - <span class="number">1</span>; ++i) &#123;</span><br><span class="line">        <span class="built_in">memset</span>(visited, <span class="number">0</span>, <span class="keyword">sizeof</span>(visited));</span><br><span class="line">        <span class="keyword">if</span> (!dfs(<span class="number">0</span>, i)) r1.push_back(i);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; r1.size(); fout &lt;&lt; r1.size();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> r : r1) &#123;</span><br><span class="line">        st.clear();</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">" "</span> &lt;&lt; r; fout &lt;&lt; <span class="string">" "</span> &lt;&lt; r;</span><br><span class="line">        split = r; dfs(<span class="number">0</span>); <span class="keyword">auto</span> stt = st; st.clear(); dfs(r);</span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; common_data;</span><br><span class="line">        set_intersection(st.begin(), st.end(), stt.begin(), stt.end(),</span><br><span class="line">                         <span class="built_in">std</span>::back_inserter(common_data));</span><br><span class="line">        <span class="keyword">if</span> (!common_data.empty()) <span class="keyword">continue</span>;</span><br><span class="line">        r2.push_back(r);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="built_in">endl</span>; fout &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; r2.size(); fout &lt;&lt; r2.size();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> r : r2) &#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">" "</span> &lt;&lt; r; fout &lt;&lt; <span class="string">" "</span> &lt;&lt; r;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="built_in">endl</span>; fout &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2017/01/15/2017-01-15-USACO-StreetRace/" data-id="ck34ujr4u001y7kxgkkh5qroz" data-title="USACO 4.3 Street Race" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2017/01/15/2017-01-15-USACO-StreetRace/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DFS/">DFS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Graph-Theory/">Graph Theory</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Search/">Search</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-2017-01-13-USACO-BuyLow" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/01/13/2017-01-13-USACO-BuyLow/" class="article-date">
@@ -106,7 +157,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/01/13/2017-01-13-USACO-BuyLow/" data-id="ck34sdmqk001x7fxg92a7j8nk" data-title="USACO 4.3 Buy Low" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2017/01/13/2017-01-13-USACO-BuyLow/" data-id="ck34ujr4s001x7kxgmwvam0u8" data-title="USACO 4.3 Buy Low" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2017/01/13/2017-01-13-USACO-BuyLow/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -152,60 +203,13 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/01/08/2017-01-08-USACO-JobProcessing/" data-id="ck34sdmqk001w7fxg0h2oyybr" data-title="USACO 4.2 Job Processing" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2017/01/08/2017-01-08-USACO-JobProcessing/" data-id="ck34ujr4r001w7kxgs4cs11yl" data-title="USACO 4.2 Job Processing" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2017/01/08/2017-01-08-USACO-JobProcessing/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Greedy/">Greedy</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2017-01-04-USACO-ThePerfectStall" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/01/04/2017-01-04-USACO-ThePerfectStall/" class="article-date">
-  <time datetime="2017-01-05T05:39:31.000Z" itemprop="datePublished">2017-01-04</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/USACO/">USACO</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/04/2017-01-04-USACO-ThePerfectStall/">USACO 4.2 The Pefect Stall</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Standard bipartite match with Hungarain Algorithm.</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> N <span class="comment">/* cows */</span>, M <span class="comment">/* stalls */</span>;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; graph;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; match;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt; visited;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">addEdge</span><span class="params">(<span class="keyword">int</span> u, <span class="keyword">int</span> v)</span> </span>&#123;</span><br><span class="line">    graph[u].emplace_back(v);</span><br><span class="line">    graph[v].emplace_back(u);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> v)</span> </span>&#123;</span><br><span class="line">    visited[v] = <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; graph[v].size(); ++i) &#123;</span><br><span class="line">        <span class="keyword">int</span> u = graph[v][i], w = match[u];</span><br><span class="line">        <span class="keyword">if</span> (w &lt; <span class="number">0</span> || (!visited[w] &amp;&amp; dfs(w))) &#123;</span><br><span class="line">            match[v] = u; match[u] = v;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">bipartite_match</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> ans = <span class="number">0</span>;</span><br><span class="line">    <span class="built_in">std</span>::fill(match.begin(), match.end(), <span class="number">-1</span>);</span><br><span class="line">    <span class="keyword">int</span> size = (<span class="keyword">int</span>)graph.size();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; size; ++i) &#123;</span><br><span class="line">        <span class="keyword">if</span> (match[i] &gt;= <span class="number">0</span>) <span class="keyword">continue</span>;</span><br><span class="line">        <span class="built_in">std</span>::fill(visited.begin(), visited.end(), <span class="literal">false</span>);</span><br><span class="line">        <span class="keyword">if</span> (!dfs(i)) <span class="keyword">continue</span>;</span><br><span class="line">        ++ans;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"stall4.in"</span>)</span></span>;</span><br><span class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"stall4.out"</span>)</span></span>;</span><br><span class="line">    fin &gt;&gt; N &gt;&gt; M;</span><br><span class="line">    <span class="keyword">int</span> size = N + M + <span class="number">1</span>;</span><br><span class="line">    graph = <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt;(size, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;());</span><br><span class="line">    match = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(size, <span class="number">-1</span>);</span><br><span class="line">    visited = <span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt;(size, <span class="literal">false</span>);</span><br><span class="line">    <span class="keyword">int</span> n, k;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">        fin &gt;&gt; n;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; n; ++j) &#123;</span><br><span class="line">            fin &gt;&gt; k;</span><br><span class="line">            addEdge(i, k + N);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> ans = bipartite_match();</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; ans &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    fout &lt;&lt; ans &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/01/04/2017-01-04-USACO-ThePerfectStall/" data-id="ck34sdmqj001v7fxgxnqinxh5" data-title="USACO 4.2 The Pefect Stall" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2017/01/04/2017-01-04-USACO-ThePerfectStall/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Bipartite-Match/">Bipartite Match</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Graph-Theory/">Graph Theory</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hungarian-Algorithm/">Hungarian Algorithm</a></li></ul>
 
     </footer>
   </div>
