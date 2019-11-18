@@ -75,6 +75,53 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-2017-01-31-TopCoder-SRM-707-DivII" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/01/31/2017-01-31-TopCoder-SRM-707-DivII/" class="article-date">
+  <time datetime="2017-01-31T18:33:31.000Z" itemprop="datePublished">2017-01-31</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/TopCoder/">TopCoder</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/01/31/2017-01-31-TopCoder-SRM-707-DivII/">SRM 707 DIV 2 500 Steps Construct</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Problem with interesting constraints… hopefully figured this out during SRM this time. </p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> StepsConstruct &#123;</span><br><span class="line">    <span class="keyword">int</span> rows;</span><br><span class="line">    <span class="keyword">int</span> cols;</span><br><span class="line">    <span class="function"><span class="keyword">char</span> <span class="title">getD</span><span class="params">(<span class="keyword">char</span> c)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (c == <span class="string">'R'</span>) <span class="keyword">return</span> <span class="string">'L'</span>;</span><br><span class="line">        <span class="keyword">if</span> (c == <span class="string">'L'</span>) <span class="keyword">return</span> <span class="string">'R'</span>;</span><br><span class="line">        <span class="keyword">if</span> (c == <span class="string">'U'</span>) <span class="keyword">return</span> <span class="string">'D'</span>;</span><br><span class="line">        <span class="keyword">if</span> (c == <span class="string">'D'</span>) <span class="keyword">return</span> <span class="string">'U'</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">'R'</span>;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="built_in">string</span> <span class="title">construct</span><span class="params">(<span class="built_in">vector</span> &lt;<span class="built_in">string</span>&gt; board, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (board[<span class="number">0</span>][<span class="number">0</span>] == <span class="string">'#'</span>) <span class="keyword">return</span> <span class="string">""</span>;</span><br><span class="line">        rows = (<span class="keyword">int</span>)board.size(); cols = (<span class="keyword">int</span>)board[<span class="number">0</span>].size();</span><br><span class="line">        <span class="built_in">set</span>&lt;pair&lt;<span class="keyword">int</span>,<span class="keyword">int</span>&gt;&gt; visited;</span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; paths;</span><br><span class="line">        <span class="built_in">queue</span>&lt;pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt;&gt; q;</span><br><span class="line">        <span class="built_in">queue</span>&lt;<span class="built_in">string</span>&gt; qp;</span><br><span class="line">        q.push(make_pair(<span class="number">0</span>, <span class="number">0</span>));</span><br><span class="line">        qp.push(<span class="string">""</span>);</span><br><span class="line">        <span class="keyword">while</span> (!q.empty()) &#123;</span><br><span class="line">            <span class="keyword">auto</span> cur = q.front();</span><br><span class="line">            q.pop();</span><br><span class="line">            <span class="keyword">int</span> x = cur.first, y = cur.second;</span><br><span class="line">            <span class="built_in">string</span> curp = qp.front();</span><br><span class="line">            qp.pop();</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">int</span> dx[] = &#123;<span class="number">1</span>, <span class="number">-1</span>, <span class="number">0</span>, <span class="number">0</span>&#125;;</span><br><span class="line">            <span class="keyword">int</span> dy[] = &#123;<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">-1</span>&#125;;</span><br><span class="line">            <span class="keyword">char</span> steps[] = &#123;<span class="string">'D'</span>, <span class="string">'U'</span>, <span class="string">'R'</span>, <span class="string">'L'</span>&#125;;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span>; ++i) &#123;</span><br><span class="line">                pair&lt;<span class="keyword">int</span>,<span class="keyword">int</span>&gt; cur = &#123;x + dx[i], y + dy[i]&#125;;</span><br><span class="line">                <span class="keyword">if</span>(cur.first &lt; <span class="number">0</span> || cur.second &lt; <span class="number">0</span> || cur.first &gt;= rows || cur.second &gt;= cols)</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                <span class="keyword">if</span>(visited.count(cur))</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                <span class="keyword">if</span> (board[cur.first][cur.second] == <span class="string">'#'</span>) &#123;</span><br><span class="line">                    visited.insert(cur);</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                </span><br><span class="line">                <span class="built_in">string</span> p = curp + steps[i];</span><br><span class="line">                <span class="keyword">if</span> (cur.first == rows - <span class="number">1</span> &amp;&amp; cur.second == cols - <span class="number">1</span>) &#123;</span><br><span class="line">                    paths.push_back(p);</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                visited.insert(cur);</span><br><span class="line">                qp.push(p);</span><br><span class="line">                q.push(cur);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">int</span> minsteps = INT_MAX;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> path : paths) &#123;</span><br><span class="line">            minsteps = <span class="built_in">std</span>::min((<span class="keyword">int</span>)path.size(), minsteps);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (minsteps &gt; k) <span class="keyword">return</span> <span class="string">""</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="built_in">string</span> c;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> path : paths) &#123;</span><br><span class="line">            <span class="keyword">int</span> steps = (<span class="keyword">int</span>)path.size();</span><br><span class="line">            <span class="keyword">if</span> (steps &lt;= k &amp;&amp; ((k - steps) % <span class="number">2</span> == <span class="number">0</span>)) &#123;</span><br><span class="line">                <span class="keyword">int</span> d = k - steps;</span><br><span class="line">                <span class="built_in">string</span> prefix = <span class="string">""</span>;</span><br><span class="line">                <span class="keyword">char</span> c = path[<span class="number">0</span>];</span><br><span class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; d; ++i) &#123;</span><br><span class="line">                    prefix += c;</span><br><span class="line">                    c = getD(c);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">return</span> prefix + path;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">""</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2017/01/31/2017-01-31-TopCoder-SRM-707-DivII/" data-id="ck34vyz910027obxgirnr0sro" data-title="SRM 707 DIV 2 500 Steps Construct" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2017/01/31/2017-01-31-TopCoder-SRM-707-DivII/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/BFS/">BFS</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-2017-01-27-USACO-LetterGame" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/01/27/2017-01-27-USACO-LetterGame/" class="article-date">
@@ -112,7 +159,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/01/27/2017-01-27-USACO-LetterGame/" data-id="ck34ujr4y00217kxgpgfd8ufg" data-title="USACO 4.3 Letter Game" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2017/01/27/2017-01-27-USACO-LetterGame/" data-id="ck34vyz8y0023obxgqh3agpty" data-title="USACO 4.3 Letter Game" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2017/01/27/2017-01-27-USACO-LetterGame/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -234,7 +281,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/01/21/2017-01-21-Google-File-System/" data-id="ck34ujr4v001z7kxg64r4x3je" data-title="The Google File System" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2017/01/21/2017-01-21-Google-File-System/" data-id="ck34vyz8w0021obxgqsbognzw" data-title="The Google File System" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2017/01/21/2017-01-21-Google-File-System/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -250,55 +297,11 @@
 
 
   
-    <article id="post-2017-01-21-TopCoder-SRM706-DIV2-500" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/01/21/2017-01-21-TopCoder-SRM706-DIV2-500/" class="article-date">
-  <time datetime="2017-01-21T23:43:31.000Z" itemprop="datePublished">2017-01-21</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/TopCoder/">TopCoder</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/21/2017-01-21-TopCoder-SRM706-DIV2-500/">SRM 706 DIV 2 500 Selling Fruits</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> SellingFruits &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">maxDays</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> f, <span class="keyword">int</span> d, <span class="keyword">int</span> p)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> ret = d / x;</span><br><span class="line">        <span class="keyword">if</span> (ret &lt; f) <span class="keyword">return</span> ret;</span><br><span class="line">        ret = f;</span><br><span class="line">        d -= f * x;</span><br><span class="line">        ret += (d / (x + p));</span><br><span class="line">        <span class="keyword">return</span> ret;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/01/21/2017-01-21-TopCoder-SRM706-DIV2-500/" data-id="ck34ujr4w00207kxghl0ixf03" data-title="SRM 706 DIV 2 500 Selling Fruits" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2017/01/21/2017-01-21-TopCoder-SRM706-DIV2-500/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
 
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/page/17/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/16/">16</a><a class="page-number" href="/page/17/">17</a><span class="page-number current">18</span><a class="page-number" href="/page/19/">19</a><a class="page-number" href="/page/20/">20</a><span class="space">&hellip;</span><a class="page-number" href="/page/41/">41</a><a class="extend next" rel="next" href="/page/19/">Next &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/17/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/16/">16</a><a class="page-number" href="/page/17/">17</a><span class="page-number current">18</span><a class="page-number" href="/page/19/">19</a><a class="page-number" href="/page/20/">20</a><span class="space">&hellip;</span><a class="page-number" href="/page/42/">42</a><a class="extend next" rel="next" href="/page/19/">Next &raquo;</a>
   </nav>
 
 </section>

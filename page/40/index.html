@@ -75,6 +75,53 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-2016-08-06-USACO-Friday" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/08/06/2016-08-06-USACO-Friday/" class="article-date">
+  <time datetime="2016-08-07T00:16:31.000Z" itemprop="datePublished">2016-08-06</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/USACO/">USACO</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/08/06/2016-08-06-USACO-Friday/">USACO 1.1 Friday</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Straightforward brutal force implementation.</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> Checker &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="keyword">int</span> day, year, offset;</span><br><span class="line"></span><br><span class="line">  Checker() : day(<span class="number">1</span>), year(<span class="number">1900</span>), offset(<span class="number">1</span>) &#123;</span><br><span class="line">    frequentCounterList = &#123;<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span> , <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>&#125;;</span><br><span class="line">    month2days = &#123;<span class="number">0</span>, <span class="number">31</span>, <span class="number">28</span>, <span class="number">31</span>, <span class="number">30</span>, <span class="number">31</span>, <span class="number">30</span>, <span class="number">31</span>, <span class="number">31</span>, <span class="number">30</span>, <span class="number">31</span>, <span class="number">30</span>, <span class="number">31</span>&#125;;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">traverse</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; ++i) &#123;</span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">int</span> month = <span class="number">1</span>; month &lt;= <span class="number">12</span>; ++month) &#123;</span><br><span class="line">        day = offset + <span class="number">12</span>;</span><br><span class="line">        frequentCounterList[day % <span class="number">7</span> + <span class="number">1</span>]++;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (month == <span class="number">2</span>) &#123;</span><br><span class="line">          <span class="keyword">if</span> (isLeapYear(year))</span><br><span class="line">            offset += <span class="number">29</span>;</span><br><span class="line">          <span class="keyword">else</span></span><br><span class="line">            offset += <span class="number">28</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span></span><br><span class="line">          offset += month2days[month];</span><br><span class="line">      &#125;</span><br><span class="line">      ++year;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; getFrequency() <span class="keyword">const</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> frequentCounterList;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">  <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; frequentCounterList;</span><br><span class="line">  <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; month2days;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">  <span class="function"><span class="keyword">bool</span> <span class="title">isLeapYear</span><span class="params">(<span class="keyword">int</span> year)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (year % <span class="number">100</span> == <span class="number">0</span>)</span><br><span class="line">      <span class="keyword">return</span> year % <span class="number">400</span> == <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> year % <span class="number">4</span> == <span class="number">0</span>;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="function">ofstream <span class="title">fout</span> <span class="params">(<span class="string">"friday.out"</span>)</span></span>;</span><br><span class="line">  <span class="function">ifstream <span class="title">fin</span> <span class="params">(<span class="string">"friday.in"</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">string</span> years;</span><br><span class="line">  getline(fin, years);</span><br><span class="line">  Checker checker;</span><br><span class="line">  checker.traverse(stoi(years));</span><br><span class="line"></span><br><span class="line">  <span class="keyword">auto</span> <span class="built_in">list</span> = checker.getFrequency();</span><br><span class="line">  fout &lt;&lt; <span class="built_in">list</span>[<span class="number">7</span>] &lt;&lt; <span class="string">" "</span> &lt;&lt; <span class="built_in">list</span>[<span class="number">1</span>] &lt;&lt; <span class="string">" "</span> &lt;&lt;</span><br><span class="line">  <span class="built_in">list</span>[<span class="number">2</span>] &lt;&lt; <span class="string">" "</span> &lt;&lt; <span class="built_in">list</span>[<span class="number">3</span>] &lt;&lt; <span class="string">" "</span> &lt;&lt; <span class="built_in">list</span>[<span class="number">4</span>] &lt;&lt; <span class="string">" "</span> &lt;&lt; <span class="built_in">list</span>[<span class="number">5</span>] &lt;&lt; <span class="string">" "</span> &lt;&lt;</span><br><span class="line">  <span class="built_in">list</span>[<span class="number">6</span>] &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2016/08/06/2016-08-06-USACO-Friday/" data-id="ck34vyz540003obxg74bkxsu4" data-title="USACO 1.1 Friday" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2016/08/06/2016-08-06-USACO-Friday/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-2016-08-06-USACO-Greedy-Gift-Givers" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/08/06/2016-08-06-USACO-Greedy-Gift-Givers/" class="article-date">
@@ -106,7 +153,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/06/2016-08-06-USACO-Greedy-Gift-Givers/" data-id="ck34ujr2p00057kxgdxgr1k71" data-title="USACO 1.1 Greedy Gift Givers" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/08/06/2016-08-06-USACO-Greedy-Gift-Givers/" data-id="ck34vyz570005obxg2d92d13x" data-title="USACO 1.1 Greedy Gift Givers" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2016/08/06/2016-08-06-USACO-Greedy-Gift-Givers/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -153,7 +200,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/06/2016-08-06-USACO-YourRideIsHere/" data-id="ck34ujr2q00067kxgdyc59rdk" data-title="USACO 1.1 - Your Ride Is Here" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/08/06/2016-08-06-USACO-YourRideIsHere/" data-id="ck34vyz580006obxgq5gxkc9w" data-title="USACO 1.1 - Your Ride Is Here" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2016/08/06/2016-08-06-USACO-YourRideIsHere/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -169,61 +216,11 @@
 
 
   
-    <article id="post-2016-08-03-DijKstra" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/08/03/2016-08-03-DijKstra/" class="article-date">
-  <time datetime="2016-08-04T04:40:31.000Z" itemprop="datePublished">2016-08-03</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/TopCoder/">TopCoder</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/08/03/2016-08-03-DijKstra/">A C++ implementation of DijKstra Algorithm</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>DijKstra is a very useful algorithm used in graph search for finding single source shortest path. Devils are in details, here is a caninocal implementation of the algorithm in C++.</p>
-<p>Like many graph problems, figure out the data structure and the representation of the graph is critical to the implementation of algorithm. Here we use graph’s object-pointer representation which naturally encodes both node relationships and edge weights.</p>
-<p>To be able to reconstruct the shortest path we need to keep a vector that stores the ‘previous’ relationship for each vertice while we are figuring out the shortest path.</p>
-<p><img src="https://upload.wikimedia.org/wikipedia/commons/5/57/Dijkstra_Animation.gif" alt="Dijkstra_Animation"></p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// [to node index, edge weight] pair.</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="built_in">std</span>::pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; edge;</span><br><span class="line"><span class="comment">// [node index, distance to source] pair.</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="built_in">std</span>::pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; element;</span><br><span class="line"><span class="keyword">class</span> compare &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="function"><span class="keyword">bool</span> <span class="title">operator</span><span class="params">()</span><span class="params">(<span class="keyword">const</span> element&amp;a, <span class="keyword">const</span> element &amp;b)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> a.second &gt; b.second;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">dijkstra</span><span class="params">(<span class="keyword">const</span> <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;edge&gt;&gt; &amp;graph, <span class="keyword">int</span> source, <span class="keyword">int</span> target,</span></span></span><br><span class="line"><span class="function"><span class="params">             <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;path)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> size = (<span class="keyword">int</span>)graph.size();</span><br><span class="line">  <span class="keyword">if</span> (!size) <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">  <span class="keyword">if</span> (source &lt; <span class="number">0</span> || source &gt;= size || target &lt; <span class="number">0</span> || target &gt;= size)</span><br><span class="line">    <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">  <span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt; visited(size, <span class="literal">false</span>);</span><br><span class="line">  <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; distance(size, INT_MAX);</span><br><span class="line">  <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; prev(size, <span class="number">-1</span>);</span><br><span class="line">  path = prev;</span><br><span class="line">  distance[source] = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">  priority_queue&lt;element, <span class="built_in">vector</span>&lt;element&gt;, compare&gt; pq;</span><br><span class="line">  pq.emplace(make_pair(source, <span class="number">0</span>));</span><br><span class="line"></span><br><span class="line">  <span class="keyword">while</span> (!pq.empty()) &#123;</span><br><span class="line">    <span class="keyword">int</span> v = pq.top().first;</span><br><span class="line">    pq.pop();</span><br><span class="line">    <span class="keyword">if</span> (v == target) <span class="keyword">return</span> distance[v];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (visited[v]) <span class="keyword">continue</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;edge : graph[v]) &#123;</span><br><span class="line">      <span class="keyword">int</span> u = edge.first; <span class="comment">// vertice u that connects to v.</span></span><br><span class="line">      <span class="keyword">int</span> w = edge.second; <span class="comment">// weight of edge that connects u and v.</span></span><br><span class="line">      <span class="keyword">if</span> (visited[u]) <span class="keyword">continue</span>;</span><br><span class="line">      <span class="keyword">if</span> (distance[v] + w &lt; distance[u]) &#123;</span><br><span class="line">        distance[u] = distance[v] + w;</span><br><span class="line">        pq.emplace(make_pair(u, distance[u]));</span><br><span class="line">        path[u] = v;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    visited[v] = <span class="literal">true</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[])</span> </span>&#123;</span><br><span class="line">  <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;edge&gt;&gt; graph(<span class="number">7</span>, <span class="built_in">vector</span>&lt;edge&gt;());</span><br><span class="line">  graph[<span class="number">1</span>].push_back(make_pair(<span class="number">3</span>, <span class="number">9</span>));</span><br><span class="line">  graph[<span class="number">1</span>].push_back(make_pair(<span class="number">2</span>, <span class="number">7</span>));</span><br><span class="line">  graph[<span class="number">1</span>].push_back(make_pair(<span class="number">6</span>, <span class="number">14</span>));</span><br><span class="line">  graph[<span class="number">2</span>].push_back(make_pair(<span class="number">1</span>, <span class="number">7</span>));</span><br><span class="line">  graph[<span class="number">2</span>].push_back(make_pair(<span class="number">3</span>, <span class="number">10</span>));</span><br><span class="line">  graph[<span class="number">2</span>].push_back(make_pair(<span class="number">4</span>, <span class="number">15</span>));</span><br><span class="line">  graph[<span class="number">3</span>].push_back(make_pair(<span class="number">1</span>, <span class="number">9</span>));</span><br><span class="line">  graph[<span class="number">3</span>].push_back(make_pair(<span class="number">6</span>, <span class="number">2</span>));</span><br><span class="line">  graph[<span class="number">3</span>].push_back(make_pair(<span class="number">4</span>, <span class="number">11</span>));</span><br><span class="line">  graph[<span class="number">4</span>].push_back(make_pair(<span class="number">2</span>, <span class="number">15</span>));</span><br><span class="line">  graph[<span class="number">4</span>].push_back(make_pair(<span class="number">3</span>, <span class="number">11</span>));</span><br><span class="line">  graph[<span class="number">4</span>].push_back(make_pair(<span class="number">5</span>, <span class="number">6</span>));</span><br><span class="line">  graph[<span class="number">5</span>].push_back(make_pair(<span class="number">6</span>, <span class="number">9</span>));</span><br><span class="line">  graph[<span class="number">5</span>].push_back(make_pair(<span class="number">4</span>, <span class="number">6</span>));</span><br><span class="line">  graph[<span class="number">6</span>].push_back(make_pair(<span class="number">1</span>, <span class="number">14</span>));</span><br><span class="line">  graph[<span class="number">6</span>].push_back(make_pair(<span class="number">3</span>, <span class="number">2</span>));</span><br><span class="line">  graph[<span class="number">6</span>].push_back(make_pair(<span class="number">5</span>, <span class="number">9</span>));</span><br><span class="line"></span><br><span class="line">  <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; pre;</span><br><span class="line">  <span class="keyword">int</span> shortestPath = dijkstra(graph, <span class="number">1</span>, <span class="number">5</span>, pre);</span><br><span class="line">  <span class="built_in">cout</span> &lt;&lt; <span class="string">"Shortest path from 1 to 5 has length of "</span> &lt;&lt; shortestPath &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Construct shortest path.</span></span><br><span class="line">  <span class="keyword">int</span> u = <span class="number">5</span>;</span><br><span class="line">  <span class="built_in">stack</span>&lt;<span class="keyword">int</span>&gt; path;</span><br><span class="line">  <span class="keyword">while</span> (pre[u] != <span class="number">-1</span>) &#123;</span><br><span class="line">    path.push(u);</span><br><span class="line">    u = pre[u];</span><br><span class="line">  &#125;</span><br><span class="line">  path.push(u);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">while</span> (!path.empty()) &#123;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; path.top() &lt;&lt; <span class="string">" "</span>;</span><br><span class="line">    path.pop();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/08/03/2016-08-03-DijKstra/" data-id="ck34ujr2m00037kxg2tfl2pav" data-title="A C++ implementation of DijKstra Algorithm" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2016/08/03/2016-08-03-DijKstra/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dijkstra/">Dijkstra</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
 
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/page/39/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/38/">38</a><a class="page-number" href="/page/39/">39</a><span class="page-number current">40</span><a class="page-number" href="/page/41/">41</a><a class="extend next" rel="next" href="/page/41/">Next &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/39/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/38/">38</a><a class="page-number" href="/page/39/">39</a><span class="page-number current">40</span><a class="page-number" href="/page/41/">41</a><a class="page-number" href="/page/42/">42</a><a class="extend next" rel="next" href="/page/41/">Next &raquo;</a>
   </nav>
 
 </section>

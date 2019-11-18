@@ -75,6 +75,82 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-2017-03-03-ZooKeeper Consistency Guarantees" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/03/03/2017-03-03-ZooKeeper Consistency Guarantees/" class="article-date">
+  <time datetime="2017-03-03T22:10:31.000Z" itemprop="datePublished">2017-03-03</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Distributed-System/">Distributed System</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/03/03/2017-03-03-ZooKeeper Consistency Guarantees/">ZooKeeper Consistency Guarantees</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>There are many consistency models out there, from stronger ones to weaker ones. What consistency model best describes ZooKeeper? </p>
+<h1 id="Consistency-Models"><a href="#Consistency-Models" class="headerlink" title="Consistency Models"></a>Consistency Models</h1><p>It is useful to think consistency models from two perspectives: server side (data centric) and client side (client centric), in particular in the context of ZooKeeper (or a general distributed storage system that is composed of clients and servers.).</p>
+<ul>
+<li>Data Centric Consistency Models<ul>
+<li>Strict Consistency<br>The strongest consistency model for distributed systems. All changes to system state are required to populate to all replicas instantly, so any write should be immediately visible to all parts of the system (both server and client). More formally, any read on a data item should returns a value corresponding to the result of the most recent write on this item. This system model is not possible to implement on top of the current hardware for distributed systems, because it requires a global clock (for strict ordering), and zero latency and infinite bandwidth for communications between different parts of the system. A closer resemble of a system that satisfy this model is a single machine where latency / bandwidth / clock constraints are almost satisfied (even on a single machine, achieve strict consistency is hard due to cache hierarchies and latencies of memory / cache access.).<br>Because of the impossibilities of implementation, a less strict model called atomic register was proposed (from Leslie Lamport), and a particular version of this model is known as linearizable consistency.<ul>
+<li>Linearizable consistency<br>Linearizable consistency model, comparing to strict consistency model, takes the latency into account, so it does not require writes to an item being visible instantly. The real constraint of this consistency model is that the operations can’t interleave, can’t be reordered, and the sequence of writes are visible in strict global ordering as these writes were issued. It is a recency guarantee such that if a change to the value is visible to one client, the change has to be visible to all clients. A client can’t read old value if some other clients have seen the new value. The change history is linearized such that all operations appear to have executed atomically in the order that is consistent with the global real time ordering of operations. One nice property of linearizable consistency is that it composes - which is an extremely useful property for reasoning about the behavior of concurrent operations in distributed systems.</li>
+</ul>
+</li>
+<li>Sequential Consistency<br>Sequential consistency is a weaker consistency model comparing to linearizable consistency. It requires all operations appear to have executed atomically in some order, and the key constraint is that this order that is visible to all part of the system has to be consistent. However, this order does not have to be consistent with the ordering of the original operations. Because of this, the system is free to reorder the executions of the operations, it just need to satisfy a globally consistent visible orderings of operations for all clients. That is the key difference between linearizable consistency model. Also, sequential consistency does not compose as linearizable consistency does.</li>
+<li>Causal Consistency<br>Causal consistency is a even weaker model than sequential consistency. It only requires causally related writes must be visible by all processes, while none causally related writes are free to executed in any order. This violates the constraint for sequential consistency (all writes must converge to the same order), so it is weaker model than sequential consistency. Sequential consistency is thus by definition implicitly causal consistency as well.</li>
+<li>Eventual Consistency<br>The weakest consistency model, ever. Distributed systems adopt this model makes a lot things harder, though it is good trade off to make in certain use case. Eventual consistency is more about a liveness property (that values converge finally), so it is usually trivially satisfiable in most systems.</li>
+</ul>
+</li>
+<li>Client Centric Consistency Models:<ul>
+<li>Monotonic reads<br>Once read, subsequent reads on that data items return same or more recent values.</li>
+<li>Monotonic writes<br>A write must be propagated to all replicas before a successive write by the same process; writes from same process are processed in same order.</li>
+<li>Read your writes<br>read(x) always returns write(x) by that process.</li>
+<li>Writes follow reads<br>write(x) following read(x) will take place on same or more recent version of x.</li>
+</ul>
+</li>
+</ul>
+<p>With all these said, what consistency model ZooKeeper fit in?</p>
+<ul>
+<li>Linearizable consistency: ZooKeeper does not guarantee linearizable consistency. Two ZooKeeper clients can see two different values of the same data item (value of znode) at the same time - e.g. one client can see an old value while the other client can see the new value. Even with the sync command, which stalls the write processors, it is still possible that a client miss a value of the write (e.g. after sync executed finished but before client gets the updated value, another client issuing a new write that update the value again.). Also due to potential network delays it is hard to guarantee that operations on all clients happen on same order globally.</li>
+<li>Sequential consistency: this is what ZooKeeper guarantees. Sequential consistency does not care about exact ordering of operations and ZooKeeper can reorder operations, but all the operations ordering will converge to a single globally consistent ordering that is visible to all clients (eventually, or near instantly if client uses sync command.).</li>
+<li>Causal consistency: because ZooKeeper satisfies sequential consistency, it also satisfy causal consistency. More specifically, since causal consistency is a stronger guarantee than read your writes and monotonic reads, those properties are also guaranteed. </li>
+<li>Monotonic reads / Read your writes: as discussed, these are trivially satisfied with stronger guarantee. Note in practice there are a lot of corner cases to consider to satisfy these properties from a client point of view, for example what if a client disconnect and connect to a server node where it does not have latest values for the same znode client has seen before (that this server lags behind leader, which is normal because ZooKeeper only requires a quorum of servers in sync with leader). This and similar cases are handled by the guarantees of ZooKeeper session which provides some strong guarantees with regards to how client and server could interact (will describe this in a future post). </li>
+<li>Monotonic writes: ZooKeeper does not satisfy this because a write is only required to be replicated to a quorum of servers.</li>
+<li>Also a side note is there is a long pending bug of the sync operation - it is not a quorum operation so the guarantee it provides only apply if the client is connecting to leader.. this needs to be fixed, soon.</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2017/03/03/2017-03-03-ZooKeeper Consistency Guarantees/" data-id="ck34vyz9d002mobxgjcmdbm8f" data-title="ZooKeeper Consistency Guarantees" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2017/03/03/2017-03-03-ZooKeeper Consistency Guarantees/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ZooKeeper/">ZooKeeper</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-2017-02-22-USACO-FrameUp" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/02/22/2017-02-22-USACO-FrameUp/" class="article-date">
@@ -110,7 +186,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/02/22/2017-02-22-USACO-FrameUp/" data-id="ck34ujr5300267kxgqq2tl90h" data-title="USACO 4.4 Frame Up" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2017/02/22/2017-02-22-USACO-FrameUp/" data-id="ck34vyz96002eobxgty47rmp9" data-title="USACO 4.4 Frame Up" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2017/02/22/2017-02-22-USACO-FrameUp/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -172,7 +248,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/02/19/2017-02-19-USACO-PollutantControl/" data-id="ck34ujr5c002b7kxg8qu69a8k" data-title="USACO 4.4 Pollutant Control" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2017/02/19/2017-02-19-USACO-PollutantControl/" data-id="ck34vyz9a002jobxgssmrlekk" data-title="USACO 4.4 Pollutant Control" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2017/02/19/2017-02-19-USACO-PollutantControl/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -188,113 +264,11 @@
 
 
   
-    <article id="post-2017-02-11-DynamoPaper" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/02/11/2017-02-11-DynamoPaper/" class="article-date">
-  <time datetime="2017-02-12T03:36:31.000Z" itemprop="datePublished">2017-02-11</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Distributed-System/">Distributed System</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/02/11/2017-02-11-DynamoPaper/">Dynamo, Amazon’s Highly Available Key-value Store</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Paper digest - <a href="http://s3.amazonaws.com/AllThingsDistributed/sosp/amazon-dynamo-sosp2007.pdf" target="_blank" rel="noopener">Dynamo: Amazon’s Highly Available Key-value Store </a></p>
-<h1 id="Motivation"><a href="#Motivation" class="headerlink" title="Motivation"></a>Motivation</h1><ul>
-<li>A highly available key-value storage system that manages state of Amazon services.</li>
-<li>Reliability at massive scale, provide an “always-on” experience.</li>
-</ul>
-<h1 id="Requirements"><a href="#Requirements" class="headerlink" title="Requirements"></a>Requirements</h1><ul>
-<li><p>Query Model: simple read and write operations to objects (relatively small, usually less than 1MB) that is uniquely identified by a key. </p>
-</li>
-<li><p>ACID (Atomicity, Consistency, Isolation, Durability) : weak consistency, no isolation, only single key update.</p>
-</li>
-<li><p>Efficiency: </p>
-<ul>
-<li>Function on a commodity hardware infrastructure.</li>
-<li>Strict latency requirements and SLA.</li>
-<li>Configurable to achieve customizable latency and throughput requirements.</li>
-</ul>
-</li>
-<li><p>Operation and Security:</p>
-<ul>
-<li>No authentication and authorization (operating in non-hostile environment). </li>
-<li>Scale up (each service uses its distinct instance of Dynamo).</li>
-</ul>
-</li>
-<li><p>SLA:</p>
-<ul>
-<li>Traditional SLA metrics (average, median and expected variance) are not good enough to build a system where all customers have a good experience.</li>
-<li>SLAs are expressed and measured at the 99.9th percentile of the distribution. Choose 99.9 for cost effective.</li>
-</ul>
-</li>
-</ul>
-<h1 id="System-Design"><a href="#System-Design" class="headerlink" title="System Design"></a>System Design</h1><ul>
-<li>Favor availability over consistency by using optimistic replication techniques.</li>
-<li>Optimistic replication introduces conflict. Conflict resolution introduces two problems: when to resolve them and who resolves them.<ul>
-<li>When to resolve:<ul>
-<li>Write time: writes may be rejected if the data store cannot reach all the replicas at a given time. This leads to poor user experience.</li>
-<li>Read time: Dynamo targets the design space of an “always write-able” data store. So conflicts are resolved at read time.</li>
-</ul>
-</li>
-<li>Who to perform resolve:<ul>
-<li>Configurable.</li>
-<li>System level resolution: last write wins.</li>
-<li>Application level resolution: interactive guided merge conflicts, etc.</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>Other design considerations: Incremental scalability, Symmetry, Decentralization, Heterogeneity.</li>
-</ul>
-<h1 id="System-Architecture"><a href="#System-Architecture" class="headerlink" title="System Architecture"></a>System Architecture</h1><ul>
-<li>Partitioning: Consistent Hashing.</li>
-<li>Replication: Replicated write protocol with configurable NWR parameters.</li>
-<li>Conflict Resolution: Vector clock.</li>
-<li>Temporary failures: Sloppy Quorum and hinted handoff.</li>
-<li>Recovering from permanent failures: Merkle trees.</li>
-<li>Membership and failure detection: Gossip-based membership protocol and failure detection. </li>
-</ul>
-<h1 id="To-be-continued"><a href="#To-be-continued" class="headerlink" title="To be continued."></a>To be continued.</h1>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/02/11/2017-02-11-DynamoPaper/" data-id="ck34ujr5100257kxg1dngzbp7" data-title="Dynamo, Amazon’s Highly Available Key-value Store" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2017/02/11/2017-02-11-DynamoPaper/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Distributed-System/">Distributed System</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Paper-Digest/">Paper Digest</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
 
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/page/15/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/14/">14</a><a class="page-number" href="/page/15/">15</a><span class="page-number current">16</span><a class="page-number" href="/page/17/">17</a><a class="page-number" href="/page/18/">18</a><span class="space">&hellip;</span><a class="page-number" href="/page/41/">41</a><a class="extend next" rel="next" href="/page/17/">Next &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/15/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/14/">14</a><a class="page-number" href="/page/15/">15</a><span class="page-number current">16</span><a class="page-number" href="/page/17/">17</a><a class="page-number" href="/page/18/">18</a><span class="space">&hellip;</span><a class="page-number" href="/page/42/">42</a><a class="extend next" rel="next" href="/page/17/">Next &raquo;</a>
   </nav>
 
 </section>

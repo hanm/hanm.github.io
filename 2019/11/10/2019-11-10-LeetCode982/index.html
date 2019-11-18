@@ -15,20 +15,20 @@
 <!-- End Google Analytics -->
 
   
-  <title>LeetCode 1031 Maximum Sum of Two Non-Overlapping Subarrays | Quantum Field</title>
+  <title>LeetCode 982. Triples with Bitwise AND Equal To Zero | Quantum Field</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="Problem Statement Maintain a sliding window of two sub arrays with length L and M and slide through. For each slide check two cases:L first, or M first. Use prefix sum to speed up calculation of sum o">
+  <meta name="description" content="Problem Statement use std::collections::HashMap;impl Solution &amp;#123;    pub fn count_triplets(a: Vec&amp;lt;i32&amp;gt;) -&amp;gt; i32 &amp;#123;        let mut map = HashMap::new();        let mut ans = 0;        fo">
 <meta name="keywords" content="Algorithm,LeetCode,Rust">
 <meta property="og:type" content="article">
-<meta property="og:title" content="LeetCode 1031 Maximum Sum of Two Non-Overlapping Subarrays">
-<meta property="og:url" content="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1031/index.html">
+<meta property="og:title" content="LeetCode 982. Triples with Bitwise AND Equal To Zero">
+<meta property="og:url" content="http://lianghan.org/2019/11/10/2019-11-10-LeetCode982/index.html">
 <meta property="og:site_name" content="Quantum Field">
-<meta property="og:description" content="Problem Statement Maintain a sliding window of two sub arrays with length L and M and slide through. For each slide check two cases:L first, or M first. Use prefix sum to speed up calculation of sum o">
+<meta property="og:description" content="Problem Statement use std::collections::HashMap;impl Solution &amp;#123;    pub fn count_triplets(a: Vec&amp;lt;i32&amp;gt;) -&amp;gt; i32 &amp;#123;        let mut map = HashMap::new();        let mut ans = 0;        fo">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2019-11-14T04:59:58.317Z">
+<meta property="og:updated_time" content="2019-11-18T20:33:06.440Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="LeetCode 1031 Maximum Sum of Two Non-Overlapping Subarrays">
-<meta name="twitter:description" content="Problem Statement Maintain a sliding window of two sub arrays with length L and M and slide through. For each slide check two cases:L first, or M first. Use prefix sum to speed up calculation of sum o">
+<meta name="twitter:title" content="LeetCode 982. Triples with Bitwise AND Equal To Zero">
+<meta name="twitter:description" content="Problem Statement use std::collections::HashMap;impl Solution &amp;#123;    pub fn count_triplets(a: Vec&amp;lt;i32&amp;gt;) -&amp;gt; i32 &amp;#123;        let mut map = HashMap::new();        let mut ans = 0;        fo">
   
     <link rel="alternate" href="/atom.xml" title="Quantum Field" type="application/atom+xml">
   
@@ -78,10 +78,10 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="post-2019-11-11-LeetCode1031" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-2019-11-10-LeetCode982" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2019/11/11/2019-11-11-LeetCode1031/" class="article-date">
-  <time datetime="2019-11-11T19:11:11.000Z" itemprop="datePublished">2019-11-11</time>
+    <a href="/2019/11/10/2019-11-10-LeetCode982/" class="article-date">
+  <time datetime="2019-11-10T19:11:11.000Z" itemprop="datePublished">2019-11-10</time>
 </a>
     
   <div class="article-category">
@@ -96,7 +96,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      LeetCode 1031 Maximum Sum of Two Non-Overlapping Subarrays
+      LeetCode 982. Triples with Bitwise AND Equal To Zero
     </h1>
   
 
@@ -104,15 +104,14 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><a href="https://leetcode.com/problems/maximum-sum-of-two-non-overlapping-subarrays/description/" target="_blank" rel="noopener">Problem Statement</a></p>
-<p>Maintain a sliding window of two sub arrays with length L and M and slide through. For each slide check two cases:<br>L first, or M first. Use prefix sum to speed up calculation of sum of a given sub array.</p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">use</span> std::cmp;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">max_sum_two_no_overlap</span></span>(a: <span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;, l: <span class="keyword">i32</span>, m: <span class="keyword">i32</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> A = a.iter().scan(<span class="number">0</span>, |sum, i| &#123;*sum += *i; <span class="literal">Some</span>(*sum)&#125;).collect::&lt;<span class="built_in">Vec</span>&lt;_&gt;&gt;();</span><br><span class="line">        <span class="keyword">let</span> (L, M) = (l <span class="keyword">as</span> <span class="keyword">usize</span>, m <span class="keyword">as</span> <span class="keyword">usize</span>);</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> ans, <span class="keyword">mut</span> lmax, <span class="keyword">mut</span> rmax) = (A[L + M - <span class="number">1</span>], A[L - <span class="number">1</span>], A[M - <span class="number">1</span>]);</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> L + M..A.len() <span class="keyword">as</span> <span class="keyword">usize</span> &#123;</span><br><span class="line">            lmax = cmp::max(lmax, A[i - M] - A[i - M - L]);</span><br><span class="line">            rmax = cmp::max(rmax, A[i - L] - A[i - L - M]);</span><br><span class="line">            ans = cmp::max(ans, cmp::max(A[i] - A[i - L] + rmax, A[i] - A[i - M] + lmax));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+        <p><a href="https://leetcode.com/problems/triples-with-bitwise-and-equal-to-zero/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::collections::HashMap;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">count_triplets</span></span>(a: <span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> map = HashMap::new();</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> ans = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..a.len() &#123;</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> <span class="number">0</span>..a.len() &#123;</span><br><span class="line">                <span class="keyword">let</span> val = map.entry(a[i] &amp; a[j]).or_insert(<span class="number">0</span>);</span><br><span class="line">                *val += <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> a &#123;</span><br><span class="line">            <span class="keyword">for</span> (key, val) <span class="keyword">in</span> &amp;map &#123;</span><br><span class="line">                <span class="keyword">if</span> key &amp; i == <span class="number">0</span> &#123;</span><br><span class="line">                    ans += *val;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1031/" data-id="ck34vyzal0047obxg7pu0tlt0" data-title="LeetCode 1031 Maximum Sum of Two Non-Overlapping Subarrays" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode982/" data-id="ck34vyzag003zobxg49b4m7hc" data-title="LeetCode 982. Triples with Bitwise AND Equal To Zero" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1031/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode982/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
@@ -124,19 +123,19 @@
     
 <nav id="article-nav">
   
-    <a href="/2019/11/11/2019-11-11-LeetCode1020/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2019/11/10/2019-11-10-LeetCode1168/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Newer</strong>
       <div class="article-nav-title">
         
-          LeetCode 1020. Number of Enclaves
+          LeetCode 1168. Optimize Water Distribution in a Village
         
       </div>
     </a>
   
   
-    <a href="/2019/11/11/2019-11-11-LeetCode1066/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2019/10/15/2019-10-15-LeetCode1145/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">LeetCode 1066. Campus Bikes II</div>
+      <div class="article-nav-title">LeetCode 1145 Binary Tree Coloring Game</div>
     </a>
   
 </nav>
@@ -270,7 +269,7 @@
 <script>
   var disqus_shortname = 'quantumfield';
   
-  var disqus_url = 'http://lianghan.org/2019/11/11/2019-11-11-LeetCode1031/';
+  var disqus_url = 'http://lianghan.org/2019/11/10/2019-11-10-LeetCode982/';
   
   (function(){
     var dsq = document.createElement('script');

@@ -75,6 +75,53 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-2017-08-04-USACO-NetworkOfSchools" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/08/04/2017-08-04-USACO-NetworkOfSchools/" class="article-date">
+  <time datetime="2017-08-05T06:11:31.000Z" itemprop="datePublished">2017-08-04</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/USACO/">USACO</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/08/04/2017-08-04-USACO-NetworkOfSchools/">USACO 5.3 Network of Schools</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Compute the minimum number of edges to add to make a directed graph strongly connected. Use Kosaraju’s algorithm to find out strongly connected components and for each SCC count its in degree and out degree and the maximum one is the answer.</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> N;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; g, rg <span class="comment">/* reversed graph */</span>;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; vs; <span class="comment">// post order vertices</span></span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt; visited;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; cmp; <span class="comment">// topological order of strongly connected component.</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">add_edge</span><span class="params">(<span class="keyword">int</span> from, <span class="keyword">int</span> to)</span> </span>&#123;</span><br><span class="line">    g[from].push_back(to);</span><br><span class="line">    rg[to].push_back(from);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> v)</span> </span>&#123;</span><br><span class="line">    visited[v] = <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; g[v].size(); ++i) &#123;</span><br><span class="line">        <span class="keyword">if</span> (visited[g[v][i]]) <span class="keyword">continue</span>;</span><br><span class="line">        dfs(g[v][i]);</span><br><span class="line">    &#125;</span><br><span class="line">    vs.push_back(v);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">rdfs</span><span class="params">(<span class="keyword">int</span> v, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">    visited[v] = <span class="literal">true</span>;</span><br><span class="line">    cmp[v] = k;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; rg[v].size(); ++i) &#123;</span><br><span class="line">        <span class="keyword">if</span> (visited[rg[v][i]]) <span class="keyword">continue</span>;</span><br><span class="line">        rdfs(rg[v][i], k);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">scc</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="built_in">std</span>::fill(visited.begin(), visited.end(), <span class="literal">false</span>);</span><br><span class="line">    vs.clear();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">        <span class="keyword">if</span> (visited[i]) <span class="keyword">continue</span>;</span><br><span class="line">        dfs(i);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">std</span>::fill(visited.begin(), visited.end(), <span class="literal">false</span>);</span><br><span class="line">    <span class="keyword">int</span> k = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = (<span class="keyword">int</span>)vs.size() - <span class="number">1</span>; i &gt;= <span class="number">0</span>; --i) &#123;</span><br><span class="line">        <span class="keyword">if</span> (visited[vs[i]]) <span class="keyword">continue</span>;</span><br><span class="line">        rdfs(vs[i], k++);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> k;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"schlnet.in"</span>)</span></span>;</span><br><span class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"schlnet.out"</span>)</span></span>;</span><br><span class="line">    </span><br><span class="line">    fin &gt;&gt; N;</span><br><span class="line">    g = <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt;(N); rg = g;</span><br><span class="line">    vs = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N);</span><br><span class="line">    visited = <span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt;(N, <span class="literal">false</span>);</span><br><span class="line">    cmp = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">auto</span> ins = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">auto</span> outs = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N, <span class="number">0</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">        <span class="keyword">int</span> t; fin &gt;&gt; t;</span><br><span class="line">        <span class="keyword">while</span> (t) &#123;</span><br><span class="line">            add_edge(i, t - <span class="number">1</span>);</span><br><span class="line">            fin &gt;&gt; t;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">int</span> numOfScc = scc();</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//cout &lt;&lt; numOfScc &lt;&lt; endl;</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span>(numOfScc == <span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="number">1</span> &lt;&lt; <span class="built_in">endl</span> &lt;&lt; <span class="number">0</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">        fout &lt;&lt; <span class="number">1</span> &lt;&lt; <span class="built_in">endl</span> &lt;&lt; <span class="number">0</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; g[i].size(); ++j) &#123;</span><br><span class="line">            <span class="keyword">int</span> v = g[i][j];</span><br><span class="line">            <span class="keyword">int</span> ii = cmp[i], vv = cmp[v];</span><br><span class="line">            <span class="keyword">if</span>(ii != vv) &#123;</span><br><span class="line">                ins[vv]++; outs[ii]++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">int</span> ans0 = <span class="number">0</span>, ans1 = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; numOfScc; ++i) &#123;</span><br><span class="line">        <span class="keyword">if</span>(!ins[i])  ++ans0; <span class="keyword">if</span>(!outs[i]) ++ans1;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; ans0 &lt;&lt; <span class="built_in">endl</span> &lt;&lt; max(ans0, ans1) &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    fout &lt;&lt; ans0 &lt;&lt; <span class="built_in">endl</span> &lt;&lt; max(ans0, ans1) &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2017/08/04/2017-08-04-USACO-NetworkOfSchools/" data-id="ck34vyz9u0035obxg5p4ho0xa" data-title="USACO 5.3 Network of Schools" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2017/08/04/2017-08-04-USACO-NetworkOfSchools/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Graph-Theory/">Graph Theory</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Strongly-Connected-Components/">Strongly Connected Components</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-2017-07-22-USACO-WindowArea" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/07/22/2017-07-22-USACO-WindowArea/" class="article-date">
@@ -107,7 +154,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/07/22/2017-07-22-USACO-WindowArea/" data-id="ck34ujr5j002j7kxg1keszse2" data-title="USACO 5.3 Window Area" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2017/07/22/2017-07-22-USACO-WindowArea/" data-id="ck34vyz9t0033obxgmihubds8" data-title="USACO 5.3 Window Area" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2017/07/22/2017-07-22-USACO-WindowArea/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -270,7 +317,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/07/03/2017-07-01-ConsensusInTheCloud/" data-id="ck34ujr5h002h7kxgnkaugj31" data-title="Paper Digest - Consensus in the Cloud - Paxos Systems Demystified" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2017/07/03/2017-07-01-ConsensusInTheCloud/" data-id="ck34vyz9q002zobxgkaunryy8" data-title="Paper Digest - Consensus in the Cloud - Paxos Systems Demystified" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2017/07/03/2017-07-01-ConsensusInTheCloud/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -286,55 +333,11 @@
 
 
   
-    <article id="post-2017-07-01-TopCoder-SRM716DivI" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/07/03/2017-07-01-TopCoder-SRM716DivI/" class="article-date">
-  <time datetime="2017-07-03T21:02:31.000Z" itemprop="datePublished">2017-07-03</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/TopCoder/">TopCoder</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/03/2017-07-01-TopCoder-SRM716DivI/">SRM 716 DIV II</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> Permutiple &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="built_in">string</span> <span class="title">isPossible</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">        <span class="built_in">string</span> xx = <span class="built_in">std</span>::to_string(x);</span><br><span class="line">        <span class="keyword">do</span> &#123;</span><br><span class="line">            <span class="keyword">int</span> val = <span class="built_in">std</span>::stoi(xx);</span><br><span class="line">            <span class="keyword">if</span> (val &lt;= x) <span class="keyword">continue</span>;</span><br><span class="line">            <span class="keyword">if</span> (val % x == <span class="number">0</span>) <span class="keyword">return</span> <span class="string">"Possible"</span>;</span><br><span class="line">        &#125; <span class="keyword">while</span> (<span class="built_in">std</span>::next_permutation(xx.begin(), xx.end()));</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"Impossible"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> ConstructLCSEasy &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="built_in">string</span> <span class="title">construct</span><span class="params">(<span class="keyword">int</span> ab, <span class="keyword">int</span> bc, <span class="keyword">int</span> ca)</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="built_in">string</span> <span class="title">AB</span><span class="params">(ab, <span class="string">'1'</span>)</span></span>;</span><br><span class="line">        <span class="built_in">string</span> BC = AB, CA = AB;</span><br><span class="line">        <span class="keyword">int</span> diff2 = bc - ab;</span><br><span class="line">        <span class="keyword">while</span> (diff2--) &#123;</span><br><span class="line">            BC += <span class="string">"0"</span>; CA += <span class="string">"0"</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> diff3 = ca - ab;</span><br><span class="line">        <span class="keyword">while</span> (diff3--) &#123;</span><br><span class="line">            AB += <span class="string">"1"</span>; CA += <span class="string">"1"</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> AB + <span class="string">" "</span> + BC + <span class="string">" "</span> + CA;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/07/03/2017-07-01-TopCoder-SRM716DivI/" data-id="ck34ujr5i002i7kxginydkkud" data-title="SRM 716 DIV II" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2017/07/03/2017-07-01-TopCoder-SRM716DivI/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
 
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/page/11/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="page-number" href="/page/11/">11</a><span class="page-number current">12</span><a class="page-number" href="/page/13/">13</a><a class="page-number" href="/page/14/">14</a><span class="space">&hellip;</span><a class="page-number" href="/page/41/">41</a><a class="extend next" rel="next" href="/page/13/">Next &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/11/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="page-number" href="/page/11/">11</a><span class="page-number current">12</span><a class="page-number" href="/page/13/">13</a><a class="page-number" href="/page/14/">14</a><span class="space">&hellip;</span><a class="page-number" href="/page/42/">42</a><a class="extend next" rel="next" href="/page/13/">Next &raquo;</a>
   </nav>
 
 </section>
