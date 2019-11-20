@@ -75,10 +75,10 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-2016-10-21-USACO-HumbleNumbers" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2016-11-01-USACO-StringsOrbits.h" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2016/10/21/2016-10-21-USACO-HumbleNumbers/" class="article-date">
-  <time datetime="2016-10-22T02:51:31.000Z" itemprop="datePublished">2016-10-21</time>
+    <a href="/2016/11/01/2016-11-01-USACO-StringsOrbits.h/" class="article-date">
+  <time datetime="2016-11-01T22:21:31.000Z" itemprop="datePublished">2016-11-01</time>
 </a>
     
   <div class="article-category">
@@ -93,7 +93,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/10/21/2016-10-21-USACO-HumbleNumbers/">USACO 3.1 Humble Numbers</a>
+      <a class="article-title" href="/2016/11/01/2016-11-01-USACO-StringsOrbits.h/">USACO 3.2 Stringsorbits</a>
     </h1>
   
 
@@ -101,21 +101,107 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>The idea is to generate and maintain a sorted list of humble numbers:</p>
-<ul>
-<li>Each humble number can be generated together with this sorted list, and with one of the seed prime numbers.</li>
-<li>For each humble number, there is one and only one way of generating the number - in other words the prime factors are fixed for a given humble number.</li>
-<li>For each prime factor number, maintain an index into the humble number sorted list. The indexed number in the humble number list would be the next number that this prime factor should multiply.</li>
-<li>The invariant is, at each iteration, the smallest possible humble number is generated, and each index associated with each prime factor is incremented by one, if the prime factor contributes to the generation (num % prime == 0).</li>
-</ul>
-<p>Following this idea, the humble numbers can be generated systematically without duplicates, and we only need maintain a single sorted list of humble numbers.</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;utility&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cmath&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unordered_map&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;climits&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sstream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> N, K;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"humble.in"</span>)</span></span>;</span><br><span class="line">  <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"humble.out"</span>)</span></span>;</span><br><span class="line">  </span><br><span class="line">  fin &gt;&gt; K &gt;&gt; N;</span><br><span class="line">  <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; dp(N + <span class="number">1</span>, INT_MAX);</span><br><span class="line">  <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; num(K, <span class="number">0</span>);</span><br><span class="line">  <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; indices(K, <span class="number">0</span>);</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; K; ++i) &#123;</span><br><span class="line">    fin &gt;&gt; num[i];</span><br><span class="line">  &#125;</span><br><span class="line">  dp[<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= N; ++i) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; K; ++j) &#123;</span><br><span class="line">      dp[i] = <span class="built_in">std</span>::min(dp[i], dp[indices[j]] * num[j]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; K; ++j) &#123;</span><br><span class="line">      <span class="keyword">if</span> (dp[i] % num[j] == <span class="number">0</span>) &#123;</span><br><span class="line">        ++indices[j];</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  fout &lt;&lt; dp[N] &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">  <span class="built_in">cout</span> &lt;&lt; dp[N] &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;utility&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cmath&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;map&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unordered_map&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;climits&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sstream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> N<span class="comment">/* length of string*/</span>, L<span class="comment">/* max number of bits per string */</span>;</span><br><span class="line"><span class="keyword">long</span> <span class="keyword">long</span> I <span class="comment">/* the order */</span>;</span><br><span class="line"><span class="keyword">int</span> dp[<span class="number">32</span>][<span class="number">32</span>];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">compute</span><span class="params">(<span class="keyword">int</span> i, <span class="keyword">int</span> j)</span></span>&#123;</span><br><span class="line">  <span class="keyword">if</span>(dp[i][j] != <span class="number">0</span>)</span><br><span class="line">    <span class="keyword">return</span> dp[i][j];</span><br><span class="line">  <span class="keyword">else</span>&#123;</span><br><span class="line">    dp[i][j] = compute(i - <span class="number">1</span>, j) + compute(i - <span class="number">1</span>, j - <span class="number">1</span>);</span><br><span class="line">    <span class="keyword">return</span> dp[i][j];</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">  <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"kimbits.in"</span>)</span></span>;</span><br><span class="line">  <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"kimbits.out"</span>)</span></span>;</span><br><span class="line">  </span><br><span class="line">  fin &gt;&gt; N &gt;&gt; L &gt;&gt; I;</span><br><span class="line">  <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= N; i++)&#123;</span><br><span class="line">    dp[i][<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">1</span>; j &lt;= L; j++)&#123;</span><br><span class="line">    dp[<span class="number">0</span>][j] = <span class="number">1</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">for</span>(<span class="keyword">int</span> k = N - <span class="number">1</span>; k &gt;= <span class="number">0</span>; k--)&#123;</span><br><span class="line">    <span class="keyword">if</span>(compute(k, L) &lt; I)&#123;</span><br><span class="line">      <span class="built_in">cout</span> &lt;&lt; <span class="number">1</span>;</span><br><span class="line">      fout &lt;&lt; <span class="number">1</span>;</span><br><span class="line">      I -= compute(k,L);</span><br><span class="line">      L--;</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">      <span class="built_in">cout</span> &lt;&lt; <span class="number">0</span>;</span><br><span class="line">      fout &lt;&lt; <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="built_in">cout</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">  fout &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/10/21/2016-10-21-USACO-HumbleNumbers/" data-id="ck36hutxy0016ooxgmr0xhsoa" data-title="USACO 3.1 Humble Numbers" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2016/11/01/2016-11-01-USACO-StringsOrbits.h/" data-id="ck37k0sqm001ak7xgobgyohqs" data-title="USACO 3.2 Stringsorbits" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2016/10/21/2016-10-21-USACO-HumbleNumbers/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2016/11/01/2016-11-01-USACO-StringsOrbits.h/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Combination/">Combination</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dynamic-Programming/">Dynamic Programming</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-2016-10-27-Factorials" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/10/27/2016-10-27-Factorials/" class="article-date">
+  <time datetime="2016-10-27T23:35:31.000Z" itemprop="datePublished">2016-10-27</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/USACO/">USACO</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/10/27/2016-10-27-Factorials/">USACO 3.2 Factorials</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Do pre-processing steps to remove the pairs of factor 2 and 5 (which combines together can generate a 0). Then do factorial calculation against preprocessed numbers, and only keep a single digit at each step.<br>Why not just keep a single digit without pre-processing step? Because even if a digit is not zero, it could become zero after multiplying - so we need make sure kill those factors (2 and 5) first.</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> N;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"fact4.in"</span>)</span></span>;</span><br><span class="line">  <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"fact4.out"</span>)</span></span>;</span><br><span class="line">  fin &gt;&gt; N;</span><br><span class="line">  <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; num(N, <span class="number">0</span>);</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">    num[i] = i + <span class="number">1</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">int</span> cnt = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;i : num) &#123;</span><br><span class="line">    <span class="keyword">while</span> (i % <span class="number">5</span> == <span class="number">0</span>) &#123;</span><br><span class="line">      i = i / <span class="number">5</span>;</span><br><span class="line">      ++cnt;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;i : num) &#123;</span><br><span class="line">    <span class="keyword">while</span> (i % <span class="number">2</span> == <span class="number">0</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (cnt == <span class="number">0</span>) <span class="keyword">break</span>;</span><br><span class="line">      i = i / <span class="number">2</span>;</span><br><span class="line">      --cnt;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (cnt == <span class="number">0</span>) <span class="keyword">break</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">long</span> <span class="keyword">long</span> r = <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">    r = (r * num[i]) % <span class="number">10</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="built_in">cout</span> &lt;&lt; r &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">  fout &lt;&lt; r &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2016/10/27/2016-10-27-Factorials/" data-id="ck37k0sqk0019k7xgp66dcstt" data-title="USACO 3.2 Factorials" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2016/10/27/2016-10-27-Factorials/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Number-Theory/">Number Theory</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-2016-10-25-USACO-Stamps" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/10/25/2016-10-25-USACO-Stamps/" class="article-date">
+  <time datetime="2016-10-25T21:17:31.000Z" itemprop="datePublished">2016-10-25</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/USACO/">USACO</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/10/25/2016-10-25-USACO-Stamps/">USACO 3.1 Stamps</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Dynamic programming problem. Let dp[i] denotes the minimum number of stamps required to construct a value of i. Then the state transfer function is dp[i] = min(dp[i - val[j]) + 1 for all j between 1 and N, where i &gt;= val[j].<br><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;utility&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cmath&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;map&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unordered_map&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;climits&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sstream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> K, N;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"stamps.in"</span>)</span></span>;</span><br><span class="line">  <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"stamps.out"</span>)</span></span>;</span><br><span class="line">  fin &gt;&gt; K &gt;&gt; N;</span><br><span class="line">  <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; val(N, <span class="number">0</span>);</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">    fin &gt;&gt; val[i];</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; dp(<span class="number">2000001</span>, INT_MAX);</span><br><span class="line">  dp[<span class="number">0</span>] = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">int</span> i = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">while</span> (dp[i] &lt;= K) &#123;</span><br><span class="line">    ++i;</span><br><span class="line">    <span class="keyword">int</span> cur = INT_MAX;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; N; ++j) &#123;</span><br><span class="line">      <span class="keyword">if</span> (val[j] &gt; i) <span class="keyword">continue</span>;</span><br><span class="line">      cur = <span class="built_in">std</span>::min(cur, dp[i - val[j]]);</span><br><span class="line">    &#125;</span><br><span class="line">    dp[i] = cur + <span class="number">1</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  fout &lt;&lt; i - <span class="number">1</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">  <span class="built_in">cout</span> &lt;&lt; i - <span class="number">1</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2016/10/25/2016-10-25-USACO-Stamps/" data-id="ck37k0sqk0018k7xgcmx41i1g" data-title="USACO 3.1 Stamps" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2016/10/25/2016-10-25-USACO-Stamps/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
@@ -129,107 +215,11 @@
 
 
   
-    <article id="post-2016-10-18-USACO-Inflation" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/10/18/2016-10-18-USACO-Inflation/" class="article-date">
-  <time datetime="2016-10-18T20:58:31.000Z" itemprop="datePublished">2016-10-18</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/USACO/">USACO</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/10/18/2016-10-18-USACO-Inflation/">USACO 3.1 Inflation</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>This is a standard ‘Complete Knapsack’ problem. First stab:</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;utility&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cmath&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unordered_map&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;climits&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sstream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> M <span class="comment">/* minutes */</span>, N <span class="comment">/* classes */</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"inflate.in"</span>)</span></span>;</span><br><span class="line">  <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"inflate.out"</span>)</span></span>;</span><br><span class="line">  fin &gt;&gt; M &gt;&gt; N;</span><br><span class="line">  <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; dp;</span><br><span class="line">  <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; w;</span><br><span class="line">  <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; v;</span><br><span class="line"> </span><br><span class="line">  dp = <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt;(N + <span class="number">1</span>, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(M + <span class="number">1</span>));</span><br><span class="line">  w = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N, <span class="number">0</span>);</span><br><span class="line">  v = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N, <span class="number">0</span>);</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">    fin &gt;&gt; v[i] &gt;&gt; w[i];</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt;= M; ++j) &#123;</span><br><span class="line">      <span class="keyword">if</span> (j &lt; w[i]) &#123;</span><br><span class="line">        dp[i + <span class="number">1</span>][j] = dp[i][j];</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        dp[i + <span class="number">1</span>][j] = <span class="built_in">std</span>::max(dp[i][j], dp[i + <span class="number">1</span>][j - w[i]] + v[i]);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  fout &lt;&lt; dp[N][M] &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">  <span class="built_in">cout</span> &lt;&lt; dp[N][M] &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>This solution exceeds the memory limit (16MB, it seems) set by the problem judge. So the optimization of using a rolling array to compress the states is required. It is possible to do the optimization because the compute of a given state only depends on the value of the current state and the value of previous state.<br>Now this one passes:</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"inflate.in"</span>)</span></span>;</span><br><span class="line">  <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"inflate.out"</span>)</span></span>;</span><br><span class="line">  fin &gt;&gt; M &gt;&gt; N;</span><br><span class="line">  <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; dp = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(M + <span class="number">1</span>);</span><br><span class="line">  <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; w = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N, <span class="number">0</span>);</span><br><span class="line">  <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; v = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N, <span class="number">0</span>);</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">    fin &gt;&gt; v[i] &gt;&gt; w[i];</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = w[i]; j &lt;= M; ++j) &#123;</span><br><span class="line">      dp[j] = <span class="built_in">std</span>::max(dp[j], dp[j - w[i]] + v[i]);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  fout &lt;&lt; dp[M] &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">  <span class="built_in">cout</span> &lt;&lt; dp[M] &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/10/18/2016-10-18-USACO-Inflation/" data-id="ck36hutxw0014ooxg72d41agb" data-title="USACO 3.1 Inflation" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2016/10/18/2016-10-18-USACO-Inflation/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dynamic-Programming/">Dynamic Programming</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Knapsack/">Knapsack</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Rolling-Array/">Rolling Array</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2016-10-14-USACO-AgriNet" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/10/14/2016-10-14-USACO-AgriNet/" class="article-date">
-  <time datetime="2016-10-14T21:53:31.000Z" itemprop="datePublished">2016-10-14</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/USACO/">USACO</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/10/14/2016-10-14-USACO-AgriNet/">USACO 3.1 AgriNet</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Easy problem with prim MST algorithm.</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;utility&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cmath&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unordered_map&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;climits&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sstream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> N;</span><br><span class="line"><span class="keyword">int</span> ret = <span class="number">0</span>;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt; minset;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; parent;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; dist;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; grid;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"agrinet.in"</span>)</span></span>;</span><br><span class="line">  <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"agrinet.out"</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">  fin &gt;&gt; N;</span><br><span class="line">  grid = <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt;(N, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N, <span class="number">0</span>));</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; N; ++j) &#123;</span><br><span class="line">      fin &gt;&gt; grid[i][j];</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  minset = <span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt;(N, <span class="literal">false</span>);</span><br><span class="line">  parent = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N, <span class="number">-1</span>);</span><br><span class="line">  dist = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N, INT_MAX);</span><br><span class="line">  dist[<span class="number">0</span>] = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Iterate N -1 times (since we have initialized dist for vertex 0 already).</span></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N - <span class="number">1</span>; ++i) &#123;</span><br><span class="line">    <span class="comment">// Find next vertex that not in set, which has smallest distance to existing</span></span><br><span class="line">    <span class="comment">// set of vertices.</span></span><br><span class="line">    <span class="keyword">int</span> min = INT_MAX; <span class="keyword">int</span> minIdx = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> ii = <span class="number">0</span>; ii &lt; N; ++ii) &#123;</span><br><span class="line">      <span class="keyword">if</span> (!minset[ii] &amp;&amp; dist[ii] &lt; min) &#123;</span><br><span class="line">        minIdx = ii;</span><br><span class="line">        min = dist[ii];</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Add the new vertex to the set, and update all dist accordingly.</span></span><br><span class="line">    minset[minIdx] = <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; N; ++j) &#123;</span><br><span class="line">      <span class="keyword">if</span> (grid[minIdx][j] &amp;&amp; !minset[j] &amp;&amp; grid[minIdx][j] &lt; dist[j]) &#123;</span><br><span class="line">        dist[j] = grid[minIdx][j];</span><br><span class="line">        parent[j] = minIdx;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">int</span> ret = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; N; ++i) &#123;</span><br><span class="line">    ret += grid[parent[i]][i];</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  fout &lt;&lt; ret &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">  <span class="built_in">cout</span> &lt;&lt; ret &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2016/10/14/2016-10-14-USACO-AgriNet/" data-id="ck36hutxx0015ooxgqtw0xcb9" data-title="USACO 3.1 AgriNet" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2016/10/14/2016-10-14-USACO-AgriNet/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Graph/">Graph</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Minimum-Spanning-Tree/">Minimum Spanning Tree</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Prim/">Prim</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
 
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/page/29/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/28/">28</a><a class="page-number" href="/page/29/">29</a><span class="page-number current">30</span><a class="page-number" href="/page/31/">31</a><a class="page-number" href="/page/32/">32</a><span class="space">&hellip;</span><a class="page-number" href="/page/44/">44</a><a class="extend next" rel="next" href="/page/31/">Next &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/29/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/28/">28</a><a class="page-number" href="/page/29/">29</a><span class="page-number current">30</span><a class="page-number" href="/page/31/">31</a><a class="page-number" href="/page/32/">32</a><span class="space">&hellip;</span><a class="page-number" href="/page/46/">46</a><a class="extend next" rel="next" href="/page/31/">Next &raquo;</a>
   </nav>
 
 </section>

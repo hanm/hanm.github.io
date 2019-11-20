@@ -75,6 +75,53 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-2019-11-10-LeetCode1023" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/11/10/2019-11-10-LeetCode1023/" class="article-date">
+  <time datetime="2019-11-10T19:11:11.000Z" itemprop="datePublished">2019-11-10</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/LeetCode-in-Rust/">LeetCode in Rust</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1023/">LeetCode 1023. Camelcase Matching</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><a href="https://leetcode.com/problems/camelcase-matching/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">try_match</span></span>(q: &amp;<span class="built_in">String</span>, p: &amp;<span class="built_in">String</span>) -&gt;<span class="keyword">bool</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> (m, n, <span class="keyword">mut</span> i, <span class="keyword">mut</span> j) = (p.len(), q.len(), <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">while</span> i &lt; n &#123;</span><br><span class="line">            <span class="keyword">if</span> j == m &amp;&amp; q.chars().nth(i).unwrap().is_uppercase() &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (j == m || p.chars().nth(j).unwrap().is_uppercase()) &amp;&amp; q.chars().nth(i).unwrap().is_lowercase() &#123;</span><br><span class="line">                i += <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">let</span> qi = q.chars().nth(i).unwrap();</span><br><span class="line">            <span class="keyword">let</span> pj = p.chars().nth(j).unwrap();</span><br><span class="line">            <span class="keyword">if</span> pj.is_uppercase() &amp;&amp; qi.is_uppercase() &amp;&amp; pj != qi &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> pj.is_lowercase() &amp;&amp; pj != qi &#123;</span><br><span class="line">                i += <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            i+= <span class="number">1</span>; j += <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> i == n &amp;&amp; j == m;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">camel_match</span></span>(queries: <span class="built_in">Vec</span>&lt;<span class="built_in">String</span>&gt;, pattern: <span class="built_in">String</span>) -&gt; <span class="built_in">Vec</span>&lt;<span class="keyword">bool</span>&gt; &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> ans = <span class="built_in">Vec</span>::new();</span><br><span class="line">        <span class="keyword">for</span> q <span class="keyword">in</span> &amp;queries &#123;</span><br><span class="line">            ans.push(Self::try_match(q, &amp;pattern));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1023/" data-id="ck37k0svg003lk7xg9v2mayc3" data-title="LeetCode 1023. Camelcase Matching" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1023/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LeetCode/">LeetCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Rust/">Rust</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-2019-11-10-LeetCode1036" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2019/11/10/2019-11-10-LeetCode1036/" class="article-date">
@@ -106,57 +153,9 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1036/" data-id="ck36hutzp002wooxg92slg2c8" data-title="LeetCode 1036. Escape a Large Maze." class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1036/" data-id="ck37k0svn003tk7xgbv6s8ed5" data-title="LeetCode 1036. Escape a Large Maze." class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1036/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LeetCode/">LeetCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Rust/">Rust</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2019-11-10-LeetCode1024" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/11/10/2019-11-10-LeetCode1024/" class="article-date">
-  <time datetime="2019-11-10T19:11:11.000Z" itemprop="datePublished">2019-11-10</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/LeetCode-in-Rust/">LeetCode in Rust</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1024/">LeetCode 1024. Video Stitching</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><a href="https://leetcode.com/problems/video-stitching/description/" target="_blank" rel="noopener">Problem Statement</a></p>
-<p>Greedy.</p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">video_stitching</span></span>(clips: <span class="built_in">Vec</span>&lt;<span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;&gt;, t: <span class="keyword">i32</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> input = clips;</span><br><span class="line">        input.sort_by_key(|x| x[<span class="number">0</span>]);</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> cur_end, <span class="keyword">mut</span> max_end, <span class="keyword">mut</span> ans, <span class="keyword">mut</span> j) = (<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..input.len() &#123;</span><br><span class="line">            <span class="keyword">if</span> i &lt; j &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> input[i][<span class="number">0</span>] &gt; cur_end &#123;</span><br><span class="line">                <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            max_end = cur_end;</span><br><span class="line">            j = i;</span><br><span class="line">            <span class="keyword">while</span> j &lt; input.len() &#123;</span><br><span class="line">                <span class="keyword">if</span> input[j][<span class="number">0</span>] &gt; cur_end &#123;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                max_end = std::cmp::max(max_end, input[j][<span class="number">1</span>]);</span><br><span class="line">                j += <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            ans += <span class="number">1</span>;</span><br><span class="line">            cur_end = max_end;</span><br><span class="line">            <span class="keyword">if</span> max_end &gt;= t &#123;</span><br><span class="line">                <span class="keyword">return</span> ans;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1024/" data-id="ck36hutzq002xooxghwd72fzs" data-title="LeetCode 1024. Video Stitching" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1024/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
@@ -201,7 +200,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1055/" data-id="ck36hutzr002yooxgeu9esv8d" data-title="LeetCode 1055. Shortest Way to Form String" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1055/" data-id="ck37k0svp003vk7xg2pdcwbon" data-title="LeetCode 1055. Shortest Way to Form String" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1055/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -221,7 +220,7 @@
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/page/6/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><span class="space">&hellip;</span><a class="page-number" href="/page/44/">44</a><a class="extend next" rel="next" href="/page/8/">Next &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/6/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><span class="space">&hellip;</span><a class="page-number" href="/page/46/">46</a><a class="extend next" rel="next" href="/page/8/">Next &raquo;</a>
   </nav>
 
 </section>
