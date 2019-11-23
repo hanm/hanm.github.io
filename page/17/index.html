@@ -75,10 +75,10 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-2019-09-11-LeetCode301" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2019-11-10-LeetCode1184" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2019/09/11/2019-09-11-LeetCode301/" class="article-date">
-  <time datetime="2019-09-11T17:39:31.000Z" itemprop="datePublished">2019-09-11</time>
+    <a href="/2019/11/10/2019-11-10-LeetCode1184/" class="article-date">
+  <time datetime="2019-11-10T19:11:11.000Z" itemprop="datePublished">2019-11-10</time>
 </a>
     
   <div class="article-category">
@@ -93,7 +93,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/09/11/2019-09-11-LeetCode301/">LeetCode 301 Remove Invalid Parentheses</a>
+      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1184/">LeetCode 1184. Distance Between Bus Stops</a>
     </h1>
   
 
@@ -101,15 +101,14 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><a href="https://leetcode.com/problems/remove-invalid-parentheses/description/" target="_blank" rel="noopener">Problem Statement</a></p>
-<p>First attempt on implementing solutions for leetcode problems using Rust. For someone like me with a C++ background,<br>coding in Rust requires a paradigm change. Move semantics are everywhere, everything has to be explicit, and there are<br>really not so many similarities of standard libraries between Rust and C++. In any cases, it’s fun to code in Rust,<br>and I am sure this code can be more Rustified.</p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">use</span> std::collections::HashSet;</span><br><span class="line"><span class="keyword">use</span> std::collections::VecDeque;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">remove_invalid_parentheses</span></span>(s: <span class="built_in">String</span>) -&gt; <span class="built_in">Vec</span>&lt;<span class="built_in">String</span>&gt; &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> result = <span class="built_in">Vec</span>::new();</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> visited = HashSet::new();</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> queue = VecDeque::new();</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">fn</span> <span class="title">isParenBalanced</span></span>(s : &amp;<span class="built_in">String</span>) -&gt; <span class="keyword">bool</span> &#123;</span><br><span class="line">            <span class="keyword">let</span> (<span class="keyword">mut</span> left, <span class="keyword">mut</span> right) = (<span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">            <span class="keyword">for</span> c <span class="keyword">in</span> s.chars() &#123;</span><br><span class="line">                <span class="keyword">if</span> c == <span class="string">'('</span> &#123;</span><br><span class="line">                    left = left + <span class="number">1</span>;</span><br><span class="line">                &#125; <span class="keyword">else</span> <span class="keyword">if</span> c == <span class="string">')'</span> &#123;</span><br><span class="line">                    <span class="keyword">if</span> left == <span class="number">0</span> &#123;</span><br><span class="line">                        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                    left = left - <span class="number">1</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> left == <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        visited.insert(s.clone());</span><br><span class="line">        queue.push_back(s.clone());</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> stop = <span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">while</span> !queue.is_empty() &#123;</span><br><span class="line">            <span class="keyword">let</span> <span class="keyword">str</span> = queue.pop_front().unwrap();</span><br><span class="line">            <span class="keyword">if</span> isParenBalanced(&amp;<span class="keyword">str</span>) &#123;</span><br><span class="line">                result.push(<span class="keyword">str</span>.clone());</span><br><span class="line">                stop = <span class="literal">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> stop &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">for</span> it <span class="keyword">in</span> <span class="keyword">str</span>.char_indices() &#123;</span><br><span class="line">                <span class="keyword">if</span> it.<span class="number">1</span> != <span class="string">'('</span> &amp;&amp; it.<span class="number">1</span> != <span class="string">')'</span> &#123;</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">let</span> <span class="keyword">mut</span> next = <span class="keyword">str</span>.clone();</span><br><span class="line">                next.remove(it.<span class="number">0</span>);</span><br><span class="line">                <span class="keyword">if</span> visited.contains(&amp;next) &#123;</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                queue.push_back(next.clone());</span><br><span class="line">                visited.insert(next.clone());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        <p><a href="https://leetcode.com/problems/distance-between-bus-stops/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::mem::swap;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">distance_between_bus_stops</span></span>(distance: <span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;, start: <span class="keyword">i32</span>, destination: <span class="keyword">i32</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> val, n, <span class="keyword">mut</span> ans) = (<span class="number">0</span>, distance.len(), <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> s, <span class="keyword">mut</span> d) = (start, destination);</span><br><span class="line">        <span class="keyword">if</span> s &gt; d &#123;</span><br><span class="line">            swap(&amp;<span class="keyword">mut</span> s, &amp;<span class="keyword">mut</span> d);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> s..d &#123;</span><br><span class="line">            val += distance[i <span class="keyword">as</span> <span class="keyword">usize</span>];</span><br><span class="line">        &#125;</span><br><span class="line">        ans = val; val = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> i = d;</span><br><span class="line">        <span class="keyword">while</span> i != s &#123;</span><br><span class="line">            val += distance[i <span class="keyword">as</span> <span class="keyword">usize</span>];</span><br><span class="line">            i = (i + <span class="number">1</span>) % n <span class="keyword">as</span> <span class="keyword">i32</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> std::cmp::min(val, ans);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/09/11/2019-09-11-LeetCode301/" data-id="ck391pxf5003etbxgaxhpqj52" data-title="LeetCode 301 Remove Invalid Parentheses" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1184/" data-id="ck3bty4930053ylxgt6x7z93g" data-title="LeetCode 1184. Distance Between Bus Stops" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2019/09/11/2019-09-11-LeetCode301/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1184/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
@@ -123,14 +122,14 @@
 
 
   
-    <article id="post-2019-01-26-SRM748" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2019-11-10-LeetCode1209" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2019/01/27/2019-01-26-SRM748/" class="article-date">
-  <time datetime="2019-01-27T18:25:31.000Z" itemprop="datePublished">2019-01-27</time>
+    <a href="/2019/11/10/2019-11-10-LeetCode1209/" class="article-date">
+  <time datetime="2019-11-10T19:11:11.000Z" itemprop="datePublished">2019-11-10</time>
 </a>
     
   <div class="article-category">
-    <a class="article-category-link" href="/categories/TopCoder/">TopCoder</a>
+    <a class="article-category-link" href="/categories/LeetCode-in-Rust/">LeetCode in Rust</a>
   </div>
 
   </div>
@@ -141,7 +140,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/01/27/2019-01-26-SRM748/">SRM 748 DIV II 500</a>
+      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1209/">LeetCode 1209. Remove All Adjacent Duplicates in String II</a>
     </h1>
   
 
@@ -149,16 +148,19 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">class</span> Yllion &#123;</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; getString(<span class="built_in">string</span> input) &#123;</span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; ans;</span><br><span class="line">        <span class="function"><span class="built_in">stringstream</span> <span class="title">s</span><span class="params">(input)</span></span>;</span><br><span class="line">        <span class="built_in">string</span> str;</span><br><span class="line">        <span class="keyword">while</span>(s &gt;&gt; str) ans.push_back(str);</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="built_in">string</span> <span class="title">getPower</span><span class="params">(<span class="built_in">string</span> a, <span class="built_in">string</span> b)</span> </span>&#123;</span><br><span class="line">        <span class="built_in">unordered_map</span>&lt;<span class="built_in">string</span>, <span class="keyword">int</span>&gt; s2i;</span><br><span class="line">        s2i[<span class="string">"one"</span>] = <span class="number">0</span>; s2i[<span class="string">"ten"</span>] = <span class="number">1</span>;</span><br><span class="line">        s2i[<span class="string">"hundred"</span>] = <span class="number">2</span>;</span><br><span class="line">        s2i[<span class="string">"myriad"</span>] = <span class="number">4</span>; s2i[<span class="string">"myllion"</span>] = <span class="number">8</span>;</span><br><span class="line">        s2i[<span class="string">"byllion"</span>] = <span class="number">16</span>; s2i[<span class="string">"tryllion"</span>] = <span class="number">32</span>;</span><br><span class="line">        s2i[<span class="string">"quadryllion"</span>] = <span class="number">64</span>; s2i[<span class="string">"quintyllion"</span>] = <span class="number">128</span>;</span><br><span class="line">        s2i[<span class="string">"sextyllion"</span>] = <span class="number">256</span>; s2i[<span class="string">"septyllion"</span>] = <span class="number">512</span>;</span><br><span class="line">        s2i[<span class="string">"octyllion"</span>] = <span class="number">1024</span>; s2i[<span class="string">"nonyllion"</span>] = <span class="number">2048</span>;</span><br><span class="line">        s2i[<span class="string">"decyllion"</span>] = <span class="number">4096</span>;</span><br><span class="line">        <span class="built_in">unordered_map</span>&lt;<span class="keyword">int</span>, <span class="built_in">string</span>&gt; i2s;</span><br><span class="line">        i2s[<span class="number">0</span>] = <span class="string">"one"</span>; i2s[<span class="number">1</span>] = <span class="string">"ten"</span>;</span><br><span class="line">        i2s[<span class="number">2</span>] = <span class="string">"hundred"</span>;</span><br><span class="line">        i2s[<span class="number">4</span>] = <span class="string">"myriad"</span>; i2s[<span class="number">8</span>] = <span class="string">"myllion"</span>;</span><br><span class="line">        i2s[<span class="number">16</span>] = <span class="string">"byllion"</span>; i2s[<span class="number">32</span>] = <span class="string">"tryllion"</span>;</span><br><span class="line">        i2s[<span class="number">64</span>] = <span class="string">"quadryllion"</span>; i2s[<span class="number">128</span>] = <span class="string">"quintyllion"</span>;</span><br><span class="line">        i2s[<span class="number">256</span>] = <span class="string">"sextyllion"</span>; i2s[<span class="number">512</span>] = <span class="string">"septyllion"</span>;</span><br><span class="line">        i2s[<span class="number">1024</span>] = <span class="string">"octyllion"</span>; i2s[<span class="number">2048</span>] = <span class="string">"nonyllion"</span>;</span><br><span class="line">        i2s[<span class="number">4096</span>] = <span class="string">"decyllion"</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">auto</span> va = getString(a), vb = getString(b);</span><br><span class="line">        <span class="keyword">int</span> c = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> s : va) &#123;</span><br><span class="line">            c += s2i[s];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> s : vb) &#123;</span><br><span class="line">            c += s2i[s];</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; ans;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">12</span>; i &gt;= <span class="number">0</span>; --i) &#123;</span><br><span class="line">            <span class="keyword">int</span> base = <span class="built_in">pow</span>(<span class="number">2</span>, i);</span><br><span class="line">            <span class="keyword">if</span> (c &lt; base) <span class="keyword">continue</span>;</span><br><span class="line">            ans.push_back(i2s[base]);</span><br><span class="line">            <span class="keyword">if</span> (base == <span class="number">1</span>) <span class="keyword">break</span>;</span><br><span class="line">            c = c % base;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (!c) ans.push_back(<span class="string">"one"</span>);</span><br><span class="line"></span><br><span class="line">        reverse(ans.begin(), ans.end());</span><br><span class="line">        <span class="built_in">string</span> ret;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; ans.size(); ++i) &#123;</span><br><span class="line">            ret += ans[i];</span><br><span class="line">            <span class="keyword">if</span> (i != ans.size() - <span class="number">1</span>) ret += <span class="string">" "</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> ret;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+        <p><a href="https://leetcode.com/problems/remove-all-adjacent-duplicates-in-string-ii/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">remove_duplicates</span></span>(s: <span class="built_in">String</span>, k: <span class="keyword">i32</span>) -&gt; <span class="built_in">String</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> stack = <span class="built_in">vec!</span>[(<span class="number">0</span>, <span class="string">'#'</span>)];</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> ans = <span class="string">""</span>.to_string();</span><br><span class="line">        <span class="keyword">for</span> c <span class="keyword">in</span> s.chars() &#123;</span><br><span class="line">            <span class="keyword">let</span> index = stack.len() - <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">if</span> stack[index].<span class="number">1</span> != c &#123;</span><br><span class="line">                stack.push((<span class="number">1</span>, c));</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> stack[index].<span class="number">0</span> == k - <span class="number">1</span> &#123;</span><br><span class="line">                stack.pop();</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">let</span> <span class="keyword">mut</span> val = stack[index];</span><br><span class="line">                val.<span class="number">0</span> += <span class="number">1</span>;</span><br><span class="line">                stack[index] = val;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> item <span class="keyword">in</span> stack &#123;</span><br><span class="line">            ans.push_str(&amp;(<span class="number">0</span>..item.<span class="number">0</span> <span class="keyword">as</span> <span class="keyword">usize</span>).map(|_| item.<span class="number">1</span>).collect::&lt;<span class="built_in">String</span>&gt;());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/01/27/2019-01-26-SRM748/" data-id="ck391pxf3003ctbxg9t1gvigu" data-title="SRM 748 DIV II 500" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1209/" data-id="ck3bty4950056ylxgyeupyvx0" data-title="LeetCode 1209. Remove All Adjacent Duplicates in String II" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2019/01/27/2019-01-26-SRM748/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1209/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LeetCode/">LeetCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Rust/">Rust</a></li></ul>
+
     </footer>
   </div>
   
@@ -167,14 +169,14 @@
 
 
   
-    <article id="post-2018-10-20-SRM740" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2019-11-10-LeetCode794" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2018/10/20/2018-10-20-SRM740/" class="article-date">
-  <time datetime="2018-10-20T23:23:31.000Z" itemprop="datePublished">2018-10-20</time>
+    <a href="/2019/11/10/2019-11-10-LeetCode794/" class="article-date">
+  <time datetime="2019-11-10T19:11:11.000Z" itemprop="datePublished">2019-11-10</time>
 </a>
     
   <div class="article-category">
-    <a class="article-category-link" href="/categories/TopCoder/">TopCoder</a>
+    <a class="article-category-link" href="/categories/LeetCode-in-Rust/">LeetCode in Rust</a>
   </div>
 
   </div>
@@ -185,7 +187,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/10/20/2018-10-20-SRM740/">SRM 740 DIV II 500</a>
+      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode794/">LeetCode 794. Valid Tic-Tac-Toe State</a>
     </h1>
   
 
@@ -193,17 +195,19 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">class</span> LongJumpCompetition &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; recoverStandings(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; jumpLengths) &#123;</span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; ans;</span><br><span class="line">        <span class="keyword">int</span> N = jumpLengths.size() / <span class="number">3</span>;</span><br><span class="line">        <span class="built_in">vector</span>&lt;pair&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;, <span class="keyword">int</span>&gt;&gt; cur(N);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">            cur[i] = &#123; &#123;&#125; , i&#125;;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">3</span>; ++i) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; N; ++j) &#123;</span><br><span class="line">                <span class="keyword">int</span> length = jumpLengths[i * N + j];</span><br><span class="line">                cur[N - <span class="number">1</span> - j].first.push_back(<span class="number">-1</span> * length);</span><br><span class="line">                sort(cur[N - <span class="number">1</span> - j].first.begin(),</span><br><span class="line">                     cur[N - <span class="number">1</span> - j].first.end());</span><br><span class="line">            &#125;</span><br><span class="line">            sort(cur.begin(), cur.end());</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">            ans.push_back(cur[i].second);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
+        <p><a href="https://leetcode.com/problems/valid-tic-tac-toe-state/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">valid_tic_tac_toe</span></span>(board: <span class="built_in">Vec</span>&lt;<span class="built_in">String</span>&gt;) -&gt; <span class="keyword">bool</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> turns, <span class="keyword">mut</span> x_win, <span class="keyword">mut</span> o_win, <span class="keyword">mut</span> diag, <span class="keyword">mut</span> antidiag)</span><br><span class="line">            = (<span class="number">0</span>, <span class="literal">false</span>, <span class="literal">false</span>, <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> rows, <span class="keyword">mut</span> cols) = (<span class="built_in">vec!</span>[<span class="number">0</span>; <span class="number">3</span>], <span class="built_in">vec!</span>[<span class="number">0</span>; <span class="number">3</span>]);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..<span class="number">3</span> &#123;</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> <span class="number">0</span>..<span class="number">3</span> &#123;</span><br><span class="line">                <span class="keyword">let</span> c = board[i].chars().nth(j).unwrap();</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> c == <span class="string">'X'</span> &#123;</span><br><span class="line">                    turns += <span class="number">1</span>; rows[i] += <span class="number">1</span>; cols[j] += <span class="number">1</span>;</span><br><span class="line">                    <span class="keyword">if</span> i == j &#123;</span><br><span class="line">                        diag += <span class="number">1</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">if</span> i + j == <span class="number">2</span> &#123;</span><br><span class="line">                        antidiag += <span class="number">1</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125; <span class="keyword">else</span> <span class="keyword">if</span> c == <span class="string">'O'</span> &#123;</span><br><span class="line">                    turns -= <span class="number">1</span>; rows[i] -= <span class="number">1</span>; cols[j] -= <span class="number">1</span>;</span><br><span class="line">                    <span class="keyword">if</span> i == j &#123;</span><br><span class="line">                        diag -= <span class="number">1</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">if</span> i + j == <span class="number">2</span> &#123;</span><br><span class="line">                        antidiag -= <span class="number">1</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        x_win = (rows[<span class="number">0</span>] == <span class="number">3</span> || rows[<span class="number">1</span>] == <span class="number">3</span> || rows[<span class="number">2</span>] == <span class="number">3</span> ||</span><br><span class="line">            cols[<span class="number">0</span>] == <span class="number">3</span> || cols[<span class="number">1</span>] == <span class="number">3</span> || cols[<span class="number">2</span>] == <span class="number">3</span> ||</span><br><span class="line">            diag == <span class="number">3</span> || antidiag == <span class="number">3</span>);</span><br><span class="line">        o_win = (rows[<span class="number">0</span>] == -<span class="number">3</span> || rows[<span class="number">1</span>] == -<span class="number">3</span> || rows[<span class="number">2</span>] == -<span class="number">3</span> ||</span><br><span class="line">            cols[<span class="number">0</span>] == -<span class="number">3</span> || cols[<span class="number">1</span>] == -<span class="number">3</span> || cols[<span class="number">2</span>] == -<span class="number">3</span> ||</span><br><span class="line">            diag == -<span class="number">3</span> || antidiag == -<span class="number">3</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> x_win &amp;&amp; turns == <span class="number">0</span> || o_win &amp;&amp; turns == <span class="number">1</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> (turns == <span class="number">0</span> || turns == <span class="number">1</span>) &amp;&amp; (!x_win || !o_win);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2018/10/20/2018-10-20-SRM740/" data-id="ck391pxf2003atbxg8v7itvq6" data-title="SRM 740 DIV II 500" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode794/" data-id="ck3bty4960057ylxgb7y3cpj7" data-title="LeetCode 794. Valid Tic-Tac-Toe State" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2018/10/20/2018-10-20-SRM740/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode794/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LeetCode/">LeetCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Rust/">Rust</a></li></ul>
+
     </footer>
   </div>
   
@@ -216,7 +220,7 @@
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/page/16/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/15/">15</a><a class="page-number" href="/page/16/">16</a><span class="page-number current">17</span><a class="page-number" href="/page/18/">18</a><a class="page-number" href="/page/19/">19</a><span class="space">&hellip;</span><a class="page-number" href="/page/49/">49</a><a class="extend next" rel="next" href="/page/18/">Next &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/16/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/15/">15</a><a class="page-number" href="/page/16/">16</a><span class="page-number current">17</span><a class="page-number" href="/page/18/">18</a><a class="page-number" href="/page/19/">19</a><span class="space">&hellip;</span><a class="page-number" href="/page/53/">53</a><a class="extend next" rel="next" href="/page/18/">Next &raquo;</a>
   </nav>
 
 </section>
@@ -269,7 +273,11 @@
       <ul>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1015/">LeetCode 1015. Smallest Integer Divisible by K</a>
+            <a href="/2019/11/22/2019-11-22-LeetCode895/">LeetCode 895. Maximum Frequency Stack</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/22/2019-11-22-LeetCode934/">LeetCode 934. Shortest Bridge</a>
           </li>
         
           <li>
@@ -277,15 +285,11 @@
           </li>
         
           <li>
+            <a href="/2019/11/11/2019-11-11-LeetCode1015/">LeetCode 1015. Smallest Integer Divisible by K</a>
+          </li>
+        
+          <li>
             <a href="/2019/11/11/2019-11-11-LeetCode1020/">LeetCode 1020. Number of Enclaves</a>
-          </li>
-        
-          <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1031/">LeetCode 1031 Maximum Sum of Two Non-Overlapping Subarrays</a>
-          </li>
-        
-          <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1066/">LeetCode 1066. Campus Bikes II</a>
           </li>
         
       </ul>

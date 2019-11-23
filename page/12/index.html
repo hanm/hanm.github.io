@@ -75,6 +75,53 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-2019-11-10-LeetCode1091" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/11/10/2019-11-10-LeetCode1091/" class="article-date">
+  <time datetime="2019-11-10T19:11:11.000Z" itemprop="datePublished">2019-11-10</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/LeetCode-in-Rust/">LeetCode in Rust</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1091/">LeetCode 1091. Shortest Path in Binary Matrix</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><a href="https://leetcode.com/problems/shortest-path-in-binary-matrix/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::collections::VecDeque;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">shortest_path_binary_matrix</span></span>(grid: <span class="built_in">Vec</span>&lt;<span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;&gt;) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> g = grid.clone();</span><br><span class="line">        <span class="keyword">let</span> n = g.len();</span><br><span class="line">        <span class="keyword">if</span> n == <span class="number">0</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> g[<span class="number">0</span>][<span class="number">0</span>] == <span class="number">1</span> || g[n - <span class="number">1</span>][n - <span class="number">1</span>] == <span class="number">1</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> n == <span class="number">1</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> q = VecDeque::new();</span><br><span class="line">        q.push_back((<span class="number">0</span>, <span class="number">0</span>));</span><br><span class="line">        <span class="keyword">let</span> (dx, dy) : ([<span class="keyword">i32</span>; <span class="number">8</span>], [<span class="keyword">i32</span>; <span class="number">8</span>]) = ([<span class="number">1</span>, -<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>, -<span class="number">1</span>, -<span class="number">1</span>],</span><br><span class="line">                                               [<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, -<span class="number">1</span>, <span class="number">1</span>, -<span class="number">1</span>, <span class="number">1</span>, -<span class="number">1</span>]);</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> level = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span> !q.is_empty() &#123;</span><br><span class="line">            <span class="keyword">let</span> size = q.len();</span><br><span class="line">            level += <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">for</span> _i <span class="keyword">in</span> <span class="number">0</span>..size &#123;</span><br><span class="line">                <span class="keyword">let</span> cur = q.front().unwrap().clone(); q.pop_front();</span><br><span class="line">                <span class="keyword">let</span> (x, y) = (cur.<span class="number">0</span>, cur.<span class="number">1</span>);</span><br><span class="line">                <span class="keyword">for</span> j <span class="keyword">in</span> <span class="number">0</span>..<span class="number">8</span> &#123;</span><br><span class="line">                    <span class="keyword">let</span> (xx, yy) = (x + dx[j], y + dy[j]);</span><br><span class="line">                    <span class="keyword">if</span> xx &lt; <span class="number">0</span> || yy &lt; <span class="number">0</span> || xx <span class="keyword">as</span> <span class="keyword">usize</span> &gt;= n || yy <span class="keyword">as</span> <span class="keyword">usize</span> &gt;= n &#123;</span><br><span class="line">                        <span class="keyword">continue</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">let</span> (nx, ny) = (xx <span class="keyword">as</span> <span class="keyword">usize</span>, yy <span class="keyword">as</span> <span class="keyword">usize</span>);</span><br><span class="line">                    <span class="keyword">if</span> nx == n - <span class="number">1</span> &amp;&amp; ny == n - <span class="number">1</span> &#123;</span><br><span class="line">                        <span class="keyword">return</span> level;</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">if</span> g[nx][ny] == <span class="number">1</span> &#123;</span><br><span class="line">                        <span class="keyword">continue</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                    g[nx][ny] = <span class="number">1</span>;</span><br><span class="line">                    q.push_back((nx <span class="keyword">as</span> <span class="keyword">i32</span>, ny <span class="keyword">as</span> <span class="keyword">i32</span>));</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1091/" data-id="ck3bty48l004aylxgg3bm7rbk" data-title="LeetCode 1091. Shortest Path in Binary Matrix" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1091/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LeetCode/">LeetCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Rust/">Rust</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-2019-11-10-LeetCode1088" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2019/11/10/2019-11-10-LeetCode1088/" class="article-date">
@@ -107,7 +154,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1088/" data-id="ck391pxft004itbxg305748h2" data-title="LeetCode 1088. Confusing Number II" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1088/" data-id="ck3bty48m004cylxgg0plwn62" data-title="LeetCode 1088. Confusing Number II" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1088/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -123,9 +170,9 @@
 
 
   
-    <article id="post-2019-11-10-LeetCode1138" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2019-11-10-LeetCode1105" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2019/11/10/2019-11-10-LeetCode1138/" class="article-date">
+    <a href="/2019/11/10/2019-11-10-LeetCode1105/" class="article-date">
   <time datetime="2019-11-10T19:11:11.000Z" itemprop="datePublished">2019-11-10</time>
 </a>
     
@@ -141,7 +188,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1138/">LeetCode 1138. Alphabet Board Path</a>
+      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1105/">LeetCode 1105. Filling Bookcase Shelves</a>
     </h1>
   
 
@@ -149,61 +196,14 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><a href="https://leetcode.com/problems/alphabet-board-path/description/" target="_blank" rel="noopener">Problem Statement</a></p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::collections::HashMap;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">alphabet_board_path</span></span>(target: <span class="built_in">String</span>) -&gt; <span class="built_in">String</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> map: HashMap&lt;<span class="keyword">char</span>, (<span class="keyword">i32</span>, <span class="keyword">i32</span>)&gt; = HashMap::new();</span><br><span class="line">        <span class="keyword">let</span> alphabet: <span class="built_in">Vec</span>&lt;<span class="keyword">char</span>&gt; = <span class="string">"abcdefghijklmnopqrstuvwxyz"</span>.chars().collect();</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..<span class="number">26</span> &#123;</span><br><span class="line">            map.insert(alphabet[i], (i <span class="keyword">as</span> <span class="keyword">i32</span> / <span class="number">5</span>, i <span class="keyword">as</span> <span class="keyword">i32</span> % <span class="number">5</span>));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> t, <span class="keyword">mut</span> ans, <span class="keyword">mut</span> dx, <span class="keyword">mut</span> dy) : (<span class="built_in">String</span>, <span class="built_in">String</span>, <span class="keyword">i32</span>, <span class="keyword">i32</span>) = (</span><br><span class="line">            target.clone(), <span class="string">""</span>.to_string(), <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">        t.insert(<span class="number">0</span>, <span class="string">'a'</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">1</span>..t.len() &#123;</span><br><span class="line">            <span class="keyword">let</span> (cur, prev) = (map.get(&amp;t.chars().nth(i).unwrap()).unwrap(),</span><br><span class="line">            map.get(&amp;t.chars().nth(i - <span class="number">1</span>).unwrap()).unwrap());</span><br><span class="line">            dx = cur.<span class="number">0</span> - prev.<span class="number">0</span>; dy = cur.<span class="number">1</span> - prev.<span class="number">1</span>;</span><br><span class="line">            <span class="keyword">if</span> dy &lt; <span class="number">0</span> &#123;</span><br><span class="line">                ans.push_str(&amp;(<span class="number">0</span>..dy * -<span class="number">1</span>).map(|_| <span class="string">"L"</span>).collect::&lt;<span class="built_in">String</span>&gt;());</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> dx &lt; <span class="number">0</span> &#123;</span><br><span class="line">                ans.push_str(&amp;(<span class="number">0</span>..dx * -<span class="number">1</span>).map(|_| <span class="string">"U"</span>).collect::&lt;<span class="built_in">String</span>&gt;());</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> dy &gt; <span class="number">0</span> &#123;</span><br><span class="line">                ans.push_str(&amp;(<span class="number">0</span>..dy).map(|_| <span class="string">"R"</span>).collect::&lt;<span class="built_in">String</span>&gt;());</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> dx &gt; <span class="number">0</span> &#123;</span><br><span class="line">                ans.push_str(&amp;(<span class="number">0</span>..dx).map(|_| <span class="string">"D"</span>).collect::&lt;<span class="built_in">String</span>&gt;());</span><br><span class="line">            &#125;</span><br><span class="line">            ans.push(<span class="string">'!'</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+        <p><a href="https://leetcode.com/problems/filling-bookcase-shelves/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::cmp;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">min_height_shelves</span></span>(books: <span class="built_in">Vec</span>&lt;<span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;&gt;, shelf_width: <span class="keyword">i32</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> (n, <span class="keyword">mut</span> i, <span class="keyword">mut</span> j) = (books.len(), <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> dp = <span class="built_in">vec!</span>[std::i32::MAX; n];</span><br><span class="line">        <span class="keyword">while</span> i &lt; n &#123;</span><br><span class="line">            <span class="keyword">let</span> (<span class="keyword">mut</span> w, <span class="keyword">mut</span> h) = (<span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">            j = i;</span><br><span class="line">            <span class="keyword">while</span> j &lt; n &#123;</span><br><span class="line">                w += books[j][<span class="number">0</span>];</span><br><span class="line">                <span class="keyword">if</span> w &gt; shelf_width &#123;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                h = cmp::max(h, books[j][<span class="number">1</span>]);</span><br><span class="line">                <span class="keyword">let</span> val = <span class="keyword">match</span> i &#123;</span><br><span class="line">                    <span class="number">0</span> =&gt; <span class="number">0</span>,</span><br><span class="line">                    _ =&gt; dp[i - <span class="number">1</span>]</span><br><span class="line">                &#125;;</span><br><span class="line">                dp[j] = cmp::min(dp[j], val + h);</span><br><span class="line">                j += <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            i += <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> dp[n - <span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1138/" data-id="ck391pxfu004ktbxg9b0vl83m" data-title="LeetCode 1138. Alphabet Board Path" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1105/" data-id="ck3bty48n004eylxg11vcbcw2" data-title="LeetCode 1105. Filling Bookcase Shelves" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1138/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LeetCode/">LeetCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Rust/">Rust</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2019-11-10-LeetCode1144" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/11/10/2019-11-10-LeetCode1144/" class="article-date">
-  <time datetime="2019-11-10T19:11:11.000Z" itemprop="datePublished">2019-11-10</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/LeetCode-in-Rust/">LeetCode in Rust</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1144/">LeetCode 1144. Decrease Elements To Make Array Zigzag</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><a href="https://leetcode.com/problems/decrease-elements-to-make-array-zigzag/description/" target="_blank" rel="noopener">Problem Statement</a></p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">moves_to_make_zigzag</span></span>(nums: <span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">use</span> std::cmp;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> moves = <span class="built_in">vec!</span>[<span class="number">0</span>, <span class="number">0</span>];</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> l, <span class="keyword">mut</span> r) = (<span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..nums.len() &#123;</span><br><span class="line">            <span class="keyword">if</span> i == <span class="number">0</span> &#123;</span><br><span class="line">                l = std::i32::MAX;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                l = nums[i - <span class="number">1</span>];</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> i == nums.len() - <span class="number">1</span> &#123;</span><br><span class="line">                r = std::i32::MAX;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                r = nums[i + <span class="number">1</span>];</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            moves[i % <span class="number">2</span>] += cmp::max(<span class="number">0</span>, nums[i] - cmp::min(l, r) + <span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> std::cmp::min(moves[<span class="number">0</span>], moves[<span class="number">1</span>]);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1144/" data-id="ck391pxfw004mtbxgegw84yx7" data-title="LeetCode 1144. Decrease Elements To Make Array Zigzag" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1144/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1105/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
@@ -221,7 +221,7 @@
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/page/11/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="page-number" href="/page/11/">11</a><span class="page-number current">12</span><a class="page-number" href="/page/13/">13</a><a class="page-number" href="/page/14/">14</a><span class="space">&hellip;</span><a class="page-number" href="/page/49/">49</a><a class="extend next" rel="next" href="/page/13/">Next &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/11/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="page-number" href="/page/11/">11</a><span class="page-number current">12</span><a class="page-number" href="/page/13/">13</a><a class="page-number" href="/page/14/">14</a><span class="space">&hellip;</span><a class="page-number" href="/page/53/">53</a><a class="extend next" rel="next" href="/page/13/">Next &raquo;</a>
   </nav>
 
 </section>
@@ -274,7 +274,11 @@
       <ul>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1015/">LeetCode 1015. Smallest Integer Divisible by K</a>
+            <a href="/2019/11/22/2019-11-22-LeetCode895/">LeetCode 895. Maximum Frequency Stack</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/22/2019-11-22-LeetCode934/">LeetCode 934. Shortest Bridge</a>
           </li>
         
           <li>
@@ -282,15 +286,11 @@
           </li>
         
           <li>
+            <a href="/2019/11/11/2019-11-11-LeetCode1015/">LeetCode 1015. Smallest Integer Divisible by K</a>
+          </li>
+        
+          <li>
             <a href="/2019/11/11/2019-11-11-LeetCode1020/">LeetCode 1020. Number of Enclaves</a>
-          </li>
-        
-          <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1031/">LeetCode 1031 Maximum Sum of Two Non-Overlapping Subarrays</a>
-          </li>
-        
-          <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1066/">LeetCode 1066. Campus Bikes II</a>
           </li>
         
       </ul>

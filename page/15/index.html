@@ -75,9 +75,9 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-2019-11-10-LeetCode1207" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2019-11-10-LeetCode1165" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2019/11/10/2019-11-10-LeetCode1207/" class="article-date">
+    <a href="/2019/11/10/2019-11-10-LeetCode1165/" class="article-date">
   <time datetime="2019-11-10T19:11:11.000Z" itemprop="datePublished">2019-11-10</time>
 </a>
     
@@ -93,7 +93,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1207/">LeetCode 1207. Unique Number of Occurrences</a>
+      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1165/">LeetCode 1165. Single-Row Keyboard</a>
     </h1>
   
 
@@ -101,14 +101,14 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><a href="https://leetcode.com/problems/unique-number-of-occurrences/description/" target="_blank" rel="noopener">Problem Statement</a></p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">unique_occurrences</span></span>(arr: <span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;) -&gt; <span class="keyword">bool</span> &#123;</span><br><span class="line">        <span class="keyword">use</span> std::collections::&#123;HashMap, HashSet&#125;;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> map, <span class="keyword">mut</span> set) = (HashMap::new(), HashSet::new());</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> arr &#123;</span><br><span class="line">            *(map.entry(i).or_insert(<span class="number">0</span>)) += <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (_, val) <span class="keyword">in</span> map &#123;</span><br><span class="line">            <span class="keyword">if</span> set.contains(&amp;val) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            set.insert(val);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+        <p><a href="https://leetcode.com/problems/single-row-keyboard/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::collections::HashMap;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">calculate_time</span></span>(keyboard: <span class="built_in">String</span>, word: <span class="built_in">String</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> map = HashMap::new();</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..<span class="number">26</span> &#123;</span><br><span class="line">            map.insert(keyboard.chars().nth(i).unwrap(), i);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> ans, size) = (<span class="number">0</span>, word.len());</span><br><span class="line">        <span class="keyword">if</span> size == <span class="number">1</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> ans;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..size &#123;</span><br><span class="line">            <span class="keyword">let</span> ci = word.chars().nth(i).unwrap();</span><br><span class="line">            <span class="keyword">if</span> i == <span class="number">0</span> &#123;</span><br><span class="line">                ans += *map.get(&amp;ci).unwrap() <span class="keyword">as</span> <span class="keyword">i32</span>;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">let</span> cii = word.chars().nth(i - <span class="number">1</span>).unwrap();</span><br><span class="line">            ans += (*map.get(&amp;cii).unwrap() <span class="keyword">as</span> <span class="keyword">i32</span></span><br><span class="line">                - *map.get(&amp;ci).unwrap() <span class="keyword">as</span> <span class="keyword">i32</span>).abs();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1207/" data-id="ck391pxg70050tbxgnnv8a25p" data-title="LeetCode 1207. Unique Number of Occurrences" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1165/" data-id="ck3bty48x004sylxgf0feqer0" data-title="LeetCode 1165. Single-Row Keyboard" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1207/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1165/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
@@ -122,9 +122,9 @@
 
 
   
-    <article id="post-2019-11-10-LeetCode982" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2019-11-10-LeetCode1168" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2019/11/10/2019-11-10-LeetCode982/" class="article-date">
+    <a href="/2019/11/10/2019-11-10-LeetCode1168/" class="article-date">
   <time datetime="2019-11-10T19:11:11.000Z" itemprop="datePublished">2019-11-10</time>
 </a>
     
@@ -140,7 +140,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode982/">LeetCode 982. Triples with Bitwise AND Equal To Zero</a>
+      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1168/">LeetCode 1168. Optimize Water Distribution in a Village</a>
     </h1>
   
 
@@ -148,14 +148,15 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><a href="https://leetcode.com/problems/triples-with-bitwise-and-equal-to-zero/description/" target="_blank" rel="noopener">Problem Statement</a></p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::collections::HashMap;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">count_triplets</span></span>(a: <span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> map = HashMap::new();</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> ans = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..a.len() &#123;</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> <span class="number">0</span>..a.len() &#123;</span><br><span class="line">                <span class="keyword">let</span> val = map.entry(a[i] &amp; a[j]).or_insert(<span class="number">0</span>);</span><br><span class="line">                *val += <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> a &#123;</span><br><span class="line">            <span class="keyword">for</span> (key, val) <span class="keyword">in</span> &amp;map &#123;</span><br><span class="line">                <span class="keyword">if</span> key &amp; i == <span class="number">0</span> &#123;</span><br><span class="line">                    ans += *val;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+        <p><a href="https://leetcode.com/problems/optimize-water-distribution-in-a-village/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<p>Union Find on minimum spanning tree.</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">find</span></span>(x : <span class="keyword">usize</span>, uf: &amp;<span class="keyword">mut</span> <span class="built_in">Vec</span>&lt;<span class="keyword">usize</span>&gt;) -&gt;<span class="keyword">usize</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> x == uf[x <span class="keyword">as</span> <span class="keyword">usize</span>] &#123;</span><br><span class="line">            <span class="keyword">return</span> x;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            uf[x] = Self::find(uf[x], uf);</span><br><span class="line">            <span class="keyword">return</span> uf[x];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">min_cost_to_supply_water</span></span>(n: <span class="keyword">i32</span>, wells: <span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;, pipes: <span class="built_in">Vec</span>&lt;<span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;&gt;) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> uf = <span class="built_in">vec!</span>[<span class="number">0</span>; n <span class="keyword">as</span> <span class="keyword">usize</span> + <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..n + <span class="number">1</span> &#123;</span><br><span class="line">            uf[i <span class="keyword">as</span> <span class="keyword">usize</span>] = i <span class="keyword">as</span> <span class="keyword">usize</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> p = pipes;</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..n &#123;</span><br><span class="line">            p.push(<span class="built_in">vec!</span>[<span class="number">0</span>, i + <span class="number">1</span>, wells[i <span class="keyword">as</span> <span class="keyword">usize</span>]]);</span><br><span class="line">        &#125;</span><br><span class="line">        p.sort_by_key(|x| x[<span class="number">2</span>]);</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> ans = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> pipe <span class="keyword">in</span> p &#123;</span><br><span class="line">            <span class="keyword">let</span> (fx, fy) = (Self::find(pipe[<span class="number">0</span>] <span class="keyword">as</span> <span class="keyword">usize</span>, &amp;<span class="keyword">mut</span> uf),</span><br><span class="line">                                        Self::find(pipe[<span class="number">1</span>] <span class="keyword">as</span> <span class="keyword">usize</span>, &amp;<span class="keyword">mut</span> uf));</span><br><span class="line">            <span class="keyword">if</span> fx == fy &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            ans += pipe[<span class="number">2</span>];</span><br><span class="line">            uf[fx] = fy;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode982/" data-id="ck391pxg90052tbxgtcyifwav" data-title="LeetCode 982. Triples with Bitwise AND Equal To Zero" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1168/" data-id="ck3bty48y004uylxg1xjafx7n" data-title="LeetCode 1168. Optimize Water Distribution in a Village" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode982/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1168/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
@@ -169,10 +170,10 @@
 
 
   
-    <article id="post-2019-10-15-LeetCode1145" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2019-11-10-LeetCode1167" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2019/10/15/2019-10-15-LeetCode1145/" class="article-date">
-  <time datetime="2019-10-15T17:39:31.000Z" itemprop="datePublished">2019-10-15</time>
+    <a href="/2019/11/10/2019-11-10-LeetCode1167/" class="article-date">
+  <time datetime="2019-11-10T19:11:11.000Z" itemprop="datePublished">2019-11-10</time>
 </a>
     
   <div class="article-category">
@@ -187,7 +188,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/10/15/2019-10-15-LeetCode1145/">LeetCode 1145 Binary Tree Coloring Game</a>
+      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1167/">LeetCode 1167. Minimum Cost to Connect Sticks</a>
     </h1>
   
 
@@ -195,14 +196,14 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><a href="https://leetcode.com/problems/binary-tree-coloring-game/description/" target="_blank" rel="noopener">Problem Statement</a></p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::rc::Rc;</span><br><span class="line"><span class="keyword">use</span> std::cell::RefCell;</span><br><span class="line"><span class="keyword">use</span> std::cmp::max;</span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">btree_game_winning_move</span></span>(root: <span class="built_in">Option</span>&lt;Rc&lt;RefCell&lt;TreeNode&gt;&gt;&gt;, n: <span class="keyword">i32</span>, x: <span class="keyword">i32</span>) -&gt; <span class="keyword">bool</span> &#123;</span><br><span class="line">        <span class="function"><span class="keyword">fn</span> <span class="title">count_sub_tree_nodes</span></span>(node: <span class="built_in">Option</span>&lt;&amp;Rc&lt;RefCell&lt;TreeNode&gt;&gt;&gt;, x : <span class="keyword">i32</span>,</span><br><span class="line">                                left : &amp;<span class="keyword">mut</span> <span class="keyword">i32</span>, right : &amp;<span class="keyword">mut</span> <span class="keyword">i32</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">let</span> <span class="literal">Some</span>(n) = node &#123;</span><br><span class="line">                <span class="keyword">let</span> l = count_sub_tree_nodes(n.borrow().left.as_ref(), x, left, right);</span><br><span class="line">                <span class="keyword">let</span> r = count_sub_tree_nodes(n.borrow().right.as_ref(), x, left, right);</span><br><span class="line">                <span class="keyword">if</span> x == n.borrow().val &#123;</span><br><span class="line">                    *left = l; *right = r;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">return</span> l + r + <span class="number">1</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> left = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> right = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">let</span> count = count_sub_tree_nodes(root.as_ref(), x, &amp;<span class="keyword">mut</span> left, &amp;<span class="keyword">mut</span> right);</span><br><span class="line">        <span class="keyword">return</span> max(max(left, right), n - left - right - <span class="number">1</span>) &gt; n / <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+        <p><a href="https://leetcode.com/problems/minimum-cost-to-connect-sticks/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::collections::BinaryHeap;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">connect_sticks</span></span>(sticks: <span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> heap, <span class="keyword">mut</span> ans) = (BinaryHeap::new(), <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">for</span> stick <span class="keyword">in</span> sticks &#123;</span><br><span class="line">            heap.push(stick * -<span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">while</span> heap.len() &gt; <span class="number">1</span> &#123;</span><br><span class="line">            <span class="keyword">let</span> (a, b) = (heap.pop().unwrap() * -<span class="number">1</span>, heap.pop().unwrap() * -<span class="number">1</span>);</span><br><span class="line">            ans += a + b;</span><br><span class="line">            heap.push((a + b) * -<span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/10/15/2019-10-15-LeetCode1145/" data-id="ck391pxfb003otbxgg357rnns" data-title="LeetCode 1145 Binary Tree Coloring Game" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1167/" data-id="ck3bty48z004wylxg9kytwfpq" data-title="LeetCode 1167. Minimum Cost to Connect Sticks" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2019/10/15/2019-10-15-LeetCode1145/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1167/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
@@ -220,7 +221,7 @@
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/page/14/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/13/">13</a><a class="page-number" href="/page/14/">14</a><span class="page-number current">15</span><a class="page-number" href="/page/16/">16</a><a class="page-number" href="/page/17/">17</a><span class="space">&hellip;</span><a class="page-number" href="/page/49/">49</a><a class="extend next" rel="next" href="/page/16/">Next &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/14/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/13/">13</a><a class="page-number" href="/page/14/">14</a><span class="page-number current">15</span><a class="page-number" href="/page/16/">16</a><a class="page-number" href="/page/17/">17</a><span class="space">&hellip;</span><a class="page-number" href="/page/53/">53</a><a class="extend next" rel="next" href="/page/16/">Next &raquo;</a>
   </nav>
 
 </section>
@@ -273,7 +274,11 @@
       <ul>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1015/">LeetCode 1015. Smallest Integer Divisible by K</a>
+            <a href="/2019/11/22/2019-11-22-LeetCode895/">LeetCode 895. Maximum Frequency Stack</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/22/2019-11-22-LeetCode934/">LeetCode 934. Shortest Bridge</a>
           </li>
         
           <li>
@@ -281,15 +286,11 @@
           </li>
         
           <li>
+            <a href="/2019/11/11/2019-11-11-LeetCode1015/">LeetCode 1015. Smallest Integer Divisible by K</a>
+          </li>
+        
+          <li>
             <a href="/2019/11/11/2019-11-11-LeetCode1020/">LeetCode 1020. Number of Enclaves</a>
-          </li>
-        
-          <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1031/">LeetCode 1031 Maximum Sum of Two Non-Overlapping Subarrays</a>
-          </li>
-        
-          <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1066/">LeetCode 1066. Campus Bikes II</a>
           </li>
         
       </ul>

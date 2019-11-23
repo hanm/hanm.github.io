@@ -75,10 +75,10 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-2019-11-10-LeetCode1036" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2019-11-11-LeetCode924" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2019/11/10/2019-11-10-LeetCode1036/" class="article-date">
-  <time datetime="2019-11-10T19:11:11.000Z" itemprop="datePublished">2019-11-10</time>
+    <a href="/2019/11/11/2019-11-11-LeetCode924/" class="article-date">
+  <time datetime="2019-11-11T19:11:11.000Z" itemprop="datePublished">2019-11-11</time>
 </a>
     
   <div class="article-category">
@@ -93,7 +93,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1036/">LeetCode 1036. Escape a Large Maze.</a>
+      <a class="article-title" href="/2019/11/11/2019-11-11-LeetCode924/">LeetCode 924 Minimize Malware Spread</a>
     </h1>
   
 
@@ -101,14 +101,15 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><a href="https://leetcode.com/problems/escape-a-large-maze/description/" target="_blank" rel="noopener">Problem Statement</a></p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::collections::&#123;HashSet, VecDeque&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">search</span></span>(blocked: &amp;<span class="built_in">Vec</span>&lt;<span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;&gt;, source: &amp;<span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;, target: &amp;<span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;) -&gt;<span class="keyword">bool</span> &#123;</span><br><span class="line">        <span class="keyword">const</span> M : <span class="keyword">i32</span> = <span class="number">1000000</span>;</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> block, <span class="keyword">mut</span> visited) =</span><br><span class="line">            (HashSet::new(), HashSet::new());</span><br><span class="line">        <span class="keyword">let</span> (dx, dy) : ([<span class="keyword">i32</span>; <span class="number">4</span>], [<span class="keyword">i32</span>; <span class="number">4</span>]) = ([<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, -<span class="number">1</span>], [<span class="number">1</span>, -<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>]);</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> blocked &#123;</span><br><span class="line">            block.insert((i[<span class="number">0</span>], i[<span class="number">1</span>]));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> q = VecDeque::new();</span><br><span class="line">        q.push_back((source[<span class="number">0</span>], source[<span class="number">1</span>]));</span><br><span class="line">        visited.insert((source[<span class="number">0</span>], source[<span class="number">1</span>]));</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> !q.is_empty() &#123;</span><br><span class="line">            <span class="keyword">if</span> visited.len() &gt; block.len() * block.len() / <span class="number">2</span> &#123;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">let</span> cur = q.front().unwrap().clone(); q.pop_front();</span><br><span class="line">            <span class="keyword">let</span> (x, y) = (cur.<span class="number">0</span>, cur.<span class="number">1</span>);</span><br><span class="line">            <span class="keyword">if</span> x == target[<span class="number">0</span>] &amp;&amp; y == target[<span class="number">1</span>] &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..<span class="number">4</span> &#123;</span><br><span class="line">                <span class="keyword">let</span> (xx, yy) = (x + dx[i], y + dy[i]);</span><br><span class="line">                <span class="keyword">if</span> xx &lt; <span class="number">0</span> || yy &lt; <span class="number">0</span> || xx &gt;= M || yy &gt;= M || visited.contains(&amp;(xx, yy))</span><br><span class="line">                    || block.contains(&amp;(xx, yy)) &#123;</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                q.push_back((xx, yy));</span><br><span class="line">                visited.insert((xx, yy));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">is_escape_possible</span></span>(blocked: <span class="built_in">Vec</span>&lt;<span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;&gt;, source: <span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;, target: <span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;) -&gt; <span class="keyword">bool</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> Self::search(&amp;blocked, &amp;source, &amp;target) &amp;&amp;</span><br><span class="line">            Self::search(&amp;blocked, &amp;target, &amp;source);</span><br><span class="line">    &#125;</span><br><span class="line">&#125; </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+        <p><a href="https://leetcode.com/problems/minimize-malware-spread/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<p>For each initially infected node, try remove it and then count the total number of infected nodes through BFS.<br>Pick up the solution that if removing such a node will yield the minimum number of infected nodes.</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::vec::<span class="built_in">Vec</span>;</span><br><span class="line"><span class="keyword">use</span> std::collections::VecDeque;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">min_malware_spread</span></span>(graph: <span class="built_in">Vec</span>&lt;<span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;&gt;, initial: <span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> ans, <span class="keyword">mut</span> min) = (-<span class="number">1</span>, <span class="number">400</span>);</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> input = initial;</span><br><span class="line">        input.sort();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> t <span class="keyword">in</span> &amp;input &#123;</span><br><span class="line">            <span class="keyword">let</span> <span class="keyword">mut</span> bad = <span class="built_in">vec!</span>[<span class="number">0</span>; graph.len()];</span><br><span class="line">            <span class="keyword">let</span> <span class="keyword">mut</span> q = VecDeque::new();</span><br><span class="line">            <span class="keyword">for</span> n <span class="keyword">in</span> &amp;input &#123;</span><br><span class="line">                <span class="keyword">if</span> *n == *t &#123;</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                bad[*n <span class="keyword">as</span> <span class="keyword">usize</span>] = <span class="number">1</span>; q.push_back(*n <span class="keyword">as</span> <span class="keyword">usize</span>);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">let</span> <span class="keyword">mut</span> affected = input.len() - <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">while</span> !q.is_empty() &#123;</span><br><span class="line">                <span class="keyword">let</span> n = q.pop_front().unwrap();</span><br><span class="line">                <span class="keyword">for</span> (i, item) <span class="keyword">in</span> graph[n].iter().enumerate() &#123;</span><br><span class="line">                    <span class="keyword">if</span> bad[i <span class="keyword">as</span> <span class="keyword">usize</span>] == <span class="number">1</span> || *item == <span class="number">0</span> &#123;</span><br><span class="line">                        <span class="keyword">continue</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                    affected += <span class="number">1</span>; bad[i <span class="keyword">as</span> <span class="keyword">usize</span>] = <span class="number">1</span>; q.push_back(i <span class="keyword">as</span> <span class="keyword">usize</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> affected &lt; min &#123;</span><br><span class="line">                min = affected;</span><br><span class="line">                ans = *t;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1036/" data-id="ck391pxfe003utbxgusjeeewh" data-title="LeetCode 1036. Escape a Large Maze." class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/11/2019-11-11-LeetCode924/" data-id="ck3bty4aa006nylxgvp2ul6xs" data-title="LeetCode 924 Minimize Malware Spread" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1036/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode924/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
@@ -122,9 +123,9 @@
 
 
   
-    <article id="post-2019-11-10-LeetCode1055" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2019-11-10-LeetCode1023" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2019/11/10/2019-11-10-LeetCode1055/" class="article-date">
+    <a href="/2019/11/10/2019-11-10-LeetCode1023/" class="article-date">
   <time datetime="2019-11-10T19:11:11.000Z" itemprop="datePublished">2019-11-10</time>
 </a>
     
@@ -140,7 +141,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1055/">LeetCode 1055. Shortest Way to Form String</a>
+      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1023/">LeetCode 1023. Camelcase Matching</a>
     </h1>
   
 
@@ -148,14 +149,14 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><a href="https://leetcode.com/problems/shortest-way-to-form-string/description/" target="_blank" rel="noopener">Problem Statement</a></p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::collections::HashMap;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::collections::HashSet;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">shortest_way</span></span>(source: <span class="built_in">String</span>, target: <span class="built_in">String</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> (ss, st, <span class="keyword">mut</span> ans) = (source.len(), target.len(), <span class="number">1</span>);</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> set = HashSet::new();</span><br><span class="line">        <span class="keyword">for</span> c <span class="keyword">in</span> source.chars() &#123;</span><br><span class="line">            set.insert(c);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> i, <span class="keyword">mut</span> j) = (<span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">while</span> i &lt; st &#123;</span><br><span class="line">            <span class="keyword">if</span> !set.contains(&amp;target.chars().nth(i).unwrap()) &#123;</span><br><span class="line">                <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">while</span> j &lt; ss &amp;&amp; source.chars().nth(j).unwrap()</span><br><span class="line">                != target.chars().nth(i).unwrap() &#123;</span><br><span class="line">                j += <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> j == ss &#123;</span><br><span class="line">                j = <span class="number">0</span>; i -= <span class="number">1</span>; ans += <span class="number">1</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                j += <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            i += <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125; </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+        <p><a href="https://leetcode.com/problems/camelcase-matching/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">try_match</span></span>(q: &amp;<span class="built_in">String</span>, p: &amp;<span class="built_in">String</span>) -&gt;<span class="keyword">bool</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> (m, n, <span class="keyword">mut</span> i, <span class="keyword">mut</span> j) = (p.len(), q.len(), <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">while</span> i &lt; n &#123;</span><br><span class="line">            <span class="keyword">if</span> j == m &amp;&amp; q.chars().nth(i).unwrap().is_uppercase() &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (j == m || p.chars().nth(j).unwrap().is_uppercase()) &amp;&amp; q.chars().nth(i).unwrap().is_lowercase() &#123;</span><br><span class="line">                i += <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">let</span> qi = q.chars().nth(i).unwrap();</span><br><span class="line">            <span class="keyword">let</span> pj = p.chars().nth(j).unwrap();</span><br><span class="line">            <span class="keyword">if</span> pj.is_uppercase() &amp;&amp; qi.is_uppercase() &amp;&amp; pj != qi &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> pj.is_lowercase() &amp;&amp; pj != qi &#123;</span><br><span class="line">                i += <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            i+= <span class="number">1</span>; j += <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> i == n &amp;&amp; j == m;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">camel_match</span></span>(queries: <span class="built_in">Vec</span>&lt;<span class="built_in">String</span>&gt;, pattern: <span class="built_in">String</span>) -&gt; <span class="built_in">Vec</span>&lt;<span class="keyword">bool</span>&gt; &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> ans = <span class="built_in">Vec</span>::new();</span><br><span class="line">        <span class="keyword">for</span> q <span class="keyword">in</span> &amp;queries &#123;</span><br><span class="line">            ans.push(Self::try_match(q, &amp;pattern));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1055/" data-id="ck391pxfg003wtbxgkfjtmerr" data-title="LeetCode 1055. Shortest Way to Form String" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1023/" data-id="ck3bty482003mylxgqflmtado" data-title="LeetCode 1023. Camelcase Matching" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1055/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1023/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
@@ -169,9 +170,9 @@
 
 
   
-    <article id="post-2019-11-10-LeetCode1048" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2019-11-10-LeetCode1024" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2019/11/10/2019-11-10-LeetCode1048/" class="article-date">
+    <a href="/2019/11/10/2019-11-10-LeetCode1024/" class="article-date">
   <time datetime="2019-11-10T19:11:11.000Z" itemprop="datePublished">2019-11-10</time>
 </a>
     
@@ -187,7 +188,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1048/">LeetCode 1048. Longest String Chain</a>
+      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1024/">LeetCode 1024. Video Stitching</a>
     </h1>
   
 
@@ -195,14 +196,15 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><a href="https://leetcode.com/problems/longest-string-chain/description/" target="_blank" rel="noopener">Problem Statement</a></p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::collections::HashMap;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">longest_str_chain</span></span>(words: <span class="built_in">Vec</span>&lt;<span class="built_in">String</span>&gt;) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> ans, <span class="keyword">mut</span> w) = (<span class="number">0</span>, words);</span><br><span class="line">        w.sort_by_key(|x| x.len());</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> map = HashMap::new();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> word <span class="keyword">in</span> w &#123;</span><br><span class="line">            <span class="keyword">if</span> map.contains_key(&amp;word) &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            map.insert(word.clone(), <span class="number">1</span>);</span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..word.len() &#123;</span><br><span class="line">                <span class="keyword">let</span> <span class="keyword">mut</span> c = word.clone();</span><br><span class="line">                c.remove(i);</span><br><span class="line">                <span class="keyword">if</span> map.contains_key(&amp;c) &amp;&amp;</span><br><span class="line">                    (*map.get(&amp;c).unwrap() + <span class="number">1</span> &gt; *map.get(&amp;word).unwrap()) &#123;</span><br><span class="line">                    map.insert(word.clone(), map.get(&amp;c).unwrap() + <span class="number">1</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            ans = std::cmp::max(ans, *map.get(&amp;word).unwrap());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+        <p><a href="https://leetcode.com/problems/video-stitching/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<p>Greedy.</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">video_stitching</span></span>(clips: <span class="built_in">Vec</span>&lt;<span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;&gt;, t: <span class="keyword">i32</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> input = clips;</span><br><span class="line">        input.sort_by_key(|x| x[<span class="number">0</span>]);</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> cur_end, <span class="keyword">mut</span> max_end, <span class="keyword">mut</span> ans, <span class="keyword">mut</span> j) = (<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..input.len() &#123;</span><br><span class="line">            <span class="keyword">if</span> i &lt; j &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> input[i][<span class="number">0</span>] &gt; cur_end &#123;</span><br><span class="line">                <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            max_end = cur_end;</span><br><span class="line">            j = i;</span><br><span class="line">            <span class="keyword">while</span> j &lt; input.len() &#123;</span><br><span class="line">                <span class="keyword">if</span> input[j][<span class="number">0</span>] &gt; cur_end &#123;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                max_end = std::cmp::max(max_end, input[j][<span class="number">1</span>]);</span><br><span class="line">                j += <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            ans += <span class="number">1</span>;</span><br><span class="line">            cur_end = max_end;</span><br><span class="line">            <span class="keyword">if</span> max_end &gt;= t &#123;</span><br><span class="line">                <span class="keyword">return</span> ans;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1048/" data-id="ck391pxfh003ytbxg73s46owh" data-title="LeetCode 1048. Longest String Chain" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1024/" data-id="ck3bty486003qylxg0sdxkz0w" data-title="LeetCode 1024. Video Stitching" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1048/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1024/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
@@ -220,7 +222,7 @@
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/page/7/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><span class="page-number current">8</span><a class="page-number" href="/page/9/">9</a><a class="page-number" href="/page/10/">10</a><span class="space">&hellip;</span><a class="page-number" href="/page/49/">49</a><a class="extend next" rel="next" href="/page/9/">Next &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/7/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><span class="page-number current">8</span><a class="page-number" href="/page/9/">9</a><a class="page-number" href="/page/10/">10</a><span class="space">&hellip;</span><a class="page-number" href="/page/53/">53</a><a class="extend next" rel="next" href="/page/9/">Next &raquo;</a>
   </nav>
 
 </section>
@@ -273,7 +275,11 @@
       <ul>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1015/">LeetCode 1015. Smallest Integer Divisible by K</a>
+            <a href="/2019/11/22/2019-11-22-LeetCode895/">LeetCode 895. Maximum Frequency Stack</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/22/2019-11-22-LeetCode934/">LeetCode 934. Shortest Bridge</a>
           </li>
         
           <li>
@@ -281,15 +287,11 @@
           </li>
         
           <li>
+            <a href="/2019/11/11/2019-11-11-LeetCode1015/">LeetCode 1015. Smallest Integer Divisible by K</a>
+          </li>
+        
+          <li>
             <a href="/2019/11/11/2019-11-11-LeetCode1020/">LeetCode 1020. Number of Enclaves</a>
-          </li>
-        
-          <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1031/">LeetCode 1031 Maximum Sum of Two Non-Overlapping Subarrays</a>
-          </li>
-        
-          <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1066/">LeetCode 1066. Campus Bikes II</a>
           </li>
         
       </ul>

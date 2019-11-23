@@ -75,9 +75,9 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-2019-11-10-LeetCode1105" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2019-11-10-LeetCode1059" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2019/11/10/2019-11-10-LeetCode1105/" class="article-date">
+    <a href="/2019/11/10/2019-11-10-LeetCode1059/" class="article-date">
   <time datetime="2019-11-10T19:11:11.000Z" itemprop="datePublished">2019-11-10</time>
 </a>
     
@@ -93,7 +93,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1105/">LeetCode 1105. Filling Bookcase Shelves</a>
+      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1059/">LeetCode 1059. All Paths from Source Lead to Destination</a>
     </h1>
   
 
@@ -101,14 +101,14 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><a href="https://leetcode.com/problems/filling-bookcase-shelves/description/" target="_blank" rel="noopener">Problem Statement</a></p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::cmp;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">min_height_shelves</span></span>(books: <span class="built_in">Vec</span>&lt;<span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;&gt;, shelf_width: <span class="keyword">i32</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> (n, <span class="keyword">mut</span> i, <span class="keyword">mut</span> j) = (books.len(), <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> dp = <span class="built_in">vec!</span>[std::i32::MAX; n];</span><br><span class="line">        <span class="keyword">while</span> i &lt; n &#123;</span><br><span class="line">            <span class="keyword">let</span> (<span class="keyword">mut</span> w, <span class="keyword">mut</span> h) = (<span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">            j = i;</span><br><span class="line">            <span class="keyword">while</span> j &lt; n &#123;</span><br><span class="line">                w += books[j][<span class="number">0</span>];</span><br><span class="line">                <span class="keyword">if</span> w &gt; shelf_width &#123;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                h = cmp::max(h, books[j][<span class="number">1</span>]);</span><br><span class="line">                <span class="keyword">let</span> val = <span class="keyword">match</span> i &#123;</span><br><span class="line">                    <span class="number">0</span> =&gt; <span class="number">0</span>,</span><br><span class="line">                    _ =&gt; dp[i - <span class="number">1</span>]</span><br><span class="line">                &#125;;</span><br><span class="line">                dp[j] = cmp::min(dp[j], val + h);</span><br><span class="line">                j += <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            i += <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> dp[n - <span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+        <p><a href="https://leetcode.com/problems/all-paths-from-source-lead-to-destination/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::collections::&#123;HashMap, HashSet&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">dfs</span></span>(g: &amp;HashMap&lt;<span class="keyword">i32</span>, HashSet&lt;<span class="keyword">i32</span>&gt;&gt;, i: <span class="keyword">i32</span>, des: <span class="keyword">i32</span>, visited: &amp;<span class="keyword">mut</span> HashMap&lt;<span class="keyword">i32</span>, <span class="keyword">i32</span>&gt;) -&gt; <span class="keyword">bool</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> !g.contains_key(&amp;i) || g.get(&amp;i).unwrap().is_empty() &#123;</span><br><span class="line">            <span class="keyword">return</span> i == des;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> visited.contains_key(&amp;i) &#123;</span><br><span class="line">            <span class="keyword">let</span> val = visited.get(&amp;i).unwrap();</span><br><span class="line">            <span class="keyword">if</span> *val == <span class="number">1</span> &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> *val == -<span class="number">1</span> &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            visited.insert(i, <span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> neib <span class="keyword">in</span> g.get(&amp;i).unwrap() &#123;</span><br><span class="line">            <span class="keyword">if</span> !Self::dfs(g, *neib, des, visited) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        visited.insert(i, -<span class="number">1</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">leads_to_destination</span></span>(n: <span class="keyword">i32</span>, edges: <span class="built_in">Vec</span>&lt;<span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;&gt;, source: <span class="keyword">i32</span>, destination: <span class="keyword">i32</span>) -&gt; <span class="keyword">bool</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> g, <span class="keyword">mut</span> visited) = (HashMap::new(), HashMap::new());</span><br><span class="line">        <span class="keyword">for</span> e <span class="keyword">in</span> edges &#123;</span><br><span class="line">            <span class="keyword">if</span> !g.contains_key(&amp;e[<span class="number">0</span>]) &#123;</span><br><span class="line">                g.insert(e[<span class="number">0</span>], HashSet::new());</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">let</span> <span class="keyword">mut</span> val = g.get(&amp;e[<span class="number">0</span>]).unwrap().clone();</span><br><span class="line">            val.insert(e[<span class="number">1</span>]);</span><br><span class="line">            g.insert(e[<span class="number">0</span>], val);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> Self::dfs(&amp;g, source, destination, &amp;<span class="keyword">mut</span> visited);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1105/" data-id="ck391pxfm0046tbxg0fo3tjrq" data-title="LeetCode 1105. Filling Bookcase Shelves" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1059/" data-id="ck3bty48c003yylxgiavfqs9d" data-title="LeetCode 1059. All Paths from Source Lead to Destination" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1105/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1059/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
@@ -122,9 +122,9 @@
 
 
   
-    <article id="post-2019-11-10-LeetCode1118" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2019-11-10-LeetCode1048" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2019/11/10/2019-11-10-LeetCode1118/" class="article-date">
+    <a href="/2019/11/10/2019-11-10-LeetCode1048/" class="article-date">
   <time datetime="2019-11-10T19:11:11.000Z" itemprop="datePublished">2019-11-10</time>
 </a>
     
@@ -140,7 +140,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1118/">LeetCode 1118. Number of Days in a Month</a>
+      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1048/">LeetCode 1048. Longest String Chain</a>
     </h1>
   
 
@@ -148,14 +148,14 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><a href="https://leetcode.com/problems/number-of-days-in-a-month/description/" target="_blank" rel="noopener">Problem Statement</a></p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">is_leap_year</span></span>(y: <span class="keyword">i32</span>) -&gt; <span class="keyword">bool</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> (y % <span class="number">4</span> == <span class="number">0</span> &amp;&amp; y % <span class="number">100</span> != <span class="number">0</span>) || (y % <span class="number">400</span> == <span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">number_of_days</span></span>(y: <span class="keyword">i32</span>, m: <span class="keyword">i32</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> feb = <span class="keyword">match</span> Self::is_leap_year(y)  &#123;</span><br><span class="line">            <span class="literal">true</span> =&gt; <span class="number">29</span>,</span><br><span class="line">            <span class="literal">false</span> =&gt; <span class="number">28</span></span><br><span class="line">        &#125;;</span><br><span class="line">        <span class="keyword">let</span> ans = <span class="built_in">vec!</span>[<span class="number">31</span>,feb,<span class="number">31</span>,<span class="number">30</span>,<span class="number">31</span>,<span class="number">30</span>,<span class="number">31</span>,<span class="number">31</span>,<span class="number">30</span>,<span class="number">31</span>,<span class="number">30</span>,<span class="number">31</span>];</span><br><span class="line">        <span class="keyword">return</span> ans[m <span class="keyword">as</span> <span class="keyword">usize</span> - <span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+        <p><a href="https://leetcode.com/problems/longest-string-chain/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::collections::HashMap;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">longest_str_chain</span></span>(words: <span class="built_in">Vec</span>&lt;<span class="built_in">String</span>&gt;) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> ans, <span class="keyword">mut</span> w) = (<span class="number">0</span>, words);</span><br><span class="line">        w.sort_by_key(|x| x.len());</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> map = HashMap::new();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> word <span class="keyword">in</span> w &#123;</span><br><span class="line">            <span class="keyword">if</span> map.contains_key(&amp;word) &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            map.insert(word.clone(), <span class="number">1</span>);</span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..word.len() &#123;</span><br><span class="line">                <span class="keyword">let</span> <span class="keyword">mut</span> c = word.clone();</span><br><span class="line">                c.remove(i);</span><br><span class="line">                <span class="keyword">if</span> map.contains_key(&amp;c) &amp;&amp;</span><br><span class="line">                    (*map.get(&amp;c).unwrap() + <span class="number">1</span> &gt; *map.get(&amp;word).unwrap()) &#123;</span><br><span class="line">                    map.insert(word.clone(), map.get(&amp;c).unwrap() + <span class="number">1</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            ans = std::cmp::max(ans, *map.get(&amp;word).unwrap());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1118/" data-id="ck391pxfn0048tbxg5bee67hk" data-title="LeetCode 1118. Number of Days in a Month" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1048/" data-id="ck3bty48e0040ylxgu2pqirqp" data-title="LeetCode 1048. Longest String Chain" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1118/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1048/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
@@ -169,9 +169,9 @@
 
 
   
-    <article id="post-2019-11-10-LeetCode1119" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2019-11-10-LeetCode1055" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2019/11/10/2019-11-10-LeetCode1119/" class="article-date">
+    <a href="/2019/11/10/2019-11-10-LeetCode1055/" class="article-date">
   <time datetime="2019-11-10T19:11:11.000Z" itemprop="datePublished">2019-11-10</time>
 </a>
     
@@ -187,7 +187,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1119/">LeetCode 1119. Remove Vowels from a String</a>
+      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1055/">LeetCode 1055. Shortest Way to Form String</a>
     </h1>
   
 
@@ -195,14 +195,14 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><a href="https://leetcode.com/problems/remove-vowels-from-a-string/description/" target="_blank" rel="noopener">Problem Statement</a></p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::collections::HashSet;</span><br><span class="line"><span class="keyword">use</span> std::iter::FromIterator;</span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">remove_vowels</span></span>(s: <span class="built_in">String</span>) -&gt; <span class="built_in">String</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> ans, <span class="keyword">mut</span> j) = (<span class="string">""</span>.to_string(), <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">let</span> vowel_set : HashSet&lt;<span class="keyword">char</span>&gt; = HashSet::from_iter(<span class="built_in">vec!</span>[<span class="string">'a'</span>, <span class="string">'e'</span>, <span class="string">'i'</span>, <span class="string">'o'</span>, <span class="string">'u'</span>]);</span><br><span class="line">        <span class="keyword">while</span> j &lt; s.len() &#123;</span><br><span class="line">            <span class="keyword">let</span> sj = s.chars().nth(j).unwrap();</span><br><span class="line">            <span class="keyword">if</span> !vowel_set.contains(&amp;sj) &#123;</span><br><span class="line">                ans.push(sj);</span><br><span class="line">            &#125;</span><br><span class="line">            j+= <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+        <p><a href="https://leetcode.com/problems/shortest-way-to-form-string/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::collections::HashMap;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::collections::HashSet;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">shortest_way</span></span>(source: <span class="built_in">String</span>, target: <span class="built_in">String</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> (ss, st, <span class="keyword">mut</span> ans) = (source.len(), target.len(), <span class="number">1</span>);</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> set = HashSet::new();</span><br><span class="line">        <span class="keyword">for</span> c <span class="keyword">in</span> source.chars() &#123;</span><br><span class="line">            set.insert(c);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> i, <span class="keyword">mut</span> j) = (<span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">while</span> i &lt; st &#123;</span><br><span class="line">            <span class="keyword">if</span> !set.contains(&amp;target.chars().nth(i).unwrap()) &#123;</span><br><span class="line">                <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">while</span> j &lt; ss &amp;&amp; source.chars().nth(j).unwrap()</span><br><span class="line">                != target.chars().nth(i).unwrap() &#123;</span><br><span class="line">                j += <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> j == ss &#123;</span><br><span class="line">                j = <span class="number">0</span>; i -= <span class="number">1</span>; ans += <span class="number">1</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                j += <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            i += <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125; </span><br><span class="line"></span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1119/" data-id="ck391pxfo004atbxgdmts5a9p" data-title="LeetCode 1119. Remove Vowels from a String" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1055/" data-id="ck3bty48g0042ylxgmqyhm3gy" data-title="LeetCode 1055. Shortest Way to Form String" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1119/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1055/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
@@ -220,7 +220,7 @@
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/page/9/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><span class="page-number current">10</span><a class="page-number" href="/page/11/">11</a><a class="page-number" href="/page/12/">12</a><span class="space">&hellip;</span><a class="page-number" href="/page/49/">49</a><a class="extend next" rel="next" href="/page/11/">Next &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/9/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><span class="page-number current">10</span><a class="page-number" href="/page/11/">11</a><a class="page-number" href="/page/12/">12</a><span class="space">&hellip;</span><a class="page-number" href="/page/53/">53</a><a class="extend next" rel="next" href="/page/11/">Next &raquo;</a>
   </nav>
 
 </section>
@@ -273,7 +273,11 @@
       <ul>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1015/">LeetCode 1015. Smallest Integer Divisible by K</a>
+            <a href="/2019/11/22/2019-11-22-LeetCode895/">LeetCode 895. Maximum Frequency Stack</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/22/2019-11-22-LeetCode934/">LeetCode 934. Shortest Bridge</a>
           </li>
         
           <li>
@@ -281,15 +285,11 @@
           </li>
         
           <li>
+            <a href="/2019/11/11/2019-11-11-LeetCode1015/">LeetCode 1015. Smallest Integer Divisible by K</a>
+          </li>
+        
+          <li>
             <a href="/2019/11/11/2019-11-11-LeetCode1020/">LeetCode 1020. Number of Enclaves</a>
-          </li>
-        
-          <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1031/">LeetCode 1031 Maximum Sum of Two Non-Overlapping Subarrays</a>
-          </li>
-        
-          <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1066/">LeetCode 1066. Campus Bikes II</a>
           </li>
         
       </ul>

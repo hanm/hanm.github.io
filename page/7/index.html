@@ -75,10 +75,10 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-2019-11-10-LeetCode1023" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2019-11-11-LeetCode1231" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2019/11/10/2019-11-10-LeetCode1023/" class="article-date">
-  <time datetime="2019-11-10T19:11:11.000Z" itemprop="datePublished">2019-11-10</time>
+    <a href="/2019/11/11/2019-11-11-LeetCode1231/" class="article-date">
+  <time datetime="2019-11-11T19:11:11.000Z" itemprop="datePublished">2019-11-11</time>
 </a>
     
   <div class="article-category">
@@ -93,7 +93,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1023/">LeetCode 1023. Camelcase Matching</a>
+      <a class="article-title" href="/2019/11/11/2019-11-11-LeetCode1231/">LeetCode 1231. Divide Chocolate</a>
     </h1>
   
 
@@ -101,14 +101,15 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><a href="https://leetcode.com/problems/camelcase-matching/description/" target="_blank" rel="noopener">Problem Statement</a></p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">try_match</span></span>(q: &amp;<span class="built_in">String</span>, p: &amp;<span class="built_in">String</span>) -&gt;<span class="keyword">bool</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> (m, n, <span class="keyword">mut</span> i, <span class="keyword">mut</span> j) = (p.len(), q.len(), <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">while</span> i &lt; n &#123;</span><br><span class="line">            <span class="keyword">if</span> j == m &amp;&amp; q.chars().nth(i).unwrap().is_uppercase() &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (j == m || p.chars().nth(j).unwrap().is_uppercase()) &amp;&amp; q.chars().nth(i).unwrap().is_lowercase() &#123;</span><br><span class="line">                i += <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">let</span> qi = q.chars().nth(i).unwrap();</span><br><span class="line">            <span class="keyword">let</span> pj = p.chars().nth(j).unwrap();</span><br><span class="line">            <span class="keyword">if</span> pj.is_uppercase() &amp;&amp; qi.is_uppercase() &amp;&amp; pj != qi &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> pj.is_lowercase() &amp;&amp; pj != qi &#123;</span><br><span class="line">                i += <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            i+= <span class="number">1</span>; j += <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> i == n &amp;&amp; j == m;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">camel_match</span></span>(queries: <span class="built_in">Vec</span>&lt;<span class="built_in">String</span>&gt;, pattern: <span class="built_in">String</span>) -&gt; <span class="built_in">Vec</span>&lt;<span class="keyword">bool</span>&gt; &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> ans = <span class="built_in">Vec</span>::new();</span><br><span class="line">        <span class="keyword">for</span> q <span class="keyword">in</span> &amp;queries &#123;</span><br><span class="line">            ans.push(Self::try_match(q, &amp;pattern));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+        <p><a href="https://leetcode.com/problems/divide-chocolate/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<p>Binary Search</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">maximize_sweetness</span></span>(sweetness: <span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;, k: <span class="keyword">i32</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> l = sweetness.clone().into_iter().fold(<span class="literal">None</span>, |min, x| <span class="keyword">match</span> min &#123;</span><br><span class="line">            <span class="literal">None</span> =&gt; <span class="literal">Some</span>(x),</span><br><span class="line">            <span class="literal">Some</span>(y) =&gt; <span class="literal">Some</span>(<span class="keyword">if</span> x &lt; y &#123; x &#125; <span class="keyword">else</span> &#123; y &#125;),</span><br><span class="line">        &#125;).unwrap();</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> r = sweetness.clone().iter().fold(<span class="number">0</span>, |<span class="keyword">mut</span> r, &amp;val| &#123;r += val; r&#125;);</span><br><span class="line">        <span class="keyword">while</span> l &lt; r &#123;</span><br><span class="line">            <span class="keyword">let</span> (mid, <span class="keyword">mut</span> sum, <span class="keyword">mut</span> cut) = ((l + r + <span class="number">1</span>) / <span class="number">2</span>, <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">            <span class="keyword">for</span> val <span class="keyword">in</span> sweetness.clone() &#123;</span><br><span class="line">                sum += val;</span><br><span class="line">                <span class="keyword">if</span> sum &gt;= mid &#123;</span><br><span class="line">                    sum = <span class="number">0</span>; cut += <span class="number">1</span>;</span><br><span class="line">                    <span class="keyword">if</span> cut &gt; k &#123;</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> cut &gt; k &#123;</span><br><span class="line">                l = mid;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                r = mid - <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> l;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1023/" data-id="ck391pxfa003mtbxge1vys12u" data-title="LeetCode 1023. Camelcase Matching" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1231/" data-id="ck3bty4a1006dylxgmqjm92ld" data-title="LeetCode 1231. Divide Chocolate" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1023/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1231/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
@@ -122,10 +123,10 @@
 
 
   
-    <article id="post-2019-11-10-LeetCode1047" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2019-11-11-LeetCode688" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2019/11/10/2019-11-10-LeetCode1047/" class="article-date">
-  <time datetime="2019-11-10T19:11:11.000Z" itemprop="datePublished">2019-11-10</time>
+    <a href="/2019/11/11/2019-11-11-LeetCode688/" class="article-date">
+  <time datetime="2019-11-11T19:11:11.000Z" itemprop="datePublished">2019-11-11</time>
 </a>
     
   <div class="article-category">
@@ -140,7 +141,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1047/">LeetCode 1047. Remove All Adjacent Duplicates In String</a>
+      <a class="article-title" href="/2019/11/11/2019-11-11-LeetCode688/">LeetCode 688. Knight Probability in Chessboard</a>
     </h1>
   
 
@@ -148,14 +149,15 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><a href="https://leetcode.com/problems/remove-all-adjacent-duplicates-in-string/description/" target="_blank" rel="noopener">Problem Statement</a></p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">remove_duplicates</span></span>(s: <span class="built_in">String</span>) -&gt; <span class="built_in">String</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> stack = <span class="built_in">vec!</span>[];</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> ans = <span class="string">""</span>.to_string();</span><br><span class="line">        <span class="keyword">for</span> c <span class="keyword">in</span> s.chars() &#123;</span><br><span class="line">            <span class="keyword">if</span> stack.is_empty() || c != *stack.get(stack.len() - <span class="number">1</span>).unwrap() &#123;</span><br><span class="line">                stack.push(c); <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> c == *stack.get(stack.len() - <span class="number">1</span>).unwrap() &#123;</span><br><span class="line">                stack.pop();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">while</span> !stack.is_empty() &#123;</span><br><span class="line">            ans.push(stack.pop().unwrap());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans.chars().rev().collect::&lt;<span class="built_in">String</span>&gt;();</span><br><span class="line">    &#125;</span><br><span class="line">&#125; </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+        <p><a href="https://leetcode.com/problems/knight-probability-in-chessboard/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<p>DP, be careful about pow overflow.</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">knight_probability</span></span>(n: <span class="keyword">i32</span>, k: <span class="keyword">i32</span>, r: <span class="keyword">i32</span>, c: <span class="keyword">i32</span>) -&gt; <span class="keyword">f64</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> k == <span class="number">0</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span> <span class="keyword">as</span> <span class="keyword">f64</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> (dx, dy) : ([<span class="keyword">i32</span>; <span class="number">8</span>], [<span class="keyword">i32</span>; <span class="number">8</span>]) = (</span><br><span class="line">            [-<span class="number">1</span>, -<span class="number">2</span>, -<span class="number">2</span>, -<span class="number">1</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">1</span>],</span><br><span class="line">            [-<span class="number">2</span>, -<span class="number">1</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">1</span>, -<span class="number">1</span>, -<span class="number">2</span>]);</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> dp = <span class="built_in">vec!</span>[<span class="built_in">vec!</span>[<span class="number">1</span> <span class="keyword">as</span> <span class="keyword">f64</span>; n <span class="keyword">as</span> <span class="keyword">usize</span>]; n <span class="keyword">as</span> <span class="keyword">usize</span>];</span><br><span class="line">        <span class="keyword">for</span> _m <span class="keyword">in</span> <span class="number">0</span>..k &#123;</span><br><span class="line">            <span class="keyword">let</span> <span class="keyword">mut</span> tmp = <span class="built_in">vec!</span>[<span class="built_in">vec!</span>[<span class="number">0</span> <span class="keyword">as</span> <span class="keyword">f64</span>; n <span class="keyword">as</span> <span class="keyword">usize</span>]; n <span class="keyword">as</span> <span class="keyword">usize</span>];</span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..n &#123;</span><br><span class="line">                <span class="keyword">for</span> j <span class="keyword">in</span> <span class="number">0</span>..n &#123;</span><br><span class="line">                    <span class="keyword">for</span> k <span class="keyword">in</span> <span class="number">0</span>..<span class="number">8</span> &#123;</span><br><span class="line">                        <span class="keyword">let</span> (xx, yy) = (i + dx[k], j + dy[k]);</span><br><span class="line">                        <span class="keyword">if</span> xx &lt; <span class="number">0</span> || yy &lt; <span class="number">0</span> || xx &gt;= n || yy &gt;= n &#123;</span><br><span class="line">                            <span class="keyword">continue</span>;</span><br><span class="line">                        &#125;</span><br><span class="line">                        tmp[i <span class="keyword">as</span> <span class="keyword">usize</span>][j <span class="keyword">as</span> <span class="keyword">usize</span>] += dp[xx <span class="keyword">as</span> <span class="keyword">usize</span>][yy <span class="keyword">as</span> <span class="keyword">usize</span>];</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            dp.swap_with_slice(&amp;<span class="keyword">mut</span> tmp[<span class="number">0</span>..]);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> dp[r <span class="keyword">as</span> <span class="keyword">usize</span>][c <span class="keyword">as</span> <span class="keyword">usize</span>] / <span class="number">8_f64</span>.powf(k <span class="keyword">as</span> <span class="keyword">f64</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1047/" data-id="ck391pxfc003qtbxgwtnkli9m" data-title="LeetCode 1047. Remove All Adjacent Duplicates In String" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/11/2019-11-11-LeetCode688/" data-id="ck3bty4a2006fylxg8baxqpay" data-title="LeetCode 688. Knight Probability in Chessboard" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1047/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode688/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
@@ -169,10 +171,10 @@
 
 
   
-    <article id="post-2019-11-10-LeetCode1024" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2019-11-11-LeetCode935" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2019/11/10/2019-11-10-LeetCode1024/" class="article-date">
-  <time datetime="2019-11-10T19:11:11.000Z" itemprop="datePublished">2019-11-10</time>
+    <a href="/2019/11/11/2019-11-11-LeetCode935/" class="article-date">
+  <time datetime="2019-11-11T19:11:11.000Z" itemprop="datePublished">2019-11-11</time>
 </a>
     
   <div class="article-category">
@@ -187,7 +189,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1024/">LeetCode 1024. Video Stitching</a>
+      <a class="article-title" href="/2019/11/11/2019-11-11-LeetCode935/">LeetCode 935. Knight Dialer</a>
     </h1>
   
 
@@ -195,15 +197,15 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><a href="https://leetcode.com/problems/video-stitching/description/" target="_blank" rel="noopener">Problem Statement</a></p>
-<p>Greedy.</p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">video_stitching</span></span>(clips: <span class="built_in">Vec</span>&lt;<span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;&gt;, t: <span class="keyword">i32</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> input = clips;</span><br><span class="line">        input.sort_by_key(|x| x[<span class="number">0</span>]);</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> cur_end, <span class="keyword">mut</span> max_end, <span class="keyword">mut</span> ans, <span class="keyword">mut</span> j) = (<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..input.len() &#123;</span><br><span class="line">            <span class="keyword">if</span> i &lt; j &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> input[i][<span class="number">0</span>] &gt; cur_end &#123;</span><br><span class="line">                <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            max_end = cur_end;</span><br><span class="line">            j = i;</span><br><span class="line">            <span class="keyword">while</span> j &lt; input.len() &#123;</span><br><span class="line">                <span class="keyword">if</span> input[j][<span class="number">0</span>] &gt; cur_end &#123;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                max_end = std::cmp::max(max_end, input[j][<span class="number">1</span>]);</span><br><span class="line">                j += <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            ans += <span class="number">1</span>;</span><br><span class="line">            cur_end = max_end;</span><br><span class="line">            <span class="keyword">if</span> max_end &gt;= t &#123;</span><br><span class="line">                <span class="keyword">return</span> ans;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+        <p><a href="https://leetcode.com/problems/knight-dialer/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<p>Dynamic Programming</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">knight_dialer</span></span>(n: <span class="keyword">i32</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">const</span> MOD : <span class="keyword">u64</span> = <span class="number">1e9</span> <span class="keyword">as</span> <span class="keyword">u64</span> + <span class="number">7</span>;</span><br><span class="line">        <span class="keyword">const</span> dirs: [(<span class="keyword">i32</span>, <span class="keyword">i32</span>); <span class="number">8</span>] = [(-<span class="number">2</span>, -<span class="number">1</span>), (-<span class="number">2</span>, <span class="number">1</span>), (-<span class="number">1</span>, -<span class="number">2</span>), (-<span class="number">1</span>, <span class="number">2</span>),</span><br><span class="line">            (<span class="number">1</span>, -<span class="number">2</span>), (<span class="number">1</span>, <span class="number">2</span>), (<span class="number">2</span>, -<span class="number">1</span>), (<span class="number">2</span>, <span class="number">1</span>)];</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> dp = [[<span class="number">1</span>; <span class="number">3</span>] ; <span class="number">4</span>];</span><br><span class="line">        dp[<span class="number">3</span>][<span class="number">0</span>] = <span class="number">0</span>; dp[<span class="number">3</span>][<span class="number">2</span>] = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> k <span class="keyword">in</span> <span class="number">1</span>..n &#123;</span><br><span class="line">            <span class="keyword">let</span> <span class="keyword">mut</span> tmp = [[<span class="number">0</span>; <span class="number">3</span>] ; <span class="number">4</span>];</span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..<span class="number">4</span> &#123;</span><br><span class="line">                <span class="keyword">for</span> j <span class="keyword">in</span> <span class="number">0</span>..<span class="number">3</span> &#123;</span><br><span class="line">                    <span class="keyword">if</span> i == <span class="number">3</span> &amp;&amp; j != <span class="number">1</span> &#123;</span><br><span class="line">                        <span class="keyword">continue</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">for</span> d <span class="keyword">in</span> <span class="number">0</span>..<span class="number">8</span> &#123;</span><br><span class="line">                        <span class="keyword">let</span> (xx, yy) = (j + dirs[d].<span class="number">0</span>, i + dirs[d].<span class="number">1</span>);</span><br><span class="line">                        <span class="keyword">if</span> xx &lt; <span class="number">0</span> || yy &lt; <span class="number">0</span> || xx &gt;= <span class="number">3</span> || yy &gt;= <span class="number">4</span> &#123;</span><br><span class="line">                            <span class="keyword">continue</span>;</span><br><span class="line">                        &#125;</span><br><span class="line">                        tmp[i <span class="keyword">as</span> <span class="keyword">usize</span>][j <span class="keyword">as</span> <span class="keyword">usize</span>] = (tmp[i <span class="keyword">as</span> <span class="keyword">usize</span>][j <span class="keyword">as</span> <span class="keyword">usize</span>] +</span><br><span class="line">                            dp[yy <span class="keyword">as</span> <span class="keyword">usize</span>][xx <span class="keyword">as</span> <span class="keyword">usize</span>]) % MOD;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            dp.swap_with_slice(&amp;<span class="keyword">mut</span> tmp[<span class="number">0</span>..]);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> ans : <span class="keyword">i32</span> = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..<span class="number">4</span> &#123;</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> <span class="number">0</span>..<span class="number">3</span> &#123;</span><br><span class="line">                ans = ((ans <span class="keyword">as</span> <span class="keyword">u64</span> + dp[i][j]) % MOD) <span class="keyword">as</span> <span class="keyword">i32</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1024/" data-id="ck391pxfd003stbxgisy8cacu" data-title="LeetCode 1024. Video Stitching" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/11/2019-11-11-LeetCode935/" data-id="ck3bty4a3006hylxglhchzgbr" data-title="LeetCode 935. Knight Dialer" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1024/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode935/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
@@ -221,7 +223,7 @@
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/page/6/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><span class="space">&hellip;</span><a class="page-number" href="/page/49/">49</a><a class="extend next" rel="next" href="/page/8/">Next &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/6/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><span class="space">&hellip;</span><a class="page-number" href="/page/53/">53</a><a class="extend next" rel="next" href="/page/8/">Next &raquo;</a>
   </nav>
 
 </section>
@@ -274,7 +276,11 @@
       <ul>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1015/">LeetCode 1015. Smallest Integer Divisible by K</a>
+            <a href="/2019/11/22/2019-11-22-LeetCode895/">LeetCode 895. Maximum Frequency Stack</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/22/2019-11-22-LeetCode934/">LeetCode 934. Shortest Bridge</a>
           </li>
         
           <li>
@@ -282,15 +288,11 @@
           </li>
         
           <li>
+            <a href="/2019/11/11/2019-11-11-LeetCode1015/">LeetCode 1015. Smallest Integer Divisible by K</a>
+          </li>
+        
+          <li>
             <a href="/2019/11/11/2019-11-11-LeetCode1020/">LeetCode 1020. Number of Enclaves</a>
-          </li>
-        
-          <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1031/">LeetCode 1031 Maximum Sum of Two Non-Overlapping Subarrays</a>
-          </li>
-        
-          <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1066/">LeetCode 1066. Campus Bikes II</a>
           </li>
         
       </ul>
