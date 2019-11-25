@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://lianghan.org/"/>
-  <updated>2019-11-23T17:07:09.835Z</updated>
+  <updated>2019-11-25T04:56:15.522Z</updated>
   <id>http://lianghan.org/</id>
   
   <author>
@@ -15,6 +15,65 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>LeetCode 1136. Parallel Courses</title>
+    <link href="http://lianghan.org/2019/11/22/2019-11-22-LeetCode1136/"/>
+    <id>http://lianghan.org/2019/11/22/2019-11-22-LeetCode1136/</id>
+    <published>2019-11-22T19:11:11.000Z</published>
+    <updated>2019-11-25T04:56:15.522Z</updated>
+    
+    <content type="html"><![CDATA[<p><a href="https://leetcode.com/problems/parallel-courses/description/" target="_blank" rel="noopener">Problem Statement</a></p><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">use</span> std::collections::&#123;HashMap, HashSet&#125;;</span><br><span class="line"><span class="keyword">use</span> std::collections::VecDeque;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">minimum_semesters</span></span>(n: <span class="keyword">i32</span>, relations: <span class="built_in">Vec</span>&lt;<span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;&gt;) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> in_degrees = <span class="built_in">vec!</span>[<span class="number">0</span>; n <span class="keyword">as</span> <span class="keyword">usize</span> + <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> map: HashMap&lt;<span class="keyword">i32</span>, HashSet&lt;<span class="keyword">i32</span>&gt;&gt; = HashMap::new();</span><br><span class="line">        <span class="keyword">for</span> r <span class="keyword">in</span> &amp;relations &#123;</span><br><span class="line">            map.entry(r[<span class="number">0</span>]).or_insert(HashSet::new());</span><br><span class="line">            map.get_mut(&amp;r[<span class="number">0</span>]).unwrap().insert(r[<span class="number">1</span>]);</span><br><span class="line">            in_degrees[r[<span class="number">1</span>] <span class="keyword">as</span> <span class="keyword">usize</span>] += <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> q = VecDeque::new();</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> ans, <span class="keyword">mut</span> sum) = (<span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">1</span>..n + <span class="number">1</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> in_degrees[i <span class="keyword">as</span> <span class="keyword">usize</span>] == <span class="number">0</span> &#123;</span><br><span class="line">                q.push_back(i);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> !q.is_empty() &#123;</span><br><span class="line">            <span class="keyword">let</span> size = q.len();</span><br><span class="line">            sum += size;</span><br><span class="line">            <span class="keyword">for</span> _i <span class="keyword">in</span> <span class="number">0</span>..size &#123;</span><br><span class="line">                <span class="keyword">let</span> cur = q.front().unwrap().clone();</span><br><span class="line">                q.pop_front();</span><br><span class="line">                <span class="keyword">if</span> !map.contains_key(&amp;cur) &#123;</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">for</span> next <span class="keyword">in</span> map.get(&amp;cur).unwrap() &#123;</span><br><span class="line">                    in_degrees[*next <span class="keyword">as</span> <span class="keyword">usize</span>] -= <span class="number">1</span>;</span><br><span class="line">                    <span class="keyword">if</span> in_degrees[*next <span class="keyword">as</span> <span class="keyword">usize</span>] == <span class="number">0</span> &#123;</span><br><span class="line">                        q.push_back(*next);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            ans += <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> sum == n <span class="keyword">as</span> <span class="keyword">usize</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> ans;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;&lt;a href=&quot;https://leetcode.com/problems/parallel-courses/description/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Problem Statement&lt;/a&gt;&lt;/p&gt;
+&lt;figure cl
+      
+    
+    </summary>
+    
+      <category term="LeetCode in Rust" scheme="http://lianghan.org/categories/LeetCode-in-Rust/"/>
+    
+    
+      <category term="Algorithm" scheme="http://lianghan.org/tags/Algorithm/"/>
+    
+      <category term="LeetCode" scheme="http://lianghan.org/tags/LeetCode/"/>
+    
+      <category term="Rust" scheme="http://lianghan.org/tags/Rust/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>LeetCode 1213. Intersection of Three Sorted Arrays</title>
+    <link href="http://lianghan.org/2019/11/22/2019-11-22-LeetCode1213/"/>
+    <id>http://lianghan.org/2019/11/22/2019-11-22-LeetCode1213/</id>
+    <published>2019-11-22T19:11:11.000Z</published>
+    <updated>2019-11-25T04:57:19.895Z</updated>
+    
+    <content type="html"><![CDATA[<p><a href="https://leetcode.com/problems/intersection-of-three-sorted-arrays/description/" target="_blank" rel="noopener">Problem Statement</a></p><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::cmp;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">arrays_intersection</span></span>(arr1: <span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;, arr2: <span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;, arr3: <span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;) -&gt; <span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt; &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> ans = <span class="built_in">vec!</span>[];</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> i, <span class="keyword">mut</span> j, <span class="keyword">mut</span> k) = (<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> i &lt; arr1.len() &amp;&amp; j &lt; arr2.len() &amp;&amp; k &lt; arr3.len() &#123;</span><br><span class="line">            <span class="keyword">if</span> arr1[i] == arr2[j] &amp;&amp; arr2[j] == arr3[k] &#123;</span><br><span class="line">                ans.push(arr1[i]);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">let</span> min_val = cmp::min(arr1[i], cmp::min(arr2[j], arr3[k]));</span><br><span class="line">            <span class="keyword">if</span> arr1[i] == min_val &#123;</span><br><span class="line">                i += <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> arr2[j] == min_val &#123;</span><br><span class="line">                j += <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> arr3[k] == min_val &#123;</span><br><span class="line">                k += <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;&lt;a href=&quot;https://leetcode.com/problems/intersection-of-three-sorted-arrays/description/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Problem Statement
+      
+    
+    </summary>
+    
+      <category term="LeetCode in Rust" scheme="http://lianghan.org/categories/LeetCode-in-Rust/"/>
+    
+    
+      <category term="Algorithm" scheme="http://lianghan.org/tags/Algorithm/"/>
+    
+      <category term="LeetCode" scheme="http://lianghan.org/tags/LeetCode/"/>
+    
+      <category term="Rust" scheme="http://lianghan.org/tags/Rust/"/>
+    
+  </entry>
   
   <entry>
     <title>LeetCode 895. Maximum Frequency Stack</title>
@@ -77,19 +136,20 @@
   </entry>
   
   <entry>
-    <title>LeetCode 1016. Binary String With Substrings Representing 1 To N</title>
-    <link href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1016/"/>
-    <id>http://lianghan.org/2019/11/11/2019-11-11-LeetCode1016/</id>
-    <published>2019-11-11T19:11:11.000Z</published>
-    <updated>2019-11-17T23:43:09.354Z</updated>
+    <title>LeetCode 980. Unique Paths III</title>
+    <link href="http://lianghan.org/2019/11/22/2019-11-22-LeetCode980/"/>
+    <id>http://lianghan.org/2019/11/22/2019-11-22-LeetCode980/</id>
+    <published>2019-11-22T19:11:11.000Z</published>
+    <updated>2019-11-25T04:55:26.661Z</updated>
     
-    <content type="html"><![CDATA[<p><a href="https://leetcode.com/problems/binary-string-with-substrings-representing-1-to-n/description/" target="_blank" rel="noopener">Problem Statement</a></p><p>Typical BFS.</p><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::collections::HashSet;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">query_string</span></span>(s: <span class="built_in">String</span>, n: <span class="keyword">i32</span>) -&gt; <span class="keyword">bool</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> set = HashSet::new();</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..s.len() &#123;</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> i..s.len() &#123;</span><br><span class="line">                <span class="keyword">let</span> <span class="keyword">str</span> = <span class="built_in">String</span>::from(&amp;s[i..j + <span class="number">1</span>]);</span><br><span class="line">                <span class="keyword">let</span> num = i32::from_str_radix(&amp;<span class="keyword">str</span>, <span class="number">2</span>).unwrap();</span><br><span class="line">                <span class="keyword">if</span> num &gt; n &#123;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                set.insert(num);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">1</span>..n + <span class="number">1</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> !set.contains(&amp;i) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
+    <content type="html"><![CDATA[<p><a href="https://leetcode.com/problems/unique-paths-iii/description/" target="_blank" rel="noopener">Problem Statement</a></p><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">dfs</span></span>(grid: &amp;<span class="keyword">mut</span> <span class="built_in">Vec</span>&lt;<span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;&gt;, x: <span class="keyword">i32</span>, y: <span class="keyword">i32</span>, n: <span class="keyword">i32</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> x &lt; <span class="number">0</span> || x == grid[<span class="number">0</span>].len() <span class="keyword">as</span> <span class="keyword">i32</span> || y &lt; <span class="number">0</span> || y == grid.len() <span class="keyword">as</span> <span class="keyword">i32</span> ||</span><br><span class="line">            grid[y <span class="keyword">as</span> <span class="keyword">usize</span>][x <span class="keyword">as</span> <span class="keyword">usize</span>] == -<span class="number">1</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">let</span> (yy, xx) = (y <span class="keyword">as</span> <span class="keyword">usize</span>, x <span class="keyword">as</span> <span class="keyword">usize</span>);</span><br><span class="line">        <span class="keyword">if</span> grid[yy][xx] == <span class="number">2</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> n == <span class="number">0</span> &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        grid[yy][xx] = -<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">let</span> ans = Self::dfs(grid, x + <span class="number">1</span>, y, n - <span class="number">1</span>) +</span><br><span class="line">            Self::dfs(grid, x - <span class="number">1</span>, y, n - <span class="number">1</span>) +</span><br><span class="line">            Self::dfs(grid, x, y + <span class="number">1</span>, n - <span class="number">1</span>) +</span><br><span class="line">            Self::dfs(grid, x, y - <span class="number">1</span>, n - <span class="number">1</span>);</span><br><span class="line">        grid[yy][xx] = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">unique_paths_iii</span></span>(grid: <span class="built_in">Vec</span>&lt;<span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;&gt;) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> sx, <span class="keyword">mut</span> sy, <span class="keyword">mut</span> n) = (<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>);</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> g = grid.clone();</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..g.len() &#123;</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> <span class="number">0</span>..g[<span class="number">0</span>].len() &#123;</span><br><span class="line">                <span class="keyword">if</span> g[i][j] == <span class="number">0</span> &#123;</span><br><span class="line">                    n += <span class="number">1</span>;</span><br><span class="line">                &#125; <span class="keyword">else</span> <span class="keyword">if</span> grid[i][j] == <span class="number">1</span> &#123;</span><br><span class="line">                    sx = j; sy = i;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> Self::dfs(&amp;<span class="keyword">mut</span> g, sx <span class="keyword">as</span> <span class="keyword">i32</span>, sy <span class="keyword">as</span> <span class="keyword">i32</span>, n);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
     
     <summary type="html">
     
       
       
-        &lt;p&gt;&lt;a href=&quot;https://leetcode.com/problems/binary-string-with-substrings-representing-1-to-n/description/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Pro
+        &lt;p&gt;&lt;a href=&quot;https://leetcode.com/problems/unique-paths-iii/description/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Problem Statement&lt;/a&gt;&lt;/p&gt;
+&lt;figure cl
       
     
     </summary>
@@ -119,6 +179,35 @@
       
       
         &lt;p&gt;&lt;a href=&quot;https://leetcode.com/problems/smallest-integer-divisible-by-k/description/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Problem Statement&lt;/a&gt;
+      
+    
+    </summary>
+    
+      <category term="LeetCode in Rust" scheme="http://lianghan.org/categories/LeetCode-in-Rust/"/>
+    
+    
+      <category term="Algorithm" scheme="http://lianghan.org/tags/Algorithm/"/>
+    
+      <category term="LeetCode" scheme="http://lianghan.org/tags/LeetCode/"/>
+    
+      <category term="Rust" scheme="http://lianghan.org/tags/Rust/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>LeetCode 1016. Binary String With Substrings Representing 1 To N</title>
+    <link href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1016/"/>
+    <id>http://lianghan.org/2019/11/11/2019-11-11-LeetCode1016/</id>
+    <published>2019-11-11T19:11:11.000Z</published>
+    <updated>2019-11-17T23:43:09.354Z</updated>
+    
+    <content type="html"><![CDATA[<p><a href="https://leetcode.com/problems/binary-string-with-substrings-representing-1-to-n/description/" target="_blank" rel="noopener">Problem Statement</a></p><p>Typical BFS.</p><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::collections::HashSet;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">query_string</span></span>(s: <span class="built_in">String</span>, n: <span class="keyword">i32</span>) -&gt; <span class="keyword">bool</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> set = HashSet::new();</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..s.len() &#123;</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> i..s.len() &#123;</span><br><span class="line">                <span class="keyword">let</span> <span class="keyword">str</span> = <span class="built_in">String</span>::from(&amp;s[i..j + <span class="number">1</span>]);</span><br><span class="line">                <span class="keyword">let</span> num = i32::from_str_radix(&amp;<span class="keyword">str</span>, <span class="number">2</span>).unwrap();</span><br><span class="line">                <span class="keyword">if</span> num &gt; n &#123;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                set.insert(num);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">1</span>..n + <span class="number">1</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> !set.contains(&amp;i) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;&lt;a href=&quot;https://leetcode.com/problems/binary-string-with-substrings-representing-1-to-n/description/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Pro
       
     
     </summary>
@@ -253,6 +342,35 @@
   </entry>
   
   <entry>
+    <title>LeetCode 1153. String Transforms Into Another String</title>
+    <link href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1153/"/>
+    <id>http://lianghan.org/2019/11/11/2019-11-11-LeetCode1153/</id>
+    <published>2019-11-11T19:11:11.000Z</published>
+    <updated>2019-11-17T22:18:01.684Z</updated>
+    
+    <content type="html"><![CDATA[<p><a href="https://leetcode.com/problems/string-transforms-into-another-string/description/" target="_blank" rel="noopener">Problem Statement</a></p><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::collections::&#123;HashMap, HashSet&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">can_convert</span></span>(str1: <span class="built_in">String</span>, str2: <span class="built_in">String</span>) -&gt; <span class="keyword">bool</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> str1.len() != str2.len() &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> str1 == str2 &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> map = HashMap::new();</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> have = HashSet::new();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..str1.len() &#123;</span><br><span class="line">            <span class="keyword">let</span> (key, val) = (str1.chars().nth(i).unwrap(), str2.chars().nth(i).unwrap());</span><br><span class="line">            have.insert(val);</span><br><span class="line">            <span class="keyword">if</span> !map.contains_key(&amp;key) &#123;</span><br><span class="line">                map.insert(key, val);</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> *map.get(&amp;key).unwrap() != val &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> map.len() &gt;= have.len() &amp;&amp; (have.len() &lt; <span class="number">26</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;&lt;a href=&quot;https://leetcode.com/problems/string-transforms-into-another-string/description/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Problem Stateme
+      
+    
+    </summary>
+    
+      <category term="LeetCode in Rust" scheme="http://lianghan.org/categories/LeetCode-in-Rust/"/>
+    
+    
+      <category term="Algorithm" scheme="http://lianghan.org/tags/Algorithm/"/>
+    
+      <category term="LeetCode" scheme="http://lianghan.org/tags/LeetCode/"/>
+    
+      <category term="Rust" scheme="http://lianghan.org/tags/Rust/"/>
+    
+  </entry>
+  
+  <entry>
     <title>LeetCode 1146. Snapshot Array</title>
     <link href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1146/"/>
     <id>http://lianghan.org/2019/11/11/2019-11-11-LeetCode1146/</id>
@@ -283,19 +401,19 @@
   </entry>
   
   <entry>
-    <title>LeetCode 1153. String Transforms Into Another String</title>
-    <link href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1153/"/>
-    <id>http://lianghan.org/2019/11/11/2019-11-11-LeetCode1153/</id>
+    <title>LeetCode 1147. Longest Chunked Palindrome Decomposition</title>
+    <link href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1147/"/>
+    <id>http://lianghan.org/2019/11/11/2019-11-11-LeetCode1147/</id>
     <published>2019-11-11T19:11:11.000Z</published>
-    <updated>2019-11-17T22:18:01.684Z</updated>
+    <updated>2019-11-17T22:03:09.797Z</updated>
     
-    <content type="html"><![CDATA[<p><a href="https://leetcode.com/problems/string-transforms-into-another-string/description/" target="_blank" rel="noopener">Problem Statement</a></p><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::collections::&#123;HashMap, HashSet&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">can_convert</span></span>(str1: <span class="built_in">String</span>, str2: <span class="built_in">String</span>) -&gt; <span class="keyword">bool</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> str1.len() != str2.len() &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> str1 == str2 &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> map = HashMap::new();</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> have = HashSet::new();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..str1.len() &#123;</span><br><span class="line">            <span class="keyword">let</span> (key, val) = (str1.chars().nth(i).unwrap(), str2.chars().nth(i).unwrap());</span><br><span class="line">            have.insert(val);</span><br><span class="line">            <span class="keyword">if</span> !map.contains_key(&amp;key) &#123;</span><br><span class="line">                map.insert(key, val);</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> *map.get(&amp;key).unwrap() != val &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> map.len() &gt;= have.len() &amp;&amp; (have.len() &lt; <span class="number">26</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
+    <content type="html"><![CDATA[<p><a href="https://leetcode.com/problems/longest-chunked-palindrome-decomposition/description/" target="_blank" rel="noopener">Problem Statement</a></p><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">longest_decomposition</span></span>(text: <span class="built_in">String</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> ans, n) = (<span class="number">0</span>, text.len());</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> l, <span class="keyword">mut</span> r) = (<span class="built_in">String</span>::from(<span class="string">""</span>), <span class="built_in">String</span>::from(<span class="string">""</span>));</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..n &#123;</span><br><span class="line">            l.push(text.chars().nth(i).unwrap());</span><br><span class="line">            r.insert(<span class="number">0</span>, text.chars().nth(n - i - <span class="number">1</span>).unwrap());</span><br><span class="line">            <span class="keyword">if</span> l == r &#123;</span><br><span class="line">                ans += <span class="number">1</span>;</span><br><span class="line">                l.clear(); r.clear();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
     
     <summary type="html">
     
       
       
-        &lt;p&gt;&lt;a href=&quot;https://leetcode.com/problems/string-transforms-into-another-string/description/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Problem Stateme
+        &lt;p&gt;&lt;a href=&quot;https://leetcode.com/problems/longest-chunked-palindrome-decomposition/description/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Problem Stat
       
     
     </summary>
@@ -342,19 +460,19 @@
   </entry>
   
   <entry>
-    <title>LeetCode 1147. Longest Chunked Palindrome Decomposition</title>
-    <link href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1147/"/>
-    <id>http://lianghan.org/2019/11/11/2019-11-11-LeetCode1147/</id>
+    <title>LeetCode 1155. Number of Dice Rolls With Target Sum</title>
+    <link href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1155/"/>
+    <id>http://lianghan.org/2019/11/11/2019-11-11-LeetCode1155/</id>
     <published>2019-11-11T19:11:11.000Z</published>
-    <updated>2019-11-17T22:03:09.797Z</updated>
+    <updated>2019-11-17T18:03:58.312Z</updated>
     
-    <content type="html"><![CDATA[<p><a href="https://leetcode.com/problems/longest-chunked-palindrome-decomposition/description/" target="_blank" rel="noopener">Problem Statement</a></p><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">longest_decomposition</span></span>(text: <span class="built_in">String</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> ans, n) = (<span class="number">0</span>, text.len());</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> l, <span class="keyword">mut</span> r) = (<span class="built_in">String</span>::from(<span class="string">""</span>), <span class="built_in">String</span>::from(<span class="string">""</span>));</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..n &#123;</span><br><span class="line">            l.push(text.chars().nth(i).unwrap());</span><br><span class="line">            r.insert(<span class="number">0</span>, text.chars().nth(n - i - <span class="number">1</span>).unwrap());</span><br><span class="line">            <span class="keyword">if</span> l == r &#123;</span><br><span class="line">                ans += <span class="number">1</span>;</span><br><span class="line">                l.clear(); r.clear();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
+    <content type="html"><![CDATA[<p><a href="https://leetcode.com/problems/number-of-dice-rolls-with-target-sum/description/" target="_blank" rel="noopener">Problem Statement</a></p><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">num_rolls_to_target</span></span>(d: <span class="keyword">i32</span>, f: <span class="keyword">i32</span>, target: <span class="keyword">i32</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">const</span> MOD : <span class="keyword">u64</span> = <span class="number">1e9</span> <span class="keyword">as</span> <span class="keyword">u64</span> + <span class="number">7</span>;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> dp = <span class="built_in">vec!</span>[<span class="built_in">vec!</span>[<span class="number">0</span>; target <span class="keyword">as</span> <span class="keyword">usize</span> + <span class="number">1</span>]; d <span class="keyword">as</span> <span class="keyword">usize</span> + <span class="number">1</span>];</span><br><span class="line">        dp[<span class="number">0</span>][<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">1</span>..d <span class="keyword">as</span> <span class="keyword">usize</span> + <span class="number">1</span> &#123;</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> <span class="number">1</span>..f <span class="keyword">as</span> <span class="keyword">usize</span> + <span class="number">1</span> &#123;</span><br><span class="line">                <span class="keyword">for</span> k <span class="keyword">in</span> j..target <span class="keyword">as</span> <span class="keyword">usize</span> + <span class="number">1</span> &#123;</span><br><span class="line">                    dp[i][k] = (dp[i][k] + dp[i - <span class="number">1</span>][k - j]) % MOD;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> dp[d <span class="keyword">as</span> <span class="keyword">usize</span>][target <span class="keyword">as</span> <span class="keyword">usize</span>] <span class="keyword">as</span> <span class="keyword">i32</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
     
     <summary type="html">
     
       
       
-        &lt;p&gt;&lt;a href=&quot;https://leetcode.com/problems/longest-chunked-palindrome-decomposition/description/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Problem Stat
+        &lt;p&gt;&lt;a href=&quot;https://leetcode.com/problems/number-of-dice-rolls-with-target-sum/description/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Problem Statemen
       
     
     </summary>
@@ -384,35 +502,6 @@
       
       
         &lt;p&gt;&lt;a href=&quot;https://leetcode.com/problems/longest-arithmetic-subsequence-of-given-difference/description/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Pr
-      
-    
-    </summary>
-    
-      <category term="LeetCode in Rust" scheme="http://lianghan.org/categories/LeetCode-in-Rust/"/>
-    
-    
-      <category term="Algorithm" scheme="http://lianghan.org/tags/Algorithm/"/>
-    
-      <category term="LeetCode" scheme="http://lianghan.org/tags/LeetCode/"/>
-    
-      <category term="Rust" scheme="http://lianghan.org/tags/Rust/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>LeetCode 1155. Number of Dice Rolls With Target Sum</title>
-    <link href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1155/"/>
-    <id>http://lianghan.org/2019/11/11/2019-11-11-LeetCode1155/</id>
-    <published>2019-11-11T19:11:11.000Z</published>
-    <updated>2019-11-17T18:03:58.312Z</updated>
-    
-    <content type="html"><![CDATA[<p><a href="https://leetcode.com/problems/number-of-dice-rolls-with-target-sum/description/" target="_blank" rel="noopener">Problem Statement</a></p><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">num_rolls_to_target</span></span>(d: <span class="keyword">i32</span>, f: <span class="keyword">i32</span>, target: <span class="keyword">i32</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">const</span> MOD : <span class="keyword">u64</span> = <span class="number">1e9</span> <span class="keyword">as</span> <span class="keyword">u64</span> + <span class="number">7</span>;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> dp = <span class="built_in">vec!</span>[<span class="built_in">vec!</span>[<span class="number">0</span>; target <span class="keyword">as</span> <span class="keyword">usize</span> + <span class="number">1</span>]; d <span class="keyword">as</span> <span class="keyword">usize</span> + <span class="number">1</span>];</span><br><span class="line">        dp[<span class="number">0</span>][<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">1</span>..d <span class="keyword">as</span> <span class="keyword">usize</span> + <span class="number">1</span> &#123;</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> <span class="number">1</span>..f <span class="keyword">as</span> <span class="keyword">usize</span> + <span class="number">1</span> &#123;</span><br><span class="line">                <span class="keyword">for</span> k <span class="keyword">in</span> j..target <span class="keyword">as</span> <span class="keyword">usize</span> + <span class="number">1</span> &#123;</span><br><span class="line">                    dp[i][k] = (dp[i][k] + dp[i - <span class="number">1</span>][k - j]) % MOD;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> dp[d <span class="keyword">as</span> <span class="keyword">usize</span>][target <span class="keyword">as</span> <span class="keyword">usize</span>] <span class="keyword">as</span> <span class="keyword">i32</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;&lt;a href=&quot;https://leetcode.com/problems/number-of-dice-rolls-with-target-sum/description/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Problem Statemen
       
     
     </summary>
@@ -459,95 +548,6 @@
   </entry>
   
   <entry>
-    <title>LeetCode 1233. Remove Sub-Folders from the Filesystem</title>
-    <link href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1233/"/>
-    <id>http://lianghan.org/2019/11/11/2019-11-11-LeetCode1233/</id>
-    <published>2019-11-11T19:11:11.000Z</published>
-    <updated>2019-11-17T04:21:58.868Z</updated>
-    
-    <content type="html"><![CDATA[<p><a href="https://leetcode.com/problems/remove-sub-folders-from-the-filesystem/description/" target="_blank" rel="noopener">Problem Statement</a></p><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">remove_subfolders</span></span>(folder: <span class="built_in">Vec</span>&lt;<span class="built_in">String</span>&gt;) -&gt; <span class="built_in">Vec</span>&lt;<span class="built_in">String</span>&gt; &#123;</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> f, <span class="keyword">mut</span> ans) = (folder, <span class="built_in">vec!</span>[]);</span><br><span class="line">        <span class="keyword">if</span> f.is_empty() &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">vec!</span>[];</span><br><span class="line">        &#125;</span><br><span class="line">        f.sort();</span><br><span class="line">        ans.push(f[<span class="number">0</span>].clone());</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">1</span>..f.len() &#123;</span><br><span class="line">            <span class="keyword">let</span> <span class="keyword">mut</span> prefix = ans.last().unwrap().clone();</span><br><span class="line">            prefix.push(<span class="string">'/'</span>);</span><br><span class="line">            <span class="keyword">let</span> cur = f[i].clone();</span><br><span class="line">            <span class="keyword">if</span> cur.len() &lt; prefix.len() || cur[..prefix.len()].to_string() != prefix  &#123;</span><br><span class="line">                ans.push(cur);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;&lt;a href=&quot;https://leetcode.com/problems/remove-sub-folders-from-the-filesystem/description/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Problem Statem
-      
-    
-    </summary>
-    
-      <category term="LeetCode in Rust" scheme="http://lianghan.org/categories/LeetCode-in-Rust/"/>
-    
-    
-      <category term="Algorithm" scheme="http://lianghan.org/tags/Algorithm/"/>
-    
-      <category term="LeetCode" scheme="http://lianghan.org/tags/LeetCode/"/>
-    
-      <category term="Rust" scheme="http://lianghan.org/tags/Rust/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>LeetCode 1245. Tree Diameter</title>
-    <link href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1245/"/>
-    <id>http://lianghan.org/2019/11/11/2019-11-11-LeetCode1245/</id>
-    <published>2019-11-11T19:11:11.000Z</published>
-    <updated>2019-11-23T16:59:32.736Z</updated>
-    
-    <content type="html"><![CDATA[<p><a href="https://leetcode.com/problems/tree-diameter/description/" target="_blank" rel="noopener">Problem Statement</a></p><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::collections::HashMap;</span><br><span class="line"><span class="keyword">use</span> std::cmp;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">dfs</span></span>(g: &amp;HashMap&lt;<span class="keyword">i32</span>, <span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;&gt;, ans: &amp;<span class="keyword">mut</span> <span class="keyword">i32</span>, cur: <span class="keyword">i32</span>, parent: <span class="keyword">i32</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> val = g.get(&amp;cur).unwrap();</span><br><span class="line">        <span class="keyword">if</span> val.len() == <span class="number">1</span> &amp;&amp; val[<span class="number">0</span>] == parent &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> a, <span class="keyword">mut</span> b) = (<span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">for</span> item <span class="keyword">in</span> val &#123;</span><br><span class="line">            <span class="keyword">if</span> *item == parent &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">let</span> next = Self::dfs(g, ans, *item, cur);</span><br><span class="line">            <span class="keyword">if</span> next &gt; a &#123;</span><br><span class="line">                b = a;</span><br><span class="line">                a = next;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> next &gt; b &#123;</span><br><span class="line">                b = next;</span><br><span class="line">            &#125;</span><br><span class="line">            *ans = cmp::max(*ans, a + b);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> a + <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">tree_diameter</span></span>(edges: <span class="built_in">Vec</span>&lt;<span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;&gt;) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> tree, <span class="keyword">mut</span> ans) : (HashMap&lt;<span class="keyword">i32</span>, <span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;&gt;, <span class="keyword">i32</span>) = (HashMap::new(), <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">for</span> edge <span class="keyword">in</span> &amp;edges &#123;</span><br><span class="line">            <span class="keyword">let</span> (k, v) = (edge[<span class="number">0</span>], edge[<span class="number">1</span>]);</span><br><span class="line">            tree.entry(k).or_insert(<span class="built_in">vec!</span>[]);</span><br><span class="line">            tree.entry(v).or_insert(<span class="built_in">vec!</span>[]);</span><br><span class="line">            tree.get_mut(&amp;k).unwrap().push(v);</span><br><span class="line">            tree.get_mut(&amp;v).unwrap().push(k);</span><br><span class="line">        &#125;</span><br><span class="line">        Self::dfs(&amp;tree, &amp;<span class="keyword">mut</span> ans, edges[<span class="number">0</span>][<span class="number">0</span>], -<span class="number">1</span>);</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;&lt;a href=&quot;https://leetcode.com/problems/tree-diameter/description/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Problem Statement&lt;/a&gt;&lt;/p&gt;
-&lt;figure class
-      
-    
-    </summary>
-    
-      <category term="LeetCode in Rust" scheme="http://lianghan.org/categories/LeetCode-in-Rust/"/>
-    
-    
-      <category term="Algorithm" scheme="http://lianghan.org/tags/Algorithm/"/>
-    
-      <category term="LeetCode" scheme="http://lianghan.org/tags/LeetCode/"/>
-    
-      <category term="Rust" scheme="http://lianghan.org/tags/Rust/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>LeetCode 1254. Number of Closed Islands</title>
-    <link href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1254/"/>
-    <id>http://lianghan.org/2019/11/11/2019-11-11-LeetCode1254/</id>
-    <published>2019-11-11T19:11:11.000Z</published>
-    <updated>2019-11-14T19:22:05.892Z</updated>
-    
-    <content type="html"><![CDATA[<p><a href="https://leetcode.com/problems/number-of-closed-islands/description/" target="_blank" rel="noopener">Problem Statement</a></p><p>Typical BFS.</p><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::collections::VecDeque;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">closed_island</span></span>(grid: <span class="built_in">Vec</span>&lt;<span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;&gt;) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> (m, n, <span class="keyword">mut</span> ans) = (grid.len(), grid[<span class="number">0</span>].len(), <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">let</span> (dx, dy) : ([<span class="keyword">i32</span>; <span class="number">4</span>], [<span class="keyword">i32</span>; <span class="number">4</span>]) = ([<span class="number">1</span>, -<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>], [<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, -<span class="number">1</span>]);</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> g = grid;</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..m &#123;</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> <span class="number">0</span>..n &#123;</span><br><span class="line">                <span class="keyword">if</span> g[i][j] == <span class="number">1</span> || g[i][j] == -<span class="number">1</span> &#123;</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">let</span> <span class="keyword">mut</span> q = VecDeque::new();</span><br><span class="line">                q.push_back((i, j));</span><br><span class="line">                g[i][j] = -<span class="number">1</span>;</span><br><span class="line">                <span class="keyword">let</span> <span class="keyword">mut</span> valid = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">while</span> !q.is_empty() &#123;</span><br><span class="line">                    <span class="keyword">let</span> (x, y) = q.pop_front().unwrap();</span><br><span class="line">                    <span class="keyword">for</span> k <span class="keyword">in</span> <span class="number">0</span>..<span class="number">4</span> &#123;</span><br><span class="line">                        <span class="keyword">let</span> (xx, yy) = (x <span class="keyword">as</span> <span class="keyword">i32</span> + dx[k], y <span class="keyword">as</span> <span class="keyword">i32</span> + dy[k]);</span><br><span class="line">                        <span class="keyword">if</span> xx &lt; <span class="number">0</span> || yy &lt; <span class="number">0</span> || xx &gt;= m <span class="keyword">as</span> <span class="keyword">i32</span> || yy &gt;= n <span class="keyword">as</span> <span class="keyword">i32</span> &#123;</span><br><span class="line">                            valid = <span class="literal">false</span>; <span class="keyword">continue</span>;</span><br><span class="line">                        &#125;</span><br><span class="line">                        <span class="keyword">let</span> (nx, ny) = (xx <span class="keyword">as</span> <span class="keyword">usize</span>, yy <span class="keyword">as</span> <span class="keyword">usize</span>);</span><br><span class="line">                        <span class="keyword">if</span> g[nx][ny] == <span class="number">1</span> || g[nx][ny] == -<span class="number">1</span> &#123;</span><br><span class="line">                            <span class="keyword">continue</span>;</span><br><span class="line">                        &#125;</span><br><span class="line">                        q.push_back((nx, ny));</span><br><span class="line">                        g[nx][ny] = -<span class="number">1</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> valid &#123;</span><br><span class="line">                    ans += <span class="number">1</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;&lt;a href=&quot;https://leetcode.com/problems/number-of-closed-islands/description/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Problem Statement&lt;/a&gt;&lt;/p&gt;
-&lt;p
-      
-    
-    </summary>
-    
-      <category term="LeetCode in Rust" scheme="http://lianghan.org/categories/LeetCode-in-Rust/"/>
-    
-    
-      <category term="Algorithm" scheme="http://lianghan.org/tags/Algorithm/"/>
-    
-      <category term="LeetCode" scheme="http://lianghan.org/tags/LeetCode/"/>
-    
-      <category term="Rust" scheme="http://lianghan.org/tags/Rust/"/>
-    
-  </entry>
-  
-  <entry>
     <title>LeetCode 1231. Divide Chocolate</title>
     <link href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1231/"/>
     <id>http://lianghan.org/2019/11/11/2019-11-11-LeetCode1231/</id>
@@ -578,19 +578,19 @@
   </entry>
   
   <entry>
-    <title>LeetCode 688. Knight Probability in Chessboard</title>
-    <link href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode688/"/>
-    <id>http://lianghan.org/2019/11/11/2019-11-11-LeetCode688/</id>
+    <title>LeetCode 1233. Remove Sub-Folders from the Filesystem</title>
+    <link href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1233/"/>
+    <id>http://lianghan.org/2019/11/11/2019-11-11-LeetCode1233/</id>
     <published>2019-11-11T19:11:11.000Z</published>
-    <updated>2019-11-18T19:05:17.606Z</updated>
+    <updated>2019-11-17T04:21:58.868Z</updated>
     
-    <content type="html"><![CDATA[<p><a href="https://leetcode.com/problems/knight-probability-in-chessboard/description/" target="_blank" rel="noopener">Problem Statement</a></p><p>DP, be careful about pow overflow.</p><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">knight_probability</span></span>(n: <span class="keyword">i32</span>, k: <span class="keyword">i32</span>, r: <span class="keyword">i32</span>, c: <span class="keyword">i32</span>) -&gt; <span class="keyword">f64</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> k == <span class="number">0</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span> <span class="keyword">as</span> <span class="keyword">f64</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> (dx, dy) : ([<span class="keyword">i32</span>; <span class="number">8</span>], [<span class="keyword">i32</span>; <span class="number">8</span>]) = (</span><br><span class="line">            [-<span class="number">1</span>, -<span class="number">2</span>, -<span class="number">2</span>, -<span class="number">1</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">1</span>],</span><br><span class="line">            [-<span class="number">2</span>, -<span class="number">1</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">1</span>, -<span class="number">1</span>, -<span class="number">2</span>]);</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> dp = <span class="built_in">vec!</span>[<span class="built_in">vec!</span>[<span class="number">1</span> <span class="keyword">as</span> <span class="keyword">f64</span>; n <span class="keyword">as</span> <span class="keyword">usize</span>]; n <span class="keyword">as</span> <span class="keyword">usize</span>];</span><br><span class="line">        <span class="keyword">for</span> _m <span class="keyword">in</span> <span class="number">0</span>..k &#123;</span><br><span class="line">            <span class="keyword">let</span> <span class="keyword">mut</span> tmp = <span class="built_in">vec!</span>[<span class="built_in">vec!</span>[<span class="number">0</span> <span class="keyword">as</span> <span class="keyword">f64</span>; n <span class="keyword">as</span> <span class="keyword">usize</span>]; n <span class="keyword">as</span> <span class="keyword">usize</span>];</span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..n &#123;</span><br><span class="line">                <span class="keyword">for</span> j <span class="keyword">in</span> <span class="number">0</span>..n &#123;</span><br><span class="line">                    <span class="keyword">for</span> k <span class="keyword">in</span> <span class="number">0</span>..<span class="number">8</span> &#123;</span><br><span class="line">                        <span class="keyword">let</span> (xx, yy) = (i + dx[k], j + dy[k]);</span><br><span class="line">                        <span class="keyword">if</span> xx &lt; <span class="number">0</span> || yy &lt; <span class="number">0</span> || xx &gt;= n || yy &gt;= n &#123;</span><br><span class="line">                            <span class="keyword">continue</span>;</span><br><span class="line">                        &#125;</span><br><span class="line">                        tmp[i <span class="keyword">as</span> <span class="keyword">usize</span>][j <span class="keyword">as</span> <span class="keyword">usize</span>] += dp[xx <span class="keyword">as</span> <span class="keyword">usize</span>][yy <span class="keyword">as</span> <span class="keyword">usize</span>];</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            dp.swap_with_slice(&amp;<span class="keyword">mut</span> tmp[<span class="number">0</span>..]);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> dp[r <span class="keyword">as</span> <span class="keyword">usize</span>][c <span class="keyword">as</span> <span class="keyword">usize</span>] / <span class="number">8_f64</span>.powf(k <span class="keyword">as</span> <span class="keyword">f64</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
+    <content type="html"><![CDATA[<p><a href="https://leetcode.com/problems/remove-sub-folders-from-the-filesystem/description/" target="_blank" rel="noopener">Problem Statement</a></p><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">remove_subfolders</span></span>(folder: <span class="built_in">Vec</span>&lt;<span class="built_in">String</span>&gt;) -&gt; <span class="built_in">Vec</span>&lt;<span class="built_in">String</span>&gt; &#123;</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> f, <span class="keyword">mut</span> ans) = (folder, <span class="built_in">vec!</span>[]);</span><br><span class="line">        <span class="keyword">if</span> f.is_empty() &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">vec!</span>[];</span><br><span class="line">        &#125;</span><br><span class="line">        f.sort();</span><br><span class="line">        ans.push(f[<span class="number">0</span>].clone());</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">1</span>..f.len() &#123;</span><br><span class="line">            <span class="keyword">let</span> <span class="keyword">mut</span> prefix = ans.last().unwrap().clone();</span><br><span class="line">            prefix.push(<span class="string">'/'</span>);</span><br><span class="line">            <span class="keyword">let</span> cur = f[i].clone();</span><br><span class="line">            <span class="keyword">if</span> cur.len() &lt; prefix.len() || cur[..prefix.len()].to_string() != prefix  &#123;</span><br><span class="line">                ans.push(cur);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
     
     <summary type="html">
     
       
       
-        &lt;p&gt;&lt;a href=&quot;https://leetcode.com/problems/knight-probability-in-chessboard/description/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Problem Statement&lt;/a
+        &lt;p&gt;&lt;a href=&quot;https://leetcode.com/problems/remove-sub-folders-from-the-filesystem/description/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Problem Statem
       
     
     </summary>

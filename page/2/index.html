@@ -75,6 +75,100 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-2019-11-22-LeetCode934" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/11/22/2019-11-22-LeetCode934/" class="article-date">
+  <time datetime="2019-11-22T19:11:11.000Z" itemprop="datePublished">2019-11-22</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/LeetCode-in-Rust/">LeetCode in Rust</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/11/22/2019-11-22-LeetCode934/">LeetCode 934. Shortest Bridge</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><a href="https://leetcode.com/problems/shortest-bridge/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::collections::VecDeque;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">dfs</span></span>(grid: &amp;<span class="keyword">mut</span> <span class="built_in">Vec</span>&lt;<span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;&gt;, x: <span class="keyword">i32</span>, y:<span class="keyword">i32</span>, q: &amp;<span class="keyword">mut</span> VecDeque&lt;(<span class="keyword">i32</span>, <span class="keyword">i32</span>)&gt;) &#123;</span><br><span class="line">        <span class="keyword">if</span> x &lt; <span class="number">0</span> || y &lt; <span class="number">0</span> || y &gt;= grid[<span class="number">0</span>].len() <span class="keyword">as</span> <span class="keyword">i32</span> ||</span><br><span class="line">            x &gt;= grid.len() <span class="keyword">as</span> <span class="keyword">i32</span> || grid[x <span class="keyword">as</span> <span class="keyword">usize</span>][y <span class="keyword">as</span> <span class="keyword">usize</span>] != <span class="number">1</span> &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        grid[x <span class="keyword">as</span> <span class="keyword">usize</span>][y <span class="keyword">as</span> <span class="keyword">usize</span>] = <span class="number">2</span>;</span><br><span class="line">        q.push_back((x, y));</span><br><span class="line">        Self::dfs(grid, x - <span class="number">1</span>, y, q);</span><br><span class="line">        Self::dfs(grid, x, y - <span class="number">1</span>, q);</span><br><span class="line">        Self::dfs(grid, x + <span class="number">1</span>, y, q);</span><br><span class="line">        Self::dfs(grid, x, y + <span class="number">1</span>, q);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">shortest_bridge</span></span>(a: <span class="built_in">Vec</span>&lt;<span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;&gt;) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> q = VecDeque::new();</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> find = <span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> grid = a.clone();</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..a.len() &#123;</span><br><span class="line">            <span class="keyword">if</span> find &#123;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> <span class="number">0</span>..grid[<span class="number">0</span>].len() &#123;</span><br><span class="line">                <span class="keyword">if</span> find &#123;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span> grid[i][j] == <span class="number">0</span> &#123;</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                Self::dfs(&amp;<span class="keyword">mut</span> grid, i <span class="keyword">as</span> <span class="keyword">i32</span>, j <span class="keyword">as</span> <span class="keyword">i32</span>, &amp;<span class="keyword">mut</span> q);</span><br><span class="line">                find = <span class="literal">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> step = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">let</span> (dx, dy) : ([<span class="keyword">i32</span>; <span class="number">4</span>], [<span class="keyword">i32</span>; <span class="number">4</span>]) = ([<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, -<span class="number">1</span>], [<span class="number">1</span>, -<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>]);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> !q.is_empty() &#123;</span><br><span class="line">            <span class="keyword">let</span> <span class="keyword">mut</span> size = q.len();</span><br><span class="line">            <span class="keyword">while</span> size &gt; <span class="number">0</span> &#123;</span><br><span class="line">                size -= <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">let</span> item = q.front().unwrap().clone();</span><br><span class="line">                q.pop_front();</span><br><span class="line">                <span class="keyword">let</span> (x, y) = (item.<span class="number">0</span>, item.<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">                <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..<span class="number">4</span> &#123;</span><br><span class="line">                    <span class="keyword">let</span> (tx, ty) = (x + dx[i], y + dy[i]);</span><br><span class="line">                    <span class="keyword">if</span> tx &lt; <span class="number">0</span> || ty &lt; <span class="number">0</span> || ty &gt;= grid[<span class="number">0</span>].len() <span class="keyword">as</span> <span class="keyword">i32</span> ||</span><br><span class="line">                        tx &gt;= grid.len() <span class="keyword">as</span> <span class="keyword">i32</span> || grid[tx <span class="keyword">as</span> <span class="keyword">usize</span>][ty <span class="keyword">as</span> <span class="keyword">usize</span>] == <span class="number">2</span> &#123;</span><br><span class="line">                        <span class="keyword">continue</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">if</span> grid[tx <span class="keyword">as</span> <span class="keyword">usize</span>][ty <span class="keyword">as</span> <span class="keyword">usize</span>] == <span class="number">1</span> &#123;</span><br><span class="line">                        <span class="keyword">return</span> step;</span><br><span class="line">                    &#125;</span><br><span class="line">                    grid[tx <span class="keyword">as</span> <span class="keyword">usize</span>][ty <span class="keyword">as</span> <span class="keyword">usize</span>] = <span class="number">2</span>;</span><br><span class="line">                    q.push_back((tx, ty));</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            step += <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2019/11/22/2019-11-22-LeetCode934/" data-id="ck3dyn1f1004gwrxg6h3bvuol" data-title="LeetCode 934. Shortest Bridge" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2019/11/22/2019-11-22-LeetCode934/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LeetCode/">LeetCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Rust/">Rust</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-2019-11-22-LeetCode980" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/11/22/2019-11-22-LeetCode980/" class="article-date">
+  <time datetime="2019-11-22T19:11:11.000Z" itemprop="datePublished">2019-11-22</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/LeetCode-in-Rust/">LeetCode in Rust</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/11/22/2019-11-22-LeetCode980/">LeetCode 980. Unique Paths III</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><a href="https://leetcode.com/problems/unique-paths-iii/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">dfs</span></span>(grid: &amp;<span class="keyword">mut</span> <span class="built_in">Vec</span>&lt;<span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;&gt;, x: <span class="keyword">i32</span>, y: <span class="keyword">i32</span>, n: <span class="keyword">i32</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> x &lt; <span class="number">0</span> || x == grid[<span class="number">0</span>].len() <span class="keyword">as</span> <span class="keyword">i32</span> || y &lt; <span class="number">0</span> || y == grid.len() <span class="keyword">as</span> <span class="keyword">i32</span> ||</span><br><span class="line">            grid[y <span class="keyword">as</span> <span class="keyword">usize</span>][x <span class="keyword">as</span> <span class="keyword">usize</span>] == -<span class="number">1</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">let</span> (yy, xx) = (y <span class="keyword">as</span> <span class="keyword">usize</span>, x <span class="keyword">as</span> <span class="keyword">usize</span>);</span><br><span class="line">        <span class="keyword">if</span> grid[yy][xx] == <span class="number">2</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> n == <span class="number">0</span> &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        grid[yy][xx] = -<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">let</span> ans = Self::dfs(grid, x + <span class="number">1</span>, y, n - <span class="number">1</span>) +</span><br><span class="line">            Self::dfs(grid, x - <span class="number">1</span>, y, n - <span class="number">1</span>) +</span><br><span class="line">            Self::dfs(grid, x, y + <span class="number">1</span>, n - <span class="number">1</span>) +</span><br><span class="line">            Self::dfs(grid, x, y - <span class="number">1</span>, n - <span class="number">1</span>);</span><br><span class="line">        grid[yy][xx] = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">unique_paths_iii</span></span>(grid: <span class="built_in">Vec</span>&lt;<span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;&gt;) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> sx, <span class="keyword">mut</span> sy, <span class="keyword">mut</span> n) = (<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>);</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> g = grid.clone();</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..g.len() &#123;</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> <span class="number">0</span>..g[<span class="number">0</span>].len() &#123;</span><br><span class="line">                <span class="keyword">if</span> g[i][j] == <span class="number">0</span> &#123;</span><br><span class="line">                    n += <span class="number">1</span>;</span><br><span class="line">                &#125; <span class="keyword">else</span> <span class="keyword">if</span> grid[i][j] == <span class="number">1</span> &#123;</span><br><span class="line">                    sx = j; sy = i;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> Self::dfs(&amp;<span class="keyword">mut</span> g, sx <span class="keyword">as</span> <span class="keyword">i32</span>, sy <span class="keyword">as</span> <span class="keyword">i32</span>, n);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2019/11/22/2019-11-22-LeetCode980/" data-id="ck3dyn1f2004hwrxgy5ocp9hq" data-title="LeetCode 980. Unique Paths III" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2019/11/22/2019-11-22-LeetCode980/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LeetCode/">LeetCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Rust/">Rust</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-2019-11-11-LeetCode1015" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2019/11/11/2019-11-11-LeetCode1015/" class="article-date">
@@ -106,105 +200,9 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1015/" data-id="ck3bty49e005jylxg1sfh5gfx" data-title="LeetCode 1015. Smallest Integer Divisible by K" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1015/" data-id="ck3dyn1ei003swrxgcpeiey6i" data-title="LeetCode 1015. Smallest Integer Divisible by K" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1015/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LeetCode/">LeetCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Rust/">Rust</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2019-11-11-LeetCode1020" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/11/11/2019-11-11-LeetCode1020/" class="article-date">
-  <time datetime="2019-11-11T19:11:11.000Z" itemprop="datePublished">2019-11-11</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/LeetCode-in-Rust/">LeetCode in Rust</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/11/2019-11-11-LeetCode1020/">LeetCode 1020. Number of Enclaves</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><a href="https://leetcode.com/problems/number-of-enclaves/description/" target="_blank" rel="noopener">Problem Statement</a></p>
-<p>Typical DFS. Similar to <a href="https://leetcode.com/problems/number-of-closed-islands/" target="_blank" rel="noopener">1254. Number of Closed Islands</a></p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">dfs</span></span>(a : &amp;<span class="keyword">mut</span> <span class="built_in">Vec</span>&lt;<span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;&gt;, x : <span class="keyword">usize</span>, y : <span class="keyword">usize</span>) -&gt; () &#123;</span><br><span class="line">        <span class="keyword">let</span> (m, n) = (a.len(), a[<span class="number">0</span>].len());</span><br><span class="line">        <span class="keyword">let</span> (dx, dy) : ([<span class="keyword">i32</span>; <span class="number">4</span>], [<span class="keyword">i32</span>; <span class="number">4</span>]) = ([<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, -<span class="number">1</span>], [<span class="number">1</span>, -<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>]);</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..<span class="number">4</span> &#123;</span><br><span class="line">            <span class="keyword">let</span> (xx, yy) : (<span class="keyword">i32</span>, <span class="keyword">i32</span>) = (x <span class="keyword">as</span> <span class="keyword">i32</span> + dx[i], y <span class="keyword">as</span> <span class="keyword">i32</span> + dy[i]);</span><br><span class="line">            <span class="keyword">if</span> xx &gt;= m <span class="keyword">as</span> <span class="keyword">i32</span> || xx &lt; <span class="number">0</span> || yy &gt;= n <span class="keyword">as</span> <span class="keyword">i32</span> || yy &lt; <span class="number">0</span> &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">let</span> (nx, ny) = (xx <span class="keyword">as</span> <span class="keyword">usize</span>, yy <span class="keyword">as</span> <span class="keyword">usize</span>);</span><br><span class="line">            <span class="keyword">if</span> a[nx][ny] == <span class="number">0</span> &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            a[nx][ny] = <span class="number">0</span>;</span><br><span class="line">            Self::dfs(a, nx, ny);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">num_enclaves</span></span>(a: <span class="built_in">Vec</span>&lt;<span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;&gt;) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> A = a;</span><br><span class="line">        <span class="keyword">let</span> (m, n, <span class="keyword">mut</span> ans) = (A.len(), A[<span class="number">0</span>].len(), <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..m &#123;</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> <span class="number">0</span>..n &#123;</span><br><span class="line">                <span class="keyword">if</span> i == <span class="number">0</span> || j == <span class="number">0</span> || i == m - <span class="number">1</span> || j == n - <span class="number">1</span> &#123;</span><br><span class="line">                    <span class="keyword">if</span> A[i][j] != <span class="number">0</span> &#123;</span><br><span class="line">                        A[i][j] = <span class="number">0</span>;</span><br><span class="line">                        Self::dfs(&amp;<span class="keyword">mut</span> A, i, j);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..m &#123;</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> <span class="number">0</span>..n &#123;</span><br><span class="line">                <span class="keyword">if</span> A[i][j] != <span class="number">0</span> &#123;</span><br><span class="line">                    ans += <span class="number">1</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1020/" data-id="ck3bty49h005mylxgp8ne5hxk" data-title="LeetCode 1020. Number of Enclaves" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1020/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LeetCode/">LeetCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Rust/">Rust</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2019-11-11-LeetCode1031" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/11/11/2019-11-11-LeetCode1031/" class="article-date">
-  <time datetime="2019-11-11T19:11:11.000Z" itemprop="datePublished">2019-11-11</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/LeetCode-in-Rust/">LeetCode in Rust</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/11/2019-11-11-LeetCode1031/">LeetCode 1031 Maximum Sum of Two Non-Overlapping Subarrays</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><a href="https://leetcode.com/problems/maximum-sum-of-two-non-overlapping-subarrays/description/" target="_blank" rel="noopener">Problem Statement</a></p>
-<p>Maintain a sliding window of two sub arrays with length L and M and slide through. For each slide check two cases:<br>L first, or M first. Use prefix sum to speed up calculation of sum of a given sub array.</p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">use</span> std::cmp;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">max_sum_two_no_overlap</span></span>(a: <span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;, l: <span class="keyword">i32</span>, m: <span class="keyword">i32</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> A = a.iter().scan(<span class="number">0</span>, |sum, i| &#123;*sum += *i; <span class="literal">Some</span>(*sum)&#125;).collect::&lt;<span class="built_in">Vec</span>&lt;_&gt;&gt;();</span><br><span class="line">        <span class="keyword">let</span> (L, M) = (l <span class="keyword">as</span> <span class="keyword">usize</span>, m <span class="keyword">as</span> <span class="keyword">usize</span>);</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> ans, <span class="keyword">mut</span> lmax, <span class="keyword">mut</span> rmax) = (A[L + M - <span class="number">1</span>], A[L - <span class="number">1</span>], A[M - <span class="number">1</span>]);</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> L + M..A.len() <span class="keyword">as</span> <span class="keyword">usize</span> &#123;</span><br><span class="line">            lmax = cmp::max(lmax, A[i - M] - A[i - M - L]);</span><br><span class="line">            rmax = cmp::max(rmax, A[i - L] - A[i - L - M]);</span><br><span class="line">            ans = cmp::max(ans, cmp::max(A[i] - A[i - L] + rmax, A[i] - A[i - M] + lmax));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1031/" data-id="ck3bty49h005nylxg3njv6log" data-title="LeetCode 1031 Maximum Sum of Two Non-Overlapping Subarrays" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1031/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
@@ -222,7 +220,7 @@
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/53/">53</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
+    <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/54/">54</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
   </nav>
 
 </section>
@@ -275,6 +273,14 @@
       <ul>
         
           <li>
+            <a href="/2019/11/22/2019-11-22-LeetCode1136/">LeetCode 1136. Parallel Courses</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/22/2019-11-22-LeetCode1213/">LeetCode 1213. Intersection of Three Sorted Arrays</a>
+          </li>
+        
+          <li>
             <a href="/2019/11/22/2019-11-22-LeetCode895/">LeetCode 895. Maximum Frequency Stack</a>
           </li>
         
@@ -283,15 +289,7 @@
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1016/">LeetCode 1016. Binary String With Substrings Representing 1 To N</a>
-          </li>
-        
-          <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1015/">LeetCode 1015. Smallest Integer Divisible by K</a>
-          </li>
-        
-          <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1020/">LeetCode 1020. Number of Enclaves</a>
+            <a href="/2019/11/22/2019-11-22-LeetCode980/">LeetCode 980. Unique Paths III</a>
           </li>
         
       </ul>

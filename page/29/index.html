@@ -75,110 +75,10 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-2017-01-31-TopCoder-SRM-707-DivII" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2017-02-11-DynamoPaper" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2017/01/31/2017-01-31-TopCoder-SRM-707-DivII/" class="article-date">
-  <time datetime="2017-01-31T18:33:31.000Z" itemprop="datePublished">2017-01-31</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/TopCoder/">TopCoder</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/31/2017-01-31-TopCoder-SRM-707-DivII/">SRM 707 DIV 2 500 Steps Construct</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Problem with interesting constraints… hopefully figured this out during SRM this time. </p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> StepsConstruct &#123;</span><br><span class="line">    <span class="keyword">int</span> rows;</span><br><span class="line">    <span class="keyword">int</span> cols;</span><br><span class="line">    <span class="function"><span class="keyword">char</span> <span class="title">getD</span><span class="params">(<span class="keyword">char</span> c)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (c == <span class="string">'R'</span>) <span class="keyword">return</span> <span class="string">'L'</span>;</span><br><span class="line">        <span class="keyword">if</span> (c == <span class="string">'L'</span>) <span class="keyword">return</span> <span class="string">'R'</span>;</span><br><span class="line">        <span class="keyword">if</span> (c == <span class="string">'U'</span>) <span class="keyword">return</span> <span class="string">'D'</span>;</span><br><span class="line">        <span class="keyword">if</span> (c == <span class="string">'D'</span>) <span class="keyword">return</span> <span class="string">'U'</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">'R'</span>;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="built_in">string</span> <span class="title">construct</span><span class="params">(<span class="built_in">vector</span> &lt;<span class="built_in">string</span>&gt; board, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (board[<span class="number">0</span>][<span class="number">0</span>] == <span class="string">'#'</span>) <span class="keyword">return</span> <span class="string">""</span>;</span><br><span class="line">        rows = (<span class="keyword">int</span>)board.size(); cols = (<span class="keyword">int</span>)board[<span class="number">0</span>].size();</span><br><span class="line">        <span class="built_in">set</span>&lt;pair&lt;<span class="keyword">int</span>,<span class="keyword">int</span>&gt;&gt; visited;</span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; paths;</span><br><span class="line">        <span class="built_in">queue</span>&lt;pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt;&gt; q;</span><br><span class="line">        <span class="built_in">queue</span>&lt;<span class="built_in">string</span>&gt; qp;</span><br><span class="line">        q.push(make_pair(<span class="number">0</span>, <span class="number">0</span>));</span><br><span class="line">        qp.push(<span class="string">""</span>);</span><br><span class="line">        <span class="keyword">while</span> (!q.empty()) &#123;</span><br><span class="line">            <span class="keyword">auto</span> cur = q.front();</span><br><span class="line">            q.pop();</span><br><span class="line">            <span class="keyword">int</span> x = cur.first, y = cur.second;</span><br><span class="line">            <span class="built_in">string</span> curp = qp.front();</span><br><span class="line">            qp.pop();</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">int</span> dx[] = &#123;<span class="number">1</span>, <span class="number">-1</span>, <span class="number">0</span>, <span class="number">0</span>&#125;;</span><br><span class="line">            <span class="keyword">int</span> dy[] = &#123;<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">-1</span>&#125;;</span><br><span class="line">            <span class="keyword">char</span> steps[] = &#123;<span class="string">'D'</span>, <span class="string">'U'</span>, <span class="string">'R'</span>, <span class="string">'L'</span>&#125;;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span>; ++i) &#123;</span><br><span class="line">                pair&lt;<span class="keyword">int</span>,<span class="keyword">int</span>&gt; cur = &#123;x + dx[i], y + dy[i]&#125;;</span><br><span class="line">                <span class="keyword">if</span>(cur.first &lt; <span class="number">0</span> || cur.second &lt; <span class="number">0</span> || cur.first &gt;= rows || cur.second &gt;= cols)</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                <span class="keyword">if</span>(visited.count(cur))</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                <span class="keyword">if</span> (board[cur.first][cur.second] == <span class="string">'#'</span>) &#123;</span><br><span class="line">                    visited.insert(cur);</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                </span><br><span class="line">                <span class="built_in">string</span> p = curp + steps[i];</span><br><span class="line">                <span class="keyword">if</span> (cur.first == rows - <span class="number">1</span> &amp;&amp; cur.second == cols - <span class="number">1</span>) &#123;</span><br><span class="line">                    paths.push_back(p);</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                visited.insert(cur);</span><br><span class="line">                qp.push(p);</span><br><span class="line">                q.push(cur);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">int</span> minsteps = INT_MAX;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> path : paths) &#123;</span><br><span class="line">            minsteps = <span class="built_in">std</span>::min((<span class="keyword">int</span>)path.size(), minsteps);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (minsteps &gt; k) <span class="keyword">return</span> <span class="string">""</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="built_in">string</span> c;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> path : paths) &#123;</span><br><span class="line">            <span class="keyword">int</span> steps = (<span class="keyword">int</span>)path.size();</span><br><span class="line">            <span class="keyword">if</span> (steps &lt;= k &amp;&amp; ((k - steps) % <span class="number">2</span> == <span class="number">0</span>)) &#123;</span><br><span class="line">                <span class="keyword">int</span> d = k - steps;</span><br><span class="line">                <span class="built_in">string</span> prefix = <span class="string">""</span>;</span><br><span class="line">                <span class="keyword">char</span> c = path[<span class="number">0</span>];</span><br><span class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; d; ++i) &#123;</span><br><span class="line">                    prefix += c;</span><br><span class="line">                    c = getD(c);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">return</span> prefix + path;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">""</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/01/31/2017-01-31-TopCoder-SRM-707-DivII/" data-id="ck3bty4500023ylxgez33usdq" data-title="SRM 707 DIV 2 500 Steps Construct" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2017/01/31/2017-01-31-TopCoder-SRM-707-DivII/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/BFS/">BFS</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2017-01-27-USACO-LetterGame" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/01/27/2017-01-27-USACO-LetterGame/" class="article-date">
-  <time datetime="2017-01-27T21:37:31.000Z" itemprop="datePublished">2017-01-27</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/USACO/">USACO</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/27/2017-01-27-USACO-LetterGame/">USACO 4.3 Letter Game</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>The basic idea is to use brutal force approach by enumerating all possible words generated from input word and choose the right ones. There are a couple of optimizations that we can do:</p>
-<ul>
-<li>There are at most two strings in each anwser, because the length constraints (3 is the minimum length, 7 is the maximum length, so at most two strings.).</li>
-<li>Similarly, since each word in dictionary is at least 3 characters long, we can skip sub strings with length 1 or 2 during enumeration.</li>
-<li>During enumeration, whenever we find the first substring is greater lexicographically than the second, we can abort because the same string pair can occur later (which is what we want, the lexicographically smaller ones). There are some edge cases to deal with here though, such as the second string is empty, in which case the first string would be the full length of the source string.</li>
-<li>The STL next_enumeration comes really handy.</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;map&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;set&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">map</span>&lt;<span class="built_in">string</span>,<span class="keyword">int</span>&gt; wordval;</span><br><span class="line"><span class="built_in">set</span>&lt;<span class="built_in">string</span>&gt; used;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; ans;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; value = &#123;<span class="number">2</span>,<span class="number">5</span>,<span class="number">4</span>,<span class="number">4</span>,<span class="number">1</span>,<span class="number">6</span>,<span class="number">5</span>,<span class="number">5</span>,<span class="number">1</span>,<span class="number">7</span>,<span class="number">6</span>,<span class="number">3</span>,<span class="number">5</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">5</span>,<span class="number">7</span>,<span class="number">2</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">4</span>,<span class="number">6</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">5</span>,<span class="number">7</span>&#125;;</span><br><span class="line"><span class="keyword">int</span> ans1 = <span class="number">0</span>;</span><br><span class="line"><span class="built_in">string</span> word;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">compute</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    sort(word.begin(),word.end());</span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">3</span>; i &lt;= (<span class="keyword">int</span>)word.size(); ++i) &#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> j = i; j &lt;= (<span class="keyword">int</span>)word.size(); ++j) &#123;</span><br><span class="line">                <span class="built_in">string</span> w1, w2, w;</span><br><span class="line">                w1 = word.substr(<span class="number">0</span>,i);</span><br><span class="line">                w2 = word.substr(i,j-i);</span><br><span class="line">                <span class="keyword">if</span> (w1 &gt; w2 &amp;&amp; w2 != <span class="string">""</span>) <span class="keyword">continue</span>;</span><br><span class="line">                <span class="keyword">if</span>(!wordval[w1] || (!wordval[w2] &amp;&amp; w2 != <span class="string">""</span>)) <span class="keyword">continue</span>;</span><br><span class="line">                </span><br><span class="line">                w = w1;</span><br><span class="line">                <span class="keyword">if</span>(!w2.empty())  &#123;</span><br><span class="line">                    w += <span class="string">" "</span>; w += w2;</span><br><span class="line">                &#125;</span><br><span class="line">                </span><br><span class="line">                <span class="keyword">if</span>(ans1 == wordval[w1] + wordval[w2] &amp;&amp; !used.count(w)) &#123;</span><br><span class="line">                    used.insert(w);</span><br><span class="line">                    ans.push_back(w);</span><br><span class="line">                &#125; <span class="keyword">else</span> <span class="keyword">if</span>(ans1 &lt; wordval[w1] + wordval[w2]) &#123;</span><br><span class="line">                    ans1 = wordval[w1] + wordval[w2];</span><br><span class="line">                    used.clear();</span><br><span class="line">                    ans.clear();</span><br><span class="line">                    used.insert(w);</span><br><span class="line">                    ans.push_back(w);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">while</span> (next_permutation(word.begin(),word.end()));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">ifstream <span class="title">fdin</span><span class="params">(<span class="string">"lgame.dict"</span>)</span></span>;</span><br><span class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"lgame.in"</span>)</span></span>;</span><br><span class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"lgame.out"</span>)</span></span>;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">string</span> str;</span><br><span class="line">    wordval[<span class="string">""</span>] = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span>(fdin &gt;&gt; str &amp;&amp; str != <span class="string">"."</span>) &#123;</span><br><span class="line">        <span class="keyword">int</span> val = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i&lt; (<span class="keyword">int</span>)str.size(); ++i) &#123;</span><br><span class="line">            val += value[str[i] - <span class="string">'a'</span>];</span><br><span class="line">        &#125;</span><br><span class="line">        wordval[str] = val;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    fin &gt;&gt; word;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; word &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    compute();</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; ans1 &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    fout &lt;&lt; ans1 &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; (<span class="keyword">int</span>)ans.size(); ++i) &#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; ans[i] &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">        fout &lt;&lt; ans[i] &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/01/27/2017-01-27-USACO-LetterGame/" data-id="ck3bty44x0021ylxgvlirjc5x" data-title="USACO 4.3 Letter Game" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2017/01/27/2017-01-27-USACO-LetterGame/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Enumeration/">Enumeration</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Permutation/">Permutation</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/String/">String</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2017-01-21-Google-File-System" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/01/21/2017-01-21-Google-File-System/" class="article-date">
-  <time datetime="2017-01-22T00:14:31.000Z" itemprop="datePublished">2017-01-21</time>
+    <a href="/2017/02/11/2017-02-11-DynamoPaper/" class="article-date">
+  <time datetime="2017-02-12T03:36:31.000Z" itemprop="datePublished">2017-02-11</time>
 </a>
     
   <div class="article-category">
@@ -193,7 +93,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/21/2017-01-21-Google-File-System/">The Google File System</a>
+      <a class="article-title" href="/2017/02/11/2017-02-11-DynamoPaper/">Dynamo, Amazon’s Highly Available Key-value Store</a>
     </h1>
   
 
@@ -201,89 +101,69 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Paper digest - <a href="https://static.googleusercontent.com/media/research.google.com/en//archive/gfs-sosp2003.pdf" target="_blank" rel="noopener">The Google File System</a></p>
+        <p>Paper digest - <a href="http://s3.amazonaws.com/AllThingsDistributed/sosp/amazon-dynamo-sosp2007.pdf" target="_blank" rel="noopener">Dynamo: Amazon’s Highly Available Key-value Store </a></p>
 <h1 id="Motivation"><a href="#Motivation" class="headerlink" title="Motivation"></a>Motivation</h1><ul>
-<li>Scalable distributed file system for large distributed data-intensive applications driven by observations of application workloads and technological environment, both current and anticipated:<ul>
-<li>Component failures are the norm rather than the exception.</li>
-<li>Files are huge by traditional standards. Multi-GB files are common.</li>
-<li>Workloads: large streaming reads and small random reads; many large, sequential writes.</li>
+<li>A highly available key-value storage system that manages state of Amazon services.</li>
+<li>Reliability at massive scale, provide an “always-on” experience.</li>
+</ul>
+<h1 id="Requirements"><a href="#Requirements" class="headerlink" title="Requirements"></a>Requirements</h1><ul>
+<li><p>Query Model: simple read and write operations to objects (relatively small, usually less than 1MB) that is uniquely identified by a key. </p>
+</li>
+<li><p>ACID (Atomicity, Consistency, Isolation, Durability) : weak consistency, no isolation, only single key update.</p>
+</li>
+<li><p>Efficiency: </p>
+<ul>
+<li>Function on a commodity hardware infrastructure.</li>
+<li>Strict latency requirements and SLA.</li>
+<li>Configurable to achieve customizable latency and throughput requirements.</li>
 </ul>
 </li>
+<li><p>Operation and Security:</p>
+<ul>
+<li>No authentication and authorization (operating in non-hostile environment). </li>
+<li>Scale up (each service uses its distinct instance of Dynamo).</li>
 </ul>
-<h1 id="Goals"><a href="#Goals" class="headerlink" title="Goals"></a>Goals</h1><ul>
-<li><p>Provides fault tolerance while running on inexpensive commodity hardware.</p>
 </li>
-<li><p>Delivers high aggregate performance to a large number of clients.</p>
-</li>
-<li><p>Must efficiently implement well-defined semantics for multiple clients that concurrently append to the same file. Atomicity with minimal synchronization overhead is essential. </p>
-</li>
-<li><p>Prefer bandwidth over latency (batch processing, not real time.).</p>
-</li>
-<li><p>Consistency Model : co-designing the applications and the file system for flexibility (in other words, push hard problem to other places.).</p>
+<li><p>SLA:</p>
+<ul>
+<li>Traditional SLA metrics (average, median and expected variance) are not good enough to build a system where all customers have a good experience.</li>
+<li>SLAs are expressed and measured at the 99.9th percentile of the distribution. Choose 99.9 for cost effective.</li>
+</ul>
 </li>
 </ul>
 <h1 id="System-Design"><a href="#System-Design" class="headerlink" title="System Design"></a>System Design</h1><ul>
-<li><p>Master-Slave architecture.</p>
-<ul>
-<li>GFS Master:<ul>
-<li>Management data storage: metadata, namespace, access control, mappings from files to chunks, current location of chunk.</li>
-<li>System wide activities: chunk lease management, garbage collect of orphaned chunks, chunk migration.</li>
-<li>System is designed to minimize master’s involvement since master is SPOF.</li>
+<li>Favor availability over consistency by using optimistic replication techniques.</li>
+<li>Optimistic replication introduces conflict. Conflict resolution introduces two problems: when to resolve them and who resolves them.<ul>
+<li>When to resolve:<ul>
+<li>Write time: writes may be rejected if the data store cannot reach all the replicas at a given time. This leads to poor user experience.</li>
+<li>Read time: Dynamo targets the design space of an “always write-able” data store. So conflicts are resolved at read time.</li>
 </ul>
 </li>
-<li>GFS Slave (aka chunk server):<ul>
-<li>Chunk with 64 bit globally uniquely chunk handle. Stored on linux FS. Replicated (3 copies by default.).</li>
-<li>Does not cache files (rely on Linux’s buffer cache.).</li>
-</ul>
-</li>
-<li>GFS Client:<ul>
-<li>Interact with master for metadata operations.</li>
-<li>Actual data IO does not go through master; go through between client and chunk server.</li>
-<li>Does not cache files (infeasible to cache - too large; hard problem to solve for cache coherence, so don’t solve it.).</li>
-<li>Does not cache files - continued: GFS applications, MapReduce and BigTable. MapReduce - sequential read, no need to cache. Bigtable has its own cache management.</li>
+<li>Who to perform resolve:<ul>
+<li>Configurable.</li>
+<li>System level resolution: last write wins.</li>
+<li>Application level resolution: interactive guided merge conflicts, etc.</li>
 </ul>
 </li>
 </ul>
 </li>
-<li><p>Lease Management</p>
-<ul>
-<li>Lease is used to maintain a consistent mutation order across replicas. </li>
-<li>Master grants chunk lease to one replica (primary).</li>
-<li>The primary picks a serial order for all mutations to the chunk. All replicas follow this order when applying mutations.</li>
-<li>A lease has an initial timeout of 60 seconds. Can be extended at the request of primary chunk server, or can be revoked by master after lease expire.</li>
+<li>Other design considerations: Incremental scalability, Symmetry, Decentralization, Heterogeneity.</li>
 </ul>
-</li>
-<li><p>Consistency Model</p>
-<ul>
-<li>Relaxed consistency model.</li>
-<li>File namespace mutations (e.g., file creation) are atomic, handled by master exclusively.</li>
-<li>Data mutation case: consistent but undefined (e.g., concurrent succeed mutation).</li>
-<li>Data mutation case: Inconsistent and undefined (e.g., failed mutation).</li>
-<li>Concurrent append: at least once semantic (implies that records could have paddings in between, that readers need to dealt with).</li>
-<li>Reader dealt with validating (through checksums) and identifying records.</li>
-<li>Overall - flexible consistency model (instead of strong consistency) makes application development a little bit difficult.</li>
+<h1 id="System-Architecture"><a href="#System-Architecture" class="headerlink" title="System Architecture"></a>System Architecture</h1><ul>
+<li>Partitioning: Consistent Hashing.</li>
+<li>Replication: Replicated write protocol with configurable NWR parameters.</li>
+<li>Conflict Resolution: Vector clock.</li>
+<li>Temporary failures: Sloppy Quorum and hinted handoff.</li>
+<li>Recovering from permanent failures: Merkle trees.</li>
+<li>Membership and failure detection: Gossip-based membership protocol and failure detection. </li>
 </ul>
-</li>
-<li><p>Append</p>
-<ul>
-<li>Pipeline</li>
-<li>Data flow and control flow decoupled.</li>
-</ul>
-</li>
-<li><p>Fault Tolerant</p>
-<ul>
-<li>Replicated master, check points and snapshots (**Q: how replication is done??)</li>
-<li>Replicated chunk servers (default 3). Erasure codes / parity.</li>
-</ul>
-</li>
-</ul>
-
+<h1 id="To-be-continued"><a href="#To-be-continued" class="headerlink" title="To be continued."></a>To be continued.</h1>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/01/21/2017-01-21-Google-File-System/" data-id="ck3bty44t001zylxgrsq30cqo" data-title="The Google File System" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2017/02/11/2017-02-11-DynamoPaper/" data-id="ck3dyn1d70025wrxgwypmfzwx" data-title="Dynamo, Amazon’s Highly Available Key-value Store" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2017/01/21/2017-01-21-Google-File-System/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2017/02/11/2017-02-11-DynamoPaper/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
@@ -297,11 +177,106 @@
 
 
   
+    <article id="post-2017-02-03-USACO-ShuttlePuzzle" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/02/03/2017-02-03-USACO-ShuttlePuzzle/" class="article-date">
+  <time datetime="2017-02-03T19:45:31.000Z" itemprop="datePublished">2017-02-03</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/USACO/">USACO</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/02/03/2017-02-03-USACO-ShuttlePuzzle/">USACO 4.4 Shuttle Puzzle</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>BFS with pruning with key observation that W can only moves to right, and B can only moves to left to satisfy the constraints of smallest lexicographic order. Also the judge has tight memory bounds, so decide state duplication needs to use hashing (i.e. if using a set<string> then memory will grow out of bounds for “large” test data set.).</string></p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;set&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;queue&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;functional&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> State &#123;</span><br><span class="line">    <span class="keyword">int</span> op; <span class="comment">// index of the hole where next operation is going to happen.</span></span><br><span class="line">    <span class="keyword">struct</span> State *prev;</span><br><span class="line">    <span class="built_in">string</span> state;</span><br><span class="line">    <span class="keyword">int</span> empty; <span class="comment">// index of empty hole.</span></span><br><span class="line">    State(<span class="keyword">int</span> op, <span class="built_in">string</span> state, <span class="keyword">int</span> empty, State *prev) :</span><br><span class="line">    op(op), state(state), empty(empty), prev(prev) &#123;&#125;</span><br><span class="line">&#125; State;</span><br><span class="line"></span><br><span class="line"><span class="built_in">queue</span>&lt;State*&gt; q;</span><br><span class="line"><span class="built_in">vector</span>&lt;State*&gt; sp;</span><br><span class="line"><span class="built_in">string</span> target;</span><br><span class="line"><span class="built_in">string</span> start;</span><br><span class="line">State *ss;</span><br><span class="line"><span class="keyword">int</span> N;</span><br><span class="line"><span class="built_in">set</span>&lt;<span class="keyword">int</span>&gt; visited;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; solution;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">setup</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    start = <span class="built_in">string</span>(<span class="number">2</span> * N + <span class="number">1</span>, <span class="string">' '</span>);</span><br><span class="line">    target = <span class="built_in">string</span>(<span class="number">2</span> * N + <span class="number">1</span>, <span class="string">' '</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">        start[i] = <span class="string">'W'</span>;</span><br><span class="line">        target[i] = <span class="string">'B'</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = N + <span class="number">1</span>; i &lt; <span class="number">2</span> * N + <span class="number">1</span>; ++i) &#123;</span><br><span class="line">        start[i] = <span class="string">'B'</span>;</span><br><span class="line">        target[i] = <span class="string">'W'</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    ss = <span class="keyword">new</span> State(<span class="number">0</span>, start, N, <span class="literal">nullptr</span>);</span><br><span class="line">    q.push(ss);</span><br><span class="line">    sp.push_back(ss);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">bfs</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (!q.empty()) &#123;</span><br><span class="line">        <span class="keyword">auto</span> s = q.front(); q.pop();</span><br><span class="line">        <span class="keyword">if</span> (s-&gt;state == target) &#123;</span><br><span class="line">            <span class="built_in">cout</span> &lt;&lt; <span class="string">"target state reached."</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">            <span class="keyword">while</span> (s) &#123;</span><br><span class="line">                solution.push_back(s-&gt;op);</span><br><span class="line">                s = s-&gt;prev;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">int</span> empty = s-&gt;empty;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// W_ : W move right</span></span><br><span class="line">        <span class="keyword">if</span> (empty &gt; <span class="number">0</span> &amp;&amp; s-&gt;state[empty - <span class="number">1</span>] == <span class="string">'W'</span>) &#123;</span><br><span class="line">            <span class="keyword">auto</span> next = <span class="keyword">new</span> State(*s);</span><br><span class="line">            sp.push_back(next);</span><br><span class="line">            next-&gt;state[empty] = <span class="string">'W'</span>;</span><br><span class="line">            next-&gt;state[empty - <span class="number">1</span>] = <span class="string">' '</span>;</span><br><span class="line">            next-&gt;op = empty - <span class="number">1</span>;</span><br><span class="line">            next-&gt;prev = s;</span><br><span class="line">            next-&gt;empty--;</span><br><span class="line">            <span class="keyword">auto</span> h = <span class="built_in">std</span>::hash&lt;<span class="built_in">string</span>&gt;&#123;&#125;(next-&gt;state);</span><br><span class="line">            <span class="keyword">if</span> (!visited.count(h)) &#123;</span><br><span class="line">                visited.insert(h);</span><br><span class="line">                q.push(next);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// _B : B move left</span></span><br><span class="line">         <span class="keyword">if</span> (empty &lt; <span class="number">2</span> * N &amp;&amp; s-&gt;state[empty + <span class="number">1</span>] == <span class="string">'B'</span>) &#123;</span><br><span class="line">            <span class="keyword">auto</span> next = <span class="keyword">new</span> State(*s);</span><br><span class="line">            sp.push_back(next);</span><br><span class="line">            next-&gt;state[empty] = <span class="string">'B'</span>;</span><br><span class="line">            next-&gt;state[empty + <span class="number">1</span>] = <span class="string">' '</span>;</span><br><span class="line">            next-&gt;op = empty + <span class="number">1</span>;</span><br><span class="line">            next-&gt;prev = s;</span><br><span class="line">            next-&gt;empty++;</span><br><span class="line">            <span class="keyword">auto</span> h = <span class="built_in">std</span>::hash&lt;<span class="built_in">string</span>&gt;&#123;&#125;(next-&gt;state);</span><br><span class="line">            <span class="keyword">if</span> (!visited.count(h)) &#123;</span><br><span class="line">                visited.insert(h);</span><br><span class="line">                q.push(next);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// WB_ : W jump right</span></span><br><span class="line">        <span class="keyword">if</span> (empty &gt; <span class="number">1</span> &amp;&amp; s-&gt;state[empty - <span class="number">2</span>] == <span class="string">'W'</span> &amp;&amp;</span><br><span class="line">            s-&gt;state[empty - <span class="number">1</span>] != <span class="string">'W'</span>) &#123;</span><br><span class="line">            <span class="keyword">auto</span> next = <span class="keyword">new</span> State(*s);</span><br><span class="line">            sp.push_back(next);</span><br><span class="line">            next-&gt;state[empty] = <span class="string">'W'</span>;</span><br><span class="line">            next-&gt;state[empty - <span class="number">2</span>] = <span class="string">' '</span>;</span><br><span class="line">            next-&gt;op = empty - <span class="number">2</span>;</span><br><span class="line">            next-&gt;prev = s;</span><br><span class="line">            next-&gt;empty -= <span class="number">2</span>;</span><br><span class="line">            <span class="keyword">auto</span> h = <span class="built_in">std</span>::hash&lt;<span class="built_in">string</span>&gt;&#123;&#125;(next-&gt;state);</span><br><span class="line">            <span class="keyword">if</span> (!visited.count(h)) &#123;</span><br><span class="line">                visited.insert(h);</span><br><span class="line">                q.push(next);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// _WB : B jump left</span></span><br><span class="line">        <span class="keyword">if</span> (empty &lt; <span class="number">2</span> * N - <span class="number">1</span> &amp;&amp; s-&gt;state[empty + <span class="number">2</span>] == <span class="string">'B'</span> &amp;&amp;</span><br><span class="line">            s-&gt;state[empty + <span class="number">1</span>] == <span class="string">'W'</span>) &#123;</span><br><span class="line">            <span class="keyword">auto</span> next = <span class="keyword">new</span> State(*s);</span><br><span class="line">            sp.push_back(next);</span><br><span class="line">            next-&gt;state[empty] = <span class="string">'B'</span>;</span><br><span class="line">            next-&gt;state[empty + <span class="number">2</span>] = <span class="string">' '</span>;</span><br><span class="line">            next-&gt;op = empty + <span class="number">2</span>;</span><br><span class="line">            next-&gt;prev = s;</span><br><span class="line">            next-&gt;empty += <span class="number">2</span>;</span><br><span class="line">            <span class="keyword">auto</span> h = <span class="built_in">std</span>::hash&lt;<span class="built_in">string</span>&gt;&#123;&#125;(next-&gt;state);</span><br><span class="line">            <span class="keyword">if</span> (!visited.count(h)) &#123;</span><br><span class="line">                visited.insert(h);</span><br><span class="line">                q.push(next);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"shuttle.in"</span>)</span></span>;</span><br><span class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"shuttle.out"</span>)</span></span>;</span><br><span class="line">    fin &gt;&gt; N;</span><br><span class="line">    setup();</span><br><span class="line">    bfs();</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">int</span> cnt = <span class="number">0</span>, size = (<span class="keyword">int</span>)solution.size() - <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = size - <span class="number">1</span>; i &gt;= <span class="number">0</span>; --i) &#123;</span><br><span class="line">        ++cnt;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; solution[i] + <span class="number">1</span>;</span><br><span class="line">        fout &lt;&lt; solution[i] + <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (cnt == <span class="number">20</span> &amp;&amp; i) &#123;</span><br><span class="line">            <span class="built_in">cout</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">            fout &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">            cnt = <span class="number">0</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (i) &#123;</span><br><span class="line">            <span class="built_in">cout</span> &lt;&lt; <span class="string">" "</span>;</span><br><span class="line">            fout &lt;&lt; <span class="string">" "</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> ptr : sp) &#123;</span><br><span class="line">        <span class="keyword">if</span> (ptr != <span class="literal">nullptr</span>) &#123;</span><br><span class="line">            <span class="keyword">delete</span> ptr; ptr = <span class="literal">nullptr</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    fout &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2017/02/03/2017-02-03-USACO-ShuttlePuzzle/" data-id="ck3dyn1d70024wrxg1mor97z7" data-title="USACO 4.4 Shuttle Puzzle" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2017/02/03/2017-02-03-USACO-ShuttlePuzzle/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/BFS/">BFS</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-2017-02-01-ByzantineFaultTolerance" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/02/01/2017-02-01-ByzantineFaultTolerance/" class="article-date">
+  <time datetime="2017-02-01T18:32:31.000Z" itemprop="datePublished">2017-02-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Distributed-System/">Distributed System</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/02/01/2017-02-01-ByzantineFaultTolerance/">Why we need n &gt;= 3f + 1 in Byzantine Fault Tolerance</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>In distributed systems where messages are asynchronous and failures can be Byzantine, we have to use at least n = 3f + 1 replicas in total to tolerate f faulty replicas. But why?</p>
+<p>Consider this scenario: a client sends the same command to each of n servers and then waits for servers to execute the command and send back the result. If we have f byzantine servers, then up to f messages could not be trusted, or up to f servers could not responding. So the client must be able to function with n - f responses. In addition, as the messages are asynchronous, these messages could be delayed for an indefinite amount of time. So if there are f messages not received by client, then it could be also be that these f messages are not from faulty servers, but instead caused by networking partition or slow responding non-faulty servers. In this case, where the f messages are from slow but non-faulty servers, we will have n - f messages remaining and out of these n - f messages, there could be at most f faulty messages again from byzantine servers, so the worst case we will have n - 2f correct message. For the system to function properly, the correct messages must out number faulty messages for client to identify which is which, which implies we should have n - 2f &gt; f, so n &gt; 3f where f is the number of byzantine servers.</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2017/02/01/2017-02-01-ByzantineFaultTolerance/" data-id="ck3dyn1d50023wrxghd59x2xc" data-title="Why we need n &gt;= 3f + 1 in Byzantine Fault Tolerance" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2017/02/01/2017-02-01-ByzantineFaultTolerance/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/BFT/">BFT</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
 
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/page/28/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/27/">27</a><a class="page-number" href="/page/28/">28</a><span class="page-number current">29</span><a class="page-number" href="/page/30/">30</a><a class="page-number" href="/page/31/">31</a><span class="space">&hellip;</span><a class="page-number" href="/page/53/">53</a><a class="extend next" rel="next" href="/page/30/">Next &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/28/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/27/">27</a><a class="page-number" href="/page/28/">28</a><span class="page-number current">29</span><a class="page-number" href="/page/30/">30</a><a class="page-number" href="/page/31/">31</a><span class="space">&hellip;</span><a class="page-number" href="/page/54/">54</a><a class="extend next" rel="next" href="/page/30/">Next &raquo;</a>
   </nav>
 
 </section>
@@ -354,6 +329,14 @@
       <ul>
         
           <li>
+            <a href="/2019/11/22/2019-11-22-LeetCode1136/">LeetCode 1136. Parallel Courses</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/22/2019-11-22-LeetCode1213/">LeetCode 1213. Intersection of Three Sorted Arrays</a>
+          </li>
+        
+          <li>
             <a href="/2019/11/22/2019-11-22-LeetCode895/">LeetCode 895. Maximum Frequency Stack</a>
           </li>
         
@@ -362,15 +345,7 @@
           </li>
         
           <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1016/">LeetCode 1016. Binary String With Substrings Representing 1 To N</a>
-          </li>
-        
-          <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1015/">LeetCode 1015. Smallest Integer Divisible by K</a>
-          </li>
-        
-          <li>
-            <a href="/2019/11/11/2019-11-11-LeetCode1020/">LeetCode 1020. Number of Enclaves</a>
+            <a href="/2019/11/22/2019-11-22-LeetCode980/">LeetCode 980. Unique Paths III</a>
           </li>
         
       </ul>
