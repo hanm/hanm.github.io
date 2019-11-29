@@ -75,9 +75,9 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-2019-11-10-LeetCode1118" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2019-11-10-LeetCode1089" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2019/11/10/2019-11-10-LeetCode1118/" class="article-date">
+    <a href="/2019/11/10/2019-11-10-LeetCode1089/" class="article-date">
   <time datetime="2019-11-10T19:11:11.000Z" itemprop="datePublished">2019-11-10</time>
 </a>
     
@@ -93,7 +93,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1118/">LeetCode 1118. Number of Days in a Month</a>
+      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1089/">LeetCode 1089. Duplicate Zeros</a>
     </h1>
   
 
@@ -101,14 +101,14 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><a href="https://leetcode.com/problems/number-of-days-in-a-month/description/" target="_blank" rel="noopener">Problem Statement</a></p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">is_leap_year</span></span>(y: <span class="keyword">i32</span>) -&gt; <span class="keyword">bool</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> (y % <span class="number">4</span> == <span class="number">0</span> &amp;&amp; y % <span class="number">100</span> != <span class="number">0</span>) || (y % <span class="number">400</span> == <span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">number_of_days</span></span>(y: <span class="keyword">i32</span>, m: <span class="keyword">i32</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> feb = <span class="keyword">match</span> Self::is_leap_year(y)  &#123;</span><br><span class="line">            <span class="literal">true</span> =&gt; <span class="number">29</span>,</span><br><span class="line">            <span class="literal">false</span> =&gt; <span class="number">28</span></span><br><span class="line">        &#125;;</span><br><span class="line">        <span class="keyword">let</span> ans = <span class="built_in">vec!</span>[<span class="number">31</span>,feb,<span class="number">31</span>,<span class="number">30</span>,<span class="number">31</span>,<span class="number">30</span>,<span class="number">31</span>,<span class="number">31</span>,<span class="number">30</span>,<span class="number">31</span>,<span class="number">30</span>,<span class="number">31</span>];</span><br><span class="line">        <span class="keyword">return</span> ans[m <span class="keyword">as</span> <span class="keyword">usize</span> - <span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+        <p><a href="https://leetcode.com/problems/duplicate-zeros/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">duplicate_zeros</span></span>(arr: &amp;<span class="keyword">mut</span> <span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;) &#123;</span><br><span class="line">        <span class="keyword">let</span> n = arr.len();</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> j = n;</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..n &#123;</span><br><span class="line">            <span class="keyword">if</span> arr[i] == <span class="number">0</span> &#123;</span><br><span class="line">                j += <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> i : <span class="keyword">i32</span> = (n  - <span class="number">1</span>) <span class="keyword">as</span> <span class="keyword">i32</span>;</span><br><span class="line">        <span class="keyword">while</span> i &gt;= <span class="number">0</span> &#123;</span><br><span class="line">            j -= <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">if</span> j &lt; n &#123;</span><br><span class="line">                arr[j] = arr[i <span class="keyword">as</span> <span class="keyword">usize</span>];</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> arr[i <span class="keyword">as</span> <span class="keyword">usize</span>] == <span class="number">0</span> &#123;</span><br><span class="line">                j-= <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">if</span> j &lt; n &#123;</span><br><span class="line">                    arr[j] = <span class="number">0</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            i -= <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1118/" data-id="ck3dyn1e6003awrxgu094e9v7" data-title="LeetCode 1118. Number of Days in a Month" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1089/" data-id="ck3g3mjfz0042mfxgw4ceojjw" data-title="LeetCode 1089. Duplicate Zeros" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1118/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1089/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
@@ -122,9 +122,9 @@
 
 
   
-    <article id="post-2019-11-10-LeetCode1119" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2019-11-10-LeetCode1091" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2019/11/10/2019-11-10-LeetCode1119/" class="article-date">
+    <a href="/2019/11/10/2019-11-10-LeetCode1091/" class="article-date">
   <time datetime="2019-11-10T19:11:11.000Z" itemprop="datePublished">2019-11-10</time>
 </a>
     
@@ -140,7 +140,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1119/">LeetCode 1119. Remove Vowels from a String</a>
+      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1091/">LeetCode 1091. Shortest Path in Binary Matrix</a>
     </h1>
   
 
@@ -148,14 +148,14 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><a href="https://leetcode.com/problems/remove-vowels-from-a-string/description/" target="_blank" rel="noopener">Problem Statement</a></p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::collections::HashSet;</span><br><span class="line"><span class="keyword">use</span> std::iter::FromIterator;</span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">remove_vowels</span></span>(s: <span class="built_in">String</span>) -&gt; <span class="built_in">String</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> ans, <span class="keyword">mut</span> j) = (<span class="string">""</span>.to_string(), <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">let</span> vowel_set : HashSet&lt;<span class="keyword">char</span>&gt; = HashSet::from_iter(<span class="built_in">vec!</span>[<span class="string">'a'</span>, <span class="string">'e'</span>, <span class="string">'i'</span>, <span class="string">'o'</span>, <span class="string">'u'</span>]);</span><br><span class="line">        <span class="keyword">while</span> j &lt; s.len() &#123;</span><br><span class="line">            <span class="keyword">let</span> sj = s.chars().nth(j).unwrap();</span><br><span class="line">            <span class="keyword">if</span> !vowel_set.contains(&amp;sj) &#123;</span><br><span class="line">                ans.push(sj);</span><br><span class="line">            &#125;</span><br><span class="line">            j+= <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+        <p><a href="https://leetcode.com/problems/shortest-path-in-binary-matrix/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::collections::VecDeque;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">shortest_path_binary_matrix</span></span>(grid: <span class="built_in">Vec</span>&lt;<span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;&gt;) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> g = grid.clone();</span><br><span class="line">        <span class="keyword">let</span> n = g.len();</span><br><span class="line">        <span class="keyword">if</span> n == <span class="number">0</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> g[<span class="number">0</span>][<span class="number">0</span>] == <span class="number">1</span> || g[n - <span class="number">1</span>][n - <span class="number">1</span>] == <span class="number">1</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> n == <span class="number">1</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> q = VecDeque::new();</span><br><span class="line">        q.push_back((<span class="number">0</span>, <span class="number">0</span>));</span><br><span class="line">        <span class="keyword">let</span> (dx, dy) : ([<span class="keyword">i32</span>; <span class="number">8</span>], [<span class="keyword">i32</span>; <span class="number">8</span>]) = ([<span class="number">1</span>, -<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>, -<span class="number">1</span>, -<span class="number">1</span>],</span><br><span class="line">                                               [<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, -<span class="number">1</span>, <span class="number">1</span>, -<span class="number">1</span>, <span class="number">1</span>, -<span class="number">1</span>]);</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> level = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span> !q.is_empty() &#123;</span><br><span class="line">            <span class="keyword">let</span> size = q.len();</span><br><span class="line">            level += <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">for</span> _i <span class="keyword">in</span> <span class="number">0</span>..size &#123;</span><br><span class="line">                <span class="keyword">let</span> cur = q.front().unwrap().clone(); q.pop_front();</span><br><span class="line">                <span class="keyword">let</span> (x, y) = (cur.<span class="number">0</span>, cur.<span class="number">1</span>);</span><br><span class="line">                <span class="keyword">for</span> j <span class="keyword">in</span> <span class="number">0</span>..<span class="number">8</span> &#123;</span><br><span class="line">                    <span class="keyword">let</span> (xx, yy) = (x + dx[j], y + dy[j]);</span><br><span class="line">                    <span class="keyword">if</span> xx &lt; <span class="number">0</span> || yy &lt; <span class="number">0</span> || xx <span class="keyword">as</span> <span class="keyword">usize</span> &gt;= n || yy <span class="keyword">as</span> <span class="keyword">usize</span> &gt;= n &#123;</span><br><span class="line">                        <span class="keyword">continue</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">let</span> (nx, ny) = (xx <span class="keyword">as</span> <span class="keyword">usize</span>, yy <span class="keyword">as</span> <span class="keyword">usize</span>);</span><br><span class="line">                    <span class="keyword">if</span> nx == n - <span class="number">1</span> &amp;&amp; ny == n - <span class="number">1</span> &#123;</span><br><span class="line">                        <span class="keyword">return</span> level;</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">if</span> g[nx][ny] == <span class="number">1</span> &#123;</span><br><span class="line">                        <span class="keyword">continue</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                    g[nx][ny] = <span class="number">1</span>;</span><br><span class="line">                    q.push_back((nx <span class="keyword">as</span> <span class="keyword">i32</span>, ny <span class="keyword">as</span> <span class="keyword">i32</span>));</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1119/" data-id="ck3dyn1e7003bwrxgw28yylqj" data-title="LeetCode 1119. Remove Vowels from a String" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1091/" data-id="ck3g3mjg10044mfxgnvn9zqby" data-title="LeetCode 1091. Shortest Path in Binary Matrix" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1119/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1091/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
@@ -169,9 +169,9 @@
 
 
   
-    <article id="post-2019-11-10-LeetCode1143" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2019-11-10-LeetCode1120" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2019/11/10/2019-11-10-LeetCode1143/" class="article-date">
+    <a href="/2019/11/10/2019-11-10-LeetCode1120/" class="article-date">
   <time datetime="2019-11-10T19:11:11.000Z" itemprop="datePublished">2019-11-10</time>
 </a>
     
@@ -187,7 +187,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1143/">LeetCode 1143. Longest Common Subsequence</a>
+      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1120/">LeetCode 1120. Maximum Average Subtree</a>
     </h1>
   
 
@@ -195,14 +195,14 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><a href="https://leetcode.com/problems/longest-common-subsequence/description/" target="_blank" rel="noopener">Problem Statement</a></p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">longest_common_subsequence</span></span>(text1: <span class="built_in">String</span>, text2: <span class="built_in">String</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> (m, n, <span class="keyword">mut</span> i, <span class="keyword">mut</span> j) = (text1.len(), text2.len(), <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> dp = <span class="built_in">vec!</span>[<span class="built_in">vec!</span>[<span class="number">0</span>; n + <span class="number">1</span>]; m + <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">while</span> i &lt; m &#123;</span><br><span class="line">            <span class="keyword">while</span> j &lt; n &#123;</span><br><span class="line">                <span class="keyword">if</span> text1.chars().nth(i).unwrap() == text2.chars().nth(j).unwrap() &#123;</span><br><span class="line">                    dp[i + <span class="number">1</span>][j + <span class="number">1</span>] = dp[i][j] + <span class="number">1</span>;</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    dp[i + <span class="number">1</span>][j + <span class="number">1</span>] = std::cmp::max(dp[i][j + <span class="number">1</span>], dp[i + <span class="number">1</span>][j]);</span><br><span class="line">                &#125;</span><br><span class="line">                j += <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            i += <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> dp[m][n];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+        <p><a href="https://leetcode.com/problems/maximum-average-subtree/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::rc::Rc;</span><br><span class="line"><span class="keyword">use</span> std::cell::RefCell;</span><br><span class="line"><span class="keyword">use</span> std::borrow::Borrow;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">dfs</span></span>(root: <span class="built_in">Option</span>&lt;&amp;Rc&lt;RefCell&lt;TreeNode&gt;&gt;&gt;, ans: &amp;<span class="keyword">mut</span> <span class="keyword">f64</span>) -&gt; (<span class="keyword">i32</span>, <span class="keyword">i32</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">let</span> <span class="literal">Some</span>(node) = root &#123;</span><br><span class="line">            <span class="keyword">let</span> (l, r) = (Self::dfs(RefCell::borrow(&amp;node).left.as_ref(), ans),</span><br><span class="line">                          Self::dfs(RefCell::borrow(&amp;node).right.as_ref(), ans));</span><br><span class="line">            <span class="keyword">let</span> sum = l.<span class="number">0</span> + r.<span class="number">0</span> + RefCell::borrow(&amp;node).val;</span><br><span class="line">            <span class="keyword">let</span> total = <span class="number">1</span> + l.<span class="number">1</span> + r.<span class="number">1</span>;</span><br><span class="line">            <span class="keyword">let</span> avg = sum <span class="keyword">as</span> <span class="keyword">f64</span> / total <span class="keyword">as</span> <span class="keyword">f64</span>;</span><br><span class="line">            <span class="keyword">if</span> avg &gt; *ans &#123;</span><br><span class="line">                *ans = avg;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> (sum, total);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> (<span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">maximum_average_subtree</span></span>(root: <span class="built_in">Option</span>&lt;Rc&lt;RefCell&lt;TreeNode&gt;&gt;&gt;) -&gt; <span class="keyword">f64</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> ans = <span class="number">0</span>.;</span><br><span class="line">        <span class="keyword">if</span> root.is_none() &#123;</span><br><span class="line">            <span class="keyword">return</span> ans;</span><br><span class="line">        &#125;</span><br><span class="line">        Self::dfs(<span class="literal">Some</span>(&amp;root.unwrap()), &amp;<span class="keyword">mut</span> ans);</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1143/" data-id="ck3dyn1e7003cwrxg43a7unj1" data-title="LeetCode 1143. Longest Common Subsequence" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1120/" data-id="ck3g3mjg20046mfxgo24opr6n" data-title="LeetCode 1120. Maximum Average Subtree" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1143/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1120/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
@@ -220,7 +220,7 @@
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/page/13/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><a class="page-number" href="/page/13/">13</a><span class="page-number current">14</span><a class="page-number" href="/page/15/">15</a><a class="page-number" href="/page/16/">16</a><span class="space">&hellip;</span><a class="page-number" href="/page/54/">54</a><a class="extend next" rel="next" href="/page/15/">Next &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/13/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><a class="page-number" href="/page/13/">13</a><span class="page-number current">14</span><a class="page-number" href="/page/15/">15</a><a class="page-number" href="/page/16/">16</a><span class="space">&hellip;</span><a class="page-number" href="/page/58/">58</a><a class="extend next" rel="next" href="/page/15/">Next &raquo;</a>
   </nav>
 
 </section>
@@ -273,7 +273,11 @@
       <ul>
         
           <li>
-            <a href="/2019/11/22/2019-11-22-LeetCode1136/">LeetCode 1136. Parallel Courses</a>
+            <a href="/2019/11/22/2019-11-22-LeetCode895/">LeetCode 895. Maximum Frequency Stack</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/22/2019-11-22-LeetCode934/">LeetCode 934. Shortest Bridge</a>
           </li>
         
           <li>
@@ -281,11 +285,7 @@
           </li>
         
           <li>
-            <a href="/2019/11/22/2019-11-22-LeetCode895/">LeetCode 895. Maximum Frequency Stack</a>
-          </li>
-        
-          <li>
-            <a href="/2019/11/22/2019-11-22-LeetCode934/">LeetCode 934. Shortest Bridge</a>
+            <a href="/2019/11/22/2019-11-22-LeetCode1136/">LeetCode 1136. Parallel Courses</a>
           </li>
         
           <li>

@@ -75,14 +75,14 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-2017-07-01-TopCoder-SRM716DivI" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2019-09-23-LeetCode1123" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2017/07/03/2017-07-01-TopCoder-SRM716DivI/" class="article-date">
-  <time datetime="2017-07-03T21:02:31.000Z" itemprop="datePublished">2017-07-03</time>
+    <a href="/2019/09/23/2019-09-23-LeetCode1123/" class="article-date">
+  <time datetime="2019-09-23T17:39:31.000Z" itemprop="datePublished">2019-09-23</time>
 </a>
     
   <div class="article-category">
-    <a class="article-category-link" href="/categories/TopCoder/">TopCoder</a>
+    <a class="article-category-link" href="/categories/LeetCode-in-Rust/">LeetCode in Rust</a>
   </div>
 
   </div>
@@ -93,7 +93,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/03/2017-07-01-TopCoder-SRM716DivI/">SRM 716 DIV II</a>
+      <a class="article-title" href="/2019/09/23/2019-09-23-LeetCode1123/">LeetCode 1123 Lowest Common Ancestor of Deepest Leaves</a>
     </h1>
   
 
@@ -101,62 +101,18 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> Permutiple &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="built_in">string</span> <span class="title">isPossible</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">        <span class="built_in">string</span> xx = <span class="built_in">std</span>::to_string(x);</span><br><span class="line">        <span class="keyword">do</span> &#123;</span><br><span class="line">            <span class="keyword">int</span> val = <span class="built_in">std</span>::stoi(xx);</span><br><span class="line">            <span class="keyword">if</span> (val &lt;= x) <span class="keyword">continue</span>;</span><br><span class="line">            <span class="keyword">if</span> (val % x == <span class="number">0</span>) <span class="keyword">return</span> <span class="string">"Possible"</span>;</span><br><span class="line">        &#125; <span class="keyword">while</span> (<span class="built_in">std</span>::next_permutation(xx.begin(), xx.end()));</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"Impossible"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> ConstructLCSEasy &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="built_in">string</span> <span class="title">construct</span><span class="params">(<span class="keyword">int</span> ab, <span class="keyword">int</span> bc, <span class="keyword">int</span> ca)</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="built_in">string</span> <span class="title">AB</span><span class="params">(ab, <span class="string">'1'</span>)</span></span>;</span><br><span class="line">        <span class="built_in">string</span> BC = AB, CA = AB;</span><br><span class="line">        <span class="keyword">int</span> diff2 = bc - ab;</span><br><span class="line">        <span class="keyword">while</span> (diff2--) &#123;</span><br><span class="line">            BC += <span class="string">"0"</span>; CA += <span class="string">"0"</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> diff3 = ca - ab;</span><br><span class="line">        <span class="keyword">while</span> (diff3--) &#123;</span><br><span class="line">            AB += <span class="string">"1"</span>; CA += <span class="string">"1"</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> AB + <span class="string">" "</span> + BC + <span class="string">" "</span> + CA;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+        <p><a href="https://leetcode.com/problems/lowest-common-ancestor-of-deepest-leaves/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::rc::Rc;</span><br><span class="line"><span class="keyword">use</span> std::cell::RefCell;</span><br><span class="line"><span class="keyword">use</span> std::cmp::max;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">compute_depth</span></span>(node : <span class="built_in">Option</span>&lt;&amp;Rc&lt;RefCell&lt;TreeNode&gt;&gt;&gt;) -&gt; <span class="keyword">u32</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">let</span> <span class="literal">Some</span>(n) = node &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span> + max(Solution::compute_depth(n.borrow().left.as_ref()),</span><br><span class="line">                           Solution::compute_depth(n.borrow().right.as_ref()));</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">lca_deepest_leaves</span></span>(root: <span class="built_in">Option</span>&lt;Rc&lt;RefCell&lt;TreeNode&gt;&gt;&gt;) -&gt; <span class="built_in">Option</span>&lt;Rc&lt;RefCell&lt;TreeNode&gt;&gt;&gt; &#123;</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">let</span> <span class="literal">Some</span>(node) = root.clone() &#123;</span><br><span class="line">            <span class="keyword">let</span> (l, r) = (Solution::compute_depth(node.borrow().left.as_ref()),</span><br><span class="line">                          Solution::compute_depth(node.borrow().right.as_ref()));</span><br><span class="line">            <span class="keyword">if</span> l == r &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">Some</span>(node);</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> l &lt; r &#123;</span><br><span class="line">                <span class="keyword">return</span> Solution::lca_deepest_leaves(node.borrow().right.clone());</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">return</span> Solution::lca_deepest_leaves(node.borrow().left.clone());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">None</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/07/03/2017-07-01-TopCoder-SRM716DivI/" data-id="ck3dyn1dk002iwrxgktvtochd" data-title="SRM 716 DIV II" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/09/23/2019-09-23-LeetCode1123/" data-id="ck3g3mjf90031mfxguwdfed4t" data-title="LeetCode 1123 Lowest Common Ancestor of Deepest Leaves" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2017/07/03/2017-07-01-TopCoder-SRM716DivI/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2017-06-24-USACO-MilkMeasuring" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/06/25/2017-06-24-USACO-MilkMeasuring/" class="article-date">
-  <time datetime="2017-06-25T18:12:31.000Z" itemprop="datePublished">2017-06-25</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/USACO/">USACO</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/25/2017-06-24-USACO-MilkMeasuring/">USACO 5.3 Milk Measuring</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Brutal force DFS search with a lot of pruning. The search has N passes, and it starts from 1 pail, then 2 pails, etc and up to N pails. For each pass, use memorization and pruning to avoid hitting unnecessary search space. The passes are deepened via DFS, and we return once we gets a hit in a given pass as the question was asking the smallest set of pails.<br><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> Q, N, total;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; pails, ans, cur;</span><br><span class="line"><span class="keyword">bool</span> found = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> depth, <span class="keyword">int</span> index, <span class="keyword">int</span> left)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (depth == total) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!left) &#123;</span><br><span class="line">            found = <span class="literal">true</span>;</span><br><span class="line">            <span class="comment">// dfs does not guarantee smallest order, so</span></span><br><span class="line">            <span class="comment">// keep this and compare with a future solution.</span></span><br><span class="line">            ans = cur;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> current = pails[index];</span><br><span class="line">    <span class="comment">// not feasible.</span></span><br><span class="line">    <span class="keyword">if</span> (index &gt;= N || left &lt; current) <span class="keyword">return</span>;</span><br><span class="line">    <span class="comment">// current search is no smaller than existing solution.</span></span><br><span class="line">    <span class="keyword">if</span> (found &amp;&amp; current &gt; ans[depth]) <span class="keyword">return</span>;</span><br><span class="line">    cur[depth] = current;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= left / current; i++) &#123;</span><br><span class="line">        dfs(depth + <span class="number">1</span>, index + <span class="number">1</span>, left - i * current);</span><br><span class="line">    &#125;</span><br><span class="line">    dfs(depth, index + <span class="number">1</span>, left);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"milk4.in"</span>)</span></span>;</span><br><span class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"milk4.out"</span>)</span></span>;</span><br><span class="line">    fin &gt;&gt; Q &gt;&gt; N;</span><br><span class="line">    </span><br><span class="line">    pails = cur = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; i++) &#123;</span><br><span class="line">        fin &gt;&gt; pails[i];</span><br><span class="line">    &#125;</span><br><span class="line">    sort(pails.begin(), pails.end());</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (total = <span class="number">1</span>; total &lt;= N; ++total) &#123;</span><br><span class="line">        dfs(<span class="number">0</span>, <span class="number">0</span>, Q);</span><br><span class="line">        <span class="keyword">if</span> (found) <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    fout &lt;&lt; total; <span class="built_in">cout</span> &lt;&lt; total;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; total; i++) &#123;</span><br><span class="line">        fout &lt;&lt; <span class="string">" "</span> &lt;&lt; ans[i]; <span class="built_in">cout</span> &lt;&lt; <span class="string">" "</span> &lt;&lt; ans[i];</span><br><span class="line">    &#125;</span><br><span class="line">    fout &lt;&lt; <span class="built_in">endl</span>;<span class="built_in">cout</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/06/25/2017-06-24-USACO-MilkMeasuring/" data-id="ck3dyn1dh002gwrxgstdarzrn" data-title="USACO 5.3 Milk Measuring" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2017/06/25/2017-06-24-USACO-MilkMeasuring/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2019/09/23/2019-09-23-LeetCode1123/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DFS/">DFS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MEMORIZED-SEARCH/">MEMORIZED SEARCH</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LeetCode/">LeetCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Rust/">Rust</a></li></ul>
 
     </footer>
   </div>
@@ -166,14 +122,14 @@
 
 
   
-    <article id="post-2017-05-08-MegaStore" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2019-09-19-LeetCode641" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2017/05/08/2017-05-08-MegaStore/" class="article-date">
-  <time datetime="2017-05-09T04:00:31.000Z" itemprop="datePublished">2017-05-08</time>
+    <a href="/2019/09/19/2019-09-19-LeetCode641/" class="article-date">
+  <time datetime="2019-09-19T17:39:31.000Z" itemprop="datePublished">2019-09-19</time>
 </a>
     
   <div class="article-category">
-    <a class="article-category-link" href="/categories/Distributed-System/">Distributed System</a>
+    <a class="article-category-link" href="/categories/LeetCode-in-Rust/">LeetCode in Rust</a>
   </div>
 
   </div>
@@ -184,7 +140,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/05/08/2017-05-08-MegaStore/">Paper Digest - Megastore, Providing Scalable, Highly Available Storage for Interactive Services</a>
+      <a class="article-title" href="/2019/09/19/2019-09-19-LeetCode641/">LeetCode 641 Design Circular Deque</a>
     </h1>
   
 
@@ -192,133 +148,65 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Paper digest - <a href="https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/36971.pdf" target="_blank" rel="noopener">Megastore: Providing Scalable, Highly Available Storage for Interactive Services</a></p>
-<h1 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h1><ul>
-<li>Blends the scalability of a NoSQL datastore with the convenience of a traditional RDBMS.</li>
-<li>Provides both strong consistency guarantees and high availability.</li>
-<li>Provides fully serializable ACID semantics within fine-grained partitions of data.</li>
-</ul>
-<h1 id="Motivation"><a href="#Motivation" class="headerlink" title="Motivation"></a>Motivation</h1><ul>
-<li>Online services are forcing the storage community to meet new demands. <ul>
-<li>Highly scalable.</li>
-<li>Rapid development.</li>
-<li>Low latency.</li>
-<li>Consistent view of data.</li>
-<li>Highly available.</li>
-</ul>
-</li>
-</ul>
-<h1 id="Design-Highlights"><a href="#Design-Highlights" class="headerlink" title="Design Highlights"></a>Design Highlights</h1><ul>
-<li>Partition data. Replicate unit is a partition.</li>
-<li>Full ACID semantics within partitions only.</li>
-<li>Across partitions, limited consistency guarantees (later spanner improves this)</li>
-<li>Provide database features (2nd indexes), but does not provide scalability guarantees (can only scale within user-tolerable latency limits.)</li>
-<li>Innovative usage of Paxos: use it for replication instead of traditional usage (locking, leader election, replicate config data - e.g. ZooKeeper/ZAB)</li>
-</ul>
-<h1 id="Availability-with-Scalability"><a href="#Availability-with-Scalability" class="headerlink" title="Availability with Scalability"></a>Availability with Scalability</h1><ul>
-<li>Replication<ul>
-<li>Replicate a write-ahead log over a group of symmetric peers.</li>
-<li>Any node can initiate reads and writes.</li>
-<li>Each log append blocks on acknowledgments from a majority of replicas.</li>
-<li>Optimizations on Paxos<ul>
-<li>Allow local reads.</li>
-<li>Single roundtrip writes.</li>
-</ul>
-</li>
-<li>Multiple replicated logs instead of single log for better availability.</li>
-</ul>
-</li>
-<li>Key Concept - <strong>Entity Groups</strong><ul>
-<li>Entity group is a collection of data and unit of replication.</li>
-<li>Within a single entity group: ACID semantic.</li>
-<li>Across entity groups:<ul>
-<li>Two phased commit (strong consistency)</li>
-<li>Or async communications through message queues.</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>Physical Layout of data<ul>
-<li>Use BigTable for data storage.</li>
-<li>Letting applications control the placement of data.<ul>
-<li>Applications try to keep data near users and replicas near each other.</li>
-<li>The data for an entity group are held in contiguous ranges of Bigtable rows.</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<h1 id="API-Design"><a href="#API-Design" class="headerlink" title="API Design"></a>API Design</h1><ul>
-<li><strong>Cost-transparent APIs</strong>: runtime costs that match application developers’ intuitions.</li>
-<li>Eliminate needs for joins:  offer fine-grained control over physical locality.</li>
-<li>Joins when required is implemented in application code.</li>
-</ul>
-<h1 id="Data-Model"><a href="#Data-Model" class="headerlink" title="Data Model"></a>Data Model</h1><ul>
-<li>Lies between the abstract tuples of an RDBMS and the concrete row-column storage of NoSQL.</li>
-<li>Data model is declared in a schema and is strongly typed.</li>
-</ul>
-<h1 id="Transactions-and-Concurrency-Control"><a href="#Transactions-and-Concurrency-Control" class="headerlink" title="Transactions and Concurrency Control"></a>Transactions and Concurrency Control</h1><ul>
-<li>Use MVCC. Readers and writers don’t block each other, and reads are isolated from writes for the duration of a transaction.</li>
-<li>Read semantics<ul>
-<li>current (single entity group)</li>
-<li>snapshot (single entity group)</li>
-<li>inconsistent (ignore state of log)</li>
-</ul>
-</li>
-<li>Queues<ul>
-<li>Cross group batch operation deliver.</li>
-</ul>
-</li>
-<li>2 Phased Commit for atomic update across entity groups.</li>
-</ul>
-<h1 id="Paxos-based-Replication-key-innovations"><a href="#Paxos-based-Replication-key-innovations" class="headerlink" title="Paxos based Replication (key innovations)"></a>Paxos based Replication <strong>(key innovations)</strong></h1><ul>
-<li>Pitfall of master-slave based Paxos<ul>
-<li>Master failover can require a complicated state machine.</li>
-<li>A series of timers must elapse before service is restored. </li>
-<li>It is difficult to avoid user-visible outages.</li>
-</ul>
-</li>
-<li>Fast Reads<ul>
-<li>Local read.</li>
-<li>Coordinator tracks if a specific replica has observed the full state of writes so it can serve local reads.</li>
-</ul>
-</li>
-<li>Fast Writes<ul>
-<li>Single round trip writes.</li>
-<li>Pre-preparing optimization: each successful write includes an implied prepare message granting the master the right to issue accept messages for the next log position.</li>
-<li>If the write succeeds, the prepares are honored, and the next write skips directly to the accept phase. </li>
-<li>Multi-Paxos: independent instance of the Paxos algorithm for each log position. T</li>
-</ul>
-</li>
-<li>Replica Types<ul>
-<li>Full Replica: contain all entity and index and able to serve current reads.</li>
-<li>Witness Replica: vote and store WAL, but does not apply the WAL (kind like observer in ZooKeeper but not strictly the same - observer in ZK does not vote.)</li>
-<li>Read Only Replica: does not vote but contain full data of a point of time in the past (more like ZK observer but ZK observer is more up to date WRT its state.)</li>
-</ul>
-</li>
-</ul>
-<h1 id="Coordinator"><a href="#Coordinator" class="headerlink" title="Coordinator"></a>Coordinator</h1><ul>
-<li>The coordinator is a simple process with no external dependencies and no persistent storage.</li>
-<li>Failure Detection<ul>
-<li>Use an out of band protocol to identify when other coordinators are up, healthy, and generally reachable.</li>
-<li>Coordinators obtain specific Chubby locks in remote datacenters at startup.</li>
-<li>Revert its state to a conservative default when loses majority of locks and / or parititons.</li>
-<li>Brief and rare outage risk..</li>
-<li>Liveness protocol is vulnerable to asymmetric network partitions.</li>
-</ul>
-</li>
-</ul>
-<h1 id="Operation-Metrics-Experience-ommitted"><a href="#Operation-Metrics-Experience-ommitted" class="headerlink" title="Operation / Metrics / Experience - ommitted."></a>Operation / Metrics / Experience - ommitted.</h1>
+        <p><a href="https://leetcode.com/problems/design-circular-deque/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">use</span> std::vec::<span class="built_in">Vec</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">MyCircularDeque</span></span> &#123;</span><br><span class="line">    v: <span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;,</span><br><span class="line">    head : <span class="keyword">usize</span>,</span><br><span class="line">    tail : <span class="keyword">usize</span>,</span><br><span class="line">    count : <span class="keyword">usize</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * `&amp;self` means the method takes an immutable reference.</span></span><br><span class="line"><span class="comment"> * If you need a mutable reference, change it to `&amp;mut self` instead.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">impl</span> MyCircularDeque &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Initialize your data structure here. Set the size of the deque to be k. */</span></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">new</span></span>(k: <span class="keyword">i32</span>) -&gt; <span class="keyword">Self</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> vec = <span class="built_in">Vec</span>::with_capacity(k.clone() <span class="keyword">as</span> <span class="keyword">usize</span>);</span><br><span class="line">        vec.resize(k.clone() <span class="keyword">as</span> <span class="keyword">usize</span>, <span class="number">0</span>);</span><br><span class="line">        MyCircularDeque &#123;</span><br><span class="line">            v : vec,</span><br><span class="line">            head : k <span class="keyword">as</span> <span class="keyword">usize</span> - <span class="number">1</span>, tail : <span class="number">0</span>, count : <span class="number">0</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Adds an item at the front of Deque. Return true if the operation is successful. */</span></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">insert_front</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>, value: <span class="keyword">i32</span>) -&gt; <span class="keyword">bool</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">self</span>.is_full() &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">self</span>.v[<span class="keyword">self</span>.head.clone()] = value;</span><br><span class="line">        <span class="keyword">self</span>.head = (<span class="keyword">self</span>.head + <span class="keyword">self</span>.v.len() - <span class="number">1</span>) % <span class="keyword">self</span>.v.len();</span><br><span class="line">        <span class="keyword">self</span>.count += <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Adds an item at the rear of Deque. Return true if the operation is successful. */</span></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">insert_last</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>, value: <span class="keyword">i32</span>) -&gt; <span class="keyword">bool</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">self</span>.is_full() &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">self</span>.v[<span class="keyword">self</span>.tail.clone()] = value;</span><br><span class="line">        <span class="keyword">self</span>.tail = (<span class="keyword">self</span>.tail + <span class="number">1</span>) % <span class="keyword">self</span>.v.len();</span><br><span class="line">        <span class="keyword">self</span>.count += <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Deletes an item from the front of Deque. Return true if the operation is successful. */</span></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">delete_front</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>) -&gt; <span class="keyword">bool</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">self</span>.is_empty() &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">self</span>.head = (<span class="keyword">self</span>.head + <span class="number">1</span>) % <span class="keyword">self</span>.v.len();</span><br><span class="line">        <span class="keyword">self</span>.count -= <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Deletes an item from the rear of Deque. Return true if the operation is successful. */</span></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">delete_last</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>) -&gt; <span class="keyword">bool</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">self</span>.is_empty() &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">self</span>.tail = (<span class="keyword">self</span>.tail + <span class="keyword">self</span>.v.len() - <span class="number">1</span>) % <span class="keyword">self</span>.v.len();</span><br><span class="line">        <span class="keyword">self</span>.count -= <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Get the front item from the deque. */</span></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">get_front</span></span>(&amp;<span class="keyword">self</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">self</span>.is_empty() &#123;</span><br><span class="line">            <span class="keyword">return</span> - <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">self</span>.v[(<span class="keyword">self</span>.head.clone() + <span class="number">1</span>) % <span class="keyword">self</span>.v.len()];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Get the last item from the deque. */</span></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">get_rear</span></span>(&amp;<span class="keyword">self</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">self</span>.is_empty() &#123;</span><br><span class="line">            <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">self</span>.v[(<span class="keyword">self</span>.tail - <span class="number">1</span> + <span class="keyword">self</span>.v.len()) % <span class="keyword">self</span>.v.len()];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Checks whether the circular deque is empty or not. */</span></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">is_empty</span></span>(&amp;<span class="keyword">self</span>) -&gt; <span class="keyword">bool</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">self</span>.count == <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Checks whether the circular deque is full or not. */</span></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">is_full</span></span>(&amp;<span class="keyword">self</span>) -&gt; <span class="keyword">bool</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">self</span>.count == <span class="keyword">self</span>.v.len();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/05/08/2017-05-08-MegaStore/" data-id="ck3dyn1dg002fwrxg6586fylv" data-title="Paper Digest - Megastore, Providing Scalable, Highly Available Storage for Interactive Services" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/09/19/2019-09-19-LeetCode641/" data-id="ck3g3mjfo003omfxgg5l870ff" data-title="LeetCode 641 Design Circular Deque" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2017/05/08/2017-05-08-MegaStore/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2019/09/19/2019-09-19-LeetCode641/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/NewSQL/">NewSQL</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Paper-Digest/">Paper Digest</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LeetCode/">LeetCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Rust/">Rust</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-2019-09-15-LeetCode622" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/09/15/2019-09-15-LeetCode622/" class="article-date">
+  <time datetime="2019-09-15T17:39:31.000Z" itemprop="datePublished">2019-09-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/LeetCode-in-Rust/">LeetCode in Rust</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/09/15/2019-09-15-LeetCode622/">LeetCode 622 Design Circular Queue</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><a href="https://leetcode.com/problems/design-circular-queue/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">use</span> std::vec::<span class="built_in">Vec</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">MyCircularQueue</span></span> &#123;</span><br><span class="line">    v : <span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;,</span><br><span class="line">    head : <span class="keyword">usize</span>,</span><br><span class="line">    tail : <span class="keyword">usize</span>,</span><br><span class="line">    count : <span class="keyword">usize</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * `&amp;self` means the method takes an immutable reference.</span></span><br><span class="line"><span class="comment"> * If you need a mutable reference, change it to `&amp;mut self` instead.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">impl</span> MyCircularQueue &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Initialize your data structure here. Set the size of the queue to be k. */</span></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">new</span></span>(k: <span class="keyword">i32</span>) -&gt; <span class="keyword">Self</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> vec = <span class="built_in">Vec</span>::with_capacity(k.clone() <span class="keyword">as</span> <span class="keyword">usize</span>);</span><br><span class="line">        vec.resize(k <span class="keyword">as</span> <span class="keyword">usize</span>, <span class="number">0</span>);</span><br><span class="line">        MyCircularQueue &#123;</span><br><span class="line">            v : vec,</span><br><span class="line">            head : <span class="number">0</span>, tail : <span class="number">0</span>, count : <span class="number">0</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Insert an element into the circular queue. Return true if the operation is successful. */</span></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">en_queue</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>, value: <span class="keyword">i32</span>) -&gt; <span class="keyword">bool</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">self</span>.is_full() &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">self</span>.v[<span class="keyword">self</span>.tail.clone()] = value;</span><br><span class="line">        <span class="keyword">self</span>.tail = (<span class="keyword">self</span>.tail + <span class="number">1</span>) % <span class="keyword">self</span>.v.len();</span><br><span class="line">        <span class="keyword">self</span>.count += <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Delete an element from the circular queue. Return true if the operation is successful. */</span></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">de_queue</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>) -&gt; <span class="keyword">bool</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">self</span>.is_empty() &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">self</span>.v[<span class="keyword">self</span>.head.clone()] = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">self</span>.head = (<span class="keyword">self</span>.head + <span class="number">1</span>) % <span class="keyword">self</span>.v.len();</span><br><span class="line">        <span class="keyword">self</span>.count -= <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Get the front item from the queue. */</span></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">front</span></span>(&amp;<span class="keyword">self</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">self</span>.is_empty() &#123;</span><br><span class="line">            <span class="keyword">return</span> - <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">self</span>.v[<span class="keyword">self</span>.head.clone()];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Get the last item from the queue. */</span></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">rear</span></span>(&amp;<span class="keyword">self</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">self</span>.is_empty() &#123;</span><br><span class="line">            <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">self</span>.v[(<span class="keyword">self</span>.tail - <span class="number">1</span> + <span class="keyword">self</span>.v.len()) % <span class="keyword">self</span>.v.len()];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Checks whether the circular queue is empty or not. */</span></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">is_empty</span></span>(&amp;<span class="keyword">self</span>) -&gt; <span class="keyword">bool</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">self</span>.count == <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Checks whether the circular queue is full or not. */</span></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">is_full</span></span>(&amp;<span class="keyword">self</span>) -&gt; <span class="keyword">bool</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">self</span>.count == <span class="keyword">self</span>.v.len();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2019/09/15/2019-09-15-LeetCode622/" data-id="ck3g3mjff003amfxgjiqc7bty" data-title="LeetCode 622 Design Circular Queue" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2019/09/15/2019-09-15-LeetCode622/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LeetCode/">LeetCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Rust/">Rust</a></li></ul>
 
     </footer>
   </div>
@@ -332,7 +220,7 @@
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/page/24/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/23/">23</a><a class="page-number" href="/page/24/">24</a><span class="page-number current">25</span><a class="page-number" href="/page/26/">26</a><a class="page-number" href="/page/27/">27</a><span class="space">&hellip;</span><a class="page-number" href="/page/54/">54</a><a class="extend next" rel="next" href="/page/26/">Next &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/24/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/23/">23</a><a class="page-number" href="/page/24/">24</a><span class="page-number current">25</span><a class="page-number" href="/page/26/">26</a><a class="page-number" href="/page/27/">27</a><span class="space">&hellip;</span><a class="page-number" href="/page/58/">58</a><a class="extend next" rel="next" href="/page/26/">Next &raquo;</a>
   </nav>
 
 </section>
@@ -385,7 +273,11 @@
       <ul>
         
           <li>
-            <a href="/2019/11/22/2019-11-22-LeetCode1136/">LeetCode 1136. Parallel Courses</a>
+            <a href="/2019/11/22/2019-11-22-LeetCode895/">LeetCode 895. Maximum Frequency Stack</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/22/2019-11-22-LeetCode934/">LeetCode 934. Shortest Bridge</a>
           </li>
         
           <li>
@@ -393,11 +285,7 @@
           </li>
         
           <li>
-            <a href="/2019/11/22/2019-11-22-LeetCode895/">LeetCode 895. Maximum Frequency Stack</a>
-          </li>
-        
-          <li>
-            <a href="/2019/11/22/2019-11-22-LeetCode934/">LeetCode 934. Shortest Bridge</a>
+            <a href="/2019/11/22/2019-11-22-LeetCode1136/">LeetCode 1136. Parallel Courses</a>
           </li>
         
           <li>

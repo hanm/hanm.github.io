@@ -75,9 +75,9 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-2019-11-10-LeetCode1105" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2019-11-10-LeetCode1087" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2019/11/10/2019-11-10-LeetCode1105/" class="article-date">
+    <a href="/2019/11/10/2019-11-10-LeetCode1087/" class="article-date">
   <time datetime="2019-11-10T19:11:11.000Z" itemprop="datePublished">2019-11-10</time>
 </a>
     
@@ -93,7 +93,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1105/">LeetCode 1105. Filling Bookcase Shelves</a>
+      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1087/">LeetCode 1087. Brace Expansion</a>
     </h1>
   
 
@@ -101,14 +101,14 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><a href="https://leetcode.com/problems/filling-bookcase-shelves/description/" target="_blank" rel="noopener">Problem Statement</a></p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::cmp;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">min_height_shelves</span></span>(books: <span class="built_in">Vec</span>&lt;<span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;&gt;, shelf_width: <span class="keyword">i32</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> (n, <span class="keyword">mut</span> i, <span class="keyword">mut</span> j) = (books.len(), <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> dp = <span class="built_in">vec!</span>[std::i32::MAX; n];</span><br><span class="line">        <span class="keyword">while</span> i &lt; n &#123;</span><br><span class="line">            <span class="keyword">let</span> (<span class="keyword">mut</span> w, <span class="keyword">mut</span> h) = (<span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">            j = i;</span><br><span class="line">            <span class="keyword">while</span> j &lt; n &#123;</span><br><span class="line">                w += books[j][<span class="number">0</span>];</span><br><span class="line">                <span class="keyword">if</span> w &gt; shelf_width &#123;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                h = cmp::max(h, books[j][<span class="number">1</span>]);</span><br><span class="line">                <span class="keyword">let</span> val = <span class="keyword">match</span> i &#123;</span><br><span class="line">                    <span class="number">0</span> =&gt; <span class="number">0</span>,</span><br><span class="line">                    _ =&gt; dp[i - <span class="number">1</span>]</span><br><span class="line">                &#125;;</span><br><span class="line">                dp[j] = cmp::min(dp[j], val + h);</span><br><span class="line">                j += <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            i += <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> dp[n - <span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+        <p><a href="https://leetcode.com/problems/brace-expansion/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">expand</span></span>(s: <span class="built_in">String</span>) -&gt; <span class="built_in">Vec</span>&lt;<span class="built_in">String</span>&gt; &#123;</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> ans, <span class="keyword">mut</span> prev) : (<span class="built_in">Vec</span>&lt;<span class="built_in">String</span>&gt;, <span class="built_in">Vec</span>&lt;<span class="built_in">String</span>&gt;) = (<span class="built_in">vec!</span>[], <span class="built_in">vec!</span>[]);</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> in_brace, <span class="keyword">mut</span> initialized) = (<span class="literal">false</span>, <span class="literal">false</span>);</span><br><span class="line">        <span class="keyword">for</span> c <span class="keyword">in</span> s.chars() &#123;</span><br><span class="line">            <span class="keyword">if</span> c == <span class="string">'&#123;'</span> &#123;</span><br><span class="line">                prev = ans.clone(); ans.clear();</span><br><span class="line">                in_brace = <span class="literal">true</span>; <span class="keyword">continue</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> c == <span class="string">'&#125;'</span> &#123;</span><br><span class="line">                in_brace = <span class="literal">false</span>;</span><br><span class="line">                <span class="keyword">if</span> !initialized &#123;</span><br><span class="line">                    initialized = <span class="literal">true</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> c == <span class="string">','</span> &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> in_brace &#123;</span><br><span class="line">                <span class="keyword">if</span> !initialized &#123;</span><br><span class="line">                    ans.push(c.to_string());</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="keyword">let</span> <span class="keyword">mut</span> cur = prev.clone();</span><br><span class="line">                    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..cur.len() &#123;</span><br><span class="line">                        cur[i].push(c);</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">for</span> <span class="keyword">str</span> <span class="keyword">in</span> cur &#123;</span><br><span class="line">                        ans.push(<span class="keyword">str</span>);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">if</span> !initialized &#123;</span><br><span class="line">                    ans.push(c.to_string());</span><br><span class="line">                    initialized = <span class="literal">true</span>;</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..ans.len() &#123;</span><br><span class="line">                        ans[i].push(c);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        ans.sort();</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1105/" data-id="ck3dyn1e40037wrxg4p2gljmv" data-title="LeetCode 1105. Filling Bookcase Shelves" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1087/" data-id="ck3g3mjfu003wmfxgo8fl6wyo" data-title="LeetCode 1087. Brace Expansion" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1105/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1087/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
@@ -154,7 +154,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1088/" data-id="ck3dyn1e50038wrxgy37yu8ja" data-title="LeetCode 1088. Confusing Number II" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1088/" data-id="ck3g3mjfw003ymfxgfkrsddw6" data-title="LeetCode 1088. Confusing Number II" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1088/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -170,9 +170,9 @@
 
 
   
-    <article id="post-2019-11-10-LeetCode1089" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2019-11-10-LeetCode1108" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2019/11/10/2019-11-10-LeetCode1089/" class="article-date">
+    <a href="/2019/11/10/2019-11-10-LeetCode1108/" class="article-date">
   <time datetime="2019-11-10T19:11:11.000Z" itemprop="datePublished">2019-11-10</time>
 </a>
     
@@ -188,7 +188,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1089/">LeetCode 1089. Duplicate Zeros</a>
+      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1108/">LeetCode 1108. Defanging an IP Address</a>
     </h1>
   
 
@@ -196,14 +196,14 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><a href="https://leetcode.com/problems/duplicate-zeros/description/" target="_blank" rel="noopener">Problem Statement</a></p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">duplicate_zeros</span></span>(arr: &amp;<span class="keyword">mut</span> <span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;) &#123;</span><br><span class="line">        <span class="keyword">let</span> n = arr.len();</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> j = n;</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..n &#123;</span><br><span class="line">            <span class="keyword">if</span> arr[i] == <span class="number">0</span> &#123;</span><br><span class="line">                j += <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> i : <span class="keyword">i32</span> = (n  - <span class="number">1</span>) <span class="keyword">as</span> <span class="keyword">i32</span>;</span><br><span class="line">        <span class="keyword">while</span> i &gt;= <span class="number">0</span> &#123;</span><br><span class="line">            j -= <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">if</span> j &lt; n &#123;</span><br><span class="line">                arr[j] = arr[i <span class="keyword">as</span> <span class="keyword">usize</span>];</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> arr[i <span class="keyword">as</span> <span class="keyword">usize</span>] == <span class="number">0</span> &#123;</span><br><span class="line">                j-= <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">if</span> j &lt; n &#123;</span><br><span class="line">                    arr[j] = <span class="number">0</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            i -= <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+        <p><a href="https://leetcode.com/problems/defanging-an-ip-address/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">defang_i_paddr</span></span>(address: <span class="built_in">String</span>) -&gt; <span class="built_in">String</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> ans = <span class="string">""</span>.to_string();</span><br><span class="line">        <span class="keyword">for</span> c <span class="keyword">in</span> address.chars() &#123;</span><br><span class="line">            <span class="keyword">if</span> c != <span class="string">'.'</span> &#123;</span><br><span class="line">                ans.push(c);</span><br><span class="line"></span><br><span class="line">            &#125; <span class="keyword">else</span> &#123; </span><br><span class="line">                ans.push_str(<span class="string">"[.]"</span>); </span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1089/" data-id="ck3dyn1e60039wrxgs99iuqs5" data-title="LeetCode 1089. Duplicate Zeros" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1108/" data-id="ck3g3mjfy0040mfxgthuhu8ce" data-title="LeetCode 1108. Defanging an IP Address" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1089/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1108/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
@@ -221,7 +221,7 @@
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/page/12/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/">11</a><a class="page-number" href="/page/12/">12</a><span class="page-number current">13</span><a class="page-number" href="/page/14/">14</a><a class="page-number" href="/page/15/">15</a><span class="space">&hellip;</span><a class="page-number" href="/page/54/">54</a><a class="extend next" rel="next" href="/page/14/">Next &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/12/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/">11</a><a class="page-number" href="/page/12/">12</a><span class="page-number current">13</span><a class="page-number" href="/page/14/">14</a><a class="page-number" href="/page/15/">15</a><span class="space">&hellip;</span><a class="page-number" href="/page/58/">58</a><a class="extend next" rel="next" href="/page/14/">Next &raquo;</a>
   </nav>
 
 </section>
@@ -274,7 +274,11 @@
       <ul>
         
           <li>
-            <a href="/2019/11/22/2019-11-22-LeetCode1136/">LeetCode 1136. Parallel Courses</a>
+            <a href="/2019/11/22/2019-11-22-LeetCode895/">LeetCode 895. Maximum Frequency Stack</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/22/2019-11-22-LeetCode934/">LeetCode 934. Shortest Bridge</a>
           </li>
         
           <li>
@@ -282,11 +286,7 @@
           </li>
         
           <li>
-            <a href="/2019/11/22/2019-11-22-LeetCode895/">LeetCode 895. Maximum Frequency Stack</a>
-          </li>
-        
-          <li>
-            <a href="/2019/11/22/2019-11-22-LeetCode934/">LeetCode 934. Shortest Bridge</a>
+            <a href="/2019/11/22/2019-11-22-LeetCode1136/">LeetCode 1136. Parallel Courses</a>
           </li>
         
           <li>
