@@ -75,9 +75,9 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-2019-11-10-LeetCode1079" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2019-11-10-LeetCode731" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2019/11/10/2019-11-10-LeetCode1079/" class="article-date">
+    <a href="/2019/11/10/2019-11-10-LeetCode731/" class="article-date">
   <time datetime="2019-11-10T19:11:11.000Z" itemprop="datePublished">2019-11-10</time>
 </a>
     
@@ -93,7 +93,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1079/">LeetCode 1079. Letter Tile Possibilities</a>
+      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode731/">LeetCode 731. My Calendar II</a>
     </h1>
   
 
@@ -101,14 +101,14 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><a href="https://leetcode.com/problems/letter-tile-possibilities/description/" target="_blank" rel="noopener">Problem Statement</a></p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::collections::HashSet;</span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">dfs</span></span>(set: &amp;<span class="keyword">mut</span> HashSet&lt;<span class="built_in">String</span>&gt;, level: <span class="keyword">usize</span>, tiles: &amp;<span class="built_in">String</span>,</span><br><span class="line">           cur: &amp;<span class="keyword">mut</span> <span class="built_in">String</span>, used: &amp;<span class="keyword">mut</span> <span class="built_in">Vec</span>&lt;<span class="keyword">bool</span>&gt;) &#123;</span><br><span class="line">        <span class="keyword">let</span> size = tiles.len();</span><br><span class="line">        <span class="keyword">if</span> size == level &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..size &#123;</span><br><span class="line">            <span class="keyword">if</span> used[i] &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            used[i] = <span class="literal">true</span>;</span><br><span class="line">            <span class="keyword">let</span> <span class="keyword">char</span> = tiles.chars().nth(i).unwrap();</span><br><span class="line">            cur.push(<span class="keyword">char</span>);</span><br><span class="line">            set.insert(cur.clone());</span><br><span class="line">            Self::dfs(set, level + <span class="number">1</span>, tiles, cur, used);</span><br><span class="line">            used[i] = <span class="literal">false</span>;</span><br><span class="line">            cur.pop();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">num_tile_possibilities</span></span>(tiles: <span class="built_in">String</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> set, input, <span class="keyword">mut</span> cur, <span class="keyword">mut</span> used) =</span><br><span class="line">            (HashSet::new(), tiles.clone(), <span class="string">""</span>.to_string(), <span class="built_in">vec!</span>[<span class="literal">false</span>; tiles.len()]);</span><br><span class="line">        Self::dfs(&amp;<span class="keyword">mut</span> set, <span class="number">0</span>, &amp;input, &amp;<span class="keyword">mut</span> cur, &amp;<span class="keyword">mut</span> used);</span><br><span class="line">        <span class="keyword">return</span> set.len() <span class="keyword">as</span> <span class="keyword">i32</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+        <p><a href="https://leetcode.com/problems/my-calendar-ii/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::collections::BTreeMap;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">MyCalendarTwo</span></span> &#123;</span><br><span class="line">    events: BTreeMap&lt;<span class="keyword">i32</span>, <span class="keyword">i32</span>&gt;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * `&amp;self` means the method takes an immutable reference.</span></span><br><span class="line"><span class="comment"> * If you need a mutable reference, change it to `&amp;mut self` instead.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">impl</span> MyCalendarTwo &#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">new</span></span>() -&gt; <span class="keyword">Self</span> &#123;</span><br><span class="line">        MyCalendarTwo &#123;</span><br><span class="line">            events: BTreeMap::new()</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">book</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>, start: <span class="keyword">i32</span>, end: <span class="keyword">i32</span>) -&gt; <span class="keyword">bool</span> &#123;</span><br><span class="line">        <span class="keyword">self</span>.events.entry(start).or_insert(<span class="number">0</span>);</span><br><span class="line">        <span class="keyword">self</span>.events.entry(end).or_insert(<span class="number">0</span>);</span><br><span class="line">        *<span class="keyword">self</span>.events.get_mut(&amp;start).unwrap() += <span class="number">1</span>;</span><br><span class="line">        *<span class="keyword">self</span>.events.get_mut(&amp;end).unwrap() -= <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> sum = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (_k, v) <span class="keyword">in</span> &amp;<span class="keyword">self</span>.events &#123;</span><br><span class="line">            sum += *v;</span><br><span class="line">            <span class="keyword">if</span> sum == <span class="number">3</span> &#123;</span><br><span class="line">                *<span class="keyword">self</span>.events.get_mut(&amp;start).unwrap() -= <span class="number">1</span>;</span><br><span class="line">                *<span class="keyword">self</span>.events.get_mut(&amp;end).unwrap() += <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1079/" data-id="ck3kiuwpr0000xpxgfmhox1be" data-title="LeetCode 1079. Letter Tile Possibilities" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode731/" data-id="ck3p773w10041e5xguubmcxm4" data-title="LeetCode 731. My Calendar II" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1079/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode731/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
@@ -153,7 +153,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1249/" data-id="ck3kiuwpw0001xpxght8ljjwf" data-title="LeetCode 1249. Minimum Remove to Make Valid Parentheses" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1249/" data-id="ck3p773w10042e5xg4htlh5yh" data-title="LeetCode 1249. Minimum Remove to Make Valid Parentheses" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1249/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -169,9 +169,9 @@
 
 
   
-    <article id="post-2019-11-10-LeetCode139" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2019-11-10-LeetCode732" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2019/11/10/2019-11-10-LeetCode139/" class="article-date">
+    <a href="/2019/11/10/2019-11-10-LeetCode732/" class="article-date">
   <time datetime="2019-11-10T19:11:11.000Z" itemprop="datePublished">2019-11-10</time>
 </a>
     
@@ -187,7 +187,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode139/">LeetCode 139. Word Break</a>
+      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode732/">LeetCode 732. My Calendar III</a>
     </h1>
   
 
@@ -195,14 +195,14 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><a href="https://leetcode.com/problems/word-break/description/" target="_blank" rel="noopener">Problem Statement</a></p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::collections::HashSet;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">word_break</span></span>(s: <span class="built_in">String</span>, word_dict: <span class="built_in">Vec</span>&lt;<span class="built_in">String</span>&gt;) -&gt; <span class="keyword">bool</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> set: HashSet&lt;<span class="built_in">String</span>&gt; = word_dict.into_iter().collect();</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> dp = <span class="built_in">vec!</span>[<span class="literal">false</span>; s.len() + <span class="number">1</span>];</span><br><span class="line">        dp[<span class="number">0</span>] = <span class="literal">true</span>;</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">1</span>..s.len() + <span class="number">1</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> dp[i] &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> <span class="number">0</span>..i &#123;</span><br><span class="line">                <span class="keyword">if</span> !dp[j] &#123;</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">let</span> slice = &amp;s[j..i];</span><br><span class="line">                <span class="keyword">if</span> set.contains(slice) &#123;</span><br><span class="line">                    dp[i] = <span class="literal">true</span>;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> dp[s.len()];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+        <p><a href="https://leetcode.com/problems/my-calendar-iii/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::collections::BTreeMap;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">MyCalendarThree</span></span> &#123;</span><br><span class="line">    events: BTreeMap&lt;<span class="keyword">i32</span>, <span class="keyword">i32</span>&gt;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * `&amp;self` means the method takes an immutable reference.</span></span><br><span class="line"><span class="comment"> * If you need a mutable reference, change it to `&amp;mut self` instead.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">impl</span> MyCalendarThree &#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">new</span></span>() -&gt; <span class="keyword">Self</span> &#123;</span><br><span class="line">        MyCalendarThree &#123;</span><br><span class="line">            events: BTreeMap::new()</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">book</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>, start: <span class="keyword">i32</span>, end: <span class="keyword">i32</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">self</span>.events.entry(start).or_insert(<span class="number">0</span>);</span><br><span class="line">        <span class="keyword">self</span>.events.entry(end).or_insert(<span class="number">0</span>);</span><br><span class="line">        *<span class="keyword">self</span>.events.get_mut(&amp;start).unwrap() += <span class="number">1</span>;</span><br><span class="line">        *<span class="keyword">self</span>.events.get_mut(&amp;end).unwrap() -= <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> count, <span class="keyword">mut</span> ans) = (<span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">for</span> (_k, v) <span class="keyword">in</span> &amp;<span class="keyword">self</span>.events &#123;</span><br><span class="line">            count += *v;</span><br><span class="line">            ans = std::cmp::max(count, ans);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Your MyCalendarThree object will be instantiated and called as such:</span></span><br><span class="line"><span class="comment"> * let obj = MyCalendarThree::new();</span></span><br><span class="line"><span class="comment"> * let ret_1: i32 = obj.book(start, end);</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode139/" data-id="ck3kiuwpy0002xpxgz8pp9jx2" data-title="LeetCode 139. Word Break" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode732/" data-id="ck3p773w20043e5xgp518n5jy" data-title="LeetCode 732. My Calendar III" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode139/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode732/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
@@ -220,7 +220,7 @@
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/page/22/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/21/">21</a><a class="page-number" href="/page/22/">22</a><span class="page-number current">23</span><a class="page-number" href="/page/24/">24</a><a class="page-number" href="/page/25/">25</a><span class="space">&hellip;</span><a class="page-number" href="/page/58/">58</a><a class="extend next" rel="next" href="/page/24/">Next &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/22/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/21/">21</a><a class="page-number" href="/page/22/">22</a><span class="page-number current">23</span><a class="page-number" href="/page/24/">24</a><a class="page-number" href="/page/25/">25</a><span class="space">&hellip;</span><a class="page-number" href="/page/62/">62</a><a class="extend next" rel="next" href="/page/24/">Next &raquo;</a>
   </nav>
 
 </section>
@@ -277,15 +277,15 @@
           </li>
         
           <li>
-            <a href="/2019/11/22/2019-11-22-LeetCode934/">LeetCode 934. Shortest Bridge</a>
-          </li>
-        
-          <li>
             <a href="/2019/11/22/2019-11-22-LeetCode1213/">LeetCode 1213. Intersection of Three Sorted Arrays</a>
           </li>
         
           <li>
             <a href="/2019/11/22/2019-11-22-LeetCode1136/">LeetCode 1136. Parallel Courses</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/22/2019-11-22-LeetCode934/">LeetCode 934. Shortest Bridge</a>
           </li>
         
           <li>

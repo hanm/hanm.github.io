@@ -75,14 +75,14 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-2017-05-08-MegaStore" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2019-09-11-LeetCode301" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2017/05/08/2017-05-08-MegaStore/" class="article-date">
-  <time datetime="2017-05-09T04:00:31.000Z" itemprop="datePublished">2017-05-08</time>
+    <a href="/2019/09/11/2019-09-11-LeetCode301/" class="article-date">
+  <time datetime="2019-09-11T17:39:31.000Z" itemprop="datePublished">2019-09-11</time>
 </a>
     
   <div class="article-category">
-    <a class="article-category-link" href="/categories/Distributed-System/">Distributed System</a>
+    <a class="article-category-link" href="/categories/LeetCode-in-Rust/">LeetCode in Rust</a>
   </div>
 
   </div>
@@ -93,7 +93,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/05/08/2017-05-08-MegaStore/">Paper Digest - Megastore, Providing Scalable, Highly Available Storage for Interactive Services</a>
+      <a class="article-title" href="/2019/09/11/2019-09-11-LeetCode301/">LeetCode 301 Remove Invalid Parentheses</a>
     </h1>
   
 
@@ -101,133 +101,19 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Paper digest - <a href="https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/36971.pdf" target="_blank" rel="noopener">Megastore: Providing Scalable, Highly Available Storage for Interactive Services</a></p>
-<h1 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h1><ul>
-<li>Blends the scalability of a NoSQL datastore with the convenience of a traditional RDBMS.</li>
-<li>Provides both strong consistency guarantees and high availability.</li>
-<li>Provides fully serializable ACID semantics within fine-grained partitions of data.</li>
-</ul>
-<h1 id="Motivation"><a href="#Motivation" class="headerlink" title="Motivation"></a>Motivation</h1><ul>
-<li>Online services are forcing the storage community to meet new demands. <ul>
-<li>Highly scalable.</li>
-<li>Rapid development.</li>
-<li>Low latency.</li>
-<li>Consistent view of data.</li>
-<li>Highly available.</li>
-</ul>
-</li>
-</ul>
-<h1 id="Design-Highlights"><a href="#Design-Highlights" class="headerlink" title="Design Highlights"></a>Design Highlights</h1><ul>
-<li>Partition data. Replicate unit is a partition.</li>
-<li>Full ACID semantics within partitions only.</li>
-<li>Across partitions, limited consistency guarantees (later spanner improves this)</li>
-<li>Provide database features (2nd indexes), but does not provide scalability guarantees (can only scale within user-tolerable latency limits.)</li>
-<li>Innovative usage of Paxos: use it for replication instead of traditional usage (locking, leader election, replicate config data - e.g. ZooKeeper/ZAB)</li>
-</ul>
-<h1 id="Availability-with-Scalability"><a href="#Availability-with-Scalability" class="headerlink" title="Availability with Scalability"></a>Availability with Scalability</h1><ul>
-<li>Replication<ul>
-<li>Replicate a write-ahead log over a group of symmetric peers.</li>
-<li>Any node can initiate reads and writes.</li>
-<li>Each log append blocks on acknowledgments from a majority of replicas.</li>
-<li>Optimizations on Paxos<ul>
-<li>Allow local reads.</li>
-<li>Single roundtrip writes.</li>
-</ul>
-</li>
-<li>Multiple replicated logs instead of single log for better availability.</li>
-</ul>
-</li>
-<li>Key Concept - <strong>Entity Groups</strong><ul>
-<li>Entity group is a collection of data and unit of replication.</li>
-<li>Within a single entity group: ACID semantic.</li>
-<li>Across entity groups:<ul>
-<li>Two phased commit (strong consistency)</li>
-<li>Or async communications through message queues.</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>Physical Layout of data<ul>
-<li>Use BigTable for data storage.</li>
-<li>Letting applications control the placement of data.<ul>
-<li>Applications try to keep data near users and replicas near each other.</li>
-<li>The data for an entity group are held in contiguous ranges of Bigtable rows.</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<h1 id="API-Design"><a href="#API-Design" class="headerlink" title="API Design"></a>API Design</h1><ul>
-<li><strong>Cost-transparent APIs</strong>: runtime costs that match application developers’ intuitions.</li>
-<li>Eliminate needs for joins:  offer fine-grained control over physical locality.</li>
-<li>Joins when required is implemented in application code.</li>
-</ul>
-<h1 id="Data-Model"><a href="#Data-Model" class="headerlink" title="Data Model"></a>Data Model</h1><ul>
-<li>Lies between the abstract tuples of an RDBMS and the concrete row-column storage of NoSQL.</li>
-<li>Data model is declared in a schema and is strongly typed.</li>
-</ul>
-<h1 id="Transactions-and-Concurrency-Control"><a href="#Transactions-and-Concurrency-Control" class="headerlink" title="Transactions and Concurrency Control"></a>Transactions and Concurrency Control</h1><ul>
-<li>Use MVCC. Readers and writers don’t block each other, and reads are isolated from writes for the duration of a transaction.</li>
-<li>Read semantics<ul>
-<li>current (single entity group)</li>
-<li>snapshot (single entity group)</li>
-<li>inconsistent (ignore state of log)</li>
-</ul>
-</li>
-<li>Queues<ul>
-<li>Cross group batch operation deliver.</li>
-</ul>
-</li>
-<li>2 Phased Commit for atomic update across entity groups.</li>
-</ul>
-<h1 id="Paxos-based-Replication-key-innovations"><a href="#Paxos-based-Replication-key-innovations" class="headerlink" title="Paxos based Replication (key innovations)"></a>Paxos based Replication <strong>(key innovations)</strong></h1><ul>
-<li>Pitfall of master-slave based Paxos<ul>
-<li>Master failover can require a complicated state machine.</li>
-<li>A series of timers must elapse before service is restored. </li>
-<li>It is difficult to avoid user-visible outages.</li>
-</ul>
-</li>
-<li>Fast Reads<ul>
-<li>Local read.</li>
-<li>Coordinator tracks if a specific replica has observed the full state of writes so it can serve local reads.</li>
-</ul>
-</li>
-<li>Fast Writes<ul>
-<li>Single round trip writes.</li>
-<li>Pre-preparing optimization: each successful write includes an implied prepare message granting the master the right to issue accept messages for the next log position.</li>
-<li>If the write succeeds, the prepares are honored, and the next write skips directly to the accept phase. </li>
-<li>Multi-Paxos: independent instance of the Paxos algorithm for each log position. T</li>
-</ul>
-</li>
-<li>Replica Types<ul>
-<li>Full Replica: contain all entity and index and able to serve current reads.</li>
-<li>Witness Replica: vote and store WAL, but does not apply the WAL (kind like observer in ZooKeeper but not strictly the same - observer in ZK does not vote.)</li>
-<li>Read Only Replica: does not vote but contain full data of a point of time in the past (more like ZK observer but ZK observer is more up to date WRT its state.)</li>
-</ul>
-</li>
-</ul>
-<h1 id="Coordinator"><a href="#Coordinator" class="headerlink" title="Coordinator"></a>Coordinator</h1><ul>
-<li>The coordinator is a simple process with no external dependencies and no persistent storage.</li>
-<li>Failure Detection<ul>
-<li>Use an out of band protocol to identify when other coordinators are up, healthy, and generally reachable.</li>
-<li>Coordinators obtain specific Chubby locks in remote datacenters at startup.</li>
-<li>Revert its state to a conservative default when loses majority of locks and / or parititons.</li>
-<li>Brief and rare outage risk..</li>
-<li>Liveness protocol is vulnerable to asymmetric network partitions.</li>
-</ul>
-</li>
-</ul>
-<h1 id="Operation-Metrics-Experience-ommitted"><a href="#Operation-Metrics-Experience-ommitted" class="headerlink" title="Operation / Metrics / Experience - ommitted."></a>Operation / Metrics / Experience - ommitted.</h1>
+        <p><a href="https://leetcode.com/problems/remove-invalid-parentheses/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<p>First attempt on implementing solutions for leetcode problems using Rust. For someone like me with a C++ background,<br>coding in Rust requires a paradigm change. Move semantics are everywhere, everything has to be explicit, and there are<br>really not so many similarities of standard libraries between Rust and C++. In any cases, it’s fun to code in Rust,<br>and I am sure this code can be more Rustified.</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">use</span> std::collections::HashSet;</span><br><span class="line"><span class="keyword">use</span> std::collections::VecDeque;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">remove_invalid_parentheses</span></span>(s: <span class="built_in">String</span>) -&gt; <span class="built_in">Vec</span>&lt;<span class="built_in">String</span>&gt; &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> result = <span class="built_in">Vec</span>::new();</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> visited = HashSet::new();</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> queue = VecDeque::new();</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">fn</span> <span class="title">isParenBalanced</span></span>(s : &amp;<span class="built_in">String</span>) -&gt; <span class="keyword">bool</span> &#123;</span><br><span class="line">            <span class="keyword">let</span> (<span class="keyword">mut</span> left, <span class="keyword">mut</span> right) = (<span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">            <span class="keyword">for</span> c <span class="keyword">in</span> s.chars() &#123;</span><br><span class="line">                <span class="keyword">if</span> c == <span class="string">'('</span> &#123;</span><br><span class="line">                    left = left + <span class="number">1</span>;</span><br><span class="line">                &#125; <span class="keyword">else</span> <span class="keyword">if</span> c == <span class="string">')'</span> &#123;</span><br><span class="line">                    <span class="keyword">if</span> left == <span class="number">0</span> &#123;</span><br><span class="line">                        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                    left = left - <span class="number">1</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> left == <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        visited.insert(s.clone());</span><br><span class="line">        queue.push_back(s.clone());</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> stop = <span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">while</span> !queue.is_empty() &#123;</span><br><span class="line">            <span class="keyword">let</span> <span class="keyword">str</span> = queue.pop_front().unwrap();</span><br><span class="line">            <span class="keyword">if</span> isParenBalanced(&amp;<span class="keyword">str</span>) &#123;</span><br><span class="line">                result.push(<span class="keyword">str</span>.clone());</span><br><span class="line">                stop = <span class="literal">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> stop &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">for</span> it <span class="keyword">in</span> <span class="keyword">str</span>.char_indices() &#123;</span><br><span class="line">                <span class="keyword">if</span> it.<span class="number">1</span> != <span class="string">'('</span> &amp;&amp; it.<span class="number">1</span> != <span class="string">')'</span> &#123;</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">let</span> <span class="keyword">mut</span> next = <span class="keyword">str</span>.clone();</span><br><span class="line">                next.remove(it.<span class="number">0</span>);</span><br><span class="line">                <span class="keyword">if</span> visited.contains(&amp;next) &#123;</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                queue.push_back(next.clone());</span><br><span class="line">                visited.insert(next.clone());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/05/08/2017-05-08-MegaStore/" data-id="ck3g3mjd0002fmfxg7u3tbyb6" data-title="Paper Digest - Megastore, Providing Scalable, Highly Available Storage for Interactive Services" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/09/11/2019-09-11-LeetCode301/" data-id="ck3p773v5002re5xgbr0wl6s1" data-title="LeetCode 301 Remove Invalid Parentheses" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2017/05/08/2017-05-08-MegaStore/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2019/09/11/2019-09-11-LeetCode301/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/NewSQL/">NewSQL</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Paper-Digest/">Paper Digest</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LeetCode/">LeetCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Rust/">Rust</a></li></ul>
 
     </footer>
   </div>
@@ -237,14 +123,14 @@
 
 
   
-    <article id="post-2017-05-01-Paxos" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2019-01-26-SRM748" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2017/05/01/2017-05-01-Paxos/" class="article-date">
-  <time datetime="2017-05-01T18:37:31.000Z" itemprop="datePublished">2017-05-01</time>
+    <a href="/2019/01/27/2019-01-26-SRM748/" class="article-date">
+  <time datetime="2019-01-27T18:25:31.000Z" itemprop="datePublished">2019-01-27</time>
 </a>
     
   <div class="article-category">
-    <a class="article-category-link" href="/categories/Distributed-System/">Distributed System</a>
+    <a class="article-category-link" href="/categories/TopCoder/">TopCoder</a>
   </div>
 
   </div>
@@ -255,7 +141,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/05/01/2017-05-01-Paxos/">Paper Digest - Paxos Made Simple</a>
+      <a class="article-title" href="/2019/01/27/2019-01-26-SRM748/">SRM 748 DIV II 500</a>
     </h1>
   
 
@@ -263,153 +149,16 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Paper digest - <a href="http://lamport.azurewebsites.net/pubs/paxos-simple.pdf" target="_blank" rel="noopener">Paxos Made Simple </a></p>
-<h1 id="Motivation"><a href="#Motivation" class="headerlink" title="Motivation"></a>Motivation</h1><ul>
-<li>Solve consensus problem on a single value (basic Paxos).</li>
-<li>Consensus problem for a series of values that forming a log is solved using Multi-Paxos.</li>
-</ul>
-<h1 id="Consensus-Problem"><a href="#Consensus-Problem" class="headerlink" title="Consensus Problem"></a>Consensus Problem</h1><ul>
-<li>A consensus algorithm ensures that a single one among the proposed value is choose.</li>
-<li>Chosen: meaning a consensus has been reached.</li>
-<li>Safety properties of consensus:<ul>
-<li>Only a value that has been proposed may be chosen.</li>
-<li>Only a single value can be chosen.</li>
-<li>A process never learns that a value has been chosen unless it actually has been.</li>
-</ul>
-</li>
-<li>Liveness properties of consensus:<ul>
-<li>One of many proposed values is eventually chosen.</li>
-<li>If a value is chosen, processes eventually learn about it.</li>
-</ul>
-</li>
-</ul>
-<h1 id="Failure-Models"><a href="#Failure-Models" class="headerlink" title="Failure Models"></a>Failure Models</h1><ul>
-<li>Fail Stop: servers may crash, and stop forever.</li>
-<li>Fail Recovery: servers may crash, but finally will restart and recover.</li>
-<li>No Byzantine failures: messages can be delayed but they can’t be corrupted; servers can fail but they can’t behave maliciously.</li>
-</ul>
-<h1 id="Terms"><a href="#Terms" class="headerlink" title="Terms"></a>Terms</h1><ul>
-<li>Proposer: propose value. A proposer propose value by sending a proposal, which contains the value (among other things), to acceptors.</li>
-<li>Acceptor: accept value proposed by proposer. Accept means acknowledge to proposer that the proposed value is accepted, by sending response to proposer.</li>
-<li>Chosen: a value is chosen when majority of acceptors accept the value.</li>
-<li>A process can be both a proposer and an acceptor.</li>
-</ul>
-<h1 id="Choose-a-Value"><a href="#Choose-a-Value" class="headerlink" title="Choose a Value"></a>Choose a Value</h1><ul>
-<li>Single acceptor:<ul>
-<li>Easiest and most intuitive approach :)</li>
-<li>However, it is not fault tolerant. If the single acceptor crashes, the system will not be able to make progress.</li>
-</ul>
-</li>
-<li>Multiple acceptors:<ul>
-<li>Solve the SPOF problem for single acceptor case.</li>
-<li>A value is chosen when this value is accepted by a majority of acceptors.</li>
-<li>This majority of acceptors is called a quorum.</li>
-<li>Why majority? We need ensure that any two sets of quorum overlap. With drawer principle, if a quorum is majority, then any two majorities will have at least one acceptor in common.</li>
-<li>Now why we need ensure any two sets of quorum overlap? This is for fault tolerance / recovery purpose - so that we can have at least one acceptor that has complete history of the states (of the Paxos state machine.)</li>
-<li>Now why we need complete history? We need this so only a single value is chosen (important safety property). Why? Elaboration next.</li>
-</ul>
-</li>
-<li>How to choose a value<ul>
-<li>Case 1: single proposed value - only a single value is proposed from proposers.<ul>
-<li>If there is only a single value proposed ever, then this value has to be chosen.</li>
-<li>This implies that an acceptor must accept the first proposal that it receives.</li>
-<li>Conclusion: <strong>An acceptor must accept the first proposal that it receives. [P1]</strong></li>
-</ul>
-</li>
-<li>Case 2: multiple proposed value - multiple values are proposed from proposers.<ul>
-<li>This raises a problem. With multiple proposed value, it is possible no single value is accepted by the quorum. So it’s possible consensus will never be reached, without additional constraints.<ul>
-<li>A sample case that consensus never reached:<ul>
-<li>2 processes P1 and P2. P1 proposes V1 and P2 proposes V2.</li>
-<li>V1 is accepted by P1 (or P2), V2 is accepted by P2 (or P1), because an acceptor must accept the first value it receives.</li>
-<li>No proposal would ever get majority in such case.</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>To address the problem, where P1 must be true and yet a consensus has to be reached somehow, one additional constraint should be added:<ul>
-<li><strong>An acceptor must be allowed to accept more than one proposal.</strong></li>
-<li>Since there are multiple proposals now, there is a need to distinguish between different proposals. The mechanism that serves this purpose is to use <strong>proposal number</strong></li>
-<li>A proposal number is a number attach to each proposal. How this is implemented depends on actual implementation.</li>
-</ul>
-</li>
-<li>With the new constraint that an accept can accept more than one proposal, there is a <strong>new problem: we may end up with multiple values chosen</strong>; this violates the safety property.<ul>
-<li>A sample case multiple values are chosen:<ul>
-<li>5 processes, P1 through P5.</li>
-<li>P1 proposes V1, P5 proposes V5.</li>
-<li>V1 is accepted by P1, P2, and P3.</li>
-<li>Assume there is a delay, and then V5 arrives to acceptor P3.</li>
-<li>Since an acceptor can accept multiple values, P3 is happily accepting V5.</li>
-<li>Meanwhile, V5 is accepted by P4, and P5. (It could also be accepted by P1 and P2 of course.)</li>
-<li>The end result is no consensus reached: V1 and V5 are both gaining a majority.</li>
-</ul>
-</li>
-<li>To satisfy safety property of only a single value is chosen, an additional constraint should be added.</li>
-</ul>
-</li>
-<li><strong>If a proposal with value v is chosen, then every higher numbered proposal that is chosen has value v. [P2]</strong><ul>
-<li>Because proposals are ordered (use a proposal number), this ensures only a single value is chosen.</li>
-<li>To be chosen a proposal must be accepted by at least one acceptor. So, we can satisfy P2 by satisfying:</li>
-<li><strong>If a proposal with value v is chosen, then every higher numbered proposal accepted by any acceptor has value v.</strong></li>
-</ul>
-</li>
-<li>Constraint of P2 introduces a new problem that requires a strengthened constraint:<ul>
-<li>Now assume a value V is chosen already. Because chosen a value only requires a majority of acceptors, it is possible that the proposal WRT the chosen value never reached one or more acceptors.</li>
-<li>Because an acceptor can be a proposer, from one of those unreached acceptors, one acceptor (now a proposer) may propose a new value with a higher proposal number.</li>
-<li>Because of P1, an acceptor must accept the first proposal it receives. So an acceptor that receives this new proposal which contains a different value than the chosen value must be accepted.</li>
-<li>This violates P2a, so we need add more constraints.</li>
-</ul>
-</li>
-<li><strong>Maintaining both P1 and P2a requires strengthening P2a to P2b: If a proposal with value v is chosen, then every higher numbered proposal issued by any proposer has value v. </strong><ul>
-<li>This means before a proposer proposes a value, it has to look around and see if there is any exiting chosen value.</li>
-<li>But how to satisfy this new constraint P2b?</li>
-</ul>
-</li>
-<li>We can satisfy P2b by maintaining invariance of P2c.</li>
-<li><strong>For any v and n, if a proposal with value v and number n is issued,<br>  then there is a set S consisting of a majority of acceptors such that<br>  either (a) no acceptor in S has accepted any proposal numbered less<br>  than n, or (b) v is the value of the highest-numbered proposal among<br>  all proposals numbered less than n accepted by the acceptors in S. [P2c]</strong></li>
-<li>To satisfy P2c, now comes to my favorite part of the paper:<ul>
-<li><strong>To maintain the invariance of P2c<br>  , a proposer that wants to issue a proposal<br>  numbered n must learn the highest-numbered proposal with number<br>  less than n, if any, that has been or will be accepted by each acceptor in<br>  some majority of acceptors. Learning about proposals already accepted is<br>  easy enough; predicting future acceptances is hard. Instead of trying to predict<br>  the future, the proposer controls it by extracting a promise that there<br>  won’t be any such acceptances. In other words, the proposer requests that<br>  the acceptors not accept any more proposals numbered less than n.</strong></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<h1 id="Proposer-Algorithm"><a href="#Proposer-Algorithm" class="headerlink" title="Proposer Algorithm"></a>Proposer Algorithm</h1><ul>
-<li>Two phases: prepare and propose.</li>
-<li>Prepare: A proposer chooses a new proposal number n and sends a request to each member of some set of acceptors, asking it to respond with:<ul>
-<li>a. A promise never again to accept a proposal numbered less than n, and</li>
-<li>b. The proposal with the highest number less than n that it has accepted, if any.</li>
-</ul>
-</li>
-<li>Propose: If the proposer receives the requested responses from a majority of the acceptors, then it can issue a proposal with number n and value v, where v is the value of the highest-numbered proposal among the responses, or is any value selected by the proposer if the responders reported no proposals.</li>
-</ul>
-<h1 id="Acceptor-Algorithm"><a href="#Acceptor-Algorithm" class="headerlink" title="Acceptor Algorithm"></a>Acceptor Algorithm</h1><ul>
-<li>An acceptor can ignore any request without compromising safety.</li>
-<li>We need to say only when it is allowed to respond to a request.</li>
-<li>It can always respond to a prepare request.</li>
-<li>It can respond to an accept request, accepting the proposal, iff it has not promised not to.</li>
-<li>Optimization: acceptor can ignore prepare requests which have lower proposal number, and also proposals that it already accepted.</li>
-</ul>
-<h1 id="Learning-a-Chosen-Value"><a href="#Learning-a-Chosen-Value" class="headerlink" title="Learning a Chosen Value"></a>Learning a Chosen Value</h1><ul>
-<li>Use distinguished learners to optimize from product of number of learners and acceptors, to the sum of number of acceptors and learners.</li>
-</ul>
-<h1 id="Implementation"><a href="#Implementation" class="headerlink" title="Implementation"></a>Implementation</h1><ul>
-<li>Single Paxos not so useful, as it only reaches consensus on a single value.</li>
-<li>Multiple instances of Paxos - called multi-paxos allows consensus on a set of values. Very useful for building RSM (replicated state machine) systems. </li>
-</ul>
-
+        <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">class</span> Yllion &#123;</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; getString(<span class="built_in">string</span> input) &#123;</span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; ans;</span><br><span class="line">        <span class="function"><span class="built_in">stringstream</span> <span class="title">s</span><span class="params">(input)</span></span>;</span><br><span class="line">        <span class="built_in">string</span> str;</span><br><span class="line">        <span class="keyword">while</span>(s &gt;&gt; str) ans.push_back(str);</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="built_in">string</span> <span class="title">getPower</span><span class="params">(<span class="built_in">string</span> a, <span class="built_in">string</span> b)</span> </span>&#123;</span><br><span class="line">        <span class="built_in">unordered_map</span>&lt;<span class="built_in">string</span>, <span class="keyword">int</span>&gt; s2i;</span><br><span class="line">        s2i[<span class="string">"one"</span>] = <span class="number">0</span>; s2i[<span class="string">"ten"</span>] = <span class="number">1</span>;</span><br><span class="line">        s2i[<span class="string">"hundred"</span>] = <span class="number">2</span>;</span><br><span class="line">        s2i[<span class="string">"myriad"</span>] = <span class="number">4</span>; s2i[<span class="string">"myllion"</span>] = <span class="number">8</span>;</span><br><span class="line">        s2i[<span class="string">"byllion"</span>] = <span class="number">16</span>; s2i[<span class="string">"tryllion"</span>] = <span class="number">32</span>;</span><br><span class="line">        s2i[<span class="string">"quadryllion"</span>] = <span class="number">64</span>; s2i[<span class="string">"quintyllion"</span>] = <span class="number">128</span>;</span><br><span class="line">        s2i[<span class="string">"sextyllion"</span>] = <span class="number">256</span>; s2i[<span class="string">"septyllion"</span>] = <span class="number">512</span>;</span><br><span class="line">        s2i[<span class="string">"octyllion"</span>] = <span class="number">1024</span>; s2i[<span class="string">"nonyllion"</span>] = <span class="number">2048</span>;</span><br><span class="line">        s2i[<span class="string">"decyllion"</span>] = <span class="number">4096</span>;</span><br><span class="line">        <span class="built_in">unordered_map</span>&lt;<span class="keyword">int</span>, <span class="built_in">string</span>&gt; i2s;</span><br><span class="line">        i2s[<span class="number">0</span>] = <span class="string">"one"</span>; i2s[<span class="number">1</span>] = <span class="string">"ten"</span>;</span><br><span class="line">        i2s[<span class="number">2</span>] = <span class="string">"hundred"</span>;</span><br><span class="line">        i2s[<span class="number">4</span>] = <span class="string">"myriad"</span>; i2s[<span class="number">8</span>] = <span class="string">"myllion"</span>;</span><br><span class="line">        i2s[<span class="number">16</span>] = <span class="string">"byllion"</span>; i2s[<span class="number">32</span>] = <span class="string">"tryllion"</span>;</span><br><span class="line">        i2s[<span class="number">64</span>] = <span class="string">"quadryllion"</span>; i2s[<span class="number">128</span>] = <span class="string">"quintyllion"</span>;</span><br><span class="line">        i2s[<span class="number">256</span>] = <span class="string">"sextyllion"</span>; i2s[<span class="number">512</span>] = <span class="string">"septyllion"</span>;</span><br><span class="line">        i2s[<span class="number">1024</span>] = <span class="string">"octyllion"</span>; i2s[<span class="number">2048</span>] = <span class="string">"nonyllion"</span>;</span><br><span class="line">        i2s[<span class="number">4096</span>] = <span class="string">"decyllion"</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">auto</span> va = getString(a), vb = getString(b);</span><br><span class="line">        <span class="keyword">int</span> c = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> s : va) &#123;</span><br><span class="line">            c += s2i[s];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> s : vb) &#123;</span><br><span class="line">            c += s2i[s];</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; ans;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">12</span>; i &gt;= <span class="number">0</span>; --i) &#123;</span><br><span class="line">            <span class="keyword">int</span> base = <span class="built_in">pow</span>(<span class="number">2</span>, i);</span><br><span class="line">            <span class="keyword">if</span> (c &lt; base) <span class="keyword">continue</span>;</span><br><span class="line">            ans.push_back(i2s[base]);</span><br><span class="line">            <span class="keyword">if</span> (base == <span class="number">1</span>) <span class="keyword">break</span>;</span><br><span class="line">            c = c % base;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (!c) ans.push_back(<span class="string">"one"</span>);</span><br><span class="line"></span><br><span class="line">        reverse(ans.begin(), ans.end());</span><br><span class="line">        <span class="built_in">string</span> ret;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; ans.size(); ++i) &#123;</span><br><span class="line">            ret += ans[i];</span><br><span class="line">            <span class="keyword">if</span> (i != ans.size() - <span class="number">1</span>) ret += <span class="string">" "</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> ret;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/05/01/2017-05-01-Paxos/" data-id="ck3g3mjcz002emfxgl3zpyd4i" data-title="Paper Digest - Paxos Made Simple" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/01/27/2019-01-26-SRM748/" data-id="ck3p773v5002qe5xgaqd66q1e" data-title="SRM 748 DIV II 500" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2017/05/01/2017-05-01-Paxos/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2019/01/27/2019-01-26-SRM748/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Consensus-Protocol/">Consensus Protocol</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Paper-Digest/">Paper Digest</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Paxos/">Paxos</a></li></ul>
-
     </footer>
   </div>
   
@@ -418,14 +167,14 @@
 
 
   
-    <article id="post-2017-04-21-USACO-SnailTrail" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2018-10-20-SRM740" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2017/04/21/2017-04-21-USACO-SnailTrail/" class="article-date">
-  <time datetime="2017-04-21T21:50:31.000Z" itemprop="datePublished">2017-04-21</time>
+    <a href="/2018/10/20/2018-10-20-SRM740/" class="article-date">
+  <time datetime="2018-10-20T23:23:31.000Z" itemprop="datePublished">2018-10-20</time>
 </a>
     
   <div class="article-category">
-    <a class="article-category-link" href="/categories/USACO/">USACO</a>
+    <a class="article-category-link" href="/categories/TopCoder/">TopCoder</a>
   </div>
 
   </div>
@@ -436,7 +185,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/04/21/2017-04-21-USACO-SnailTrail/">USACO 5.2 Snail Trail</a>
+      <a class="article-title" href="/2018/10/20/2018-10-20-SRM740/">SRM 740 DIV II 500</a>
     </h1>
   
 
@@ -444,19 +193,17 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>The problem is to find out the longest possible move path under certain constraints. Not sure if there are better methods, but a brutal force DFS just works with the given test data.</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> N, B, ans;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt;&gt; grid;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt;&gt; visited;</span><br><span class="line"><span class="keyword">int</span> dx[] = &#123;<span class="number">-1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>&#125;;</span><br><span class="line"><span class="keyword">int</span> dy[] = &#123;<span class="number">0</span>, <span class="number">-1</span>, <span class="number">1</span>, <span class="number">0</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">on_grid</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> x &gt;= <span class="number">1</span> &amp;&amp; y &gt;= <span class="number">1</span> &amp;&amp; x &lt;= N &amp;&amp; y &lt;= N;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; next_dir(<span class="keyword">int</span> d) &#123;</span><br><span class="line">    <span class="keyword">if</span> (d == <span class="number">0</span> || d == <span class="number">3</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> &#123;<span class="number">1</span>, <span class="number">2</span>&#125;;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> &#123;<span class="number">0</span>, <span class="number">3</span>&#125;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">move</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y, <span class="keyword">int</span> d, <span class="keyword">int</span> step)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (visited[x][y]) <span class="keyword">return</span>;</span><br><span class="line">    visited[x][y] = <span class="literal">true</span>;</span><br><span class="line">    ans = <span class="built_in">std</span>::max(ans, step);</span><br><span class="line">    <span class="keyword">int</span> xx = x + dx[d], yy = y + dy[d];</span><br><span class="line">    <span class="keyword">if</span> (on_grid(xx, yy) &amp;&amp; grid[xx][yy] != <span class="string">'#'</span>) &#123;</span><br><span class="line">        move(xx, yy, d, step + <span class="number">1</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">auto</span> dirs = next_dir(d);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> dir : dirs) &#123;</span><br><span class="line">            xx = x + dx[dir]; yy = y + dy[dir];</span><br><span class="line">            <span class="keyword">if</span> (on_grid(xx, yy) &amp;&amp; grid[xx][yy] == <span class="string">'.'</span>) &#123;</span><br><span class="line">                move(xx, yy, dir, step + <span class="number">1</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    visited[x][y] = <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"snail.in"</span>)</span></span>;</span><br><span class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"snail.out"</span>)</span></span>;</span><br><span class="line">    fin &gt;&gt; N &gt;&gt; B;</span><br><span class="line">    grid = <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt;&gt;(N + <span class="number">1</span>, <span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt;(N + <span class="number">1</span>, <span class="string">'.'</span>));</span><br><span class="line">    visited = <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt;&gt;(N + <span class="number">1</span>, <span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt;(N + <span class="number">1</span>, <span class="literal">false</span>));</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= B; ++i) &#123;</span><br><span class="line">        <span class="keyword">char</span> col; <span class="keyword">int</span> row;</span><br><span class="line">        fin &gt;&gt; col &gt;&gt; row;</span><br><span class="line">        grid[row][col - <span class="string">'A'</span> + <span class="number">1</span>] = <span class="string">'#'</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    move(<span class="number">1</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">1</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= N; ++i) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt;= N; ++j) &#123;</span><br><span class="line">            visited[i][j] = <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    move(<span class="number">1</span>, <span class="number">1</span>, <span class="number">3</span>, <span class="number">1</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; ans &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    fout &lt;&lt; ans &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+        <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">class</span> LongJumpCompetition &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; recoverStandings(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; jumpLengths) &#123;</span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; ans;</span><br><span class="line">        <span class="keyword">int</span> N = jumpLengths.size() / <span class="number">3</span>;</span><br><span class="line">        <span class="built_in">vector</span>&lt;pair&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;, <span class="keyword">int</span>&gt;&gt; cur(N);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">            cur[i] = &#123; &#123;&#125; , i&#125;;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">3</span>; ++i) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; N; ++j) &#123;</span><br><span class="line">                <span class="keyword">int</span> length = jumpLengths[i * N + j];</span><br><span class="line">                cur[N - <span class="number">1</span> - j].first.push_back(<span class="number">-1</span> * length);</span><br><span class="line">                sort(cur[N - <span class="number">1</span> - j].first.begin(),</span><br><span class="line">                     cur[N - <span class="number">1</span> - j].first.end());</span><br><span class="line">            &#125;</span><br><span class="line">            sort(cur.begin(), cur.end());</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">            ans.push_back(cur[i].second);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/04/21/2017-04-21-USACO-SnailTrail/" data-id="ck3g3mjcw002amfxg578cgl07" data-title="USACO 5.2 Snail Trail" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2018/10/20/2018-10-20-SRM740/" data-id="ck3p773v3002pe5xgqkq9a84w" data-title="SRM 740 DIV II 500" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2017/04/21/2017-04-21-USACO-SnailTrail/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2018/10/20/2018-10-20-SRM740/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DFS/">DFS</a></li></ul>
-
     </footer>
   </div>
   
@@ -469,7 +216,7 @@
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/page/29/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/28/">28</a><a class="page-number" href="/page/29/">29</a><span class="page-number current">30</span><a class="page-number" href="/page/31/">31</a><a class="page-number" href="/page/32/">32</a><span class="space">&hellip;</span><a class="page-number" href="/page/58/">58</a><a class="extend next" rel="next" href="/page/31/">Next &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/29/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/28/">28</a><a class="page-number" href="/page/29/">29</a><span class="page-number current">30</span><a class="page-number" href="/page/31/">31</a><a class="page-number" href="/page/32/">32</a><span class="space">&hellip;</span><a class="page-number" href="/page/62/">62</a><a class="extend next" rel="next" href="/page/31/">Next &raquo;</a>
   </nav>
 
 </section>
@@ -526,15 +273,15 @@
           </li>
         
           <li>
-            <a href="/2019/11/22/2019-11-22-LeetCode934/">LeetCode 934. Shortest Bridge</a>
-          </li>
-        
-          <li>
             <a href="/2019/11/22/2019-11-22-LeetCode1213/">LeetCode 1213. Intersection of Three Sorted Arrays</a>
           </li>
         
           <li>
             <a href="/2019/11/22/2019-11-22-LeetCode1136/">LeetCode 1136. Parallel Courses</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/22/2019-11-22-LeetCode934/">LeetCode 934. Shortest Bridge</a>
           </li>
         
           <li>

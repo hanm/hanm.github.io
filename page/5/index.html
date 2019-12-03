@@ -75,53 +75,6 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-2019-11-11-LeetCode1146" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/11/11/2019-11-11-LeetCode1146/" class="article-date">
-  <time datetime="2019-11-11T19:11:11.000Z" itemprop="datePublished">2019-11-11</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/LeetCode-in-Rust/">LeetCode in Rust</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/11/2019-11-11-LeetCode1146/">LeetCode 1146. Snapshot Array</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><a href="https://leetcode.com/problems/snapshot-array/description/" target="_blank" rel="noopener">Problem Statement</a></p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::collections::&#123;HashMap, BTreeMap&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">SnapshotArray</span></span> &#123;</span><br><span class="line">    map : HashMap&lt;<span class="keyword">i32</span>, BTreeMap&lt;<span class="keyword">i32</span>, <span class="keyword">i32</span>&gt;&gt;,</span><br><span class="line">    version: <span class="keyword">i32</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * `&amp;self` means the method takes an immutable reference.</span></span><br><span class="line"><span class="comment"> * If you need a mutable reference, change it to `&amp;mut self` instead.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">impl</span> SnapshotArray &#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">new</span></span>(length: <span class="keyword">i32</span>) -&gt; <span class="keyword">Self</span> &#123;</span><br><span class="line">        SnapshotArray &#123;</span><br><span class="line">            map: HashMap::new(),</span><br><span class="line">            version: <span class="number">0</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">set</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>, index: <span class="keyword">i32</span>, val: <span class="keyword">i32</span>) &#123;</span><br><span class="line">        <span class="keyword">self</span>.map.entry(index).or_insert(BTreeMap::new());</span><br><span class="line">        <span class="keyword">self</span>.map.get_mut(&amp;index).unwrap().insert(<span class="keyword">self</span>.version, val);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">snap</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> ret = <span class="keyword">self</span>.version;</span><br><span class="line">        <span class="keyword">self</span>.version += <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">return</span> ret;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">get</span></span>(&amp;<span class="keyword">self</span>, index: <span class="keyword">i32</span>, snap_id: <span class="keyword">i32</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> !<span class="keyword">self</span>.map.contains_key(&amp;index) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">let</span> vals = <span class="keyword">self</span>.map.get(&amp;index).unwrap();</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> ans = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> entry <span class="keyword">in</span> vals &#123;</span><br><span class="line">            <span class="keyword">if</span> snap_id &gt;= *entry.<span class="number">0</span> &#123;</span><br><span class="line">                ans = *entry.<span class="number">1</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">               <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1146/" data-id="ck3g3mjhb005xmfxgyqbhu774" data-title="LeetCode 1146. Snapshot Array" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1146/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LeetCode/">LeetCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Rust/">Rust</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
     <article id="post-2019-11-11-LeetCode1197" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2019/11/11/2019-11-11-LeetCode1197/" class="article-date">
@@ -153,9 +106,56 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1197/" data-id="ck3g3mjhd0060mfxgsfyohxrr" data-title="1197. Minimum Knight Moves" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1197/" data-id="ck3p773wj004pe5xgu3oacrbh" data-title="1197. Minimum Knight Moves" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1197/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LeetCode/">LeetCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Rust/">Rust</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-2019-11-11-LeetCode1146" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/11/11/2019-11-11-LeetCode1146/" class="article-date">
+  <time datetime="2019-11-11T19:11:11.000Z" itemprop="datePublished">2019-11-11</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/LeetCode-in-Rust/">LeetCode in Rust</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/11/11/2019-11-11-LeetCode1146/">LeetCode 1146. Snapshot Array</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><a href="https://leetcode.com/problems/snapshot-array/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::collections::&#123;HashMap, BTreeMap&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">SnapshotArray</span></span> &#123;</span><br><span class="line">    map : HashMap&lt;<span class="keyword">i32</span>, BTreeMap&lt;<span class="keyword">i32</span>, <span class="keyword">i32</span>&gt;&gt;,</span><br><span class="line">    version: <span class="keyword">i32</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * `&amp;self` means the method takes an immutable reference.</span></span><br><span class="line"><span class="comment"> * If you need a mutable reference, change it to `&amp;mut self` instead.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">impl</span> SnapshotArray &#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">new</span></span>(length: <span class="keyword">i32</span>) -&gt; <span class="keyword">Self</span> &#123;</span><br><span class="line">        SnapshotArray &#123;</span><br><span class="line">            map: HashMap::new(),</span><br><span class="line">            version: <span class="number">0</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">set</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>, index: <span class="keyword">i32</span>, val: <span class="keyword">i32</span>) &#123;</span><br><span class="line">        <span class="keyword">self</span>.map.entry(index).or_insert(BTreeMap::new());</span><br><span class="line">        <span class="keyword">self</span>.map.get_mut(&amp;index).unwrap().insert(<span class="keyword">self</span>.version, val);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">snap</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> ret = <span class="keyword">self</span>.version;</span><br><span class="line">        <span class="keyword">self</span>.version += <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">return</span> ret;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">get</span></span>(&amp;<span class="keyword">self</span>, index: <span class="keyword">i32</span>, snap_id: <span class="keyword">i32</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> !<span class="keyword">self</span>.map.contains_key(&amp;index) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">let</span> vals = <span class="keyword">self</span>.map.get(&amp;index).unwrap();</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> ans = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> entry <span class="keyword">in</span> vals &#123;</span><br><span class="line">            <span class="keyword">if</span> snap_id &gt;= *entry.<span class="number">0</span> &#123;</span><br><span class="line">                ans = *entry.<span class="number">1</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">               <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1146/" data-id="ck3p773wk004qe5xgmkhc8uwj" data-title="LeetCode 1146. Snapshot Array" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1146/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
@@ -200,7 +200,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1147/" data-id="ck3g3mjhe0061mfxgfng7mtkk" data-title="LeetCode 1147. Longest Chunked Palindrome Decomposition" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1147/" data-id="ck3p773wl004re5xgicga8gms" data-title="LeetCode 1147. Longest Chunked Palindrome Decomposition" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1147/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -220,7 +220,7 @@
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/page/4/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/58/">58</a><a class="extend next" rel="next" href="/page/6/">Next &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/4/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/62/">62</a><a class="extend next" rel="next" href="/page/6/">Next &raquo;</a>
   </nav>
 
 </section>
@@ -277,15 +277,15 @@
           </li>
         
           <li>
-            <a href="/2019/11/22/2019-11-22-LeetCode934/">LeetCode 934. Shortest Bridge</a>
-          </li>
-        
-          <li>
             <a href="/2019/11/22/2019-11-22-LeetCode1213/">LeetCode 1213. Intersection of Three Sorted Arrays</a>
           </li>
         
           <li>
             <a href="/2019/11/22/2019-11-22-LeetCode1136/">LeetCode 1136. Parallel Courses</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/22/2019-11-22-LeetCode934/">LeetCode 934. Shortest Bridge</a>
           </li>
         
           <li>

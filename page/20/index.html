@@ -75,6 +75,100 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-2019-11-10-LeetCode1182" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/11/10/2019-11-10-LeetCode1182/" class="article-date">
+  <time datetime="2019-11-10T19:11:11.000Z" itemprop="datePublished">2019-11-10</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/LeetCode-in-Rust/">LeetCode in Rust</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1182/">LeetCode 1182. Shortest Distance to target color</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><a href="https://leetcode.com/problems/shortest-distance-to-target-color/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::collections::HashMap;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">get_pos</span></span>(indices: &amp;<span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;, target: <span class="keyword">i32</span>) -&gt;<span class="keyword">usize</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> size = indices.len();</span><br><span class="line">        <span class="keyword">let</span> index = <span class="keyword">match</span> indices.binary_search(&amp;target) &#123;</span><br><span class="line">            <span class="literal">Ok</span>(i) =&gt; i,</span><br><span class="line">            <span class="literal">Err</span>(i) =&gt; i,</span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> index == <span class="number">0</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> indices[<span class="number">0</span>] <span class="keyword">as</span> <span class="keyword">usize</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> index == size &#123;</span><br><span class="line">            <span class="keyword">return</span> indices[size - <span class="number">1</span>] <span class="keyword">as</span> <span class="keyword">usize</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> indices[index] - target &lt; target - indices[index - <span class="number">1</span>] &#123;</span><br><span class="line">            <span class="keyword">return</span> indices[index] <span class="keyword">as</span> <span class="keyword">usize</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> indices[index - <span class="number">1</span>] <span class="keyword">as</span> <span class="keyword">usize</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">shortest_distance_color</span></span>(colors: <span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;, queries: <span class="built_in">Vec</span>&lt;<span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;&gt;) -&gt; <span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt; &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> map : HashMap&lt;<span class="keyword">i32</span>, <span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;&gt; = HashMap::new();</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> res = <span class="built_in">vec!</span>[];</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..colors.len() &#123;</span><br><span class="line">            <span class="keyword">let</span> color = colors[i];</span><br><span class="line">            <span class="keyword">if</span> !map.contains_key(&amp;color) &#123;</span><br><span class="line">                map.insert(color, <span class="built_in">vec!</span>[i <span class="keyword">as</span> <span class="keyword">i32</span>]);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">let</span> <span class="keyword">mut</span> val = (*map.get(&amp;color).unwrap()).clone();</span><br><span class="line">                val.push(i <span class="keyword">as</span> <span class="keyword">i32</span>);</span><br><span class="line">                map.insert(color, val);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> q <span class="keyword">in</span> queries &#123;</span><br><span class="line">            <span class="keyword">let</span> target = q[<span class="number">0</span>];</span><br><span class="line">            <span class="keyword">if</span> !map.contains_key(&amp;q[<span class="number">1</span>]) &#123;</span><br><span class="line">                res.push(-<span class="number">1</span>);</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">let</span> pos = Self::get_pos(map.get(&amp;q[<span class="number">1</span>]).unwrap(), target);</span><br><span class="line">            res.push((pos <span class="keyword">as</span> <span class="keyword">i32</span> - target).abs());</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1182/" data-id="ck3p773vv003se5xgr5ald9gk" data-title="LeetCode 1182. Shortest Distance to target color" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1182/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LeetCode/">LeetCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Rust/">Rust</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-2019-11-10-LeetCode1184" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/11/10/2019-11-10-LeetCode1184/" class="article-date">
+  <time datetime="2019-11-10T19:11:11.000Z" itemprop="datePublished">2019-11-10</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/LeetCode-in-Rust/">LeetCode in Rust</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1184/">LeetCode 1184. Distance Between Bus Stops</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><a href="https://leetcode.com/problems/distance-between-bus-stops/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::mem::swap;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">distance_between_bus_stops</span></span>(distance: <span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;, start: <span class="keyword">i32</span>, destination: <span class="keyword">i32</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> val, n, <span class="keyword">mut</span> ans) = (<span class="number">0</span>, distance.len(), <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> s, <span class="keyword">mut</span> d) = (start, destination);</span><br><span class="line">        <span class="keyword">if</span> s &gt; d &#123;</span><br><span class="line">            swap(&amp;<span class="keyword">mut</span> s, &amp;<span class="keyword">mut</span> d);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> s..d &#123;</span><br><span class="line">            val += distance[i <span class="keyword">as</span> <span class="keyword">usize</span>];</span><br><span class="line">        &#125;</span><br><span class="line">        ans = val; val = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> i = d;</span><br><span class="line">        <span class="keyword">while</span> i != s &#123;</span><br><span class="line">            val += distance[i <span class="keyword">as</span> <span class="keyword">usize</span>];</span><br><span class="line">            i = (i + <span class="number">1</span>) % n <span class="keyword">as</span> <span class="keyword">i32</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> std::cmp::min(val, ans);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1184/" data-id="ck3p773vw003te5xgjhnplqjc" data-title="LeetCode 1184. Distance Between Bus Stops" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1184/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LeetCode/">LeetCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Rust/">Rust</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-2019-11-10-LeetCode1207" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2019/11/10/2019-11-10-LeetCode1207/" class="article-date">
@@ -106,103 +200,9 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1207/" data-id="ck3g3mjgr0052mfxglkvrwonf" data-title="LeetCode 1207. Unique Number of Occurrences" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1207/" data-id="ck3p773vx003ue5xg8gg9uwm5" data-title="LeetCode 1207. Unique Number of Occurrences" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1207/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LeetCode/">LeetCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Rust/">Rust</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2019-11-10-LeetCode875" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/11/10/2019-11-10-LeetCode875/" class="article-date">
-  <time datetime="2019-11-10T19:11:11.000Z" itemprop="datePublished">2019-11-10</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/LeetCode-in-Rust/">LeetCode in Rust</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode875/">LeetCode 875. Koko Eating Bananas</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><a href="https://leetcode.com/problems/koko-eating-bananas/description/" target="_blank" rel="noopener">Problem Statement</a></p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">min_eating_speed</span></span>(piles: <span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;, h: <span class="keyword">i32</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> l, <span class="keyword">mut</span> r) = (<span class="number">1</span>, *piles.iter().max().unwrap());</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> l &lt; r &#123;</span><br><span class="line">            <span class="keyword">let</span> mid = l + (r - l) / <span class="number">2</span>;</span><br><span class="line">            <span class="keyword">let</span> <span class="keyword">mut</span> total = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">for</span> val <span class="keyword">in</span> &amp;piles &#123;</span><br><span class="line">                total += (*val <span class="keyword">as</span> <span class="keyword">f32</span> / mid <span class="keyword">as</span> <span class="keyword">f32</span>).ceil() <span class="keyword">as</span> <span class="keyword">i32</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> total &gt; h &#123;</span><br><span class="line">                l = mid + <span class="number">1</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                r = mid;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> l;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode875/" data-id="ck3g3mjgs0054mfxg8x7args9" data-title="LeetCode 875. Koko Eating Bananas" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode875/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LeetCode/">LeetCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Rust/">Rust</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2019-11-10-LeetCode1209" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/11/10/2019-11-10-LeetCode1209/" class="article-date">
-  <time datetime="2019-11-10T19:11:11.000Z" itemprop="datePublished">2019-11-10</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/LeetCode-in-Rust/">LeetCode in Rust</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1209/">LeetCode 1209. Remove All Adjacent Duplicates in String II</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><a href="https://leetcode.com/problems/remove-all-adjacent-duplicates-in-string-ii/description/" target="_blank" rel="noopener">Problem Statement</a></p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">remove_duplicates</span></span>(s: <span class="built_in">String</span>, k: <span class="keyword">i32</span>) -&gt; <span class="built_in">String</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> stack = <span class="built_in">vec!</span>[(<span class="number">0</span>, <span class="string">'#'</span>)];</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> ans = <span class="string">""</span>.to_string();</span><br><span class="line">        <span class="keyword">for</span> c <span class="keyword">in</span> s.chars() &#123;</span><br><span class="line">            <span class="keyword">let</span> index = stack.len() - <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">if</span> stack[index].<span class="number">1</span> != c &#123;</span><br><span class="line">                stack.push((<span class="number">1</span>, c));</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> stack[index].<span class="number">0</span> == k - <span class="number">1</span> &#123;</span><br><span class="line">                stack.pop();</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">let</span> <span class="keyword">mut</span> val = stack[index];</span><br><span class="line">                val.<span class="number">0</span> += <span class="number">1</span>;</span><br><span class="line">                stack[index] = val;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> item <span class="keyword">in</span> stack &#123;</span><br><span class="line">            ans.push_str(&amp;(<span class="number">0</span>..item.<span class="number">0</span> <span class="keyword">as</span> <span class="keyword">usize</span>).map(|_| item.<span class="number">1</span>).collect::&lt;<span class="built_in">String</span>&gt;());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1209/" data-id="ck3g3mjgt0056mfxgg0ntlqfv" data-title="LeetCode 1209. Remove All Adjacent Duplicates in String II" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1209/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
@@ -220,7 +220,7 @@
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/page/19/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/18/">18</a><a class="page-number" href="/page/19/">19</a><span class="page-number current">20</span><a class="page-number" href="/page/21/">21</a><a class="page-number" href="/page/22/">22</a><span class="space">&hellip;</span><a class="page-number" href="/page/58/">58</a><a class="extend next" rel="next" href="/page/21/">Next &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/19/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/18/">18</a><a class="page-number" href="/page/19/">19</a><span class="page-number current">20</span><a class="page-number" href="/page/21/">21</a><a class="page-number" href="/page/22/">22</a><span class="space">&hellip;</span><a class="page-number" href="/page/62/">62</a><a class="extend next" rel="next" href="/page/21/">Next &raquo;</a>
   </nav>
 
 </section>
@@ -277,15 +277,15 @@
           </li>
         
           <li>
-            <a href="/2019/11/22/2019-11-22-LeetCode934/">LeetCode 934. Shortest Bridge</a>
-          </li>
-        
-          <li>
             <a href="/2019/11/22/2019-11-22-LeetCode1213/">LeetCode 1213. Intersection of Three Sorted Arrays</a>
           </li>
         
           <li>
             <a href="/2019/11/22/2019-11-22-LeetCode1136/">LeetCode 1136. Parallel Courses</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/22/2019-11-22-LeetCode934/">LeetCode 934. Shortest Bridge</a>
           </li>
         
           <li>

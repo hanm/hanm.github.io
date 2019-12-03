@@ -75,9 +75,9 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-2019-11-10-LeetCode1184" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2019-11-10-LeetCode1161" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2019/11/10/2019-11-10-LeetCode1184/" class="article-date">
+    <a href="/2019/11/10/2019-11-10-LeetCode1161/" class="article-date">
   <time datetime="2019-11-10T19:11:11.000Z" itemprop="datePublished">2019-11-10</time>
 </a>
     
@@ -93,7 +93,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1184/">LeetCode 1184. Distance Between Bus Stops</a>
+      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1161/">LeetCode 1161. Maximum Level Sum of a Binary Tree</a>
     </h1>
   
 
@@ -101,14 +101,14 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><a href="https://leetcode.com/problems/distance-between-bus-stops/description/" target="_blank" rel="noopener">Problem Statement</a></p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::mem::swap;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">distance_between_bus_stops</span></span>(distance: <span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;, start: <span class="keyword">i32</span>, destination: <span class="keyword">i32</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> val, n, <span class="keyword">mut</span> ans) = (<span class="number">0</span>, distance.len(), <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> s, <span class="keyword">mut</span> d) = (start, destination);</span><br><span class="line">        <span class="keyword">if</span> s &gt; d &#123;</span><br><span class="line">            swap(&amp;<span class="keyword">mut</span> s, &amp;<span class="keyword">mut</span> d);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> s..d &#123;</span><br><span class="line">            val += distance[i <span class="keyword">as</span> <span class="keyword">usize</span>];</span><br><span class="line">        &#125;</span><br><span class="line">        ans = val; val = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> i = d;</span><br><span class="line">        <span class="keyword">while</span> i != s &#123;</span><br><span class="line">            val += distance[i <span class="keyword">as</span> <span class="keyword">usize</span>];</span><br><span class="line">            i = (i + <span class="number">1</span>) % n <span class="keyword">as</span> <span class="keyword">i32</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> std::cmp::min(val, ans);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+        <p><a href="https://leetcode.com/problems/maximum-level-sum-of-a-binary-tree/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::rc::Rc;</span><br><span class="line"><span class="keyword">use</span> std::cell::RefCell;</span><br><span class="line"><span class="keyword">use</span> std::collections::VecDeque;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">max_level_sum</span></span>(root: <span class="built_in">Option</span>&lt;Rc&lt;RefCell&lt;TreeNode&gt;&gt;&gt;) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> ans, <span class="keyword">mut</span> sum, <span class="keyword">mut</span> level) = (<span class="number">0</span>, std::i32::MIN, <span class="number">1</span>);</span><br><span class="line">        <span class="keyword">if</span> root.is_none() &#123;</span><br><span class="line">            <span class="keyword">return</span> ans;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> q = VecDeque::new();</span><br><span class="line">        q.push_back(root.clone());</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> !q.is_empty() &#123;</span><br><span class="line">            <span class="keyword">let</span> (<span class="keyword">mut</span> size, <span class="keyword">mut</span> cur_sum) = (q.len(), <span class="number">0</span>);</span><br><span class="line">            <span class="keyword">while</span> size != <span class="number">0</span> &#123;</span><br><span class="line">                <span class="keyword">if</span> <span class="keyword">let</span> <span class="literal">Some</span>(node) = q.pop_front() &#123;</span><br><span class="line">                    cur_sum += node.clone().unwrap().borrow().val;</span><br><span class="line">                    <span class="keyword">let</span> (left, right) = (</span><br><span class="line">                        node.clone().unwrap().borrow().left.clone(),</span><br><span class="line">                        node.clone().unwrap().borrow().right.clone()</span><br><span class="line">                    );</span><br><span class="line">                    <span class="keyword">if</span> !left.is_none() &#123;</span><br><span class="line">                        q.push_back(left);</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">if</span> !right.is_none() &#123;</span><br><span class="line">                        q.push_back(right);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                size -= <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> cur_sum &gt; sum &#123;</span><br><span class="line">                sum = cur_sum;</span><br><span class="line">                ans = level;</span><br><span class="line">            &#125;</span><br><span class="line">            level += <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1184/" data-id="ck3g3mjgk004wmfxgeya1adu3" data-title="LeetCode 1184. Distance Between Bus Stops" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1161/" data-id="ck3p773vu003pe5xgfjadcpwi" data-title="LeetCode 1161. Maximum Level Sum of a Binary Tree" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1184/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1161/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
@@ -122,9 +122,9 @@
 
 
   
-    <article id="post-2019-11-10-LeetCode660" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2019-11-10-LeetCode1165" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2019/11/10/2019-11-10-LeetCode660/" class="article-date">
+    <a href="/2019/11/10/2019-11-10-LeetCode1165/" class="article-date">
   <time datetime="2019-11-10T19:11:11.000Z" itemprop="datePublished">2019-11-10</time>
 </a>
     
@@ -140,7 +140,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode660/">LeetCode 660. Remove 9</a>
+      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1165/">LeetCode 1165. Single-Row Keyboard</a>
     </h1>
   
 
@@ -148,14 +148,14 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><a href="https://leetcode.com/problems/remove-9/description/" target="_blank" rel="noopener">Problem Statement</a></p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">new_integer</span></span>(<span class="keyword">mut</span> n: <span class="keyword">i32</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> ans, <span class="keyword">mut</span> base) = (<span class="number">0</span>, <span class="number">1</span>);</span><br><span class="line">        <span class="keyword">while</span> n &gt; <span class="number">0</span> &#123;</span><br><span class="line">            ans += n % <span class="number">9</span> * base;</span><br><span class="line">            n /= <span class="number">9</span>;</span><br><span class="line">            base *= <span class="number">10</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+        <p><a href="https://leetcode.com/problems/single-row-keyboard/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::collections::HashMap;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">calculate_time</span></span>(keyboard: <span class="built_in">String</span>, word: <span class="built_in">String</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> map = HashMap::new();</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..<span class="number">26</span> &#123;</span><br><span class="line">            map.insert(keyboard.chars().nth(i).unwrap(), i);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> ans, size) = (<span class="number">0</span>, word.len());</span><br><span class="line">        <span class="keyword">if</span> size == <span class="number">1</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> ans;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..size &#123;</span><br><span class="line">            <span class="keyword">let</span> ci = word.chars().nth(i).unwrap();</span><br><span class="line">            <span class="keyword">if</span> i == <span class="number">0</span> &#123;</span><br><span class="line">                ans += *map.get(&amp;ci).unwrap() <span class="keyword">as</span> <span class="keyword">i32</span>;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">let</span> cii = word.chars().nth(i - <span class="number">1</span>).unwrap();</span><br><span class="line">            ans += (*map.get(&amp;cii).unwrap() <span class="keyword">as</span> <span class="keyword">i32</span></span><br><span class="line">                - *map.get(&amp;ci).unwrap() <span class="keyword">as</span> <span class="keyword">i32</span>).abs();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode660/" data-id="ck3g3mjgo004ymfxghx9poyfc" data-title="LeetCode 660. Remove 9" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1165/" data-id="ck3p773vu003qe5xg9bwup5so" data-title="LeetCode 1165. Single-Row Keyboard" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode660/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1165/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
@@ -200,7 +200,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1170/" data-id="ck3g3mjgq0050mfxgqrp5cj0m" data-title="LeetCode 1170. Compare Strings by Frequency of the Smallest Character" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1170/" data-id="ck3p773vv003re5xgw9jasllv" data-title="LeetCode 1170. Compare Strings by Frequency of the Smallest Character" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1170/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -220,7 +220,7 @@
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/page/18/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/17/">17</a><a class="page-number" href="/page/18/">18</a><span class="page-number current">19</span><a class="page-number" href="/page/20/">20</a><a class="page-number" href="/page/21/">21</a><span class="space">&hellip;</span><a class="page-number" href="/page/58/">58</a><a class="extend next" rel="next" href="/page/20/">Next &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/18/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/17/">17</a><a class="page-number" href="/page/18/">18</a><span class="page-number current">19</span><a class="page-number" href="/page/20/">20</a><a class="page-number" href="/page/21/">21</a><span class="space">&hellip;</span><a class="page-number" href="/page/62/">62</a><a class="extend next" rel="next" href="/page/20/">Next &raquo;</a>
   </nav>
 
 </section>
@@ -277,15 +277,15 @@
           </li>
         
           <li>
-            <a href="/2019/11/22/2019-11-22-LeetCode934/">LeetCode 934. Shortest Bridge</a>
-          </li>
-        
-          <li>
             <a href="/2019/11/22/2019-11-22-LeetCode1213/">LeetCode 1213. Intersection of Three Sorted Arrays</a>
           </li>
         
           <li>
             <a href="/2019/11/22/2019-11-22-LeetCode1136/">LeetCode 1136. Parallel Courses</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/22/2019-11-22-LeetCode934/">LeetCode 934. Shortest Bridge</a>
           </li>
         
           <li>
