@@ -75,10 +75,10 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-2017-03-17-USACO-StarryNight" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2017-07-22-USACO-WindowArea" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2017/03/17/2017-03-17-USACO-StarryNight/" class="article-date">
-  <time datetime="2017-03-17T23:28:31.000Z" itemprop="datePublished">2017-03-17</time>
+    <a href="/2017/07/22/2017-07-22-USACO-WindowArea/" class="article-date">
+  <time datetime="2017-07-22T16:41:31.000Z" itemprop="datePublished">2017-07-22</time>
 </a>
     
   <div class="article-category">
@@ -93,7 +93,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/03/17/2017-03-17-USACO-StarryNight/">USACO 5.1 Starry Night</a>
+      <a class="article-title" href="/2017/07/22/2017-07-22-USACO-WindowArea/">USACO 5.3 Window Area</a>
     </h1>
   
 
@@ -101,33 +101,19 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>The basic idea is to find each cluster, and then compare each cluster pair by pair. There are several sub problems to solve in this case:</p>
-<ul>
-<li><p>How to represent a cluster?<br>A cluster can be represented by the rectangle that covers the cluster together with the source grid (the sky). Each cluster has two key properties: the number of stars, and the covering rectangle, which can be represented by left/bottom and right/upper points.</p>
-</li>
-<li><p>How to find a cluster?<br>A cluster can be found by using flood fill algorithm against the sky.</p>
-</li>
-<li><p>How to compare two clusters?<br>Two clusters are obviously different if they contain different number of stars. For clusters contain same number of stars, a set of transforms need to be performed on one cluster then compare the transformed cluster with another cluster:</p>
-<ul>
-<li>Rotate clockwise 90 degree.</li>
-<li>Rotate clockwise 180 degree.</li>
-<li>Rotate clockwise 270 degree.</li>
-<li>Rotate clockwise 360 degree.</li>
-<li>Mirror the cluster then repeat.</li>
-</ul>
-</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;queue&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> R, C;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> Cluster &#123;</span><br><span class="line">    <span class="keyword">int</span> min_x, min_y, max_x, max_y;</span><br><span class="line">    <span class="keyword">int</span> num_of_stars;</span><br><span class="line">    Cluster() : min_x(<span class="number">-1</span>), min_y(<span class="number">-1</span>), max_x(<span class="number">-1</span>), max_y(<span class="number">-1</span>), num_of_stars(<span class="number">0</span>) &#123;&#125;</span><br><span class="line">&#125; Cluster;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> Point &#123;</span><br><span class="line">    <span class="keyword">int</span> x; <span class="keyword">int</span> y;</span><br><span class="line">    Point(<span class="keyword">int</span> x, <span class="keyword">int</span> y) : x(x), y(y) &#123;&#125;</span><br><span class="line">&#125; Point;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt;&gt; sky;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">short</span>&gt;&gt; mark;</span><br><span class="line"><span class="built_in">vector</span>&lt;Cluster&gt; clusters(<span class="number">505</span>);</span><br><span class="line"><span class="keyword">char</span> p[<span class="number">550</span>];</span><br><span class="line"><span class="keyword">int</span> idx;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">calculate_bound</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</span><br><span class="line">    clusters[idx].min_x = clusters[idx].min_x == <span class="number">-1</span> ? x : <span class="built_in">std</span>::min(x, clusters[idx].min_x);</span><br><span class="line">    clusters[idx].min_y = clusters[idx].min_y == <span class="number">-1</span> ? y : <span class="built_in">std</span>::min(y, clusters[idx].min_y);</span><br><span class="line">    clusters[idx].max_x = clusters[idx].max_x == <span class="number">-1</span> ? x : <span class="built_in">std</span>::max(x, clusters[idx].max_x);</span><br><span class="line">    clusters[idx].max_y = clusters[idx].max_y == <span class="number">-1</span> ? y : <span class="built_in">std</span>::max(y, clusters[idx].max_y);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">flood_fill</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y, <span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> num_of_stars = <span class="number">1</span>;</span><br><span class="line">    mark[x][y] = index;</span><br><span class="line">    calculate_bound(x, y);</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">queue</span>&lt;Point&gt; q;</span><br><span class="line">    q.push(Point(x, y));</span><br><span class="line">    <span class="keyword">while</span> (!q.empty()) &#123;</span><br><span class="line">        <span class="keyword">auto</span> p = q.front(); q.pop();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">-1</span>; i &lt;= <span class="number">1</span>; ++i) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">-1</span>; j &lt;= <span class="number">1</span>; ++j) &#123;</span><br><span class="line">                <span class="keyword">int</span> xx = p.x + i, yy = p.y + j;</span><br><span class="line">                <span class="keyword">if</span> (xx &lt; <span class="number">0</span> || xx &gt;= R || yy &lt; <span class="number">0</span> || yy &gt;= C) <span class="keyword">continue</span>;</span><br><span class="line">                <span class="keyword">if</span> (sky[xx][yy] != <span class="string">'1'</span> || mark[xx][yy] != <span class="number">-1</span>) <span class="keyword">continue</span>;</span><br><span class="line">                ++num_of_stars;</span><br><span class="line">                mark[xx][yy] = index;</span><br><span class="line">                calculate_bound(xx, yy);</span><br><span class="line">                q.push(Point(xx, yy));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> num_of_stars;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Rotate 90 degree clockwise.</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">rotate</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt;&gt; &amp;cluster, <span class="keyword">int</span> lx, <span class="keyword">int</span> ly)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> rows = (<span class="keyword">int</span>)cluster.size(), cols = (<span class="keyword">int</span>)cluster[<span class="number">0</span>].size();</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt;&gt; t(rows, <span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt;(cols));</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; lx; ++i) &#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; ly; ++j) &#123;</span><br><span class="line">            t[j][lx - i - <span class="number">1</span>] = cluster[i][j];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; ly; ++i) &#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; lx; ++j) &#123;</span><br><span class="line">            cluster[i][j] = t[i][j];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">mirror</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt;&gt; &amp;cluster, <span class="keyword">int</span> lx, <span class="keyword">int</span> ly)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; lx; ++i) &#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; ly/<span class="number">2</span>; ++j) &#123;</span><br><span class="line">            swap(cluster[i][j], cluster[i][ly - <span class="number">1</span> - j]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">match</span><span class="params">(<span class="keyword">int</span> index, <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt;&gt; cluster, <span class="keyword">int</span> lx, <span class="keyword">int</span> ly)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; lx; ++i) &#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; ly; ++j) &#123;</span><br><span class="line">            <span class="keyword">int</span> xx = clusters[index].min_x + i,</span><br><span class="line">                yy = clusters[index].min_y + j;</span><br><span class="line">            <span class="keyword">if</span>(mark[xx][yy] == index &amp;&amp; cluster[i][j] == <span class="string">'0'</span>) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">is_two_cluster_same</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (clusters[a].num_of_stars != clusters[b].num_of_stars) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">int</span> ax = clusters[a].max_x - clusters[a].min_x + <span class="number">1</span>,</span><br><span class="line">        ay = clusters[a].max_y - clusters[a].min_y + <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">int</span> lx = clusters[b].max_x - clusters[b].min_x + <span class="number">1</span>,</span><br><span class="line">        ly = clusters[b].max_y - clusters[b].min_y + <span class="number">1</span>;</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt;&gt; tmp(<span class="number">110</span>, <span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt;(<span class="number">110</span>));</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; lx; ++i) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; ly; ++j) &#123;</span><br><span class="line">            <span class="keyword">int</span> xx = i + clusters[b].min_x, yy = j + clusters[b].min_y;</span><br><span class="line">            tmp[i][j] = sky[xx][yy];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (ax == lx &amp;&amp; ay == ly &amp;&amp; match(a, tmp, lx, ly)) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span>; ++i) &#123;</span><br><span class="line">        rotate(tmp, lx, ly);</span><br><span class="line">        swap(lx, ly);</span><br><span class="line">        <span class="keyword">if</span>(ax == lx &amp;&amp; ay == ly &amp;&amp; match(a, tmp, lx, ly)) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    mirror(tmp, lx, ly);</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span>; ++i) &#123;</span><br><span class="line">        rotate(tmp, lx, ly);</span><br><span class="line">        swap(lx, ly);</span><br><span class="line">        <span class="keyword">if</span>(ax == lx &amp;&amp; ay == ly &amp;&amp; match(a, tmp, lx, ly)) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"starry.in"</span>)</span></span>;</span><br><span class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"starry.out"</span>)</span></span>;</span><br><span class="line">    </span><br><span class="line">    fin &gt;&gt; C &gt;&gt; R;</span><br><span class="line">    sky = <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt;&gt;(R, <span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt;(C));</span><br><span class="line">    mark = <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">short</span>&gt;&gt;(R, <span class="built_in">vector</span>&lt;<span class="keyword">short</span>&gt;(C, <span class="number">-1</span>));</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; R; ++i) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; C; ++j) &#123;</span><br><span class="line">            fin &gt;&gt; sky[i][j];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    idx = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; R; ++i) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; C; ++j) &#123;</span><br><span class="line">            <span class="keyword">if</span> (sky[i][j] == <span class="string">'1'</span> &amp;&amp; mark[i][j] == <span class="number">-1</span>) &#123;</span><br><span class="line">                <span class="keyword">int</span> num_of_stars = flood_fill(i, j, idx);</span><br><span class="line">                clusters[idx].num_of_stars = num_of_stars;</span><br><span class="line">                ++idx;</span><br><span class="line">                <span class="built_in">cout</span> &lt;&lt; idx - <span class="number">1</span> &lt;&lt; <span class="string">" : stars "</span> &lt;&lt; num_of_stars &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">char</span> c = <span class="string">'a'</span>;</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt;&gt; ans = sky;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; idx; ++i) &#123;</span><br><span class="line">        <span class="keyword">int</span> index = <span class="number">-1</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; i; ++j) &#123;</span><br><span class="line">            <span class="keyword">if</span>(is_two_cluster_same(i, j)) &#123;</span><br><span class="line">                index = j;</span><br><span class="line">                <span class="built_in">cout</span> &lt;&lt; i &lt;&lt; <span class="string">" and "</span> &lt;&lt; j &lt;&lt; <span class="string">" same!"</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(index != <span class="number">-1</span>)  &#123;</span><br><span class="line">            p[i] = p[index];</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            p[i] = c++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> ii = clusters[i].min_x; ii &lt;= clusters[i].max_x; ++ii) &#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> jj = clusters[i].min_y; jj &lt;= clusters[i].max_y; ++jj) &#123;</span><br><span class="line">                <span class="keyword">if</span>(mark[ii][jj] == i) &#123;</span><br><span class="line">                   ans[ii][jj] = p[i];</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; R; ++i) &#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; C; ++j) &#123;</span><br><span class="line">            fout &lt;&lt; ans[i][j];</span><br><span class="line">            <span class="built_in">cout</span> &lt;&lt; ans[i][j];</span><br><span class="line">        &#125;</span><br><span class="line">        fout &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        <p>Maintain an array of windows and an array of levels maps to each window. Bring a window top / down is easy, just change the levels. Destroy a window is also easy. To draw the visible surface of window, consider the drawing process a series of culling with the windows with a higher level than it. At each step, there are several cases: not culling, partial culling, or completely culling. After each step we either get the end result or in case of partial culling, we repeat same step again until we hit the top level window. DFS is a natural fit here.</p>
+<p>One note is the input data has to be normalized first (the corners of the window could be top-left/bottom-right or bottom-left/top-right).</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iomanip&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">70</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> M = <span class="number">500</span>;</span><br><span class="line"><span class="keyword">int</span> total = <span class="number">-1</span>, ans = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> window &#123;</span><br><span class="line">    <span class="keyword">int</span> u, d, l, r;</span><br><span class="line">&#125; tWindow;</span><br><span class="line"></span><br><span class="line"><span class="built_in">vector</span>&lt;tWindow&gt; windows(M);</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt; order(N);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> u <span class="comment">/*up*/</span>, <span class="keyword">int</span> l <span class="comment">/*left*/</span>, <span class="keyword">int</span> d <span class="comment">/*down*/</span>, <span class="keyword">int</span> r <span class="comment">/*right*/</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">         <span class="keyword">int</span> level)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(level &gt; total) &#123;</span><br><span class="line">        ans += (u - d) * (r - l);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> i = order[level];</span><br><span class="line">    tWindow w = windows[i];</span><br><span class="line">    <span class="keyword">if</span>(u &lt;= w.d || d &gt;= w.u || l &gt;= w.r || r &lt;= w.l ) &#123;</span><br><span class="line">        dfs(u, l, d , r, level + <span class="number">1</span>); <span class="comment">/* no intersection */</span></span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span>(u &lt;= w.u &amp;&amp; d &gt;= w.d &amp;&amp; l &gt;= w.l &amp;&amp; r &lt;= w.r ) &#123;</span><br><span class="line">        <span class="keyword">return</span>; <span class="comment">/* absorbed */</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (d &lt; w.u &amp;&amp; w.u &lt; u) &#123;</span><br><span class="line">            dfs(u, l, w.u, r, level + <span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (d &lt; w.d &amp;&amp; w.d &lt; u) &#123;</span><br><span class="line">            dfs(w.d, l, d, r, level + <span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// avoid duplicate compute</span></span><br><span class="line">        u = <span class="built_in">std</span>::min(u, w.u);</span><br><span class="line">        d = <span class="built_in">std</span>::max(d, w.d);</span><br><span class="line">        <span class="keyword">if</span>(w.l &gt; l &amp;&amp; w.l &lt; r) &#123;</span><br><span class="line">           dfs(u, l, d, w.l, level + <span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(w.r &gt; l &amp;&amp; w.r &lt; r) &#123;</span><br><span class="line">           dfs(u, w.r, d, r, level + <span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"window.in"</span>)</span></span>;</span><br><span class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"window.out"</span>)</span></span>;</span><br><span class="line">    <span class="keyword">char</span> op, id, s;</span><br><span class="line">    <span class="keyword">int</span> i, u, d, l, r;</span><br><span class="line">    <span class="keyword">while</span>(fin &gt;&gt; op) &#123;</span><br><span class="line">        <span class="keyword">if</span>(op == <span class="string">'w'</span>) &#123;</span><br><span class="line">            fin &gt;&gt; s &gt;&gt; id &gt;&gt; s &gt;&gt; l &gt;&gt; s &gt;&gt; u &gt;&gt; s &gt;&gt; r &gt;&gt; s &gt;&gt; d &gt;&gt; s;</span><br><span class="line">            <span class="keyword">if</span>(d &gt; u) swap(d,u);</span><br><span class="line">            <span class="keyword">if</span>(l &gt; r) swap(l,r);</span><br><span class="line">            windows[id].u = u; windows[id].d=d;</span><br><span class="line">            windows[id].l=l; windows[id].r=r;</span><br><span class="line">            total++;</span><br><span class="line">            order[total] = id;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span>(op == <span class="string">'t'</span>|| op == <span class="string">'d'</span>) &#123;</span><br><span class="line">            fin &gt;&gt; s &gt;&gt; id &gt;&gt; s;</span><br><span class="line">            <span class="keyword">for</span>(i = <span class="number">0</span>; i &lt; total; ++i) &#123;</span><br><span class="line">                <span class="keyword">if</span>(order[i] == id) swap(order[i],order[i + <span class="number">1</span>]);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span>(op == <span class="string">'d'</span>) total--;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>(op == <span class="string">'b'</span>) &#123;</span><br><span class="line">            fin &gt;&gt; s &gt;&gt; id &gt;&gt; s;</span><br><span class="line">            <span class="keyword">for</span>(i = total; i &gt; <span class="number">0</span>; --i) &#123;</span><br><span class="line">                <span class="keyword">if</span>(order[i] == id) swap(order[i],order[i - <span class="number">1</span>]);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            fin &gt;&gt; s &gt;&gt; id &gt;&gt; s;</span><br><span class="line">            <span class="keyword">for</span>(i = <span class="number">0</span>; i &lt;= total; ++i) &#123;</span><br><span class="line">                <span class="keyword">if</span>(order[i] == id) &#123;</span><br><span class="line">                    ans = <span class="number">0</span>;</span><br><span class="line">                    tWindow w = windows[id];</span><br><span class="line">                    u = (w.u - w.d) * (w.r - w.l);</span><br><span class="line">                    dfs(w.u, w.l, w.d, w.r, i + <span class="number">1</span>);</span><br><span class="line">                    fout &lt;&lt; <span class="built_in">std</span>::fixed &lt;&lt; <span class="built_in">std</span>::setprecision(<span class="number">3</span>)</span><br><span class="line">                         &lt;&lt; <span class="number">100.0</span> * ans / u &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/03/17/2017-03-17-USACO-StarryNight/" data-id="ck45wk1zf002cugxgt6s9w6ij" data-title="USACO 5.1 Starry Night" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2017/07/22/2017-07-22-USACO-WindowArea/" data-id="ck4cao60b002jwhxgg0racdzw" data-title="USACO 5.3 Window Area" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2017/03/17/2017-03-17-USACO-StarryNight/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2017/07/22/2017-07-22-USACO-WindowArea/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Flood-Fill/">Flood Fill</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DFS/">DFS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Simulation/">Simulation</a></li></ul>
 
     </footer>
   </div>
@@ -137,65 +123,10 @@
 
 
   
-    <article id="post-2017-03-05-USACO-FencingTheCows" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2017-07-01-ConsensusInTheCloud" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2017/03/05/2017-03-05-USACO-FencingTheCows/" class="article-date">
-  <time datetime="2017-03-06T01:53:31.000Z" itemprop="datePublished">2017-03-05</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/USACO/">USACO</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/03/05/2017-03-05-USACO-FencingTheCows/">USACO 5.1 Fencing The Cows</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>The answer is the perimeter of the convex hull of all the grazing points. Use <a href>Graham Scan</a> to calculate the convex hull, because it’s efficient and easy to implement:</p>
-<ul>
-<li>First, pick a point that has smallest x coordinate. Use y coordinate to break ties if necessary. Let’s call this point the base point.</li>
-<li>Then iterate for the rest of the points, calculate the polar angle between the current point and the base point. </li>
-<li>Now we get all points and their polar angles with respect to the base point, sort these points based on polar angle.</li>
-<li>Walk through the sorted points and make sure a new point only appear in the counter clock wise direction (turn left) of the current point. Add the new point to the result, and drop old points if necessary.</li>
-<li>We should now have a convex hull point sets available. Calculate the perimeter is now trivial.</li>
-</ul>
-<p>This implementation also dealt with degenerated case where the points are co-linear. </p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;limits&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cmath&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stack&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iomanip&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> N;</span><br><span class="line"><span class="keyword">struct</span> Point &#123;</span><br><span class="line">    <span class="keyword">double</span> x; <span class="keyword">double</span> y; <span class="keyword">double</span> pa <span class="comment">/* Polar Angle with reference point. */</span>;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="built_in">vector</span>&lt;Point&gt; points;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">double</span> <span class="title">dist</span><span class="params">(Point &amp;a, Point &amp;b)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">sqrt</span>(<span class="built_in">pow</span>(a.x - b.x, <span class="number">2</span>) + <span class="built_in">pow</span>(a.y - b.y, <span class="number">2</span>));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">ccw</span><span class="params">(Point &amp;a, Point &amp;b, Point &amp;c)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">double</span> area = (b.x - a.x) * (c.y - a.y) - (c.x - a.x) * (b.y - a.y);</span><br><span class="line">    <span class="keyword">if</span> (area &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">double</span> <span class="title">graham_scan</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">double</span> ans = <span class="number">0</span>;</span><br><span class="line">    <span class="built_in">stack</span>&lt;Point&gt; <span class="built_in">stack</span>;</span><br><span class="line">    <span class="built_in">stack</span>.push(points[<span class="number">0</span>]);</span><br><span class="line">    <span class="built_in">stack</span>.push(points[<span class="number">1</span>]);</span><br><span class="line">    <span class="built_in">stack</span>.push(points[<span class="number">2</span>]);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">3</span>; i &lt; N; i++) &#123;</span><br><span class="line">        Point top = <span class="built_in">stack</span>.top();</span><br><span class="line">        <span class="built_in">stack</span>.pop();</span><br><span class="line">        <span class="keyword">while</span> (!ccw(<span class="built_in">stack</span>.top(), top, points[i]))   &#123;</span><br><span class="line">            top = <span class="built_in">stack</span>.top();</span><br><span class="line">            <span class="built_in">stack</span>.pop();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">stack</span>.push(top);</span><br><span class="line">        <span class="built_in">stack</span>.push(points[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// Save the last point to close the hull with p0.</span></span><br><span class="line">    Point p1 = <span class="built_in">stack</span>.top(); <span class="built_in">stack</span>.pop();</span><br><span class="line">    Point cur = p1;</span><br><span class="line">    <span class="keyword">while</span> (!<span class="built_in">stack</span>.empty()) &#123;</span><br><span class="line">        ans += dist(cur, <span class="built_in">stack</span>.top());</span><br><span class="line">        cur = <span class="built_in">stack</span>.top(); <span class="built_in">stack</span>.pop();</span><br><span class="line">    &#125;</span><br><span class="line">    ans += dist(cur, p1);</span><br><span class="line">    <span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"fc.in"</span>)</span></span>;</span><br><span class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"fc.out"</span>)</span></span>;</span><br><span class="line">    fin &gt;&gt; N;</span><br><span class="line">    points = <span class="built_in">vector</span>&lt;Point&gt;(N);</span><br><span class="line">    <span class="keyword">int</span> idx = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">        fin &gt;&gt; points[i].x &gt;&gt; points[i].y;</span><br><span class="line">        <span class="keyword">if</span> (points[i].x &lt; points[idx].x) &#123;</span><br><span class="line">            idx = i;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="built_in">abs</span>(points[i].x - points[idx].x) &lt;</span><br><span class="line">                   <span class="built_in">std</span>::numeric_limits&lt;<span class="keyword">double</span>&gt;::epsilon() &amp;&amp;</span><br><span class="line">                   points[i].y &lt; points[idx].y) &#123;</span><br><span class="line">            idx = i;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">std</span>::swap(points[idx], points[<span class="number">0</span>]);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; N; ++i) &#123;</span><br><span class="line">        points[i].pa = (points[i].y - points[<span class="number">0</span>].y) / dist(points[i], points[<span class="number">0</span>]);</span><br><span class="line">    &#125;</span><br><span class="line">    sort(points.begin() + <span class="number">1</span>, points.end(), [] (<span class="keyword">const</span> Point &amp;a, <span class="keyword">const</span> Point &amp;b) &#123;</span><br><span class="line">        <span class="keyword">return</span> a.pa &lt; b.pa;</span><br><span class="line">    &#125;);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">double</span> ret = graham_scan();</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="built_in">std</span>::fixed &lt;&lt; <span class="built_in">std</span>::setprecision(<span class="number">2</span>) &lt;&lt; ret &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    fout &lt;&lt; <span class="built_in">std</span>::fixed &lt;&lt; <span class="built_in">std</span>::setprecision(<span class="number">2</span>) &lt;&lt; ret &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/03/05/2017-03-05-USACO-FencingTheCows/" data-id="ck45wk1za0027ugxgs8na2gu5" data-title="USACO 5.1 Fencing The Cows" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2017/03/05/2017-03-05-USACO-FencingTheCows/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Convex-Hull/">Convex Hull</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2017-03-03-ZooKeeper Consistency Guarantees" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/03/03/2017-03-03-ZooKeeper Consistency Guarantees/" class="article-date">
-  <time datetime="2017-03-03T22:10:31.000Z" itemprop="datePublished">2017-03-03</time>
+    <a href="/2017/07/03/2017-07-01-ConsensusInTheCloud/" class="article-date">
+  <time datetime="2017-07-03T21:07:31.000Z" itemprop="datePublished">2017-07-03</time>
 </a>
     
   <div class="article-category">
@@ -210,7 +141,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/03/03/2017-03-03-ZooKeeper Consistency Guarantees/">ZooKeeper Consistency Guarantees</a>
+      <a class="article-title" href="/2017/07/03/2017-07-01-ConsensusInTheCloud/">Paper Digest - Consensus in the Cloud - Paxos Systems Demystified</a>
     </h1>
   
 
@@ -218,48 +149,179 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>There are many consistency models out there, from stronger ones to weaker ones. What consistency model best describes ZooKeeper? </p>
-<h1 id="Consistency-Models"><a href="#Consistency-Models" class="headerlink" title="Consistency Models"></a>Consistency Models</h1><p>It is useful to think consistency models from two perspectives: server side (data centric) and client side (client centric), in particular in the context of ZooKeeper (or a general distributed storage system that is composed of clients and servers.).</p>
-<ul>
-<li>Data Centric Consistency Models<ul>
-<li>Strict Consistency<br>The strongest consistency model for distributed systems. All changes to system state are required to populate to all replicas instantly, so any write should be immediately visible to all parts of the system (both server and client). More formally, any read on a data item should returns a value corresponding to the result of the most recent write on this item. This system model is not possible to implement on top of the current hardware for distributed systems, because it requires a global clock (for strict ordering), and zero latency and infinite bandwidth for communications between different parts of the system. A closer resemble of a system that satisfy this model is a single machine where latency / bandwidth / clock constraints are almost satisfied (even on a single machine, achieve strict consistency is hard due to cache hierarchies and latencies of memory / cache access.).<br>Because of the impossibilities of implementation, a less strict model called atomic register was proposed (from Leslie Lamport), and a particular version of this model is known as linearizable consistency.<ul>
-<li>Linearizable consistency<br>Linearizable consistency model, comparing to strict consistency model, takes the latency into account, so it does not require writes to an item being visible instantly. The real constraint of this consistency model is that the operations can’t interleave, can’t be reordered, and the sequence of writes are visible in strict global ordering as these writes were issued. It is a recency guarantee such that if a change to the value is visible to one client, the change has to be visible to all clients. A client can’t read old value if some other clients have seen the new value. The change history is linearized such that all operations appear to have executed atomically in the order that is consistent with the global real time ordering of operations. One nice property of linearizable consistency is that it composes - which is an extremely useful property for reasoning about the behavior of concurrent operations in distributed systems.</li>
+        <p>Paper digest - <a href="https://www.cse.buffalo.edu/tech-reports/2016-02.pdf" target="_blank" rel="noopener">Consensus in the Cloud - Paxos Systems Demystified</a></p>
+<h1 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h1><ul>
+<li>Compared several popular Paxos protocols and Paxos systems and present advantages and disadvantages for each.</li>
+<li>Categorized the coordination use-patterns in cloud, and examine Google and Facebook infrastructures, as well as use cases of Paxos in Apache projects.</li>
+<li>Analyzed tradeoffs in the distributed coordination domain and identify promising future directions.</li>
+</ul>
+<h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><ul>
+<li>Coordination plays a major role in cloud computing systems:<ul>
+<li>Leader election</li>
+<li>Group membership</li>
+<li>Cluster management</li>
+<li>Service discovery</li>
+<li>Resource/access management</li>
+<li>Consistent replication of the master nodes in services</li>
+<li>Barrier-orchestration when running large analytic tasks</li>
+<li>And so on..</li>
 </ul>
 </li>
-<li>Sequential Consistency<br>Sequential consistency is a weaker consistency model comparing to linearizable consistency. It requires all operations appear to have executed atomically in some order, and the key constraint is that this order that is visible to all part of the system has to be consistent. However, this order does not have to be consistent with the ordering of the original operations. Because of this, the system is free to reorder the executions of the operations, it just need to satisfy a globally consistent visible orderings of operations for all clients. That is the key difference between linearizable consistency model. Also, sequential consistency does not compose as linearizable consistency does.</li>
-<li>Causal Consistency<br>Causal consistency is a even weaker model than sequential consistency. It only requires causally related writes must be visible by all processes, while none causally related writes are free to executed in any order. This violates the constraint for sequential consistency (all writes must converge to the same order), so it is weaker model than sequential consistency. Sequential consistency is thus by definition implicitly causal consistency as well.</li>
-<li>Eventual Consistency<br>The weakest consistency model, ever. Distributed systems adopt this model makes a lot things harder, though it is good trade off to make in certain use case. Eventual consistency is more about a liveness property (that values converge finally), so it is usually trivially satisfiable in most systems.</li>
+<li>The coordination problem has been studied extensively under the name “distributed consensus”.</li>
+<li>Paxos rise to fame with Google Chubby (lock service for GFS).</li>
+<li>Apache ZooKeeper as a coordination kernel<ul>
+<li>File system abstraction easy to use.</li>
+<li>Abused / misused, often constituted the bottleneck in performance of these applications and caused scalability problems.</li>
 </ul>
 </li>
-<li>Client Centric Consistency Models:<ul>
-<li>Monotonic reads<br>Once read, subsequent reads on that data items return same or more recent values.</li>
-<li>Monotonic writes<br>A write must be propagated to all replicas before a successive write by the same process; writes from same process are processed in same order.</li>
-<li>Read your writes<br>read(x) always returns write(x) by that process.</li>
-<li>Writes follow reads<br>write(x) following read(x) will take place on same or more recent version of x.</li>
+<li>More choices nowadays (Raft, etc), with confusions still remained:<ul>
+<li>Proper use cases.</li>
+<li>Which systems are more suitable for which tasks:<ul>
+<li>Paxos protocols (e.g. multi-paxos, Raft, ZAB) are useful for low-level components for server replication.</li>
+<li>Paxos systems (e.g. ZK) are useful for highly-available/durable metadata management with constraints that all metadata fit in main-memory and are not subject to very frequent changes.</li>
 </ul>
 </li>
 </ul>
-<p>With all these said, what consistency model ZooKeeper fit in?</p>
-<ul>
-<li>Linearizable consistency: ZooKeeper does not guarantee linearizable consistency. Two ZooKeeper clients can see two different values of the same data item (value of znode) at the same time - e.g. one client can see an old value while the other client can see the new value. Even with the sync command, which stalls the write processors, it is still possible that a client miss a value of the write (e.g. after sync executed finished but before client gets the updated value, another client issuing a new write that update the value again.). Also due to potential network delays it is hard to guarantee that operations on all clients happen on same order globally.</li>
-<li>Sequential consistency: this is what ZooKeeper guarantees. Sequential consistency does not care about exact ordering of operations and ZooKeeper can reorder operations, but all the operations ordering will converge to a single globally consistent ordering that is visible to all clients (eventually, or near instantly if client uses sync command.).</li>
-<li>Causal consistency: because ZooKeeper satisfies sequential consistency, it also satisfy causal consistency. More specifically, since causal consistency is a stronger guarantee than read your writes and monotonic reads, those properties are also guaranteed. </li>
-<li>Monotonic reads / Read your writes: as discussed, these are trivially satisfied with stronger guarantee. Note in practice there are a lot of corner cases to consider to satisfy these properties from a client point of view, for example what if a client disconnect and connect to a server node where it does not have latest values for the same znode client has seen before (that this server lags behind leader, which is normal because ZooKeeper only requires a quorum of servers in sync with leader). This and similar cases are handled by the guarantees of ZooKeeper session which provides some strong guarantees with regards to how client and server could interact (will describe this in a future post). </li>
-<li>Monotonic writes: ZooKeeper does not satisfy this because a write is only required to be replicated to a quorum of servers.</li>
-<li>Also a side note is there is a long pending bug of the sync operation - it is not a quorum operation so the guarantee it provides only apply if the client is connecting to leader.. this needs to be fixed, soon.</li>
+</li>
 </ul>
-
+<h1 id="Paxos-Protocols"><a href="#Paxos-Protocols" class="headerlink" title="Paxos Protocols"></a>Paxos Protocols</h1><ul>
+<li>Protocols<ul>
+<li>Paxos: fault-tolerant consensus for a single value.</li>
+<li>Multi-Paxos: fault-tolerant consensus for multiple values.</li>
+<li>ZAB: additional constraints on Paxos (primary global order).</li>
+<li>Raft: very similar to ZAB with some implementation level difference.</li>
+</ul>
+</li>
+<li>Differences<ul>
+<li>Leader Election:<ul>
+<li>Zab and Raft protocols differ from Paxos as they divide execution into phases (called epochs in Zab and terms in Raft).</li>
+<li>Each epoch begins with a new election, goes into the broadcast phase and ends with a leader failure.</li>
+<li>The phases are sequential because of the additional safety properties are provided by the isLeader predicate.</li>
+<li>Zab and Raft there can be at most one leader at any time.</li>
+<li>Paxos can have multiple leaders coexisting.</li>
+</ul>
+</li>
+<li>Zab has discovery and sync phase, Raft does not which simplifies algorithm but makes recover longer, possibly.</li>
+<li>Communication:<ul>
+<li>ZAB is messaging model. Each update requires at least three messages:<ul>
+<li>proposal, ack and commit</li>
+</ul>
+</li>
+<li>Raft use RPC.</li>
+</ul>
+</li>
+<li>Dynamic reconfiguration:<ul>
+<li>Reconfig is just another command go through consensus process.</li>
+<li>To ensure safety, new config cannot be activated immediately and the configuration changes must go through two phases.</li>
+<li>A process can only propose commands for slots with known configuration, ∀ρ : ρ.slotin &lt; ρ.slotout+ WINDOW.</li>
+<li>With primary order property provided by Zab and Raft, both protocols are able to implement their reconfiguration algorithms without limitations to normal operations or external services.</li>
+<li>Both Zab and Raft include a pre-phase where the new processes join the cluster as a non-voting members so that the leader in Cold could initialize their states by transferring currently committed prefix of updates.</li>
+<li>In Zab, the time between new config proposed and committed, any commands received after reconfig is only scheduled but will not commit.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Paxos Extensions<ul>
+<li>Generalized Paxos: allows acceptors to vote for independent commands.</li>
+<li>EPaxos:<ul>
+<li>allows nodes to commit conflict free commands by checking the command dependency list.</li>
+<li>adds significant complexity and extra effort to resolve the conflict if concurrent commands do not commute.</li>
+<li><strong>from an engineer’s perspective, the sketch algorithm descriptions in the literature are often underspecified, and lead to divergent interpretations and implementations.</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="Paxos-Systems"><a href="#Paxos-Systems" class="headerlink" title="Paxos Systems"></a>Paxos Systems</h1><ul>
+<li>Chubby, Apache ZooKeeper, etcd<ul>
+<li>All three services hide the replicated state machine and log abstractions under a small data-store with filesystem-like API.</li>
+<li>All three support watchers.</li>
+<li>All three support ephemeral storage.</li>
+<li>All three support observers (none voting quorum peer).</li>
+</ul>
+</li>
+<li>Difference<ul>
+<li>ZK provides client FIFO order.</li>
+<li>etcd is stateless (<strong>note, not very true with etcd 3.0’s lease, which is ZK session kind things.</strong>)</li>
+<li>etcd has TTL (<strong>note, ZK has ttl too after 3.5.3.</strong>)</li>
+<li>etcd has hidden data (MVCC).</li>
+<li>ZK has weighted quorum.</li>
+</ul>
+</li>
+<li>Proper use criteria for Paxos systems<ul>
+<li><strong>Paxos system should not be in the performance critical path of the application.</strong></li>
+<li><strong>Frequency of write operations to the Paxos system should be kept low</strong></li>
+<li><strong>Amount of data maintained in the Paxos system should be kept small</strong></li>
+<li><strong>Application adopting the Paxos system should really require strong consistency</strong></li>
+<li><strong>Application adopting the Paxos system should not be distributed over the Wide Area Network (WAN).</strong></li>
+<li><strong> The API abstraction should be fit the goal.</strong></li>
+</ul>
+</li>
+</ul>
+<h1 id="Paxos-Usage-Patterns"><a href="#Paxos-Usage-Patterns" class="headerlink" title="Paxos Usage Patterns"></a>Paxos Usage Patterns</h1><ul>
+<li>Server Replication (SR)</li>
+<li>Log Replication (LR)</li>
+<li>Synchronization Service (SS).</li>
+<li>Barrier Orchestration (BO).</li>
+<li>Configuration Management.</li>
+<li>Message Queues (Q).</li>
+</ul>
+<h1 id="Paxos-Uasage-in-Production"><a href="#Paxos-Uasage-in-Production" class="headerlink" title="Paxos Uasage in Production"></a>Paxos Uasage in Production</h1>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/03/03/2017-03-03-ZooKeeper Consistency Guarantees/" data-id="ck45wk1ze002bugxgdc6jsf10" data-title="ZooKeeper Consistency Guarantees" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2017/07/03/2017-07-01-ConsensusInTheCloud/" data-id="ck4cao609002hwhxg4kzvlklf" data-title="Paper Digest - Consensus in the Cloud - Paxos Systems Demystified" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2017/03/03/2017-03-03-ZooKeeper Consistency Guarantees/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2017/07/03/2017-07-01-ConsensusInTheCloud/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ZooKeeper/">ZooKeeper</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Consensus-Protocol/">Consensus Protocol</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Paper-Digest/">Paper Digest</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Paxos/">Paxos</a></li></ul>
 
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-2017-07-01-TopCoder-SRM716DivI" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/07/03/2017-07-01-TopCoder-SRM716DivI/" class="article-date">
+  <time datetime="2017-07-03T21:02:31.000Z" itemprop="datePublished">2017-07-03</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/TopCoder/">TopCoder</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/07/03/2017-07-01-TopCoder-SRM716DivI/">SRM 716 DIV II</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> Permutiple &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="built_in">string</span> <span class="title">isPossible</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">        <span class="built_in">string</span> xx = <span class="built_in">std</span>::to_string(x);</span><br><span class="line">        <span class="keyword">do</span> &#123;</span><br><span class="line">            <span class="keyword">int</span> val = <span class="built_in">std</span>::stoi(xx);</span><br><span class="line">            <span class="keyword">if</span> (val &lt;= x) <span class="keyword">continue</span>;</span><br><span class="line">            <span class="keyword">if</span> (val % x == <span class="number">0</span>) <span class="keyword">return</span> <span class="string">"Possible"</span>;</span><br><span class="line">        &#125; <span class="keyword">while</span> (<span class="built_in">std</span>::next_permutation(xx.begin(), xx.end()));</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"Impossible"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> ConstructLCSEasy &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="built_in">string</span> <span class="title">construct</span><span class="params">(<span class="keyword">int</span> ab, <span class="keyword">int</span> bc, <span class="keyword">int</span> ca)</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="built_in">string</span> <span class="title">AB</span><span class="params">(ab, <span class="string">'1'</span>)</span></span>;</span><br><span class="line">        <span class="built_in">string</span> BC = AB, CA = AB;</span><br><span class="line">        <span class="keyword">int</span> diff2 = bc - ab;</span><br><span class="line">        <span class="keyword">while</span> (diff2--) &#123;</span><br><span class="line">            BC += <span class="string">"0"</span>; CA += <span class="string">"0"</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> diff3 = ca - ab;</span><br><span class="line">        <span class="keyword">while</span> (diff3--) &#123;</span><br><span class="line">            AB += <span class="string">"1"</span>; CA += <span class="string">"1"</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> AB + <span class="string">" "</span> + BC + <span class="string">" "</span> + CA;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2017/07/03/2017-07-01-TopCoder-SRM716DivI/" data-id="ck4cao60a002iwhxgnqti4lek" data-title="SRM 716 DIV II" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2017/07/03/2017-07-01-TopCoder-SRM716DivI/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
     </footer>
   </div>
   
@@ -272,7 +334,7 @@
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/page/41/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/40/">40</a><a class="page-number" href="/page/41/">41</a><span class="page-number current">42</span><a class="page-number" href="/page/43/">43</a><a class="page-number" href="/page/44/">44</a><span class="space">&hellip;</span><a class="page-number" href="/page/68/">68</a><a class="extend next" rel="next" href="/page/43/">Next &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/41/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/40/">40</a><a class="page-number" href="/page/41/">41</a><span class="page-number current">42</span><a class="page-number" href="/page/43/">43</a><a class="page-number" href="/page/44/">44</a><span class="space">&hellip;</span><a class="page-number" href="/page/71/">71</a><a class="extend next" rel="next" href="/page/43/">Next &raquo;</a>
   </nav>
 
 </section>
@@ -415,6 +477,6 @@
 
 
 
-  </div>
-<script src="https://cdn.jsdelivr.net/npm/live2d-widget@3.x/lib/L2Dwidget.min.js"></script><script>L2Dwidget.init({"tagMode":false,"debug":false,"model":{"jsonPath":"https://cdn.jsdelivr.net/npm/live2d-widget-model-haruto@1.x/assets/haruto.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/"});</script><!-- hexo-inject:begin --><!-- hexo-inject:end --></body>
+  </div><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+<script src="https://cdn.jsdelivr.net/npm/live2d-widget@3.x/lib/L2Dwidget.min.js"></script><script>L2Dwidget.init({"tagMode":false,"debug":false,"model":{"jsonPath":"https://cdn.jsdelivr.net/npm/live2d-widget-model-haruto@1.x/assets/haruto.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/"});</script></body>
 </html>

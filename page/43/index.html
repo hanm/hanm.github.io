@@ -75,10 +75,10 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-2017-02-22-USACO-FrameUp" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2017-06-24-USACO-MilkMeasuring" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2017/02/22/2017-02-22-USACO-FrameUp/" class="article-date">
-  <time datetime="2017-02-23T00:31:31.000Z" itemprop="datePublished">2017-02-22</time>
+    <a href="/2017/06/25/2017-06-24-USACO-MilkMeasuring/" class="article-date">
+  <time datetime="2017-06-25T18:12:31.000Z" itemprop="datePublished">2017-06-25</time>
 </a>
     
   <div class="article-category">
@@ -93,7 +93,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/02/22/2017-02-22-USACO-FrameUp/">USACO 4.4 Frame Up</a>
+      <a class="article-title" href="/2017/06/25/2017-06-24-USACO-MilkMeasuring/">USACO 5.3 Milk Measuring</a>
     </h1>
   
 
@@ -101,22 +101,18 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>The problem description mentions:</p>
-<ul>
-<li>It is possible to see at least one part of each of the four sides of a frame.</li>
-</ul>
-<p>With the information of the position of each side, we can calculate the position of each frame, as each frame can be determined by its left/down and right/up (or left/up right/down) corner. The relationship of frame B stacks on top of frame A can be modeled as a directed graph where A and B are vertices and there is an edge from A to B. Then do a topological sort pass to generate the result. Note it requires all possible results of topological sort, which requires back tracking with DFS. A good reference implementation of such algorithm can be found <a href="http://www.geeksforgeeks.org/all-topological-sorts-of-a-directed-acyclic-graph/" target="_blank" rel="noopener">here</a>.</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstring&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> H, W;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; min_x(<span class="number">30</span>, <span class="number">-1</span>);</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; min_y(<span class="number">30</span>, <span class="number">-1</span>);</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; max_x(<span class="number">30</span>, <span class="number">-1</span>);</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; max_y(<span class="number">30</span>, <span class="number">-1</span>);</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt; exist(<span class="number">30</span>, <span class="literal">false</span>);</span><br><span class="line"><span class="keyword">char</span> grid[<span class="number">33</span>][<span class="number">33</span>]; <span class="comment">// processed input.</span></span><br><span class="line"><span class="keyword">int</span> g[<span class="number">30</span>][<span class="number">30</span>]; <span class="comment">// matrix representation of graph.</span></span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; in_degree(<span class="number">30</span>, <span class="number">0</span>);</span><br><span class="line"><span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"frameup.in"</span>)</span></span>;</span><br><span class="line"><span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"frameup.out"</span>)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> ans[<span class="number">30</span>], nans = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">buildGraph</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    fin &gt;&gt; H &gt;&gt; W;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; H; ++i) &#123;</span><br><span class="line">        fin &gt;&gt; grid[i];</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; W; ++j) &#123;</span><br><span class="line">            <span class="built_in">cout</span> &lt;&lt; grid[i][j];</span><br><span class="line">            <span class="keyword">if</span>(grid[i][j] == <span class="string">'.'</span>) <span class="keyword">continue</span>;</span><br><span class="line">            <span class="keyword">int</span> v = grid[i][j] - <span class="string">'A'</span>;</span><br><span class="line">            <span class="keyword">if</span>(min_x[v] == <span class="number">-1</span> || min_x[v]&gt;i) min_x[v] = i;</span><br><span class="line">            <span class="keyword">if</span>(min_y[v] == <span class="number">-1</span> || min_y[v]&gt;j) min_y[v] = j;</span><br><span class="line">            <span class="keyword">if</span>(max_x[v] == <span class="number">-1</span> || max_x[v]&lt;i) max_x[v] = i;</span><br><span class="line">            <span class="keyword">if</span>(max_y[v] == <span class="number">-1</span> || max_y[v]&lt;j) max_y[v] = j;</span><br><span class="line">            exist[v] = <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> u = <span class="number">0</span>; u &lt; <span class="number">26</span>; ++u) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!exist[u]) <span class="keyword">continue</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> y = min_y[u]; y &lt;= max_y[u]; ++y) &#123;</span><br><span class="line">            <span class="keyword">int</span> v = grid[min_x[u]][y] - <span class="string">'A'</span>;</span><br><span class="line">            <span class="keyword">if</span>(v != u &amp;&amp; !g[u][v]) &#123;</span><br><span class="line">                g[u][v] = <span class="number">1</span>; ++in_degree[v];</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            v = grid[max_x[u]][y] - <span class="string">'A'</span>;</span><br><span class="line">            <span class="keyword">if</span>(v != u &amp;&amp; !g[u][v]) &#123;</span><br><span class="line">                g[u][v] = <span class="number">1</span>; ++in_degree[v];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> x = min_x[u]; x &lt;= max_x[u]; ++x) &#123;</span><br><span class="line">            <span class="keyword">int</span> v = grid[x][min_y[u]] - <span class="string">'A'</span>;</span><br><span class="line">            <span class="keyword">if</span>(v != u &amp;&amp; !g[u][v]) &#123;</span><br><span class="line">                g[u][v] = <span class="number">1</span>; ++in_degree[v];</span><br><span class="line">            &#125;</span><br><span class="line">            v = grid[x][max_y[u]] - <span class="string">'A'</span>;</span><br><span class="line">            <span class="keyword">if</span>(v != u &amp;&amp; !g[u][v]) &#123;</span><br><span class="line">                g[u][v] = <span class="number">1</span>; ++in_degree[v];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// DFS that generates all topological sorts in alphabetic order.</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dfs</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">bool</span> all_used = <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">26</span>; ++i) &#123;</span><br><span class="line">        <span class="keyword">if</span>(exist[i]) &#123;</span><br><span class="line">            all_used = <span class="literal">false</span>;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span>(all_used) &#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; nans; ++i) &#123;</span><br><span class="line">            fout &lt;&lt; (<span class="keyword">char</span>)(ans[i] + <span class="string">'A'</span>);</span><br><span class="line">            <span class="built_in">cout</span> &lt;&lt; (<span class="keyword">char</span>)(ans[i] + <span class="string">'A'</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        fout &lt;&lt; <span class="built_in">endl</span>; <span class="built_in">cout</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> u = <span class="number">0</span>; u &lt; <span class="number">26</span>; ++u) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!exist[u]) <span class="keyword">continue</span>;</span><br><span class="line">        <span class="keyword">if</span> (in_degree[u]) <span class="keyword">continue</span>;</span><br><span class="line">        exist[u] = <span class="literal">false</span>;</span><br><span class="line">        ans[nans++] = u;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> v = <span class="number">0</span>; v &lt; <span class="number">26</span>; ++v) &#123;</span><br><span class="line">            <span class="keyword">if</span>(g[u][v]) --in_degree[v];</span><br><span class="line">        &#125;</span><br><span class="line">        dfs();</span><br><span class="line">        exist[u] = <span class="literal">true</span>;</span><br><span class="line">        nans--;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> v = <span class="number">0</span>; v &lt; <span class="number">26</span>; ++v) &#123;</span><br><span class="line">            <span class="keyword">if</span>(g[u][v]) in_degree[v]++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    buildGraph();</span><br><span class="line">    dfs();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        <p>Brutal force DFS search with a lot of pruning. The search has N passes, and it starts from 1 pail, then 2 pails, etc and up to N pails. For each pass, use memorization and pruning to avoid hitting unnecessary search space. The passes are deepened via DFS, and we return once we gets a hit in a given pass as the question was asking the smallest set of pails.<br><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> Q, N, total;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; pails, ans, cur;</span><br><span class="line"><span class="keyword">bool</span> found = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> depth, <span class="keyword">int</span> index, <span class="keyword">int</span> left)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (depth == total) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!left) &#123;</span><br><span class="line">            found = <span class="literal">true</span>;</span><br><span class="line">            <span class="comment">// dfs does not guarantee smallest order, so</span></span><br><span class="line">            <span class="comment">// keep this and compare with a future solution.</span></span><br><span class="line">            ans = cur;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> current = pails[index];</span><br><span class="line">    <span class="comment">// not feasible.</span></span><br><span class="line">    <span class="keyword">if</span> (index &gt;= N || left &lt; current) <span class="keyword">return</span>;</span><br><span class="line">    <span class="comment">// current search is no smaller than existing solution.</span></span><br><span class="line">    <span class="keyword">if</span> (found &amp;&amp; current &gt; ans[depth]) <span class="keyword">return</span>;</span><br><span class="line">    cur[depth] = current;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= left / current; i++) &#123;</span><br><span class="line">        dfs(depth + <span class="number">1</span>, index + <span class="number">1</span>, left - i * current);</span><br><span class="line">    &#125;</span><br><span class="line">    dfs(depth, index + <span class="number">1</span>, left);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"milk4.in"</span>)</span></span>;</span><br><span class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"milk4.out"</span>)</span></span>;</span><br><span class="line">    fin &gt;&gt; Q &gt;&gt; N;</span><br><span class="line">    </span><br><span class="line">    pails = cur = <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(N, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; i++) &#123;</span><br><span class="line">        fin &gt;&gt; pails[i];</span><br><span class="line">    &#125;</span><br><span class="line">    sort(pails.begin(), pails.end());</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (total = <span class="number">1</span>; total &lt;= N; ++total) &#123;</span><br><span class="line">        dfs(<span class="number">0</span>, <span class="number">0</span>, Q);</span><br><span class="line">        <span class="keyword">if</span> (found) <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    fout &lt;&lt; total; <span class="built_in">cout</span> &lt;&lt; total;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; total; i++) &#123;</span><br><span class="line">        fout &lt;&lt; <span class="string">" "</span> &lt;&lt; ans[i]; <span class="built_in">cout</span> &lt;&lt; <span class="string">" "</span> &lt;&lt; ans[i];</span><br><span class="line">    &#125;</span><br><span class="line">    fout &lt;&lt; <span class="built_in">endl</span>;<span class="built_in">cout</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br></pre></td></tr></table></figure></p>
+
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/02/22/2017-02-22-USACO-FrameUp/" data-id="ck45wk1z90026ugxg77610lok" data-title="USACO 4.4 Frame Up" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2017/06/25/2017-06-24-USACO-MilkMeasuring/" data-id="ck4cao608002gwhxg303d84nh" data-title="USACO 5.3 Milk Measuring" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2017/02/22/2017-02-22-USACO-FrameUp/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2017/06/25/2017-06-24-USACO-MilkMeasuring/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Backtrack/">Backtrack</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Topological-Sort/">Topological Sort</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DFS/">DFS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MEMORIZED-SEARCH/">MEMORIZED SEARCH</a></li></ul>
 
     </footer>
   </div>
@@ -126,72 +122,10 @@
 
 
   
-    <article id="post-2017-02-19-USACO-PollutantControl" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2017-05-08-MegaStore" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2017/02/19/2017-02-19-USACO-PollutantControl/" class="article-date">
-  <time datetime="2017-02-19T18:34:31.000Z" itemprop="datePublished">2017-02-19</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/USACO/">USACO</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/02/19/2017-02-19-USACO-PollutantControl/">USACO 4.4 Pollutant Control</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>It is an obvious max flow min cut problem. The nasty part of this problems is:</p>
-<ul>
-<li>There might be multiple routes between same warehouses, so the graph might contain multiple edges between two vertices.</li>
-<li>The output requires to print the routes under certain constraints, instead of just asking about the min cut cost.</li>
-</ul>
-<p>The idea is:</p>
-<ul>
-<li>Find the max flow first. The cost of the max flow must be min cut.</li>
-<li>Sort all edges in cost descending order. Then iterate through the sorted edges, do two things:<ul>
-<li>Remove this edge from the graph temporarily, calculate the maximum flow value. If the diff between the calculated maximum flow value and the original max flow value (the value calculated without removing the edge from the graph) is the capacity of the edge, then this edge must be in the min cut.</li>
-<li>If an edge is in a min cut, remove this edge from the graph, and repeat, until we get all edges.</li>
-</ul>
-</li>
-</ul>
-<p>This code is a simple modification of the <a href="http://lianghan.org/2017/01/04/2017-01-04-USACO-DrainageDitches.h/">Drainage Ditches Problem Solution</a> that fits this problem, however it does not pass all test data because it does not deal with multiple edges connecting same two vertices. Will post another solution soon. </p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;climits&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;functional&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;numeric&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> N, M, Si, Ei, Ci;</span><br><span class="line"><span class="keyword">struct</span> Edge &#123;</span><br><span class="line">    <span class="keyword">int</span> to, cap, rev, index;</span><br><span class="line">    Edge(<span class="keyword">int</span> to, <span class="keyword">int</span> cap, <span class="keyword">int</span> rev, <span class="keyword">int</span> index) :</span><br><span class="line">    to(to), cap(cap), rev(rev), index(index) &#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;Edge&gt;&gt; graph;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;Edge&gt;&gt; graphCopy;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt; visited;</span><br><span class="line"><span class="built_in">vector</span>&lt;Edge*&gt; edges;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">addEdge</span><span class="params">(<span class="keyword">int</span> from, <span class="keyword">int</span> to, <span class="keyword">int</span> cap, <span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    graph[from].emplace_back(Edge(to, cap, (<span class="keyword">int</span>)graph[to].size(), index));</span><br><span class="line">    graph[to].emplace_back(Edge(from, <span class="number">0</span>, (<span class="keyword">int</span>)graph[from].size() - <span class="number">1</span>, index));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Ford–Fulkerson</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> v, <span class="keyword">int</span> t, <span class="keyword">int</span> f)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (v == t)</span><br><span class="line">    <span class="keyword">return</span> f;</span><br><span class="line">    visited[v] = <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">int</span> size = (<span class="keyword">int</span>)graph[v].size();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; size; ++i) &#123;</span><br><span class="line">        <span class="keyword">auto</span> &amp;e = graph[v][i];</span><br><span class="line">        <span class="keyword">if</span> (visited[e.to] || e.cap &lt;= <span class="number">0</span>) <span class="keyword">continue</span>;</span><br><span class="line">        <span class="keyword">int</span> d = dfs(e.to, t, <span class="built_in">std</span>::min(f, e.cap));</span><br><span class="line">        <span class="keyword">if</span> (d &lt;= <span class="number">0</span>) <span class="keyword">continue</span>;</span><br><span class="line">        e.cap -= d;</span><br><span class="line">        graph[e.to][e.rev].cap += d;</span><br><span class="line">        <span class="keyword">return</span> d;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">maxFlow</span><span class="params">(<span class="keyword">int</span> s, <span class="keyword">int</span> t)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> flow = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">        <span class="built_in">std</span>::fill(visited.begin(), visited.end(), <span class="literal">false</span>);</span><br><span class="line">        <span class="keyword">int</span> f = dfs(s, t, INT_MAX);</span><br><span class="line">        <span class="keyword">if</span> (f == <span class="number">0</span>) <span class="keyword">return</span> flow;</span><br><span class="line">        flow += f;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">"milk6.in"</span>)</span></span>;</span><br><span class="line">    <span class="function">ofstream <span class="title">fout</span><span class="params">(<span class="string">"milk6.out"</span>)</span></span>;</span><br><span class="line">    </span><br><span class="line">    fin &gt;&gt; N <span class="comment">/* warehouses - vertices */</span> &gt;&gt; M <span class="comment">/* trucks - edges */</span>;</span><br><span class="line">    graph = <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;Edge&gt;&gt;(N + <span class="number">1</span>, <span class="built_in">vector</span>&lt;Edge&gt;());</span><br><span class="line">    </span><br><span class="line">    visited = <span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt;(N + <span class="number">1</span>, <span class="literal">false</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; M; ++i) &#123;</span><br><span class="line">        fin &gt;&gt; Si &gt;&gt; Ei &gt;&gt; Ci;</span><br><span class="line">        addEdge(Si, Ei, Ci, i);</span><br><span class="line">        <span class="comment">//cout &lt;&lt; Si &lt;&lt; " " &lt;&lt; Ei &lt;&lt; " " &lt;&lt; Ci &lt;&lt; " " &lt;&lt; i &lt;&lt; endl;</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;edge : graph[i]) &#123;</span><br><span class="line">            <span class="keyword">if</span> (edge.cap == <span class="number">0</span>) <span class="keyword">continue</span>;</span><br><span class="line">            edges.emplace_back(&amp;edge);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    sort(edges.begin(), edges.end(), [] (Edge *e1, <span class="keyword">const</span> Edge *e2) &#123;</span><br><span class="line">        <span class="keyword">return</span> e1-&gt;cap &gt; e2-&gt;cap;</span><br><span class="line">    &#125;);</span><br><span class="line">    </span><br><span class="line">    graphCopy = graph;</span><br><span class="line">    <span class="keyword">int</span> ans = maxFlow(<span class="number">1</span>, N);</span><br><span class="line">    graph = graphCopy;</span><br><span class="line">    <span class="keyword">int</span> total = ans;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; ret;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; edges.size(); ++i) &#123;</span><br><span class="line">        <span class="comment">//cout &lt;&lt; "cap : " &lt;&lt; edges[i]-&gt;cap &lt;&lt; "; index : " &lt;&lt; edges[i]-&gt;index &lt;&lt; endl;</span></span><br><span class="line">        graphCopy = graph;</span><br><span class="line">        <span class="keyword">int</span> cap = edges[i]-&gt;cap;</span><br><span class="line">        edges[i]-&gt;cap -= cap;</span><br><span class="line">        <span class="keyword">int</span> flow = maxFlow(<span class="number">1</span>, N);</span><br><span class="line">        <span class="keyword">if</span> (ans - flow == cap) &#123;</span><br><span class="line">            ret.push_back(edges[i]-&gt;index);</span><br><span class="line">            graph = graphCopy;</span><br><span class="line">            ans = flow;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            graph = graphCopy;</span><br><span class="line">            edges[i]-&gt;cap += cap;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    fout &lt;&lt; total - ans &lt;&lt; <span class="string">" "</span> &lt;&lt; ret.size() &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> val : ret) &#123;</span><br><span class="line">        fout &lt;&lt; val + <span class="number">1</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/02/19/2017-02-19-USACO-PollutantControl/" data-id="ck45wk1zd002augxgfwkwvw8y" data-title="USACO 4.4 Pollutant Control" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2017/02/19/2017-02-19-USACO-PollutantControl/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Ford-Fulkerson/">Ford-Fulkerson</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Graph-Theory/">Graph Theory</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Network-Flow/">Network Flow</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2017-02-11-DynamoPaper" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/02/11/2017-02-11-DynamoPaper/" class="article-date">
-  <time datetime="2017-02-12T03:36:31.000Z" itemprop="datePublished">2017-02-11</time>
+    <a href="/2017/05/08/2017-05-08-MegaStore/" class="article-date">
+  <time datetime="2017-05-09T04:00:31.000Z" itemprop="datePublished">2017-05-08</time>
 </a>
     
   <div class="article-category">
@@ -206,7 +140,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/02/11/2017-02-11-DynamoPaper/">Dynamo, Amazon’s Highly Available Key-value Store</a>
+      <a class="article-title" href="/2017/05/08/2017-05-08-MegaStore/">Paper Digest - Megastore, Providing Scalable, Highly Available Storage for Interactive Services</a>
     </h1>
   
 
@@ -214,73 +148,314 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Paper digest - <a href="http://s3.amazonaws.com/AllThingsDistributed/sosp/amazon-dynamo-sosp2007.pdf" target="_blank" rel="noopener">Dynamo: Amazon’s Highly Available Key-value Store </a></p>
+        <p>Paper digest - <a href="https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/36971.pdf" target="_blank" rel="noopener">Megastore: Providing Scalable, Highly Available Storage for Interactive Services</a></p>
+<h1 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h1><ul>
+<li>Blends the scalability of a NoSQL datastore with the convenience of a traditional RDBMS.</li>
+<li>Provides both strong consistency guarantees and high availability.</li>
+<li>Provides fully serializable ACID semantics within fine-grained partitions of data.</li>
+</ul>
 <h1 id="Motivation"><a href="#Motivation" class="headerlink" title="Motivation"></a>Motivation</h1><ul>
-<li>A highly available key-value storage system that manages state of Amazon services.</li>
-<li>Reliability at massive scale, provide an “always-on” experience.</li>
-</ul>
-<h1 id="Requirements"><a href="#Requirements" class="headerlink" title="Requirements"></a>Requirements</h1><ul>
-<li><p>Query Model: simple read and write operations to objects (relatively small, usually less than 1MB) that is uniquely identified by a key. </p>
-</li>
-<li><p>ACID (Atomicity, Consistency, Isolation, Durability) : weak consistency, no isolation, only single key update.</p>
-</li>
-<li><p>Efficiency: </p>
-<ul>
-<li>Function on a commodity hardware infrastructure.</li>
-<li>Strict latency requirements and SLA.</li>
-<li>Configurable to achieve customizable latency and throughput requirements.</li>
-</ul>
-</li>
-<li><p>Operation and Security:</p>
-<ul>
-<li>No authentication and authorization (operating in non-hostile environment). </li>
-<li>Scale up (each service uses its distinct instance of Dynamo).</li>
-</ul>
-</li>
-<li><p>SLA:</p>
-<ul>
-<li>Traditional SLA metrics (average, median and expected variance) are not good enough to build a system where all customers have a good experience.</li>
-<li>SLAs are expressed and measured at the 99.9th percentile of the distribution. Choose 99.9 for cost effective.</li>
+<li>Online services are forcing the storage community to meet new demands. <ul>
+<li>Highly scalable.</li>
+<li>Rapid development.</li>
+<li>Low latency.</li>
+<li>Consistent view of data.</li>
+<li>Highly available.</li>
 </ul>
 </li>
 </ul>
-<h1 id="System-Design"><a href="#System-Design" class="headerlink" title="System Design"></a>System Design</h1><ul>
-<li>Favor availability over consistency by using optimistic replication techniques.</li>
-<li>Optimistic replication introduces conflict. Conflict resolution introduces two problems: when to resolve them and who resolves them.<ul>
-<li>When to resolve:<ul>
-<li>Write time: writes may be rejected if the data store cannot reach all the replicas at a given time. This leads to poor user experience.</li>
-<li>Read time: Dynamo targets the design space of an “always write-able” data store. So conflicts are resolved at read time.</li>
+<h1 id="Design-Highlights"><a href="#Design-Highlights" class="headerlink" title="Design Highlights"></a>Design Highlights</h1><ul>
+<li>Partition data. Replicate unit is a partition.</li>
+<li>Full ACID semantics within partitions only.</li>
+<li>Across partitions, limited consistency guarantees (later spanner improves this)</li>
+<li>Provide database features (2nd indexes), but does not provide scalability guarantees (can only scale within user-tolerable latency limits.)</li>
+<li>Innovative usage of Paxos: use it for replication instead of traditional usage (locking, leader election, replicate config data - e.g. ZooKeeper/ZAB)</li>
+</ul>
+<h1 id="Availability-with-Scalability"><a href="#Availability-with-Scalability" class="headerlink" title="Availability with Scalability"></a>Availability with Scalability</h1><ul>
+<li>Replication<ul>
+<li>Replicate a write-ahead log over a group of symmetric peers.</li>
+<li>Any node can initiate reads and writes.</li>
+<li>Each log append blocks on acknowledgments from a majority of replicas.</li>
+<li>Optimizations on Paxos<ul>
+<li>Allow local reads.</li>
+<li>Single roundtrip writes.</li>
 </ul>
 </li>
-<li>Who to perform resolve:<ul>
-<li>Configurable.</li>
-<li>System level resolution: last write wins.</li>
-<li>Application level resolution: interactive guided merge conflicts, etc.</li>
+<li>Multiple replicated logs instead of single log for better availability.</li>
+</ul>
+</li>
+<li>Key Concept - <strong>Entity Groups</strong><ul>
+<li>Entity group is a collection of data and unit of replication.</li>
+<li>Within a single entity group: ACID semantic.</li>
+<li>Across entity groups:<ul>
+<li>Two phased commit (strong consistency)</li>
+<li>Or async communications through message queues.</li>
 </ul>
 </li>
 </ul>
 </li>
-<li>Other design considerations: Incremental scalability, Symmetry, Decentralization, Heterogeneity.</li>
+<li>Physical Layout of data<ul>
+<li>Use BigTable for data storage.</li>
+<li>Letting applications control the placement of data.<ul>
+<li>Applications try to keep data near users and replicas near each other.</li>
+<li>The data for an entity group are held in contiguous ranges of Bigtable rows.</li>
 </ul>
-<h1 id="System-Architecture"><a href="#System-Architecture" class="headerlink" title="System Architecture"></a>System Architecture</h1><ul>
-<li>Partitioning: Consistent Hashing.</li>
-<li>Replication: Replicated write protocol with configurable NWR parameters.</li>
-<li>Conflict Resolution: Vector clock.</li>
-<li>Temporary failures: Sloppy Quorum and hinted handoff.</li>
-<li>Recovering from permanent failures: Merkle trees.</li>
-<li>Membership and failure detection: Gossip-based membership protocol and failure detection. </li>
+</li>
 </ul>
-<h1 id="To-be-continued"><a href="#To-be-continued" class="headerlink" title="To be continued."></a>To be continued.</h1>
+</li>
+</ul>
+<h1 id="API-Design"><a href="#API-Design" class="headerlink" title="API Design"></a>API Design</h1><ul>
+<li><strong>Cost-transparent APIs</strong>: runtime costs that match application developers’ intuitions.</li>
+<li>Eliminate needs for joins:  offer fine-grained control over physical locality.</li>
+<li>Joins when required is implemented in application code.</li>
+</ul>
+<h1 id="Data-Model"><a href="#Data-Model" class="headerlink" title="Data Model"></a>Data Model</h1><ul>
+<li>Lies between the abstract tuples of an RDBMS and the concrete row-column storage of NoSQL.</li>
+<li>Data model is declared in a schema and is strongly typed.</li>
+</ul>
+<h1 id="Transactions-and-Concurrency-Control"><a href="#Transactions-and-Concurrency-Control" class="headerlink" title="Transactions and Concurrency Control"></a>Transactions and Concurrency Control</h1><ul>
+<li>Use MVCC. Readers and writers don’t block each other, and reads are isolated from writes for the duration of a transaction.</li>
+<li>Read semantics<ul>
+<li>current (single entity group)</li>
+<li>snapshot (single entity group)</li>
+<li>inconsistent (ignore state of log)</li>
+</ul>
+</li>
+<li>Queues<ul>
+<li>Cross group batch operation deliver.</li>
+</ul>
+</li>
+<li>2 Phased Commit for atomic update across entity groups.</li>
+</ul>
+<h1 id="Paxos-based-Replication-key-innovations"><a href="#Paxos-based-Replication-key-innovations" class="headerlink" title="Paxos based Replication (key innovations)"></a>Paxos based Replication <strong>(key innovations)</strong></h1><ul>
+<li>Pitfall of master-slave based Paxos<ul>
+<li>Master failover can require a complicated state machine.</li>
+<li>A series of timers must elapse before service is restored. </li>
+<li>It is difficult to avoid user-visible outages.</li>
+</ul>
+</li>
+<li>Fast Reads<ul>
+<li>Local read.</li>
+<li>Coordinator tracks if a specific replica has observed the full state of writes so it can serve local reads.</li>
+</ul>
+</li>
+<li>Fast Writes<ul>
+<li>Single round trip writes.</li>
+<li>Pre-preparing optimization: each successful write includes an implied prepare message granting the master the right to issue accept messages for the next log position.</li>
+<li>If the write succeeds, the prepares are honored, and the next write skips directly to the accept phase. </li>
+<li>Multi-Paxos: independent instance of the Paxos algorithm for each log position. T</li>
+</ul>
+</li>
+<li>Replica Types<ul>
+<li>Full Replica: contain all entity and index and able to serve current reads.</li>
+<li>Witness Replica: vote and store WAL, but does not apply the WAL (kind like observer in ZooKeeper but not strictly the same - observer in ZK does not vote.)</li>
+<li>Read Only Replica: does not vote but contain full data of a point of time in the past (more like ZK observer but ZK observer is more up to date WRT its state.)</li>
+</ul>
+</li>
+</ul>
+<h1 id="Coordinator"><a href="#Coordinator" class="headerlink" title="Coordinator"></a>Coordinator</h1><ul>
+<li>The coordinator is a simple process with no external dependencies and no persistent storage.</li>
+<li>Failure Detection<ul>
+<li>Use an out of band protocol to identify when other coordinators are up, healthy, and generally reachable.</li>
+<li>Coordinators obtain specific Chubby locks in remote datacenters at startup.</li>
+<li>Revert its state to a conservative default when loses majority of locks and / or parititons.</li>
+<li>Brief and rare outage risk..</li>
+<li>Liveness protocol is vulnerable to asymmetric network partitions.</li>
+</ul>
+</li>
+</ul>
+<h1 id="Operation-Metrics-Experience-ommitted"><a href="#Operation-Metrics-Experience-ommitted" class="headerlink" title="Operation / Metrics / Experience - ommitted."></a>Operation / Metrics / Experience - ommitted.</h1>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2017/02/11/2017-02-11-DynamoPaper/" data-id="ck45wk1z80025ugxgbc3lzuuy" data-title="Dynamo, Amazon’s Highly Available Key-value Store" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2017/05/08/2017-05-08-MegaStore/" data-id="ck4cao608002fwhxglruy6wfs" data-title="Paper Digest - Megastore, Providing Scalable, Highly Available Storage for Interactive Services" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2017/02/11/2017-02-11-DynamoPaper/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2017/05/08/2017-05-08-MegaStore/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Distributed-System/">Distributed System</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Paper-Digest/">Paper Digest</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/NewSQL/">NewSQL</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Paper-Digest/">Paper Digest</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-2017-05-01-Paxos" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/05/01/2017-05-01-Paxos/" class="article-date">
+  <time datetime="2017-05-01T18:37:31.000Z" itemprop="datePublished">2017-05-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Distributed-System/">Distributed System</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/05/01/2017-05-01-Paxos/">Paper Digest - Paxos Made Simple</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Paper digest - <a href="http://lamport.azurewebsites.net/pubs/paxos-simple.pdf" target="_blank" rel="noopener">Paxos Made Simple </a></p>
+<h1 id="Motivation"><a href="#Motivation" class="headerlink" title="Motivation"></a>Motivation</h1><ul>
+<li>Solve consensus problem on a single value (basic Paxos).</li>
+<li>Consensus problem for a series of values that forming a log is solved using Multi-Paxos.</li>
+</ul>
+<h1 id="Consensus-Problem"><a href="#Consensus-Problem" class="headerlink" title="Consensus Problem"></a>Consensus Problem</h1><ul>
+<li>A consensus algorithm ensures that a single one among the proposed value is choose.</li>
+<li>Chosen: meaning a consensus has been reached.</li>
+<li>Safety properties of consensus:<ul>
+<li>Only a value that has been proposed may be chosen.</li>
+<li>Only a single value can be chosen.</li>
+<li>A process never learns that a value has been chosen unless it actually has been.</li>
+</ul>
+</li>
+<li>Liveness properties of consensus:<ul>
+<li>One of many proposed values is eventually chosen.</li>
+<li>If a value is chosen, processes eventually learn about it.</li>
+</ul>
+</li>
+</ul>
+<h1 id="Failure-Models"><a href="#Failure-Models" class="headerlink" title="Failure Models"></a>Failure Models</h1><ul>
+<li>Fail Stop: servers may crash, and stop forever.</li>
+<li>Fail Recovery: servers may crash, but finally will restart and recover.</li>
+<li>No Byzantine failures: messages can be delayed but they can’t be corrupted; servers can fail but they can’t behave maliciously.</li>
+</ul>
+<h1 id="Terms"><a href="#Terms" class="headerlink" title="Terms"></a>Terms</h1><ul>
+<li>Proposer: propose value. A proposer propose value by sending a proposal, which contains the value (among other things), to acceptors.</li>
+<li>Acceptor: accept value proposed by proposer. Accept means acknowledge to proposer that the proposed value is accepted, by sending response to proposer.</li>
+<li>Chosen: a value is chosen when majority of acceptors accept the value.</li>
+<li>A process can be both a proposer and an acceptor.</li>
+</ul>
+<h1 id="Choose-a-Value"><a href="#Choose-a-Value" class="headerlink" title="Choose a Value"></a>Choose a Value</h1><ul>
+<li>Single acceptor:<ul>
+<li>Easiest and most intuitive approach :)</li>
+<li>However, it is not fault tolerant. If the single acceptor crashes, the system will not be able to make progress.</li>
+</ul>
+</li>
+<li>Multiple acceptors:<ul>
+<li>Solve the SPOF problem for single acceptor case.</li>
+<li>A value is chosen when this value is accepted by a majority of acceptors.</li>
+<li>This majority of acceptors is called a quorum.</li>
+<li>Why majority? We need ensure that any two sets of quorum overlap. With drawer principle, if a quorum is majority, then any two majorities will have at least one acceptor in common.</li>
+<li>Now why we need ensure any two sets of quorum overlap? This is for fault tolerance / recovery purpose - so that we can have at least one acceptor that has complete history of the states (of the Paxos state machine.)</li>
+<li>Now why we need complete history? We need this so only a single value is chosen (important safety property). Why? Elaboration next.</li>
+</ul>
+</li>
+<li>How to choose a value<ul>
+<li>Case 1: single proposed value - only a single value is proposed from proposers.<ul>
+<li>If there is only a single value proposed ever, then this value has to be chosen.</li>
+<li>This implies that an acceptor must accept the first proposal that it receives.</li>
+<li>Conclusion: <strong>An acceptor must accept the first proposal that it receives. [P1]</strong></li>
+</ul>
+</li>
+<li>Case 2: multiple proposed value - multiple values are proposed from proposers.<ul>
+<li>This raises a problem. With multiple proposed value, it is possible no single value is accepted by the quorum. So it’s possible consensus will never be reached, without additional constraints.<ul>
+<li>A sample case that consensus never reached:<ul>
+<li>2 processes P1 and P2. P1 proposes V1 and P2 proposes V2.</li>
+<li>V1 is accepted by P1 (or P2), V2 is accepted by P2 (or P1), because an acceptor must accept the first value it receives.</li>
+<li>No proposal would ever get majority in such case.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>To address the problem, where P1 must be true and yet a consensus has to be reached somehow, one additional constraint should be added:<ul>
+<li><strong>An acceptor must be allowed to accept more than one proposal.</strong></li>
+<li>Since there are multiple proposals now, there is a need to distinguish between different proposals. The mechanism that serves this purpose is to use <strong>proposal number</strong></li>
+<li>A proposal number is a number attach to each proposal. How this is implemented depends on actual implementation.</li>
+</ul>
+</li>
+<li>With the new constraint that an accept can accept more than one proposal, there is a <strong>new problem: we may end up with multiple values chosen</strong>; this violates the safety property.<ul>
+<li>A sample case multiple values are chosen:<ul>
+<li>5 processes, P1 through P5.</li>
+<li>P1 proposes V1, P5 proposes V5.</li>
+<li>V1 is accepted by P1, P2, and P3.</li>
+<li>Assume there is a delay, and then V5 arrives to acceptor P3.</li>
+<li>Since an acceptor can accept multiple values, P3 is happily accepting V5.</li>
+<li>Meanwhile, V5 is accepted by P4, and P5. (It could also be accepted by P1 and P2 of course.)</li>
+<li>The end result is no consensus reached: V1 and V5 are both gaining a majority.</li>
+</ul>
+</li>
+<li>To satisfy safety property of only a single value is chosen, an additional constraint should be added.</li>
+</ul>
+</li>
+<li><strong>If a proposal with value v is chosen, then every higher numbered proposal that is chosen has value v. [P2]</strong><ul>
+<li>Because proposals are ordered (use a proposal number), this ensures only a single value is chosen.</li>
+<li>To be chosen a proposal must be accepted by at least one acceptor. So, we can satisfy P2 by satisfying:</li>
+<li><strong>If a proposal with value v is chosen, then every higher numbered proposal accepted by any acceptor has value v.</strong></li>
+</ul>
+</li>
+<li>Constraint of P2 introduces a new problem that requires a strengthened constraint:<ul>
+<li>Now assume a value V is chosen already. Because chosen a value only requires a majority of acceptors, it is possible that the proposal WRT the chosen value never reached one or more acceptors.</li>
+<li>Because an acceptor can be a proposer, from one of those unreached acceptors, one acceptor (now a proposer) may propose a new value with a higher proposal number.</li>
+<li>Because of P1, an acceptor must accept the first proposal it receives. So an acceptor that receives this new proposal which contains a different value than the chosen value must be accepted.</li>
+<li>This violates P2a, so we need add more constraints.</li>
+</ul>
+</li>
+<li><strong>Maintaining both P1 and P2a requires strengthening P2a to P2b: If a proposal with value v is chosen, then every higher numbered proposal issued by any proposer has value v. </strong><ul>
+<li>This means before a proposer proposes a value, it has to look around and see if there is any exiting chosen value.</li>
+<li>But how to satisfy this new constraint P2b?</li>
+</ul>
+</li>
+<li>We can satisfy P2b by maintaining invariance of P2c.</li>
+<li><strong>For any v and n, if a proposal with value v and number n is issued,<br>  then there is a set S consisting of a majority of acceptors such that<br>  either (a) no acceptor in S has accepted any proposal numbered less<br>  than n, or (b) v is the value of the highest-numbered proposal among<br>  all proposals numbered less than n accepted by the acceptors in S. [P2c]</strong></li>
+<li>To satisfy P2c, now comes to my favorite part of the paper:<ul>
+<li><strong>To maintain the invariance of P2c<br>  , a proposer that wants to issue a proposal<br>  numbered n must learn the highest-numbered proposal with number<br>  less than n, if any, that has been or will be accepted by each acceptor in<br>  some majority of acceptors. Learning about proposals already accepted is<br>  easy enough; predicting future acceptances is hard. Instead of trying to predict<br>  the future, the proposer controls it by extracting a promise that there<br>  won’t be any such acceptances. In other words, the proposer requests that<br>  the acceptors not accept any more proposals numbered less than n.</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="Proposer-Algorithm"><a href="#Proposer-Algorithm" class="headerlink" title="Proposer Algorithm"></a>Proposer Algorithm</h1><ul>
+<li>Two phases: prepare and propose.</li>
+<li>Prepare: A proposer chooses a new proposal number n and sends a request to each member of some set of acceptors, asking it to respond with:<ul>
+<li>a. A promise never again to accept a proposal numbered less than n, and</li>
+<li>b. The proposal with the highest number less than n that it has accepted, if any.</li>
+</ul>
+</li>
+<li>Propose: If the proposer receives the requested responses from a majority of the acceptors, then it can issue a proposal with number n and value v, where v is the value of the highest-numbered proposal among the responses, or is any value selected by the proposer if the responders reported no proposals.</li>
+</ul>
+<h1 id="Acceptor-Algorithm"><a href="#Acceptor-Algorithm" class="headerlink" title="Acceptor Algorithm"></a>Acceptor Algorithm</h1><ul>
+<li>An acceptor can ignore any request without compromising safety.</li>
+<li>We need to say only when it is allowed to respond to a request.</li>
+<li>It can always respond to a prepare request.</li>
+<li>It can respond to an accept request, accepting the proposal, iff it has not promised not to.</li>
+<li>Optimization: acceptor can ignore prepare requests which have lower proposal number, and also proposals that it already accepted.</li>
+</ul>
+<h1 id="Learning-a-Chosen-Value"><a href="#Learning-a-Chosen-Value" class="headerlink" title="Learning a Chosen Value"></a>Learning a Chosen Value</h1><ul>
+<li>Use distinguished learners to optimize from product of number of learners and acceptors, to the sum of number of acceptors and learners.</li>
+</ul>
+<h1 id="Implementation"><a href="#Implementation" class="headerlink" title="Implementation"></a>Implementation</h1><ul>
+<li>Single Paxos not so useful, as it only reaches consensus on a single value.</li>
+<li>Multiple instances of Paxos - called multi-paxos allows consensus on a set of values. Very useful for building RSM (replicated state machine) systems. </li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2017/05/01/2017-05-01-Paxos/" data-id="ck4cao607002ewhxgx4wb18of" data-title="Paper Digest - Paxos Made Simple" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2017/05/01/2017-05-01-Paxos/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Consensus-Protocol/">Consensus Protocol</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Paper-Digest/">Paper Digest</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Paxos/">Paxos</a></li></ul>
 
     </footer>
   </div>
@@ -294,7 +469,7 @@
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/page/42/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/41/">41</a><a class="page-number" href="/page/42/">42</a><span class="page-number current">43</span><a class="page-number" href="/page/44/">44</a><a class="page-number" href="/page/45/">45</a><span class="space">&hellip;</span><a class="page-number" href="/page/68/">68</a><a class="extend next" rel="next" href="/page/44/">Next &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/42/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/41/">41</a><a class="page-number" href="/page/42/">42</a><span class="page-number current">43</span><a class="page-number" href="/page/44/">44</a><a class="page-number" href="/page/45/">45</a><span class="space">&hellip;</span><a class="page-number" href="/page/71/">71</a><a class="extend next" rel="next" href="/page/44/">Next &raquo;</a>
   </nav>
 
 </section>
@@ -437,6 +612,6 @@
 
 
 
-  </div>
-<script src="https://cdn.jsdelivr.net/npm/live2d-widget@3.x/lib/L2Dwidget.min.js"></script><script>L2Dwidget.init({"tagMode":false,"debug":false,"model":{"jsonPath":"https://cdn.jsdelivr.net/npm/live2d-widget-model-haruto@1.x/assets/haruto.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/"});</script><!-- hexo-inject:begin --><!-- hexo-inject:end --></body>
+  </div><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+<script src="https://cdn.jsdelivr.net/npm/live2d-widget@3.x/lib/L2Dwidget.min.js"></script><script>L2Dwidget.init({"tagMode":false,"debug":false,"model":{"jsonPath":"https://cdn.jsdelivr.net/npm/live2d-widget-model-haruto@1.x/assets/haruto.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/"});</script></body>
 </html>

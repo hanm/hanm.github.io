@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+  
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-82074845-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-82074845-1');
+</script>
+<!-- End Google Analytics -->
+
+  
+  <title>LeetCode 658. Find K Closest Elements | Quantum Field</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Problem Statement impl Solution &amp;#123;    pub fn find_closest_elements(arr: Vec&amp;lt;i32&amp;gt;, k: i32, x: i32) -&amp;gt; Vec&amp;lt;i32&amp;gt; &amp;#123;        let mut input = arr.clone();        input.sort_by(|l, r|">
+<meta name="keywords" content="Algorithm,LeetCode,Rust">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LeetCode 658. Find K Closest Elements">
+<meta property="og:url" content="http://lianghan.org/2019/11/10/2019-11-10-LeetCode658/index.html">
+<meta property="og:site_name" content="Quantum Field">
+<meta property="og:description" content="Problem Statement impl Solution &amp;#123;    pub fn find_closest_elements(arr: Vec&amp;lt;i32&amp;gt;, k: i32, x: i32) -&amp;gt; Vec&amp;lt;i32&amp;gt; &amp;#123;        let mut input = arr.clone();        input.sort_by(|l, r|">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2019-12-19T05:34:38.318Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="LeetCode 658. Find K Closest Elements">
+<meta name="twitter:description" content="Problem Statement impl Solution &amp;#123;    pub fn find_closest_elements(arr: Vec&amp;lt;i32&amp;gt;, k: i32, x: i32) -&amp;gt; Vec&amp;lt;i32&amp;gt; &amp;#123;        let mut input = arr.clone();        input.sort_by(|l, r|">
+  
+    <link rel="alternate" href="/atom.xml" title="Quantum Field" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+    <link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+</head>
+
+<body>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Quantum Field</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://lianghan.org"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-2019-11-10-LeetCode658" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/11/10/2019-11-10-LeetCode658/" class="article-date">
+  <time datetime="2019-11-10T19:11:11.000Z" itemprop="datePublished">2019-11-10</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/LeetCode-in-Rust/">LeetCode in Rust</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      LeetCode 658. Find K Closest Elements
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><a href="https://leetcode.com/problems/find-k-closest-elements/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">find_closest_elements</span></span>(arr: <span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;, k: <span class="keyword">i32</span>, x: <span class="keyword">i32</span>) -&gt; <span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt; &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> input = arr.clone();</span><br><span class="line">        input.sort_by(|l, r| &#123;</span><br><span class="line">            <span class="keyword">if</span> (*l - x).abs() &lt; (*r - x).abs() || (*l - x).abs() == (*r - x).abs() &amp;&amp; *l &lt; *r &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="number">0</span>.cmp(&amp;<span class="number">1</span>);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="number">1</span>.cmp(&amp;<span class="number">0</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> ans = <span class="built_in">vec!</span>[];</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..k <span class="keyword">as</span> <span class="keyword">usize</span> &#123;</span><br><span class="line">            ans.push(input[i]);</span><br><span class="line">        &#125;</span><br><span class="line">        ans.sort();</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode658/" data-id="ck4cao61q004fwhxgwnw7nmgu" data-title="LeetCode 658. Find K Closest Elements" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode658/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LeetCode/">LeetCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Rust/">Rust</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/11/10/2019-11-10-LeetCode654/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          LeetCode 654. Maximum Binary Tree
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/11/10/2019-11-10-LeetCode660/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">LeetCode 660. Remove 9</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<section id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Distributed-System/">Distributed System</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/LeetCode-in-Rust/">LeetCode in Rust</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/TopCoder/">TopCoder</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/USACO/">USACO</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BFS/">BFS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BFT/">BFT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Backtrack/">Backtrack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Base-Conversion/">Base Conversion</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Big-Integer/">Big Integer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bipartite-Match/">Bipartite Match</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bit-Manipulation/">Bit Manipulation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Brutal-Force/">Brutal Force</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Combination/">Combination</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Computation-Geometry/">Computation Geometry</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Consensus-Protocol/">Consensus Protocol</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Convex-Hull/">Convex Hull</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Counting/">Counting</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DFS/">DFS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dijkstra/">Dijkstra</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Distributed-System/">Distributed System</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dynamic-Programming/">Dynamic Programming</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Enumeration/">Enumeration</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Euler-Path/">Euler Path</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flood-Fill/">Flood Fill</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Floyd/">Floyd</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ford-Fulkerson/">Ford-Fulkerson</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gauss-Elimination/">Gauss Elimination</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Graph/">Graph</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Graph-Theory/">Graph Theory</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Greedy/">Greedy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hashing/">Hashing</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hungarian-Algorithm/">Hungarian Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/KMP/">KMP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Knapsack/">Knapsack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LeetCode/">LeetCode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MEMORIZED-SEARCH/">MEMORIZED SEARCH</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Math/">Math</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Minimum-Spanning-Tree/">Minimum Spanning Tree</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Network-Flow/">Network Flow</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NewSQL/">NewSQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Number-Theory/">Number Theory</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Paper-Digest/">Paper Digest</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Paxos/">Paxos</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Permutation/">Permutation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Prim/">Prim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Rolling-Array/">Rolling Array</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Rust/">Rust</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Search/">Search</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shortest-Path/">Shortest Path</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Simulation/">Simulation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/String/">String</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/String-Algorithm/">String Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/String-Manipulation/">String Manipulation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Strongly-Connected-Components/">Strongly Connected Components</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TopCoder/">TopCoder</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Topological-Sort/">Topological Sort</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tree/">Tree</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/UnionFind/">UnionFind</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ZooKeeper/">ZooKeeper</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Algorithm/" style="font-size: 20px;">Algorithm</a> <a href="/tags/BFS/" style="font-size: 15.83px;">BFS</a> <a href="/tags/BFT/" style="font-size: 10px;">BFT</a> <a href="/tags/Backtrack/" style="font-size: 10.83px;">Backtrack</a> <a href="/tags/Base-Conversion/" style="font-size: 10px;">Base Conversion</a> <a href="/tags/Big-Integer/" style="font-size: 10px;">Big Integer</a> <a href="/tags/Bipartite-Match/" style="font-size: 10px;">Bipartite Match</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10px;">Bit Manipulation</a> <a href="/tags/Brutal-Force/" style="font-size: 15px;">Brutal Force</a> <a href="/tags/Combination/" style="font-size: 10.83px;">Combination</a> <a href="/tags/Computation-Geometry/" style="font-size: 10px;">Computation Geometry</a> <a href="/tags/Consensus-Protocol/" style="font-size: 11.67px;">Consensus Protocol</a> <a href="/tags/Convex-Hull/" style="font-size: 10px;">Convex Hull</a> <a href="/tags/Counting/" style="font-size: 10px;">Counting</a> <a href="/tags/DFS/" style="font-size: 16.67px;">DFS</a> <a href="/tags/Dijkstra/" style="font-size: 12.5px;">Dijkstra</a> <a href="/tags/Distributed-System/" style="font-size: 11.67px;">Distributed System</a> <a href="/tags/Dynamic-Programming/" style="font-size: 18.33px;">Dynamic Programming</a> <a href="/tags/Enumeration/" style="font-size: 10px;">Enumeration</a> <a href="/tags/Euler-Path/" style="font-size: 10px;">Euler Path</a> <a href="/tags/Flood-Fill/" style="font-size: 11.67px;">Flood Fill</a> <a href="/tags/Floyd/" style="font-size: 10.83px;">Floyd</a> <a href="/tags/Ford-Fulkerson/" style="font-size: 10.83px;">Ford-Fulkerson</a> <a href="/tags/Gauss-Elimination/" style="font-size: 10px;">Gauss Elimination</a> <a href="/tags/Graph/" style="font-size: 15px;">Graph</a> <a href="/tags/Graph-Theory/" style="font-size: 14.17px;">Graph Theory</a> <a href="/tags/Greedy/" style="font-size: 10px;">Greedy</a> <a href="/tags/Hashing/" style="font-size: 10px;">Hashing</a> <a href="/tags/Hungarian-Algorithm/" style="font-size: 10px;">Hungarian Algorithm</a> <a href="/tags/KMP/" style="font-size: 10px;">KMP</a> <a href="/tags/Knapsack/" style="font-size: 10px;">Knapsack</a> <a href="/tags/LeetCode/" style="font-size: 19.17px;">LeetCode</a> <a href="/tags/MEMORIZED-SEARCH/" style="font-size: 10px;">MEMORIZED SEARCH</a> <a href="/tags/Math/" style="font-size: 10px;">Math</a> <a href="/tags/Minimum-Spanning-Tree/" style="font-size: 10px;">Minimum Spanning Tree</a> <a href="/tags/Network-Flow/" style="font-size: 10.83px;">Network Flow</a> <a href="/tags/NewSQL/" style="font-size: 10px;">NewSQL</a> <a href="/tags/Number-Theory/" style="font-size: 13.33px;">Number Theory</a> <a href="/tags/Paper-Digest/" style="font-size: 14.17px;">Paper Digest</a> <a href="/tags/Paxos/" style="font-size: 11.67px;">Paxos</a> <a href="/tags/Permutation/" style="font-size: 10px;">Permutation</a> <a href="/tags/Prim/" style="font-size: 10px;">Prim</a> <a href="/tags/Rolling-Array/" style="font-size: 10px;">Rolling Array</a> <a href="/tags/Rust/" style="font-size: 19.17px;">Rust</a> <a href="/tags/Search/" style="font-size: 17.5px;">Search</a> <a href="/tags/Shortest-Path/" style="font-size: 11.67px;">Shortest Path</a> <a href="/tags/Simulation/" style="font-size: 12.5px;">Simulation</a> <a href="/tags/String/" style="font-size: 10px;">String</a> <a href="/tags/String-Algorithm/" style="font-size: 10px;">String Algorithm</a> <a href="/tags/String-Manipulation/" style="font-size: 10px;">String Manipulation</a> <a href="/tags/Strongly-Connected-Components/" style="font-size: 10px;">Strongly Connected Components</a> <a href="/tags/TopCoder/" style="font-size: 11.67px;">TopCoder</a> <a href="/tags/Topological-Sort/" style="font-size: 10px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 10px;">Tree</a> <a href="/tags/UnionFind/" style="font-size: 10px;">UnionFind</a> <a href="/tags/ZooKeeper/" style="font-size: 10px;">ZooKeeper</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">May 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">January 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">August 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/11/22/2019-11-22-LeetCode1136/">LeetCode 1136. Parallel Courses</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/22/2019-11-22-LeetCode1213/">LeetCode 1213. Intersection of Three Sorted Arrays</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/22/2019-11-22-LeetCode895/">LeetCode 895. Maximum Frequency Stack</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/22/2019-11-22-LeetCode934/">LeetCode 934. Shortest Bridge</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/22/2019-11-22-LeetCode980/">LeetCode 980. Unique Paths III</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    <div class="visitor-map">
+    <script type="text/javascript" src="//ra.revolvermaps.com/0/0/6.js?i=0zwyzd573qn&amp;m=7&amp;s=320&amp;c=e63100&amp;cr1=ffffff&amp;f=arial&amp;l=0&amp;bv=90&amp;lx=-420&amp;ly=420&amp;hi=20&amp;he=7&amp;hc=a8ddff&amp;rs=80" async="async"></script>
+</div>
+  
+    
+<div class="widget-wrap">
+    <div class="widget">
+        <!-- ad start -->
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3853694716270245",
+          enable_page_level_ads: true
+     });
+</script>
+        <!-- ad end -->
+    </div>
+</div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 Michael Han<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+<script>
+  var disqus_shortname = 'quantumfield';
+  
+  var disqus_url = 'http://lianghan.org/2019/11/10/2019-11-10-LeetCode658/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+  <script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+<script src="https://cdn.jsdelivr.net/npm/live2d-widget@3.x/lib/L2Dwidget.min.js"></script><script>L2Dwidget.init({"tagMode":false,"debug":false,"model":{"jsonPath":"https://cdn.jsdelivr.net/npm/live2d-widget-model-haruto@1.x/assets/haruto.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/"});</script></body>
+</html>

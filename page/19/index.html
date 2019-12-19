@@ -75,9 +75,9 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-2019-11-10-LeetCode1170" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2019-11-10-LeetCode1143" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2019/11/10/2019-11-10-LeetCode1170/" class="article-date">
+    <a href="/2019/11/10/2019-11-10-LeetCode1143/" class="article-date">
   <time datetime="2019-11-10T19:11:11.000Z" itemprop="datePublished">2019-11-10</time>
 </a>
     
@@ -93,7 +93,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1170/">LeetCode 1170. Compare Strings by Frequency of the Smallest Character</a>
+      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1143/">LeetCode 1143. Longest Common Subsequence</a>
     </h1>
   
 
@@ -101,14 +101,61 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><a href="https://leetcode.com/problems/compare-strings-by-frequency-of-the-smallest-character/description/" target="_blank" rel="noopener">Problem Statement</a></p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">compute_frequency</span></span>(s: &amp;<span class="built_in">String</span>) -&gt;<span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> min_char = std::i32::MAX;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> ans = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> c <span class="keyword">in</span> s.chars() &#123;</span><br><span class="line">            <span class="keyword">if</span> (c <span class="keyword">as</span> <span class="keyword">i32</span>) &lt; min_char &#123;</span><br><span class="line">                min_char = c <span class="keyword">as</span> <span class="keyword">i32</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..s.len() &#123;</span><br><span class="line">            <span class="keyword">if</span> s.bytes().nth(i).unwrap() <span class="keyword">as</span> <span class="keyword">i32</span> == min_char &#123;</span><br><span class="line">                ans += <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">num_smaller_by_frequency</span></span>(queries: <span class="built_in">Vec</span>&lt;<span class="built_in">String</span>&gt;, words: <span class="built_in">Vec</span>&lt;<span class="built_in">String</span>&gt;) -&gt; <span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt; &#123;</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> ans, <span class="keyword">mut</span> cnt) = (<span class="built_in">vec!</span>[], <span class="built_in">vec!</span>[<span class="number">0</span>; <span class="number">11</span>]);</span><br><span class="line">        <span class="keyword">for</span> w <span class="keyword">in</span> &amp;words &#123;</span><br><span class="line">            <span class="keyword">let</span> <span class="keyword">mut</span> i = Self::compute_frequency(w) - <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">while</span> i &gt;= <span class="number">0</span> &#123;</span><br><span class="line">                cnt[i <span class="keyword">as</span> <span class="keyword">usize</span>] += <span class="number">1</span>;</span><br><span class="line">                i -= <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> q <span class="keyword">in</span> &amp;queries &#123;</span><br><span class="line">            <span class="keyword">let</span> val = Self::compute_frequency(q);</span><br><span class="line">            ans.push(cnt[val <span class="keyword">as</span> <span class="keyword">usize</span>]);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+        <p><a href="https://leetcode.com/problems/longest-common-subsequence/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">longest_common_subsequence</span></span>(text1: <span class="built_in">String</span>, text2: <span class="built_in">String</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> (m, n, <span class="keyword">mut</span> i, <span class="keyword">mut</span> j) = (text1.len(), text2.len(), <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> dp = <span class="built_in">vec!</span>[<span class="built_in">vec!</span>[<span class="number">0</span>; n + <span class="number">1</span>]; m + <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">while</span> i &lt; m &#123;</span><br><span class="line">            <span class="keyword">while</span> j &lt; n &#123;</span><br><span class="line">                <span class="keyword">if</span> text1.chars().nth(i).unwrap() == text2.chars().nth(j).unwrap() &#123;</span><br><span class="line">                    dp[i + <span class="number">1</span>][j + <span class="number">1</span>] = dp[i][j] + <span class="number">1</span>;</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    dp[i + <span class="number">1</span>][j + <span class="number">1</span>] = std::cmp::max(dp[i][j + <span class="number">1</span>], dp[i + <span class="number">1</span>][j]);</span><br><span class="line">                &#125;</span><br><span class="line">                j += <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            i += <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> dp[m][n];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1170/" data-id="ck45wk22v0047ugxg4gm8lyv4" data-title="LeetCode 1170. Compare Strings by Frequency of the Smallest Character" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1143/" data-id="ck4cao618003pwhxgauk2lc9w" data-title="LeetCode 1143. Longest Common Subsequence" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1170/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1143/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LeetCode/">LeetCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Rust/">Rust</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-2019-11-10-LeetCode1167" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/11/10/2019-11-10-LeetCode1167/" class="article-date">
+  <time datetime="2019-11-10T19:11:11.000Z" itemprop="datePublished">2019-11-10</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/LeetCode-in-Rust/">LeetCode in Rust</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1167/">LeetCode 1167. Minimum Cost to Connect Sticks</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><a href="https://leetcode.com/problems/minimum-cost-to-connect-sticks/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::collections::BinaryHeap;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">connect_sticks</span></span>(sticks: <span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> heap, <span class="keyword">mut</span> ans) = (BinaryHeap::new(), <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">for</span> stick <span class="keyword">in</span> sticks &#123;</span><br><span class="line">            heap.push(stick * -<span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">while</span> heap.len() &gt; <span class="number">1</span> &#123;</span><br><span class="line">            <span class="keyword">let</span> (a, b) = (heap.pop().unwrap() * -<span class="number">1</span>, heap.pop().unwrap() * -<span class="number">1</span>);</span><br><span class="line">            ans += a + b;</span><br><span class="line">            heap.push((a + b) * -<span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1167/" data-id="ck4cao619003qwhxgkpr31y85" data-title="LeetCode 1167. Minimum Cost to Connect Sticks" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1167/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
@@ -154,56 +201,9 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1168/" data-id="ck45wk22x0049ugxgzrwee6sm" data-title="LeetCode 1168. Optimize Water Distribution in a Village" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1168/" data-id="ck4cao619003rwhxgy5rrkf8i" data-title="LeetCode 1168. Optimize Water Distribution in a Village" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1168/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LeetCode/">LeetCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Rust/">Rust</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2019-11-10-LeetCode1165" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/11/10/2019-11-10-LeetCode1165/" class="article-date">
-  <time datetime="2019-11-10T19:11:11.000Z" itemprop="datePublished">2019-11-10</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/LeetCode-in-Rust/">LeetCode in Rust</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1165/">LeetCode 1165. Single-Row Keyboard</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><a href="https://leetcode.com/problems/single-row-keyboard/description/" target="_blank" rel="noopener">Problem Statement</a></p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::collections::HashMap;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">calculate_time</span></span>(keyboard: <span class="built_in">String</span>, word: <span class="built_in">String</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> map = HashMap::new();</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..<span class="number">26</span> &#123;</span><br><span class="line">            map.insert(keyboard.chars().nth(i).unwrap(), i);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> ans, size) = (<span class="number">0</span>, word.len());</span><br><span class="line">        <span class="keyword">if</span> size == <span class="number">1</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> ans;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..size &#123;</span><br><span class="line">            <span class="keyword">let</span> ci = word.chars().nth(i).unwrap();</span><br><span class="line">            <span class="keyword">if</span> i == <span class="number">0</span> &#123;</span><br><span class="line">                ans += *map.get(&amp;ci).unwrap() <span class="keyword">as</span> <span class="keyword">i32</span>;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">let</span> cii = word.chars().nth(i - <span class="number">1</span>).unwrap();</span><br><span class="line">            ans += (*map.get(&amp;cii).unwrap() <span class="keyword">as</span> <span class="keyword">i32</span></span><br><span class="line">                - *map.get(&amp;ci).unwrap() <span class="keyword">as</span> <span class="keyword">i32</span>).abs();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1165/" data-id="ck45wk22y004bugxg5qpejhzf" data-title="LeetCode 1165. Single-Row Keyboard" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1165/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
@@ -221,7 +221,7 @@
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/page/18/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/17/">17</a><a class="page-number" href="/page/18/">18</a><span class="page-number current">19</span><a class="page-number" href="/page/20/">20</a><a class="page-number" href="/page/21/">21</a><span class="space">&hellip;</span><a class="page-number" href="/page/68/">68</a><a class="extend next" rel="next" href="/page/20/">Next &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/18/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/17/">17</a><a class="page-number" href="/page/18/">18</a><span class="page-number current">19</span><a class="page-number" href="/page/20/">20</a><a class="page-number" href="/page/21/">21</a><span class="space">&hellip;</span><a class="page-number" href="/page/71/">71</a><a class="extend next" rel="next" href="/page/20/">Next &raquo;</a>
   </nav>
 
 </section>
@@ -364,6 +364,6 @@
 
 
 
-  </div>
-<script src="https://cdn.jsdelivr.net/npm/live2d-widget@3.x/lib/L2Dwidget.min.js"></script><script>L2Dwidget.init({"tagMode":false,"debug":false,"model":{"jsonPath":"https://cdn.jsdelivr.net/npm/live2d-widget-model-haruto@1.x/assets/haruto.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/"});</script><!-- hexo-inject:begin --><!-- hexo-inject:end --></body>
+  </div><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+<script src="https://cdn.jsdelivr.net/npm/live2d-widget@3.x/lib/L2Dwidget.min.js"></script><script>L2Dwidget.init({"tagMode":false,"debug":false,"model":{"jsonPath":"https://cdn.jsdelivr.net/npm/live2d-widget-model-haruto@1.x/assets/haruto.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/"});</script></body>
 </html>
