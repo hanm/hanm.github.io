@@ -75,9 +75,9 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-2019-11-10-LeetCode496" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2019-11-10-LeetCode494" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2019/11/10/2019-11-10-LeetCode496/" class="article-date">
+    <a href="/2019/11/10/2019-11-10-LeetCode494/" class="article-date">
   <time datetime="2019-11-10T19:11:11.000Z" itemprop="datePublished">2019-11-10</time>
 </a>
     
@@ -93,7 +93,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode496/">LeetCode 496. Next Greater Element I</a>
+      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode494/">LeetCode 494. Target Sum</a>
     </h1>
   
 
@@ -101,14 +101,61 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><a href="https://leetcode.com/problems/next-greater-element-i/description/" target="_blank" rel="noopener">Problem Statement</a></p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::collections::&#123;HashMap, VecDeque&#125;;</span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">next_greater_element</span></span>(nums1: <span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;, nums2: <span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;) -&gt; <span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt; &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> ans = <span class="built_in">vec!</span>[];</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> stack: <span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt; = <span class="built_in">vec!</span>[];</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> m = HashMap::new();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> num <span class="keyword">in</span> nums2 &#123;</span><br><span class="line">            <span class="keyword">while</span> !stack.is_empty() &#123;</span><br><span class="line">                <span class="keyword">let</span> cur = stack.last().unwrap().clone();</span><br><span class="line">                <span class="keyword">if</span> cur &gt;= num &#123;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                m.entry(cur).or_insert(<span class="number">0</span>);</span><br><span class="line">                *m.get_mut(&amp;cur).unwrap() = num;</span><br><span class="line">                stack.pop();</span><br><span class="line">            &#125;</span><br><span class="line">            stack.push(num);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> num <span class="keyword">in</span> nums1 &#123;</span><br><span class="line">            <span class="keyword">if</span> m.contains_key(&amp;num) &#123;</span><br><span class="line">                ans.push(*m.get(&amp;num).unwrap());</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                ans.push(-<span class="number">1</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+        <p><a href="https://leetcode.com/problems/target-sum/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">dfs</span></span>(nums: &amp;<span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;, index: <span class="keyword">i32</span>, sum: <span class="keyword">i32</span>, s: <span class="keyword">i32</span>, ans: &amp;<span class="keyword">mut</span> <span class="keyword">i32</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> index == nums.len() <span class="keyword">as</span> <span class="keyword">i32</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> sum == s &#123;</span><br><span class="line">                *ans += <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        Self::dfs(nums, index + <span class="number">1</span>, sum + nums[index <span class="keyword">as</span> <span class="keyword">usize</span>], s, ans);</span><br><span class="line">        Self::dfs(nums, index + <span class="number">1</span>, sum - nums[index <span class="keyword">as</span> <span class="keyword">usize</span>], s, ans);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">find_target_sum_ways</span></span>(nums: <span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;, s: <span class="keyword">i32</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> ans = <span class="number">0</span>;</span><br><span class="line">        Self::dfs(&amp;nums, <span class="number">0</span>, <span class="number">0</span>, s, &amp;<span class="keyword">mut</span> ans);</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode496/" data-id="ck4cao61m004awhxgy1557nye" data-title="LeetCode 496. Next Greater Element I" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode494/" data-id="clenvh7xg005vymxgso8erm0e" data-title="LeetCode 494. Target Sum" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode496/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode494/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LeetCode/">LeetCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Rust/">Rust</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-2019-11-10-LeetCode549" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/11/10/2019-11-10-LeetCode549/" class="article-date">
+  <time datetime="2019-11-10T19:11:11.000Z" itemprop="datePublished">2019-11-10</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/LeetCode-in-Rust/">LeetCode in Rust</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode549/">LeetCode 549. Binary Tree Longest Consecutive Sequence II</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><a href="https://leetcode.com/problems/binary-tree-longest-consecutive-sequence-ii/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::rc::Rc;</span><br><span class="line"><span class="keyword">use</span> std::cell::RefCell;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">dfs</span></span>(root: <span class="built_in">Option</span>&lt;Rc&lt;RefCell&lt;TreeNode&gt;&gt;&gt;,</span><br><span class="line">           parent: <span class="built_in">Option</span>&lt;Rc&lt;RefCell&lt;TreeNode&gt;&gt;&gt;, ans: &amp;<span class="keyword">mut</span> <span class="keyword">i32</span>) -&gt; (<span class="keyword">i32</span>, <span class="keyword">i32</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">let</span> <span class="literal">Some</span>(node) = root &#123;</span><br><span class="line">            <span class="keyword">let</span> (<span class="keyword">mut</span> incr, <span class="keyword">mut</span> decr) = (<span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">            <span class="keyword">let</span> l = Self::dfs(node.borrow().left.clone(), <span class="literal">Some</span>(node.clone()), ans);</span><br><span class="line">            <span class="keyword">let</span> r = Self::dfs(node.borrow().right.clone(), <span class="literal">Some</span>(node.clone()), ans);</span><br><span class="line">            *ans = std::cmp::max(*ans, std::cmp::max(l.<span class="number">0</span> + r.<span class="number">1</span> + <span class="number">1</span>, l.<span class="number">1</span> + r.<span class="number">0</span> + <span class="number">1</span>));</span><br><span class="line">            <span class="keyword">let</span> p = parent.unwrap();</span><br><span class="line">            <span class="keyword">if</span> node.borrow().val == p.borrow().val + <span class="number">1</span> &#123;</span><br><span class="line">                incr = std::cmp::max(l.<span class="number">0</span>, r.<span class="number">0</span>) + <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> node.borrow().val + <span class="number">1</span> == p.borrow().val &#123;</span><br><span class="line">                decr = std::cmp::max(l.<span class="number">1</span>, r.<span class="number">1</span>) + <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> (incr, decr);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> (<span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">longest_consecutive</span></span>(root: <span class="built_in">Option</span>&lt;Rc&lt;RefCell&lt;TreeNode&gt;&gt;&gt;) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> ans = <span class="number">0</span>;</span><br><span class="line">        Self::dfs(root.clone(), root.clone(), &amp;<span class="keyword">mut</span> ans);</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode549/" data-id="clenvh7xg005wymxguqqjeofz" data-title="LeetCode 549. Binary Tree Longest Consecutive Sequence II" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode549/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
@@ -153,56 +200,9 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode556/" data-id="ck4cao61n004bwhxgo03j5sz9" data-title="LeetCode 556. Next Greater Element III" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode556/" data-id="clenvh7xi005zymxgci6ouw0u" data-title="LeetCode 556. Next Greater Element III" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode556/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LeetCode/">LeetCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Rust/">Rust</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2019-11-10-LeetCode560" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/11/10/2019-11-10-LeetCode560/" class="article-date">
-  <time datetime="2019-11-10T19:11:11.000Z" itemprop="datePublished">2019-11-10</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/LeetCode-in-Rust/">LeetCode in Rust</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode560/">LeetCode 560. Subarray Sum Equals K</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><a href="https://leetcode.com/problems/subarray-sum-equals-k/description/" target="_blank" rel="noopener">Problem Statement</a></p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::collections::HashMap;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">subarray_sum</span></span>(nums: <span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;, k: <span class="keyword">i32</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> ans, <span class="keyword">mut</span> sum) = (<span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> map = HashMap::new();</span><br><span class="line">        map.insert(<span class="number">0</span>, <span class="number">1</span>);</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..nums.len() &#123;</span><br><span class="line">            sum += nums[i];</span><br><span class="line">            map.entry(sum - k).or_insert(<span class="number">0</span>);</span><br><span class="line">            ans += map[&amp;(sum - k)];</span><br><span class="line">            map.entry(sum).or_insert(<span class="number">0</span>);</span><br><span class="line">            *map.get_mut(&amp;sum).unwrap() += <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode560/" data-id="ck4cao61o004cwhxgxtjb39d4" data-title="LeetCode 560. Subarray Sum Equals K" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode560/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
@@ -273,15 +273,15 @@
       <ul>
         
           <li>
-            <a href="/2019/11/22/2019-11-22-LeetCode1136/">LeetCode 1136. Parallel Courses</a>
-          </li>
-        
-          <li>
             <a href="/2019/11/22/2019-11-22-LeetCode1213/">LeetCode 1213. Intersection of Three Sorted Arrays</a>
           </li>
         
           <li>
             <a href="/2019/11/22/2019-11-22-LeetCode895/">LeetCode 895. Maximum Frequency Stack</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/22/2019-11-22-LeetCode1136/">LeetCode 1136. Parallel Courses</a>
           </li>
         
           <li>
@@ -324,7 +324,7 @@
   
   <div class="outer">
     <div id="footer-info" class="inner">
-      &copy; 2019 Michael Han<br>
+      &copy; 2023 Michael Han<br>
       Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
     </div>
   </div>

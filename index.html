@@ -75,53 +75,6 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-2019-11-22-LeetCode1136" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/11/22/2019-11-22-LeetCode1136/" class="article-date">
-  <time datetime="2019-11-22T19:11:11.000Z" itemprop="datePublished">2019-11-22</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/LeetCode-in-Rust/">LeetCode in Rust</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/22/2019-11-22-LeetCode1136/">LeetCode 1136. Parallel Courses</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><a href="https://leetcode.com/problems/parallel-courses/description/" target="_blank" rel="noopener">Problem Statement</a></p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">use</span> std::collections::&#123;HashMap, HashSet&#125;;</span><br><span class="line"><span class="keyword">use</span> std::collections::VecDeque;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">minimum_semesters</span></span>(n: <span class="keyword">i32</span>, relations: <span class="built_in">Vec</span>&lt;<span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;&gt;) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> in_degrees = <span class="built_in">vec!</span>[<span class="number">0</span>; n <span class="keyword">as</span> <span class="keyword">usize</span> + <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> map: HashMap&lt;<span class="keyword">i32</span>, HashSet&lt;<span class="keyword">i32</span>&gt;&gt; = HashMap::new();</span><br><span class="line">        <span class="keyword">for</span> r <span class="keyword">in</span> &amp;relations &#123;</span><br><span class="line">            map.entry(r[<span class="number">0</span>]).or_insert(HashSet::new());</span><br><span class="line">            map.get_mut(&amp;r[<span class="number">0</span>]).unwrap().insert(r[<span class="number">1</span>]);</span><br><span class="line">            in_degrees[r[<span class="number">1</span>] <span class="keyword">as</span> <span class="keyword">usize</span>] += <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> q = VecDeque::new();</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> ans, <span class="keyword">mut</span> sum) = (<span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">1</span>..n + <span class="number">1</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> in_degrees[i <span class="keyword">as</span> <span class="keyword">usize</span>] == <span class="number">0</span> &#123;</span><br><span class="line">                q.push_back(i);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> !q.is_empty() &#123;</span><br><span class="line">            <span class="keyword">let</span> size = q.len();</span><br><span class="line">            sum += size;</span><br><span class="line">            <span class="keyword">for</span> _i <span class="keyword">in</span> <span class="number">0</span>..size &#123;</span><br><span class="line">                <span class="keyword">let</span> cur = q.front().unwrap().clone();</span><br><span class="line">                q.pop_front();</span><br><span class="line">                <span class="keyword">if</span> !map.contains_key(&amp;cur) &#123;</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">for</span> next <span class="keyword">in</span> map.get(&amp;cur).unwrap() &#123;</span><br><span class="line">                    in_degrees[*next <span class="keyword">as</span> <span class="keyword">usize</span>] -= <span class="number">1</span>;</span><br><span class="line">                    <span class="keyword">if</span> in_degrees[*next <span class="keyword">as</span> <span class="keyword">usize</span>] == <span class="number">0</span> &#123;</span><br><span class="line">                        q.push_back(*next);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            ans += <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> sum == n <span class="keyword">as</span> <span class="keyword">usize</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> ans;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/22/2019-11-22-LeetCode1136/" data-id="ck4cao62p005uwhxgr38phjai" data-title="LeetCode 1136. Parallel Courses" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2019/11/22/2019-11-22-LeetCode1136/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LeetCode/">LeetCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Rust/">Rust</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
     <article id="post-2019-11-22-LeetCode1213" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2019/11/22/2019-11-22-LeetCode1213/" class="article-date">
@@ -153,7 +106,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/22/2019-11-22-LeetCode1213/" data-id="ck4cao62q005vwhxg03p4twd3" data-title="LeetCode 1213. Intersection of Three Sorted Arrays" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/22/2019-11-22-LeetCode1213/" data-id="clenvh7za008yymxgvf86nf31" data-title="LeetCode 1213. Intersection of Three Sorted Arrays" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2019/11/22/2019-11-22-LeetCode1213/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -200,9 +153,56 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/22/2019-11-22-LeetCode895/" data-id="ck4cao62r005wwhxg38vwe6lz" data-title="LeetCode 895. Maximum Frequency Stack" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/22/2019-11-22-LeetCode895/" data-id="clenvh7za008zymxg0ohb920r" data-title="LeetCode 895. Maximum Frequency Stack" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2019/11/22/2019-11-22-LeetCode895/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LeetCode/">LeetCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Rust/">Rust</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-2019-11-22-LeetCode1136" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/11/22/2019-11-22-LeetCode1136/" class="article-date">
+  <time datetime="2019-11-22T19:11:11.000Z" itemprop="datePublished">2019-11-22</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/LeetCode-in-Rust/">LeetCode in Rust</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/11/22/2019-11-22-LeetCode1136/">LeetCode 1136. Parallel Courses</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><a href="https://leetcode.com/problems/parallel-courses/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">use</span> std::collections::&#123;HashMap, HashSet&#125;;</span><br><span class="line"><span class="keyword">use</span> std::collections::VecDeque;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">minimum_semesters</span></span>(n: <span class="keyword">i32</span>, relations: <span class="built_in">Vec</span>&lt;<span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;&gt;) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> in_degrees = <span class="built_in">vec!</span>[<span class="number">0</span>; n <span class="keyword">as</span> <span class="keyword">usize</span> + <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> map: HashMap&lt;<span class="keyword">i32</span>, HashSet&lt;<span class="keyword">i32</span>&gt;&gt; = HashMap::new();</span><br><span class="line">        <span class="keyword">for</span> r <span class="keyword">in</span> &amp;relations &#123;</span><br><span class="line">            map.entry(r[<span class="number">0</span>]).or_insert(HashSet::new());</span><br><span class="line">            map.get_mut(&amp;r[<span class="number">0</span>]).unwrap().insert(r[<span class="number">1</span>]);</span><br><span class="line">            in_degrees[r[<span class="number">1</span>] <span class="keyword">as</span> <span class="keyword">usize</span>] += <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> q = VecDeque::new();</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> ans, <span class="keyword">mut</span> sum) = (<span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">1</span>..n + <span class="number">1</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> in_degrees[i <span class="keyword">as</span> <span class="keyword">usize</span>] == <span class="number">0</span> &#123;</span><br><span class="line">                q.push_back(i);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> !q.is_empty() &#123;</span><br><span class="line">            <span class="keyword">let</span> size = q.len();</span><br><span class="line">            sum += size;</span><br><span class="line">            <span class="keyword">for</span> _i <span class="keyword">in</span> <span class="number">0</span>..size &#123;</span><br><span class="line">                <span class="keyword">let</span> cur = q.front().unwrap().clone();</span><br><span class="line">                q.pop_front();</span><br><span class="line">                <span class="keyword">if</span> !map.contains_key(&amp;cur) &#123;</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">for</span> next <span class="keyword">in</span> map.get(&amp;cur).unwrap() &#123;</span><br><span class="line">                    in_degrees[*next <span class="keyword">as</span> <span class="keyword">usize</span>] -= <span class="number">1</span>;</span><br><span class="line">                    <span class="keyword">if</span> in_degrees[*next <span class="keyword">as</span> <span class="keyword">usize</span>] == <span class="number">0</span> &#123;</span><br><span class="line">                        q.push_back(*next);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            ans += <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> sum == n <span class="keyword">as</span> <span class="keyword">usize</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> ans;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lianghan.org/2019/11/22/2019-11-22-LeetCode1136/" data-id="clenvh7zc0092ymxg4gr62wle" data-title="LeetCode 1136. Parallel Courses" class="article-share-link">Share</a>
+      
+        <a href="http://lianghan.org/2019/11/22/2019-11-22-LeetCode1136/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
@@ -273,15 +273,15 @@
       <ul>
         
           <li>
-            <a href="/2019/11/22/2019-11-22-LeetCode1136/">LeetCode 1136. Parallel Courses</a>
-          </li>
-        
-          <li>
             <a href="/2019/11/22/2019-11-22-LeetCode1213/">LeetCode 1213. Intersection of Three Sorted Arrays</a>
           </li>
         
           <li>
             <a href="/2019/11/22/2019-11-22-LeetCode895/">LeetCode 895. Maximum Frequency Stack</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/22/2019-11-22-LeetCode1136/">LeetCode 1136. Parallel Courses</a>
           </li>
         
           <li>
@@ -324,7 +324,7 @@
   
   <div class="outer">
     <div id="footer-info" class="inner">
-      &copy; 2019 Michael Han<br>
+      &copy; 2023 Michael Han<br>
       Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
     </div>
   </div>

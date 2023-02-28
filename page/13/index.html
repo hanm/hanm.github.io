@@ -106,7 +106,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1047/" data-id="ck4cao60r0037whxgcmw6krrw" data-title="LeetCode 1047. Remove All Adjacent Duplicates In String" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1047/" data-id="clenvh7w5003pymxgohpxpup9" data-title="LeetCode 1047. Remove All Adjacent Duplicates In String" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1047/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -122,9 +122,9 @@
 
 
   
-    <article id="post-2019-11-10-LeetCode1056" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2019-11-10-LeetCode1048" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2019/11/10/2019-11-10-LeetCode1056/" class="article-date">
+    <a href="/2019/11/10/2019-11-10-LeetCode1048/" class="article-date">
   <time datetime="2019-11-10T19:11:11.000Z" itemprop="datePublished">2019-11-10</time>
 </a>
     
@@ -140,7 +140,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1056/">LeetCode 1056. Confusing Number</a>
+      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1048/">LeetCode 1048. Longest String Chain</a>
     </h1>
   
 
@@ -148,15 +148,14 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><a href="https://leetcode.com/problems/confusing-number/description/" target="_blank" rel="noopener">Problem Statement</a></p>
-<p>Backtrack.</p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::collections::HashMap;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">confusing_number</span></span>(n: <span class="keyword">i32</span>) -&gt; <span class="keyword">bool</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> s = n.to_string();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> map: HashMap&lt;<span class="keyword">char</span>, <span class="keyword">char</span>&gt; = [(<span class="string">'1'</span>, <span class="string">'1'</span>), (<span class="string">'6'</span>, <span class="string">'9'</span>), (<span class="string">'8'</span>, <span class="string">'8'</span>), (<span class="string">'9'</span>, <span class="string">'6'</span>), (<span class="string">'0'</span>,<span class="string">'0'</span>)]</span><br><span class="line">            .iter().cloned().collect();</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> changed, <span class="keyword">mut</span> i, <span class="keyword">mut</span> j) = (<span class="literal">false</span>, <span class="number">0</span>, s.len() - <span class="number">1</span>);</span><br><span class="line">        <span class="keyword">while</span> i &lt;= j &#123;</span><br><span class="line">            <span class="keyword">if</span> !map.contains_key(&amp;s.chars().nth(i).unwrap())</span><br><span class="line">                || !map.contains_key(&amp;s.chars().nth(j).unwrap()) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> map[&amp;s.chars().nth(i).unwrap()] != s.chars().nth(j).unwrap() &#123;</span><br><span class="line">                changed = <span class="literal">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            i += <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">if</span> j != <span class="number">0</span> &#123;</span><br><span class="line">                j -= <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> changed;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+        <p><a href="https://leetcode.com/problems/longest-string-chain/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::collections::HashMap;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">longest_str_chain</span></span>(words: <span class="built_in">Vec</span>&lt;<span class="built_in">String</span>&gt;) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> ans, <span class="keyword">mut</span> w) = (<span class="number">0</span>, words);</span><br><span class="line">        w.sort_by_key(|x| x.len());</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> map = HashMap::new();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> word <span class="keyword">in</span> w &#123;</span><br><span class="line">            <span class="keyword">if</span> map.contains_key(&amp;word) &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            map.insert(word.clone(), <span class="number">1</span>);</span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..word.len() &#123;</span><br><span class="line">                <span class="keyword">let</span> <span class="keyword">mut</span> c = word.clone();</span><br><span class="line">                c.remove(i);</span><br><span class="line">                <span class="keyword">if</span> map.contains_key(&amp;c) &amp;&amp;</span><br><span class="line">                    (*map.get(&amp;c).unwrap() + <span class="number">1</span> &gt; *map.get(&amp;word).unwrap()) &#123;</span><br><span class="line">                    map.insert(word.clone(), map.get(&amp;c).unwrap() + <span class="number">1</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            ans = std::cmp::max(ans, *map.get(&amp;word).unwrap());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1056/" data-id="ck4cao60s0038whxgsdr7gvgx" data-title="LeetCode 1056. Confusing Number" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1048/" data-id="clenvh7w6003rymxg5a8t2edj" data-title="LeetCode 1048. Longest String Chain" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1056/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1048/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
@@ -201,7 +200,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1087/" data-id="ck4cao60t0039whxgxlpmyk4j" data-title="LeetCode 1087. Brace Expansion" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1087/" data-id="clenvh7w8003tymxgwitgtpil" data-title="LeetCode 1087. Brace Expansion" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1087/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -274,15 +273,15 @@
       <ul>
         
           <li>
-            <a href="/2019/11/22/2019-11-22-LeetCode1136/">LeetCode 1136. Parallel Courses</a>
-          </li>
-        
-          <li>
             <a href="/2019/11/22/2019-11-22-LeetCode1213/">LeetCode 1213. Intersection of Three Sorted Arrays</a>
           </li>
         
           <li>
             <a href="/2019/11/22/2019-11-22-LeetCode895/">LeetCode 895. Maximum Frequency Stack</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/22/2019-11-22-LeetCode1136/">LeetCode 1136. Parallel Courses</a>
           </li>
         
           <li>
@@ -325,7 +324,7 @@
   
   <div class="outer">
     <div id="footer-info" class="inner">
-      &copy; 2019 Michael Han<br>
+      &copy; 2023 Michael Han<br>
       Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
     </div>
   </div>
