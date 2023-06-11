@@ -75,9 +75,9 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-2019-11-10-LeetCode1207" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2019-11-10-LeetCode1249" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2019/11/10/2019-11-10-LeetCode1207/" class="article-date">
+    <a href="/2019/11/10/2019-11-10-LeetCode1249/" class="article-date">
   <time datetime="2019-11-10T19:11:11.000Z" itemprop="datePublished">2019-11-10</time>
 </a>
     
@@ -93,7 +93,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1207/">LeetCode 1207. Unique Number of Occurrences</a>
+      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1249/">LeetCode 1249. Minimum Remove to Make Valid Parentheses</a>
     </h1>
   
 
@@ -101,14 +101,14 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><a href="https://leetcode.com/problems/unique-number-of-occurrences/description/" target="_blank" rel="noopener">Problem Statement</a></p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">unique_occurrences</span></span>(arr: <span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;) -&gt; <span class="keyword">bool</span> &#123;</span><br><span class="line">        <span class="keyword">use</span> std::collections::&#123;HashMap, HashSet&#125;;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> map, <span class="keyword">mut</span> set) = (HashMap::new(), HashSet::new());</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> arr &#123;</span><br><span class="line">            *(map.entry(i).or_insert(<span class="number">0</span>)) += <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (_, val) <span class="keyword">in</span> map &#123;</span><br><span class="line">            <span class="keyword">if</span> set.contains(&amp;val) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            set.insert(val);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+        <p><a href="https://leetcode.com/problems/minimum-remove-to-make-valid-parentheses/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::collections::HashSet;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">min_remove_to_make_valid</span></span>(s: <span class="built_in">String</span>) -&gt; <span class="built_in">String</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> stack = <span class="built_in">vec!</span>[];</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> remove = <span class="built_in">vec!</span>[];</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..s.len() &#123;</span><br><span class="line">            <span class="keyword">let</span> c = s.chars().nth(i).unwrap();</span><br><span class="line">            <span class="keyword">if</span> c == <span class="string">'('</span> &#123;</span><br><span class="line">                stack.push(i);</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> c == <span class="string">')'</span> &#123;</span><br><span class="line">                <span class="keyword">if</span> !stack.is_empty() &#123;</span><br><span class="line">                    stack.pop();</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    remove.push(i);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> !stack.is_empty() &#123;</span><br><span class="line">            remove.push(stack.last().unwrap().clone());</span><br><span class="line">            stack.pop();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> ans = <span class="string">""</span>.to_string();</span><br><span class="line">        <span class="keyword">let</span> set : HashSet&lt;<span class="keyword">usize</span>&gt; = remove.into_iter().collect();</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..s.len() &#123;</span><br><span class="line">            <span class="keyword">if</span> !set.contains(&amp;i) &#123;</span><br><span class="line">                ans.push(s.chars().nth(i).unwrap());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1207/" data-id="clenvh7x30057ymxgmq1766jq" data-title="LeetCode 1207. Unique Number of Occurrences" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1249/" data-id="clirzvzuc003yg6xgur2alfzv" data-title="LeetCode 1249. Minimum Remove to Make Valid Parentheses" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1207/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1249/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
@@ -122,9 +122,9 @@
 
 
   
-    <article id="post-2019-11-10-LeetCode1209" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2019-11-10-LeetCode139" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2019/11/10/2019-11-10-LeetCode1209/" class="article-date">
+    <a href="/2019/11/10/2019-11-10-LeetCode139/" class="article-date">
   <time datetime="2019-11-10T19:11:11.000Z" itemprop="datePublished">2019-11-10</time>
 </a>
     
@@ -140,7 +140,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1209/">LeetCode 1209. Remove All Adjacent Duplicates in String II</a>
+      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode139/">LeetCode 139. Word Break</a>
     </h1>
   
 
@@ -148,14 +148,14 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><a href="https://leetcode.com/problems/remove-all-adjacent-duplicates-in-string-ii/description/" target="_blank" rel="noopener">Problem Statement</a></p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">remove_duplicates</span></span>(s: <span class="built_in">String</span>, k: <span class="keyword">i32</span>) -&gt; <span class="built_in">String</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> stack = <span class="built_in">vec!</span>[(<span class="number">0</span>, <span class="string">'#'</span>)];</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> ans = <span class="string">""</span>.to_string();</span><br><span class="line">        <span class="keyword">for</span> c <span class="keyword">in</span> s.chars() &#123;</span><br><span class="line">            <span class="keyword">let</span> index = stack.len() - <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">if</span> stack[index].<span class="number">1</span> != c &#123;</span><br><span class="line">                stack.push((<span class="number">1</span>, c));</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> stack[index].<span class="number">0</span> == k - <span class="number">1</span> &#123;</span><br><span class="line">                stack.pop();</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">let</span> <span class="keyword">mut</span> val = stack[index];</span><br><span class="line">                val.<span class="number">0</span> += <span class="number">1</span>;</span><br><span class="line">                stack[index] = val;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> item <span class="keyword">in</span> stack &#123;</span><br><span class="line">            ans.push_str(&amp;(<span class="number">0</span>..item.<span class="number">0</span> <span class="keyword">as</span> <span class="keyword">usize</span>).map(|_| item.<span class="number">1</span>).collect::&lt;<span class="built_in">String</span>&gt;());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+        <p><a href="https://leetcode.com/problems/word-break/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::collections::HashSet;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">word_break</span></span>(s: <span class="built_in">String</span>, word_dict: <span class="built_in">Vec</span>&lt;<span class="built_in">String</span>&gt;) -&gt; <span class="keyword">bool</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> set: HashSet&lt;<span class="built_in">String</span>&gt; = word_dict.into_iter().collect();</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> dp = <span class="built_in">vec!</span>[<span class="literal">false</span>; s.len() + <span class="number">1</span>];</span><br><span class="line">        dp[<span class="number">0</span>] = <span class="literal">true</span>;</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">1</span>..s.len() + <span class="number">1</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> dp[i] &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> <span class="number">0</span>..i &#123;</span><br><span class="line">                <span class="keyword">if</span> !dp[j] &#123;</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">let</span> slice = &amp;s[j..i];</span><br><span class="line">                <span class="keyword">if</span> set.contains(slice) &#123;</span><br><span class="line">                    dp[i] = <span class="literal">true</span>;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> dp[s.len()];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1209/" data-id="clenvh7x40059ymxgjnvgdcq4" data-title="LeetCode 1209. Remove All Adjacent Duplicates in String II" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode139/" data-id="clirzvzud003zg6xgre9pjtxo" data-title="LeetCode 139. Word Break" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1209/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode139/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
@@ -200,7 +200,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode140/" data-id="clenvh7x5005bymxg74vuf08b" data-title="LeetCode 140. Word Break II" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode140/" data-id="clirzvzud0040g6xganm3y2nu" data-title="LeetCode 140. Word Break II" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode140/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -273,15 +273,15 @@
       <ul>
         
           <li>
+            <a href="/2019/11/22/2019-11-22-LeetCode1136/">LeetCode 1136. Parallel Courses</a>
+          </li>
+        
+          <li>
             <a href="/2019/11/22/2019-11-22-LeetCode1213/">LeetCode 1213. Intersection of Three Sorted Arrays</a>
           </li>
         
           <li>
             <a href="/2019/11/22/2019-11-22-LeetCode895/">LeetCode 895. Maximum Frequency Stack</a>
-          </li>
-        
-          <li>
-            <a href="/2019/11/22/2019-11-22-LeetCode1136/">LeetCode 1136. Parallel Courses</a>
           </li>
         
           <li>

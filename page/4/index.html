@@ -75,9 +75,9 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-2019-11-11-LeetCode1031" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2019-11-11-LeetCode1020" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2019/11/11/2019-11-11-LeetCode1031/" class="article-date">
+    <a href="/2019/11/11/2019-11-11-LeetCode1020/" class="article-date">
   <time datetime="2019-11-11T19:11:11.000Z" itemprop="datePublished">2019-11-11</time>
 </a>
     
@@ -93,7 +93,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/11/2019-11-11-LeetCode1031/">LeetCode 1031 Maximum Sum of Two Non-Overlapping Subarrays</a>
+      <a class="article-title" href="/2019/11/11/2019-11-11-LeetCode1020/">LeetCode 1020. Number of Enclaves</a>
     </h1>
   
 
@@ -101,15 +101,15 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><a href="https://leetcode.com/problems/maximum-sum-of-two-non-overlapping-subarrays/description/" target="_blank" rel="noopener">Problem Statement</a></p>
-<p>Maintain a sliding window of two sub arrays with length L and M and slide through. For each slide check two cases:<br>L first, or M first. Use prefix sum to speed up calculation of sum of a given sub array.</p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">use</span> std::cmp;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">max_sum_two_no_overlap</span></span>(a: <span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;, l: <span class="keyword">i32</span>, m: <span class="keyword">i32</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> A = a.iter().scan(<span class="number">0</span>, |sum, i| &#123;*sum += *i; <span class="literal">Some</span>(*sum)&#125;).collect::&lt;<span class="built_in">Vec</span>&lt;_&gt;&gt;();</span><br><span class="line">        <span class="keyword">let</span> (L, M) = (l <span class="keyword">as</span> <span class="keyword">usize</span>, m <span class="keyword">as</span> <span class="keyword">usize</span>);</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> ans, <span class="keyword">mut</span> lmax, <span class="keyword">mut</span> rmax) = (A[L + M - <span class="number">1</span>], A[L - <span class="number">1</span>], A[M - <span class="number">1</span>]);</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> L + M..A.len() <span class="keyword">as</span> <span class="keyword">usize</span> &#123;</span><br><span class="line">            lmax = cmp::max(lmax, A[i - M] - A[i - M - L]);</span><br><span class="line">            rmax = cmp::max(rmax, A[i - L] - A[i - L - M]);</span><br><span class="line">            ans = cmp::max(ans, cmp::max(A[i] - A[i - L] + rmax, A[i] - A[i - M] + lmax));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+        <p><a href="https://leetcode.com/problems/number-of-enclaves/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<p>Typical DFS. Similar to <a href="https://leetcode.com/problems/number-of-closed-islands/" target="_blank" rel="noopener">1254. Number of Closed Islands</a></p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">dfs</span></span>(a : &amp;<span class="keyword">mut</span> <span class="built_in">Vec</span>&lt;<span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;&gt;, x : <span class="keyword">usize</span>, y : <span class="keyword">usize</span>) -&gt; () &#123;</span><br><span class="line">        <span class="keyword">let</span> (m, n) = (a.len(), a[<span class="number">0</span>].len());</span><br><span class="line">        <span class="keyword">let</span> (dx, dy) : ([<span class="keyword">i32</span>; <span class="number">4</span>], [<span class="keyword">i32</span>; <span class="number">4</span>]) = ([<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, -<span class="number">1</span>], [<span class="number">1</span>, -<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>]);</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..<span class="number">4</span> &#123;</span><br><span class="line">            <span class="keyword">let</span> (xx, yy) : (<span class="keyword">i32</span>, <span class="keyword">i32</span>) = (x <span class="keyword">as</span> <span class="keyword">i32</span> + dx[i], y <span class="keyword">as</span> <span class="keyword">i32</span> + dy[i]);</span><br><span class="line">            <span class="keyword">if</span> xx &gt;= m <span class="keyword">as</span> <span class="keyword">i32</span> || xx &lt; <span class="number">0</span> || yy &gt;= n <span class="keyword">as</span> <span class="keyword">i32</span> || yy &lt; <span class="number">0</span> &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">let</span> (nx, ny) = (xx <span class="keyword">as</span> <span class="keyword">usize</span>, yy <span class="keyword">as</span> <span class="keyword">usize</span>);</span><br><span class="line">            <span class="keyword">if</span> a[nx][ny] == <span class="number">0</span> &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            a[nx][ny] = <span class="number">0</span>;</span><br><span class="line">            Self::dfs(a, nx, ny);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">num_enclaves</span></span>(a: <span class="built_in">Vec</span>&lt;<span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;&gt;) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> A = a;</span><br><span class="line">        <span class="keyword">let</span> (m, n, <span class="keyword">mut</span> ans) = (A.len(), A[<span class="number">0</span>].len(), <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..m &#123;</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> <span class="number">0</span>..n &#123;</span><br><span class="line">                <span class="keyword">if</span> i == <span class="number">0</span> || j == <span class="number">0</span> || i == m - <span class="number">1</span> || j == n - <span class="number">1</span> &#123;</span><br><span class="line">                    <span class="keyword">if</span> A[i][j] != <span class="number">0</span> &#123;</span><br><span class="line">                        A[i][j] = <span class="number">0</span>;</span><br><span class="line">                        Self::dfs(&amp;<span class="keyword">mut</span> A, i, j);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..m &#123;</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> <span class="number">0</span>..n &#123;</span><br><span class="line">                <span class="keyword">if</span> A[i][j] != <span class="number">0</span> &#123;</span><br><span class="line">                    ans += <span class="number">1</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1031/" data-id="clenvh7yr0082ymxgskortgjf" data-title="LeetCode 1031 Maximum Sum of Two Non-Overlapping Subarrays" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1020/" data-id="clirzvzve005eg6xg0w9f14m4" data-title="LeetCode 1020. Number of Enclaves" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1031/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1020/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
@@ -123,9 +123,9 @@
 
 
   
-    <article id="post-2019-11-11-LeetCode1121" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2019-11-11-LeetCode1147" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2019/11/11/2019-11-11-LeetCode1121/" class="article-date">
+    <a href="/2019/11/11/2019-11-11-LeetCode1147/" class="article-date">
   <time datetime="2019-11-11T19:11:11.000Z" itemprop="datePublished">2019-11-11</time>
 </a>
     
@@ -141,7 +141,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/11/2019-11-11-LeetCode1121/">LeetCode 1121. Divide Array Into Increasing Sequences</a>
+      <a class="article-title" href="/2019/11/11/2019-11-11-LeetCode1147/">LeetCode 1147. Longest Chunked Palindrome Decomposition</a>
     </h1>
   
 
@@ -149,14 +149,14 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><a href="https://leetcode.com/problems/divide-array-into-increasing-sequences/description/" target="_blank" rel="noopener">Problem Statement</a></p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">can_divide_into_subsequences</span></span>(nums: <span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;, k: <span class="keyword">i32</span>) -&gt; <span class="keyword">bool</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> max, <span class="keyword">mut</span> cur) = (<span class="number">1</span>, <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..nums.len() - <span class="number">1</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> nums[i] == nums[i + <span class="number">1</span>] &#123;</span><br><span class="line">                cur += <span class="number">1</span>;</span><br><span class="line">                max = std::cmp::max(max, cur);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                cur = <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> nums.len() &gt;= (k * max) <span class="keyword">as</span> <span class="keyword">usize</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+        <p><a href="https://leetcode.com/problems/longest-chunked-palindrome-decomposition/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">longest_decomposition</span></span>(text: <span class="built_in">String</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> ans, n) = (<span class="number">0</span>, text.len());</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> l, <span class="keyword">mut</span> r) = (<span class="built_in">String</span>::from(<span class="string">""</span>), <span class="built_in">String</span>::from(<span class="string">""</span>));</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..n &#123;</span><br><span class="line">            l.push(text.chars().nth(i).unwrap());</span><br><span class="line">            r.insert(<span class="number">0</span>, text.chars().nth(n - i - <span class="number">1</span>).unwrap());</span><br><span class="line">            <span class="keyword">if</span> l == r &#123;</span><br><span class="line">                ans += <span class="number">1</span>;</span><br><span class="line">                l.clear(); r.clear();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1121/" data-id="clenvh7yt0084ymxgyeqxb5qk" data-title="LeetCode 1121. Divide Array Into Increasing Sequences" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1147/" data-id="clirzvzvf005fg6xgnwq9tiy5" data-title="LeetCode 1147. Longest Chunked Palindrome Decomposition" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1121/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1147/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
@@ -201,7 +201,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1146/" data-id="clenvh7yu0086ymxgmmjiizzq" data-title="LeetCode 1146. Snapshot Array" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1146/" data-id="clirzvzvf005gg6xgs58oswdm" data-title="LeetCode 1146. Snapshot Array" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1146/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -274,15 +274,15 @@
       <ul>
         
           <li>
+            <a href="/2019/11/22/2019-11-22-LeetCode1136/">LeetCode 1136. Parallel Courses</a>
+          </li>
+        
+          <li>
             <a href="/2019/11/22/2019-11-22-LeetCode1213/">LeetCode 1213. Intersection of Three Sorted Arrays</a>
           </li>
         
           <li>
             <a href="/2019/11/22/2019-11-22-LeetCode895/">LeetCode 895. Maximum Frequency Stack</a>
-          </li>
-        
-          <li>
-            <a href="/2019/11/22/2019-11-22-LeetCode1136/">LeetCode 1136. Parallel Courses</a>
           </li>
         
           <li>

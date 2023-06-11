@@ -75,9 +75,9 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-2019-11-10-LeetCode1120" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2019-11-10-LeetCode1138" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2019/11/10/2019-11-10-LeetCode1120/" class="article-date">
+    <a href="/2019/11/10/2019-11-10-LeetCode1138/" class="article-date">
   <time datetime="2019-11-10T19:11:11.000Z" itemprop="datePublished">2019-11-10</time>
 </a>
     
@@ -93,7 +93,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1120/">LeetCode 1120. Maximum Average Subtree</a>
+      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1138/">LeetCode 1138. Alphabet Board Path</a>
     </h1>
   
 
@@ -101,14 +101,14 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><a href="https://leetcode.com/problems/maximum-average-subtree/description/" target="_blank" rel="noopener">Problem Statement</a></p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::rc::Rc;</span><br><span class="line"><span class="keyword">use</span> std::cell::RefCell;</span><br><span class="line"><span class="keyword">use</span> std::borrow::Borrow;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">dfs</span></span>(root: <span class="built_in">Option</span>&lt;&amp;Rc&lt;RefCell&lt;TreeNode&gt;&gt;&gt;, ans: &amp;<span class="keyword">mut</span> <span class="keyword">f64</span>) -&gt; (<span class="keyword">i32</span>, <span class="keyword">i32</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">let</span> <span class="literal">Some</span>(node) = root &#123;</span><br><span class="line">            <span class="keyword">let</span> (l, r) = (Self::dfs(RefCell::borrow(&amp;node).left.as_ref(), ans),</span><br><span class="line">                          Self::dfs(RefCell::borrow(&amp;node).right.as_ref(), ans));</span><br><span class="line">            <span class="keyword">let</span> sum = l.<span class="number">0</span> + r.<span class="number">0</span> + RefCell::borrow(&amp;node).val;</span><br><span class="line">            <span class="keyword">let</span> total = <span class="number">1</span> + l.<span class="number">1</span> + r.<span class="number">1</span>;</span><br><span class="line">            <span class="keyword">let</span> avg = sum <span class="keyword">as</span> <span class="keyword">f64</span> / total <span class="keyword">as</span> <span class="keyword">f64</span>;</span><br><span class="line">            <span class="keyword">if</span> avg &gt; *ans &#123;</span><br><span class="line">                *ans = avg;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> (sum, total);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> (<span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">maximum_average_subtree</span></span>(root: <span class="built_in">Option</span>&lt;Rc&lt;RefCell&lt;TreeNode&gt;&gt;&gt;) -&gt; <span class="keyword">f64</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> ans = <span class="number">0</span>.;</span><br><span class="line">        <span class="keyword">if</span> root.is_none() &#123;</span><br><span class="line">            <span class="keyword">return</span> ans;</span><br><span class="line">        &#125;</span><br><span class="line">        Self::dfs(<span class="literal">Some</span>(&amp;root.unwrap()), &amp;<span class="keyword">mut</span> ans);</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+        <p><a href="https://leetcode.com/problems/alphabet-board-path/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::collections::HashMap;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">alphabet_board_path</span></span>(target: <span class="built_in">String</span>) -&gt; <span class="built_in">String</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> map: HashMap&lt;<span class="keyword">char</span>, (<span class="keyword">i32</span>, <span class="keyword">i32</span>)&gt; = HashMap::new();</span><br><span class="line">        <span class="keyword">let</span> alphabet: <span class="built_in">Vec</span>&lt;<span class="keyword">char</span>&gt; = <span class="string">"abcdefghijklmnopqrstuvwxyz"</span>.chars().collect();</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..<span class="number">26</span> &#123;</span><br><span class="line">            map.insert(alphabet[i], (i <span class="keyword">as</span> <span class="keyword">i32</span> / <span class="number">5</span>, i <span class="keyword">as</span> <span class="keyword">i32</span> % <span class="number">5</span>));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> t, <span class="keyword">mut</span> ans, <span class="keyword">mut</span> dx, <span class="keyword">mut</span> dy) : (<span class="built_in">String</span>, <span class="built_in">String</span>, <span class="keyword">i32</span>, <span class="keyword">i32</span>) = (</span><br><span class="line">            target.clone(), <span class="string">""</span>.to_string(), <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">        t.insert(<span class="number">0</span>, <span class="string">'a'</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">1</span>..t.len() &#123;</span><br><span class="line">            <span class="keyword">let</span> (cur, prev) = (map.get(&amp;t.chars().nth(i).unwrap()).unwrap(),</span><br><span class="line">            map.get(&amp;t.chars().nth(i - <span class="number">1</span>).unwrap()).unwrap());</span><br><span class="line">            dx = cur.<span class="number">0</span> - prev.<span class="number">0</span>; dy = cur.<span class="number">1</span> - prev.<span class="number">1</span>;</span><br><span class="line">            <span class="keyword">if</span> dy &lt; <span class="number">0</span> &#123;</span><br><span class="line">                ans.push_str(&amp;(<span class="number">0</span>..dy * -<span class="number">1</span>).map(|_| <span class="string">"L"</span>).collect::&lt;<span class="built_in">String</span>&gt;());</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> dx &lt; <span class="number">0</span> &#123;</span><br><span class="line">                ans.push_str(&amp;(<span class="number">0</span>..dx * -<span class="number">1</span>).map(|_| <span class="string">"U"</span>).collect::&lt;<span class="built_in">String</span>&gt;());</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> dy &gt; <span class="number">0</span> &#123;</span><br><span class="line">                ans.push_str(&amp;(<span class="number">0</span>..dy).map(|_| <span class="string">"R"</span>).collect::&lt;<span class="built_in">String</span>&gt;());</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> dx &gt; <span class="number">0</span> &#123;</span><br><span class="line">                ans.push_str(&amp;(<span class="number">0</span>..dx).map(|_| <span class="string">"D"</span>).collect::&lt;<span class="built_in">String</span>&gt;());</span><br><span class="line">            &#125;</span><br><span class="line">            ans.push(<span class="string">'!'</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1120/" data-id="clenvh7wq004jymxgicza78g3" data-title="LeetCode 1120. Maximum Average Subtree" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1138/" data-id="clirzvzu6003mg6xg65v3chqx" data-title="LeetCode 1138. Alphabet Board Path" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1120/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1138/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
@@ -153,7 +153,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1143/" data-id="clenvh7wr004lymxgrysckskh" data-title="LeetCode 1143. Longest Common Subsequence" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1143/" data-id="clirzvzu6003ng6xgzo1xiqh2" data-title="LeetCode 1143. Longest Common Subsequence" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1143/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -200,7 +200,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1144/" data-id="clenvh7ws004nymxgwp6mcnp3" data-title="LeetCode 1144. Decrease Elements To Make Array Zigzag" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1144/" data-id="clirzvzu7003og6xg86hnje7h" data-title="LeetCode 1144. Decrease Elements To Make Array Zigzag" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1144/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -273,15 +273,15 @@
       <ul>
         
           <li>
+            <a href="/2019/11/22/2019-11-22-LeetCode1136/">LeetCode 1136. Parallel Courses</a>
+          </li>
+        
+          <li>
             <a href="/2019/11/22/2019-11-22-LeetCode1213/">LeetCode 1213. Intersection of Three Sorted Arrays</a>
           </li>
         
           <li>
             <a href="/2019/11/22/2019-11-22-LeetCode895/">LeetCode 895. Maximum Frequency Stack</a>
-          </li>
-        
-          <li>
-            <a href="/2019/11/22/2019-11-22-LeetCode1136/">LeetCode 1136. Parallel Courses</a>
           </li>
         
           <li>
