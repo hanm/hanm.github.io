@@ -106,7 +106,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1027/" data-id="clis0ble20031t3xg5crz8uie" data-title="LeetCode 1027. Longest Arithmetic Sequence" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1027/" data-id="clis2ypw2003140xgf4wlgvbl" data-title="LeetCode 1027. Longest Arithmetic Sequence" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1027/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -122,9 +122,9 @@
 
 
   
-    <article id="post-2019-11-10-LeetCode1033" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2019-11-10-LeetCode1043" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2019/11/10/2019-11-10-LeetCode1033/" class="article-date">
+    <a href="/2019/11/10/2019-11-10-LeetCode1043/" class="article-date">
   <time datetime="2019-11-10T19:11:11.000Z" itemprop="datePublished">2019-11-10</time>
 </a>
     
@@ -140,7 +140,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1033/">LeetCode 1033. Moving Stones Until Consecutive</a>
+      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1043/">LeetCode 1043. Partition Array for Maximum Sum</a>
     </h1>
   
 
@@ -148,14 +148,14 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><a href="https://leetcode.com/problems/moving-stones-until-consecutive/description/" target="_blank" rel="noopener">Problem Statement</a></p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">num_moves_stones</span></span>(a: <span class="keyword">i32</span>, b: <span class="keyword">i32</span>, c: <span class="keyword">i32</span>) -&gt; <span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt; &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> input = <span class="built_in">vec!</span>[a, b, c];</span><br><span class="line">        input.sort();</span><br><span class="line">        <span class="keyword">if</span> input[<span class="number">2</span>] - input[<span class="number">0</span>] == <span class="number">2</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">vec!</span>[<span class="number">0</span>, <span class="number">0</span>];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">let</span> max = input[<span class="number">2</span>] - input[<span class="number">0</span>] - <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">if</span> std::cmp::min(input[<span class="number">1</span>] - input[<span class="number">0</span>], input[<span class="number">2</span>] - input[<span class="number">1</span>]) &lt;= <span class="number">2</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">vec!</span>[<span class="number">1</span>, max];</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">vec!</span>[<span class="number">2</span>, max];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+        <p><a href="https://leetcode.com/problems/partition-array-for-maximum-sum/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">max_sum_after_partitioning</span></span>(a: <span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;, k: <span class="keyword">i32</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> dp = <span class="built_in">vec!</span>[<span class="number">0</span>; a.len() + <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..a.len() &#123;</span><br><span class="line">            <span class="keyword">let</span> <span class="keyword">mut</span> m = a[i];</span><br><span class="line">            <span class="keyword">let</span> <span class="keyword">mut</span> j = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">while</span> j &lt; k <span class="keyword">as</span> <span class="keyword">usize</span> &amp;&amp; i &gt;= j &#123;</span><br><span class="line">                m = std::cmp::max(m, a[i - j]);</span><br><span class="line">                dp[i + <span class="number">1</span>] = std::cmp::max(dp[i + <span class="number">1</span>], dp[i + <span class="number">1</span> - (j + <span class="number">1</span>)] + m * (j <span class="keyword">as</span> <span class="keyword">i32</span> + <span class="number">1</span>));</span><br><span class="line">                j += <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> dp[a.len()];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1033/" data-id="clis0ble20032t3xgrbzmhnk3" data-title="LeetCode 1033. Moving Stones Until Consecutive" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1043/" data-id="clis2ypw2003240xg1dw6zzmh" data-title="LeetCode 1043. Partition Array for Maximum Sum" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1033/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1043/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
@@ -200,7 +200,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1036/" data-id="clis0ble30033t3xgbikw4cun" data-title="LeetCode 1036. Escape a Large Maze." class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1036/" data-id="clis2ypw3003340xgl0z2he0n" data-title="LeetCode 1036. Escape a Large Maze." class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1036/#disqus_thread" class="article-comment-link">Comments</a>
       
