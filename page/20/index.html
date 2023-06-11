@@ -75,9 +75,9 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-2019-11-10-LeetCode1165" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2019-11-10-LeetCode1168" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2019/11/10/2019-11-10-LeetCode1165/" class="article-date">
+    <a href="/2019/11/10/2019-11-10-LeetCode1168/" class="article-date">
   <time datetime="2019-11-10T19:11:11.000Z" itemprop="datePublished">2019-11-10</time>
 </a>
     
@@ -93,7 +93,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1165/">LeetCode 1165. Single-Row Keyboard</a>
+      <a class="article-title" href="/2019/11/10/2019-11-10-LeetCode1168/">LeetCode 1168. Optimize Water Distribution in a Village</a>
     </h1>
   
 
@@ -101,14 +101,15 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><a href="https://leetcode.com/problems/single-row-keyboard/description/" target="_blank" rel="noopener">Problem Statement</a></p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::collections::HashMap;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">calculate_time</span></span>(keyboard: <span class="built_in">String</span>, word: <span class="built_in">String</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> map = HashMap::new();</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..<span class="number">26</span> &#123;</span><br><span class="line">            map.insert(keyboard.chars().nth(i).unwrap(), i);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> ans, size) = (<span class="number">0</span>, word.len());</span><br><span class="line">        <span class="keyword">if</span> size == <span class="number">1</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> ans;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..size &#123;</span><br><span class="line">            <span class="keyword">let</span> ci = word.chars().nth(i).unwrap();</span><br><span class="line">            <span class="keyword">if</span> i == <span class="number">0</span> &#123;</span><br><span class="line">                ans += *map.get(&amp;ci).unwrap() <span class="keyword">as</span> <span class="keyword">i32</span>;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">let</span> cii = word.chars().nth(i - <span class="number">1</span>).unwrap();</span><br><span class="line">            ans += (*map.get(&amp;cii).unwrap() <span class="keyword">as</span> <span class="keyword">i32</span></span><br><span class="line">                - *map.get(&amp;ci).unwrap() <span class="keyword">as</span> <span class="keyword">i32</span>).abs();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+        <p><a href="https://leetcode.com/problems/optimize-water-distribution-in-a-village/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<p>Union Find on minimum spanning tree.</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">find</span></span>(x : <span class="keyword">usize</span>, uf: &amp;<span class="keyword">mut</span> <span class="built_in">Vec</span>&lt;<span class="keyword">usize</span>&gt;) -&gt;<span class="keyword">usize</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> x == uf[x <span class="keyword">as</span> <span class="keyword">usize</span>] &#123;</span><br><span class="line">            <span class="keyword">return</span> x;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            uf[x] = Self::find(uf[x], uf);</span><br><span class="line">            <span class="keyword">return</span> uf[x];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">min_cost_to_supply_water</span></span>(n: <span class="keyword">i32</span>, wells: <span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;, pipes: <span class="built_in">Vec</span>&lt;<span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;&gt;) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> uf = <span class="built_in">vec!</span>[<span class="number">0</span>; n <span class="keyword">as</span> <span class="keyword">usize</span> + <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..n + <span class="number">1</span> &#123;</span><br><span class="line">            uf[i <span class="keyword">as</span> <span class="keyword">usize</span>] = i <span class="keyword">as</span> <span class="keyword">usize</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> p = pipes;</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..n &#123;</span><br><span class="line">            p.push(<span class="built_in">vec!</span>[<span class="number">0</span>, i + <span class="number">1</span>, wells[i <span class="keyword">as</span> <span class="keyword">usize</span>]]);</span><br><span class="line">        &#125;</span><br><span class="line">        p.sort_by_key(|x| x[<span class="number">2</span>]);</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> ans = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> pipe <span class="keyword">in</span> p &#123;</span><br><span class="line">            <span class="keyword">let</span> (fx, fy) = (Self::find(pipe[<span class="number">0</span>] <span class="keyword">as</span> <span class="keyword">usize</span>, &amp;<span class="keyword">mut</span> uf),</span><br><span class="line">                                        Self::find(pipe[<span class="number">1</span>] <span class="keyword">as</span> <span class="keyword">usize</span>, &amp;<span class="keyword">mut</span> uf));</span><br><span class="line">            <span class="keyword">if</span> fx == fy &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            ans += pipe[<span class="number">2</span>];</span><br><span class="line">            uf[fx] = fy;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1165/" data-id="clirzvzu9003sg6xgm1lqor2u" data-title="LeetCode 1165. Single-Row Keyboard" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1168/" data-id="clis0bleh003st3xgfxup0wgz" data-title="LeetCode 1168. Optimize Water Distribution in a Village" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1165/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1168/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
@@ -153,7 +154,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1170/" data-id="clirzvzua003tg6xgg339jddm" data-title="LeetCode 1170. Compare Strings by Frequency of the Smallest Character" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1170/" data-id="clis0bleh003tt3xgvnpawv0r" data-title="LeetCode 1170. Compare Strings by Frequency of the Smallest Character" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1170/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -200,7 +201,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1182/" data-id="clirzvzua003ug6xgyzu64dic" data-title="LeetCode 1182. Shortest Distance to target color" class="article-share-link">Share</a>
+      <a data-url="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1182/" data-id="clis0blei003ut3xgtcvu1snm" data-title="LeetCode 1182. Shortest Distance to target color" class="article-share-link">Share</a>
       
         <a href="http://lianghan.org/2019/11/10/2019-11-10-LeetCode1182/#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -363,6 +364,6 @@
 
 
 
-  </div><!-- hexo-inject:begin --><!-- hexo-inject:end -->
-<script src="https://cdn.jsdelivr.net/npm/live2d-widget@3.x/lib/L2Dwidget.min.js"></script><script>L2Dwidget.init({"tagMode":false,"debug":false,"model":{"jsonPath":"https://cdn.jsdelivr.net/npm/live2d-widget-model-haruto@1.x/assets/haruto.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/"});</script></body>
+  </div>
+<script src="https://cdn.jsdelivr.net/npm/live2d-widget@3.x/lib/L2Dwidget.min.js"></script><script>L2Dwidget.init({"tagMode":false,"debug":false,"model":{"jsonPath":"https://cdn.jsdelivr.net/npm/live2d-widget-model-haruto@1.x/assets/haruto.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/"});</script><!-- hexo-inject:begin --><!-- hexo-inject:end --></body>
 </html>
