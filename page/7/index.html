@@ -19,7 +19,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta property="og:type" content="website">
 <meta property="og:title" content="Quantum Field">
-<meta property="og:url" content="http://lianghan.org/page/7/index.html">
+<meta property="og:url" content="https://algorithms.lianghan.org/page/7/index.html">
 <meta property="og:site_name" content="Quantum Field">
 <meta property="og:locale" content="en">
 <meta name="twitter:card" content="summary">
@@ -67,7 +67,7 @@
         <a id="nav-search-btn" class="nav-icon" title="Search"></a>
       </nav>
       <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://lianghan.org"></form>
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://algorithms.lianghan.org"></form>
       </div>
     </div>
   </div>
@@ -107,56 +107,9 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1231/" data-id="clis2ypxm005n40xg7jgp61f9" data-title="LeetCode 1231. Divide Chocolate" class="article-share-link">Share</a>
+      <a data-url="https://algorithms.lianghan.org/2019/11/11/2019-11-11-LeetCode1231/" data-id="clis3mll0005qdhxgtccxkpth" data-title="LeetCode 1231. Divide Chocolate" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1231/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LeetCode/">LeetCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Rust/">Rust</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2019-11-11-LeetCode1245" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/11/11/2019-11-11-LeetCode1245/" class="article-date">
-  <time datetime="2019-11-11T19:11:11.000Z" itemprop="datePublished">2019-11-11</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/LeetCode-in-Rust/">LeetCode in Rust</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/11/2019-11-11-LeetCode1245/">LeetCode 1245. Tree Diameter</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><a href="https://leetcode.com/problems/tree-diameter/description/" target="_blank" rel="noopener">Problem Statement</a></p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::collections::HashMap;</span><br><span class="line"><span class="keyword">use</span> std::cmp;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">dfs</span></span>(g: &amp;HashMap&lt;<span class="keyword">i32</span>, <span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;&gt;, ans: &amp;<span class="keyword">mut</span> <span class="keyword">i32</span>, cur: <span class="keyword">i32</span>, parent: <span class="keyword">i32</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> val = g.get(&amp;cur).unwrap();</span><br><span class="line">        <span class="keyword">if</span> val.len() == <span class="number">1</span> &amp;&amp; val[<span class="number">0</span>] == parent &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> a, <span class="keyword">mut</span> b) = (<span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">for</span> item <span class="keyword">in</span> val &#123;</span><br><span class="line">            <span class="keyword">if</span> *item == parent &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">let</span> next = Self::dfs(g, ans, *item, cur);</span><br><span class="line">            <span class="keyword">if</span> next &gt; a &#123;</span><br><span class="line">                b = a;</span><br><span class="line">                a = next;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> next &gt; b &#123;</span><br><span class="line">                b = next;</span><br><span class="line">            &#125;</span><br><span class="line">            *ans = cmp::max(*ans, a + b);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> a + <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">tree_diameter</span></span>(edges: <span class="built_in">Vec</span>&lt;<span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;&gt;) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> tree, <span class="keyword">mut</span> ans) : (HashMap&lt;<span class="keyword">i32</span>, <span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;&gt;, <span class="keyword">i32</span>) = (HashMap::new(), <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">for</span> edge <span class="keyword">in</span> &amp;edges &#123;</span><br><span class="line">            <span class="keyword">let</span> (k, v) = (edge[<span class="number">0</span>], edge[<span class="number">1</span>]);</span><br><span class="line">            tree.entry(k).or_insert(<span class="built_in">vec!</span>[]);</span><br><span class="line">            tree.entry(v).or_insert(<span class="built_in">vec!</span>[]);</span><br><span class="line">            tree.get_mut(&amp;k).unwrap().push(v);</span><br><span class="line">            tree.get_mut(&amp;v).unwrap().push(k);</span><br><span class="line">        &#125;</span><br><span class="line">        Self::dfs(&amp;tree, &amp;<span class="keyword">mut</span> ans, edges[<span class="number">0</span>][<span class="number">0</span>], -<span class="number">1</span>);</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1245/" data-id="clis2ypxn005o40xgayrf66qt" data-title="LeetCode 1245. Tree Diameter" class="article-share-link">Share</a>
-      
-        <a href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1245/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="https://algorithms.lianghan.org/2019/11/11/2019-11-11-LeetCode1231/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
@@ -201,9 +154,56 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1233/" data-id="clis2ypxn005p40xg0iracxcs" data-title="LeetCode 1233. Remove Sub-Folders from the Filesystem" class="article-share-link">Share</a>
+      <a data-url="https://algorithms.lianghan.org/2019/11/11/2019-11-11-LeetCode1233/" data-id="clis3mll3005rdhxgz8y4ksuh" data-title="LeetCode 1233. Remove Sub-Folders from the Filesystem" class="article-share-link">Share</a>
       
-        <a href="http://lianghan.org/2019/11/11/2019-11-11-LeetCode1233/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="https://algorithms.lianghan.org/2019/11/11/2019-11-11-LeetCode1233/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LeetCode/">LeetCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Rust/">Rust</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-2019-11-11-LeetCode1245" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/11/11/2019-11-11-LeetCode1245/" class="article-date">
+  <time datetime="2019-11-11T19:11:11.000Z" itemprop="datePublished">2019-11-11</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/LeetCode-in-Rust/">LeetCode in Rust</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/11/11/2019-11-11-LeetCode1245/">LeetCode 1245. Tree Diameter</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><a href="https://leetcode.com/problems/tree-diameter/description/" target="_blank" rel="noopener">Problem Statement</a></p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::collections::HashMap;</span><br><span class="line"><span class="keyword">use</span> std::cmp;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Solution &#123;</span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">dfs</span></span>(g: &amp;HashMap&lt;<span class="keyword">i32</span>, <span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;&gt;, ans: &amp;<span class="keyword">mut</span> <span class="keyword">i32</span>, cur: <span class="keyword">i32</span>, parent: <span class="keyword">i32</span>) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> val = g.get(&amp;cur).unwrap();</span><br><span class="line">        <span class="keyword">if</span> val.len() == <span class="number">1</span> &amp;&amp; val[<span class="number">0</span>] == parent &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> a, <span class="keyword">mut</span> b) = (<span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">for</span> item <span class="keyword">in</span> val &#123;</span><br><span class="line">            <span class="keyword">if</span> *item == parent &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">let</span> next = Self::dfs(g, ans, *item, cur);</span><br><span class="line">            <span class="keyword">if</span> next &gt; a &#123;</span><br><span class="line">                b = a;</span><br><span class="line">                a = next;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> next &gt; b &#123;</span><br><span class="line">                b = next;</span><br><span class="line">            &#125;</span><br><span class="line">            *ans = cmp::max(*ans, a + b);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> a + <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">tree_diameter</span></span>(edges: <span class="built_in">Vec</span>&lt;<span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;&gt;) -&gt; <span class="keyword">i32</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> (<span class="keyword">mut</span> tree, <span class="keyword">mut</span> ans) : (HashMap&lt;<span class="keyword">i32</span>, <span class="built_in">Vec</span>&lt;<span class="keyword">i32</span>&gt;&gt;, <span class="keyword">i32</span>) = (HashMap::new(), <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">for</span> edge <span class="keyword">in</span> &amp;edges &#123;</span><br><span class="line">            <span class="keyword">let</span> (k, v) = (edge[<span class="number">0</span>], edge[<span class="number">1</span>]);</span><br><span class="line">            tree.entry(k).or_insert(<span class="built_in">vec!</span>[]);</span><br><span class="line">            tree.entry(v).or_insert(<span class="built_in">vec!</span>[]);</span><br><span class="line">            tree.get_mut(&amp;k).unwrap().push(v);</span><br><span class="line">            tree.get_mut(&amp;v).unwrap().push(k);</span><br><span class="line">        &#125;</span><br><span class="line">        Self::dfs(&amp;tree, &amp;<span class="keyword">mut</span> ans, edges[<span class="number">0</span>][<span class="number">0</span>], -<span class="number">1</span>);</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://algorithms.lianghan.org/2019/11/11/2019-11-11-LeetCode1245/" data-id="clis3mll4005sdhxghbwolchh" data-title="LeetCode 1245. Tree Diameter" class="article-share-link">Share</a>
+      
+        <a href="https://algorithms.lianghan.org/2019/11/11/2019-11-11-LeetCode1245/#disqus_thread" class="article-comment-link">Comments</a>
       
       
       
